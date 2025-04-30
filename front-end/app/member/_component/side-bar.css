@@ -1,0 +1,44 @@
+.container-user {
+  padding: 0.75rem 3.125rem 4rem;
+}
+/* about avartar */
+.user-basic-info {
+  padding-top: 20px;
+  padding-bottom: 12px;
+  background-color: rgb(255, 255, 255);
+  color: var(--sub-text);
+}
+.user-basic-info .avartar {
+  width: 84px;
+  aspect-ratio: 1/1;
+  background-color: var(--main-text);
+  border-radius: 50%;
+}
+.user-basic-info .title {
+  color: var(--main-text);
+}
+/* about panel */
+.user-panel {
+  color: var(--sub-text);
+}
+.user-panel ul {
+  list-style-type: none;
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+}
+.user-panel ul li {
+  padding-block: 0.375rem;
+}
+.user-panel ul .title {
+  color: var(--sub-color);
+  font-size: 1.25rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0.25rem;
+}
+/* you can delete that, just demo */
+.height-demo {
+  min-height: 1000px;
+}
