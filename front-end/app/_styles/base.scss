@@ -1,14 +1,17 @@
 :root {
+  // brand color
   --white: #fbfbfb;
   --main-color: #fd7061;
   --sub-color: #fa8e83;
   --strong-color: #fd4f3c;
-  /* text style */
+
+  // text style
   --sub-element: #bebebe;
   --main-text: #373737;
   --sub-text: #858585;
   --bg-gray: #fafafa;
-  /* linear style */
+
+  // linear style
   --btn-bg: linear-gradient(180deg, #fd7061 0%, #ff8679 46.15%, #fd7061 100%);
   --btn-bg-hover: linear-gradient(
     180deg,
@@ -20,14 +23,32 @@
   --bar-linear: linear-gradient(270deg, #bebebe 0%, #fa8e83 100%);
   --title-linear: linear-gradient(90deg, #fa8e83 0%, #fff 100%);
   --coupon-linear: linear-gradient(90deg, #fa8e83 0%, #fecac4 100%);
+  --step-linear: linear-gradient(90deg, #bebebe 0%, #d0c4c4 100%);
 }
+
+// 全域樣式
 body {
   font-family: 'Noto Sans TC', sans-serif;
-  font-weight: 700;
+  font-weight: 400;
   font-style: normal;
   font-size: 1rem;
   color: var(--main-text);
+  background-color: var(--bg-gray);
 }
+
+a {
+  color: var(--white);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: var(--sub-text);
+    text-decoration: underline;
+  }
+}
+
+// 文字樣式初始化
 h1,
 h2,
 h3,
@@ -38,39 +59,45 @@ p {
   margin: 0;
   padding: 0;
 }
+
 h1 {
   font-weight: 700;
-  font-size: 3rem;
+  font-size: 3rem; // 48
 }
 h2 {
   font-weight: 700;
-  font-size: 2.4rem;
+  font-size: 2.4rem; // 38
 }
 h3 {
   font-weight: 600;
-  font-size: 2rem;
+  font-size: 2rem; //32
 }
 h4 {
   font-weight: 600;
-  font-size: 1.5rem;
+  font-size: 1.5rem; //24
 }
 h5 {
   font-weight: 600;
-  font-size: 1.25rem;
+  font-size: 1.25rem; //20
 }
 h6 {
   font-weight: 600;
   font-size: 1rem;
 }
+
+// 輸入欄位
 input[type='text'] {
   border: 1px solid var(--sub-element);
   border-radius: 5px;
   padding-inline: 0.75rem;
   padding-block: 0.25rem;
+
+  &:focus {
+    outline: 2px solid var(--sub-element);
+  }
 }
-input[type='text']:focus {
-  outline: 2px solid var(--sub-element);
-}
+
+// 卡片樣式
 .card-style {
   border-radius: 15px;
   border: 2px solid rgba(185, 185, 185, 0.15);
@@ -83,6 +110,8 @@ input[type='text']:focus {
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
   backdrop-filter: blur(10px);
 }
+
+// ISLA Logo
 .title {
   font-family: 'Plaster', system-ui;
   font-weight: 400;
