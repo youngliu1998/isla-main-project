@@ -4,6 +4,7 @@ import '@fontsource/noto-sans-tc'
 import Header from './_components/header'
 import Footer from './_components/footer'
 import '@/app/_styles/globals.scss'
+import Provider from './provider'
 
 export const metadata = {
   title: 'Create Next App',
@@ -14,9 +15,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <Header />
-        {children}
-        <Footer />
+        <Provider>
+          <Header />
+          {children}
+          <Footer />
+        </Provider>
       </body>
     </html>
   )
