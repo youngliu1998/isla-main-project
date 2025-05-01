@@ -1,0 +1,46 @@
+@use 'sass:map';
+
+// ===== BS變數覆蓋區 =====
+
+// $border-radius: 0em;
+// $border-radius-sm: 0.2em;
+// $border-radius-md: 0.8em;
+
+$font-family-sans-serif: 'Noto Sans TC', sans-serif;
+
+// ===== 主色系定義變數 =====
+$white: #fbfbfb;
+$main-color: #fd7061;
+$sub-color: #fa8e83;
+$strong-color: #fd4f3c;
+$sub-element: #bebebe;
+$main-text: #373737;
+$sub-text: #858585;
+$bg-gray: #fafafa;
+
+// 要先引入BS原生的 $theme-colors
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+
+// ===== 新增BS的主題顏色 =====
+$custom-colors: (
+  'main': $main-color,
+  'sub': $sub-color,
+  'strong': $strong-color,
+  'elem': $sub-element,
+  'maintext': $main-text,
+  'subtext': $sub-text,
+  'graybg': $bg-gray,
+);
+
+//合併 BS $theme-colors 與 $custom-colors
+$merged-colors: map.merge($theme-colors, $custom-colors);
+
+// 覆蓋 原生primary/secondary，寫回$theme-colors
+$theme-colors: map.merge(
+  $merged-colors,
+  (
+    'primary': $main-color,
+    'secondary': $sub-color,
+  )
+);

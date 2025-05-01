@@ -1,12 +1,4 @@
-$primary: #fd7061;
-$secondary: #bebebe;
-$danger: #fd4f3c;
-
-$border-radius: 0em;
-$border-radius-sm: 0.2em;
-$border-radius-md: 0.8em;
-
-$font-family-sans-serif: 'Noto Sans TC', sans-serif;
-
-@import '~bootstrap/scss/bootstrap';
-@import './base.css';
+@import 'bootstrap/scss/functions';
+@import './variables';
+@import 'bootstrap/scss/bootstrap';
+@import './_base';
