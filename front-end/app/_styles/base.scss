@@ -169,7 +169,7 @@ $btn-primary-border-color: #4f46e5; // 自定義 primary 邊框色
   font-size: 16px;
   border-radius: 12px;
   border: 1px solid #fa8e83;
-  background: rgba(91, 91, 91, 0.05);
+  background: rgba(91, 91, 91, 0);
   font-weight: 500;
   font-size: 16px;
   cursor: pointer;
@@ -225,7 +225,7 @@ $btn-primary-border-color: #4f46e5; // 自定義 primary 邊框色
   font-weight: lighter;
   color: #333;
   background: #f0f0f0;
-  border-radius: 5px;
+  border-radius: 12px;
   border: 1px solid #dcdcdc;
   border-top: 0.5px solid var(--button-stroke, rgba(255, 255, 255, 0.7));
   cursor: pointer;
@@ -248,5 +248,98 @@ $btn-primary-border-color: #4f46e5; // 自定義 primary 邊框色
   &:focus {
     outline: none;
     box-shadow: 0 0 0 2px rgba(100, 100, 100, 0.2);
+  }
+}
+
+// Custom Bootstrap Alerts Override
+.alert {
+  position: relative;
+  padding: 16px 24px;
+  border-radius: 12px;
+  background: rgba(219, 219, 219, 0.412); // 半透明白
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px); // Safari 支援
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+
+  // Default colors
+  &.alert-primary {
+    border-top: 1px solid rgba(255, 255, 255, 0.6);
+    color: #d56256;
+    border-color: none;
+  }
+
+  &.alert-secondary {
+    border-top: 1px solid rgba(255, 255, 255, 0.6);
+    color: #5c5c5c;
+    border-color: none;
+  }
+
+  &.alert-success {
+    border-top: 1px solid rgba(255, 255, 255, 0.6);
+    color: #1b860f;
+    border-color: none;
+  }
+
+  &.alert-danger {
+    border-top: 1px solid rgba(255, 255, 255, 0.6);
+    color: #d12613;
+    border-color: none;
+  }
+
+  &.alert-warning {
+    border-top: 1px solid rgba(255, 255, 255, 0.6);
+    color: #e07614;
+    border-color: none;
+  }
+
+  &.alert-info {
+    border-top: 1px solid rgba(255, 255, 255, 0.6);
+    color: #979797;
+    border-color: none;
+  }
+
+  &.alert-light {
+    border-top: 1px solid rgba(255, 255, 255, 0.6);
+    color: #5c5c5c;
+    border-color: none;
+  }
+
+  &.alert-dark {
+    border-top: 1px solid rgba(255, 255, 255, 0.6);
+    color: #f0f0f0;
+    background: rgba(43, 43, 43, 0.412); // 半透明白
+
+    border-color: none;
+  }
+
+  // Close button
+  .btn-close {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    padding: 0;
+    background: none;
+    border: none;
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  // Animation
+  &.fade {
+    opacity: 0;
+    transition: opacity 0.3s linear;
+  }
+
+  &.show {
+    opacity: 1;
   }
 }
