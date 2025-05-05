@@ -1,0 +1,29 @@
+.post {
+  max-width: 800px;
+}
+.post-img {
+  max-width: 560px;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  position: relative;
+}
+
+.more-img {
+  width: 80px;
+  height: 80px;
+  background-color: #898989;
+}
+
+.more-content {
+  min-width: 0; /* ⭐️ 關鍵：讓 text-truncate 在 flex container 下生效 */
+}
+.more-actions {
+  margin-left: -8px;
+}
+
+.comment-more {
+  margin-left: 42px;
+}

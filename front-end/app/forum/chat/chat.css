@@ -1,0 +1,38 @@
+.main {
+  flex: 1 1 0 !important;
+  min-width: 0;
+}
+.sub-nav-container {
+  flex: 0 0 auto !important;
+}
+.my-container {
+  height: calc(100vh - 104px);
+}
+
+.friend-avatar {
+  height: 44px;
+  border-radius: 100%;
+}
+.friend-info {
+  min-width: 0;
+}
+
+.chat-main {
+  input {
+    bottom: 16px;
+    left: 24px;
+    right: 24px;
+    &:focus-visible {
+      outline: 0px solid #fff;
+    }
+  }
+}
+.chat-main-avatar {
+  width: 36px;
+}
+
+.chat-list-item {
+  &:hover {
+    background-color: var(--bg-gray-article);
+  }
+}
