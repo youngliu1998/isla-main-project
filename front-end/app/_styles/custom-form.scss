@@ -52,7 +52,9 @@ $form-control-bg-focus: #fff;
 .form-control {
   border: 2px solid $form-control-border-color;
   border-radius: 8px;
-  padding: 0.85rem 0.9rem;
+  //   padding: 0.85rem 0.9rem;
+  padding-inline: 1rem;
+  padding-block: 0.6rem;
   background-color: $form-control-bg-color;
   transition:
     border-color 0.3s ease,

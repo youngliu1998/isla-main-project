@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "nick_name": "donaldgwww",
+    "tel": "0967345678",
+    "postcode": "82312",
+    "city": "台北市",
+    "area": "大安區",
+    "address": "台北市大安區信義路3段200號",
+    "gender": "女性",
+    "skin_type": "混合肌",
+    "img_url": "image_1.jpg"
+  },
+  {
+    "id": 2,
+    "nick_name": "smiller",
+    "tel": "0940876177",
+    "postcode": "45196",
+    "city": "桃園市",
+    "area": "中壢區",
+    "address": "桃園市中壢區中華路二段168號",
+    "gender": "女性",
+    "skin_type": "混合肌",
+    "img_url": "image_2jpg"
+  },
+  {
+    "id": 3,
+    "nick_name": "carl95",
+    "tel": "0980417456",
+    "postcode": "55192",
+    "city": "新竹市",
+    "area": "東區",
+    "address": "新竹市東區光復路1段1號",
+    "gender": "男性",
+    "skin_type": "混合肌",
+    "img_url": "image_3.jpg"
+  }
+]
