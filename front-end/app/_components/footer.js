@@ -4,10 +4,11 @@ import Link from 'next/link'
 // import Image from 'next/image'
 import './footer.css'
 import { usePathname } from 'next/navigation'
+import path from 'path'
 
 export default function Footer() {
   const pathname = usePathname()
-  if (pathname.includes('/cart')) {
+  if (pathname.includes('/cart') || pathname.includes('/forum')) {
     return <></>
   }
 

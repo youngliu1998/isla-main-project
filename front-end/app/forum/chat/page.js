@@ -8,11 +8,12 @@ import ChatRoom from './_components/chat-room'
 export default function ChatPage(props) {
   return (
     <>
-      <main className="main col col-md-10  main-text-color">
-        <div className="row px-3 pb-3 h-100">
+      <main className="main col col-10 col-xl-10 d-flex flex-column align-items-center">
+        {/* <div className="posts d-flex flex-column gap-3 w-100"></div> */}
+        <div className="chat-container row w-100 pb-3 h-100">
           {/* className寫在這無效！ */}
-          <ChatList className="" />
-          <ChatRoom className="d-none d-md-block" />
+          <ChatList />
+          <ChatRoom />
         </div>
       </main>
     </>

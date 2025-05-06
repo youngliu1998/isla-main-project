@@ -3,15 +3,24 @@
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 
-export default function ComponentsAvatar(props) {
+export default function ComponentsAvatar({
+  src = '',
+  alt = '',
+  classWidth = '',
+}) {
   return (
     <>
-      <Image
-        className="rounded-circle object-fit-cover ratio-1x1 h-100"
-        src="./images/320.webp"
-        alt="圖片名稱"
-        layout="fill"
-      />
+      <div
+        className="position-relative rounded-circle"
+        style={{ width: classWidth + 'px', height: classWidth + 'px' }}
+      >
+        <Image
+          className="rounded-circle object-fit-cover w-100"
+          src={src}
+          alt={alt}
+          fill={true}
+        />
+      </div>
     </>
   )
 }

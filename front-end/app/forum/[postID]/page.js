@@ -5,19 +5,20 @@ import { useParams } from 'next/navigation'
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import ComponentsSearchBar from '../_components/search-bar'
+import ComponentsAd from '../_components/ad'
+import ComponentsAvatar from '../_components/avatar'
 
 export default function PostIDPage(props) {
   const postID = useParams().postID
   return (
     <>
-      <main className="main col col-12 col-lg-10 col-xxl-8 d-flex flex-column align-items-center">
+      <main className="main col col-10 col-xl-10 col-xxl-8 d-flex flex-column align-items-center">
         <div className="posts d-flex flex-column gap16 w-100">
-          <div className="post d-flex flex-column gap-2 px-4 py-4 rounded-top-3">
+          <div className="post d-flex flex-column gap-2  rounded-top-3 shadow-forum">
             <div className="post-header d-flex align-items-start">
-              <div className="post-title flex-grow-1 me-3 fs32">
-                {`${postID}日本彩妝買什麼😍十二作為緊張計算監傳說會不會`}
-                <span className="post-tag d-inline align-middle px-2 py-1 my-auto rounded-pill fs12 text-nowrap bg-sub color-isla-white">
+              <div className="post-title flex-grow-1 me-3 fs32 ">
+                {`${postID}日本彩妝買什麼😍十二作為緊張計算監傳說`}
+                <span className="post-tag d-inline align-middle px-2 py-1 ms-2 my-auto rounded-pill fs12 text-nowrap bg-gray-article main-color">
                   分享
                 </span>
               </div>
@@ -30,12 +31,11 @@ export default function PostIDPage(props) {
               className="author-info d-flex align-items-center gap-2 mb-3 text-decoration-none"
               role="button"
             >
-              {/* <Image
-                className="rounded-circle object-fit-cover ratio-1x1 h-100"
-                src="./images/320.webp"
-                alt="圖片名稱"
-                layout="fill"
-              /> */}
+              <ComponentsAvatar
+                classWidth="21"
+                src={`/images/forum/320.webp`}
+                alt="測試"
+              />
               <span className="author-name fs14 sub-text-color">
                 lillypolly
               </span>
@@ -65,7 +65,7 @@ export default function PostIDPage(props) {
                 23
               </button>
               <button className="evaluate px-2 py-1 border-0 rounded-3 d-flex align-items-center">
-                <i className="bi bi-chat-left me-1 fs16" />8
+                <i className="bi bi-chat me-1 fs16" />8
               </button>
               <button className="evaluate px-2 py-1 border-0 rounded-3 d-flex align-items-center">
                 <i className="bi bi-bookmark me-1 fs16" />9
@@ -99,127 +99,11 @@ export default function PostIDPage(props) {
                           href="/"
                           className="author-info d-flex align-items-center gap-2 text-decoration-none h-100 sub-text-color"
                         >
-                          {/* <Image
-                            className="rounded-circle object-fit-cover ratio-1x1 h-100"
-                            src="./images/user-avator/320.webp"
-                            // width={32}
-                            layout="fill"
-                            objectFit="cover"
-                          /> */}
-                          <span className="author-name">lillypolly</span>
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                  {/* <Image
-                    className="more-img object-fit-cover rounded-3"
-                    src="./images/7aeeb949-922a-46aa-8f6d-79b7c7134bc8.jpeg"
-                    layout="fill"
-                  /> */}
-                </div>
-                <div className="more-card col col-12 col-md-6 d-flex align-items-center gap-2 px-3 py-2">
-                  <div className="more-content d-flex flex-column gap-2 flex-grow-1">
-                    <div className="more-title fw-medium text-truncate">
-                      原來冷閃系彩妝是黃皮本命！這些請買起來🥴
-                    </div>
-                    <div className="more-actions d-flex fs14">
-                      <button className="evaluate px-2 py-1 border-0 rounded-3 d-flex align-items-center sub-text-color">
-                        <i className="bi bi-heart me-1" />
-                        23
-                      </button>
-                      <button className="evaluate px-2 py-1 border-0 rounded-3 d-flex align-items-center sub-text-color">
-                        <i className="bi bi-chat-left me-1" />8
-                      </button>
-                      <button className="evaluate px-2 py-1 border-0 rounded-3 d-flex align-items-center sub-text-color">
-                        <i className="bi bi-bookmark me-1" />
-                        23
-                      </button>
-                      <div>
-                        <Link
-                          href="/"
-                          className="author-info d-flex align-items-center gap-2 text-decoration-none h-100 sub-text-color"
-                        >
-                          {/* <Image
-                            className="rounded-circle object-fit-cover ratio-1x1 h-100"
-                            src="./images/user-avator/320.webp"
-                            fill
-                          /> */}
-                          <span className="author-name">lillypolly</span>
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                  {/* <Image
-                    className="more-img object-fit-cover rounded-3"
-                    src="./images/7aeeb949-922a-46aa-8f6d-79b7c7134bc8.jpeg"
-                    layout="fill"
-                  /> */}
-                </div>
-                <div className="more-card col col-12 col-md-6 d-flex align-items-center gap-2 px-3 py-2">
-                  <div className="more-content d-flex flex-column gap-2 flex-grow-1">
-                    <div className="more-title fw-medium text-truncate">
-                      原來冷閃系彩妝是黃皮本命！這些請買起來🥴
-                    </div>
-                    <div className="more-actions d-flex fs14">
-                      <button className="evaluate px-2 py-1 border-0 rounded-3 d-flex align-items-center sub-text-color">
-                        <i className="bi bi-heart me-1" />
-                        23
-                      </button>
-                      <button className="evaluate px-2 py-1 border-0 rounded-3 d-flex align-items-center sub-text-color">
-                        <i className="bi bi-chat-left me-1" />8
-                      </button>
-                      <button className="evaluate px-2 py-1 border-0 rounded-3 d-flex align-items-center sub-text-color">
-                        <i className="bi bi-bookmark me-1" />
-                        23
-                      </button>
-                      <div>
-                        <Link
-                          href="/"
-                          className="author-info d-flex align-items-center gap-2 text-decoration-none h-100 sub-text-color"
-                        >
-                          {/* <Image
-                            className="rounded-circle object-fit-cover ratio-1x1 h-100"
-                            src="./images/user-avator/320.webp"
-                            layout="fill"
-                          /> */}
-                          <span className="author-name">lillypolly</span>
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                  {/* <Image
-                    className="more-img object-fit-cover rounded-3"
-                    src="./images/7aeeb949-922a-46aa-8f6d-79b7c7134bc8.jpeg"
-                    layout="fill"
-                  /> */}
-                </div>
-                <div className="more-card col col-12 col-md-6 d-flex align-items-center gap-2 px-3 py-2">
-                  <div className="more-content d-flex flex-column gap-2 flex-grow-1">
-                    <div className="fw-medium text-truncate">
-                      原來冷閃系彩妝是黃皮本命！這些請買起來🥴
-                    </div>
-                    <div className="more-actions d-flex fs14">
-                      <button className="evaluate px-2 py-1 border-0 rounded-3 d-flex align-items-center sub-text-color">
-                        <i className="bi bi-heart me-1" />
-                        23
-                      </button>
-                      <button className="evaluate px-2 py-1 border-0 rounded-3 d-flex align-items-center sub-text-color">
-                        <i className="bi bi-chat-left me-1" />8
-                      </button>
-                      <button className="evaluate px-2 py-1 border-0 rounded-3 d-flex align-items-center sub-text-color">
-                        <i className="bi bi-bookmark me-1" />
-                        23
-                      </button>
-                      <div>
-                        <Link
-                          href="/"
-                          className="author-info d-flex align-items-center gap-2 text-decoration-none h-100 sub-text-color"
-                        >
-                          {/* <Image
-                            className="rounded-circle object-fit-cover ratio-1x1 h-100"
-                            src="./images/user-avator/320.webp"
-                            layout="fill"
-                          /> */}
+                          <ComponentsAvatar
+                            classWidth="21"
+                            src={`/images/forum/320.webp`}
+                            alt="測試"
+                          />
                           <span className="author-name">lillypolly</span>
                         </Link>
                       </div>
@@ -242,12 +126,11 @@ export default function PostIDPage(props) {
                 <div className="comment-card d-flex flex-column gap-3 py-3 bottom-stroke">
                   <div className="comment-content d-flex gap10">
                     <Link href="/" className="user-avatar">
-                      {/* <Image
-                        className="rounded-circle ratio-1x1 object-fit-cover"
-                        src="./images/320.webp"
-                        width={32}
-                        height={32}
-                      /> */}
+                      <ComponentsAvatar
+                        classWidth="32"
+                        src={`/images/forum/320.webp`}
+                        alt="測試"
+                      />
                     </Link>
                     <div className="comment-main d-flex flex-column flex-grow-1 gap-1">
                       <div className="comment-header d-flex align-items-start">
@@ -295,11 +178,11 @@ export default function PostIDPage(props) {
                 <div className="comment-card d-flex flex-column gap-3 py-3 bottom-stroke">
                   <div className="comment-content d-flex gap10">
                     <Link href="/" className="user-avatar">
-                      {/* <Image
-                        className="rounded-circle ratio-1x1 object-fit-cover w-100"
-                        src="./images/320.webp"
-                        layout="fill"
-                      /> */}
+                      <ComponentsAvatar
+                        classWidth="32"
+                        src={`/images/forum/320.webp`}
+                        alt="測試"
+                      />
                     </Link>
                     <div className="comment-main d-flex flex-column flex-grow-1 gap-1">
                       <div className="comment-header d-flex align-items-start">
@@ -343,11 +226,11 @@ export default function PostIDPage(props) {
                     </Link>
                     <div className="comment-content d-flex gap10">
                       <Link href="/" className="user-avatar">
-                        {/* <Image
-                          className="rounded-circle ratio-1x1 object-fit-cover w-100"
-                          src="./images/320.webp"
-                          layout="fill"
-                        /> */}
+                        <ComponentsAvatar
+                          classWidth="32"
+                          src={`/images/forum/320.webp`}
+                          alt="測試"
+                        />
                       </Link>
                       <div className="comment-main d-flex flex-column flex-grow-1 gap-1">
                         <div className="comment-header d-flex align-items-start">
@@ -389,7 +272,7 @@ export default function PostIDPage(props) {
         </div>
       </main>
       <div className="col col-2 d-none d-xl-block px-0"></div>
-      {/* <ComponentsSearchBar /> */}
+      {/* <ComponentsAd /> */}
     </>
   )
 }

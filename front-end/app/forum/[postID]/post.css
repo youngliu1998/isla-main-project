@@ -1,5 +1,6 @@
 .post {
   max-width: 800px;
+  padding: 32px;
 }
 .post-img {
   max-width: 560px;
