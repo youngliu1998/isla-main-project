@@ -1,0 +1,242 @@
+/* module */
+.body {
+  /* position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: -999; */
+  min-height: 100vh;
+  /* box-sizing: border-box; */
+  /* outline: 1px solid #2a8aff; */
+  /* font-family: 'Noto Sans TC', 'Montserrat'; */
+  --main-color: #fd7061;
+  --accent-color: #fd4f3c;
+  --sub-color: #fa8e83;
+  --bg-gray-article: #f2f1ef;
+  --hover-gray: #e5e5e4;
+  --focus-gray: #d2d2d2;
+  --main-text: #373737;
+  --sub-text: #858585;
+  --isla-white: #fbfbfb;
+  --stroke-color: #bebebe;
+  --badge-color: #f4b12b;
+  /* overscroll-behavior: none; */
+  button {
+    border: 0px solid #ffffff00;
+    background-color: #ffffff00;
+  }
+  ::-webkit-scrollbar {
+    width: 0; /* 垂直滾動條寬度 */
+    height: 0; /* 水平滾動條高度 */
+  }
+  .scroll-bar-settings {
+    ::-webkit-scrollbar {
+      width: 12px; /* 垂直滾動條寬度 */
+      height: 12px; /* 水平滾動條高度 */
+    }
+    ::-webkit-scrollbar-track {
+      background: #ffffff; /* 軌道背景 */
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #45454537; /* 滑塊顏色 */
+      border-radius: 6px; /* 圓角 */
+      border: 2px solid #ffffff; /* 留白效果 */
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #ffffff00;
+    }
+  }
+  .dropdown-menu {
+    background-color: white;
+    .dropdown-item {
+      color: var(--main-text);
+      &:hover {
+        background-color: var(--hover-gray);
+      }
+      &:focus {
+        background-color: var(--focus-gray);
+      }
+    }
+  }
+}
+
+/* color */
+.bg-gray-article {
+  background-color: var(--bg-gray-article);
+}
+.bg-sub {
+  background-color: var(--sub-color);
+}
+.bg-badge {
+  background-color: var(--badge-color);
+}
+.bg-pure-white {
+  background-color: #fff;
+}
+.main-color {
+  color: var(--main-color);
+}
+.bg-main {
+  background-color: var(--main-color) !important;
+}
+.main-text-color {
+  color: var(--main-text);
+}
+.sub-text-color {
+  color: var(--sub-text);
+}
+.color-accent {
+  color: var(--accent-color);
+}
+.color-isla-white {
+  color: var(--isla-white);
+}
+
+/* 樣式 */
+.bottom-stroke {
+  border-bottom: 1px solid var(--stroke-color) !important;
+}
+/* .top-stroke {
+  border-top: 1px solid var(--stroke-color) !important;
+} */
+.shadow-forum {
+  box-shadow: 0 0 8px #5447340d;
+}
+
+/* font */
+.fs32 {
+  font-size: 28px;
+  line-height: 40px;
+  font-weight: 500;
+}
+.fs24 {
+  font-size: 24px;
+  font-weight: 600;
+}
+.fs20 {
+  font-size: 20px;
+}
+
+.fs16 {
+  font-size: 16px;
+  line-height: 20px;
+}
+.fs14 {
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.fs12 {
+  font-size: 12px;
+}
+
+/* 距離 */
+.gap10 {
+  gap: 10px;
+}
+
+
+/* VVVV微調！VVVV */
+/* layout */
+
+.my-container {
+  /* max-width: 1440px !important; */
+  height: auto;
+  padding-top: 104px;
+  /* overscroll-behavior: none; */
+}
+
+.aside {
+  /* 注意d-xxl-flex */
+  /* position: fixed; */
+  top: 104px;
+  .cate-item {
+    padding: 16px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    &:hover {
+      background-color: var(--hover-gray);
+    }
+    &:focus {
+      background-color: var(--focus-gray);
+    }
+  }
+}
+.search-bar {
+  input {
+    padding-inline: 0.75rem;
+    padding-block: 0.25rem;
+    background: #00000000;
+    border: 0 solid #00000000;
+    outline: 0px;
+  }
+}
+
+/* main */
+.posts {
+  max-width: 800px;
+}
+.post-header {
+  min-width: 0;
+}
+
+.switcher {
+  width: 130px;
+  height: 32px;
+}
+
+.post {
+  background-color: white;
+}
+.evaluates {
+  margin-left: -7px;
+}
+.evaluate {
+  background-color: white;
+  &:hover {
+    background-color: var(--hover-gray);
+  }
+}
+
+.imgs {
+  /* .photos-switcher d-flex會讓子元素寬度自動壓縮 */
+  /* 利用flex-shrink-0來讓子元素不被壓縮 */
+
+  .img {
+    width: 130px;
+    height: 130px;
+    background-color: #dad3d3;
+  }
+}
+
+.sub-nav {
+  position: relative;
+  top: 104px;
+  .sub-nav-item {
+    &:hover {
+      background: var(--hover-gray);
+    }
+    &:focus {
+      background: var(--focus-gray);
+    }
+    /* 要.blur()取消焦點 */
+  }
+}
+@media screen and (max-width: 991px) {
+  .sub-nav-container-sm {
+    width: 56px;
+    display: flex;
+    justify-content: center;
+    isolation: isolate;
+    z-index: 999;
+  }
+  .sub-nav-item {
+    display: flex;
+    justify-content: center;
+    /* &:hover::after {
+      display: block;
+      z-index: 999;
+    } */
+  }
+}

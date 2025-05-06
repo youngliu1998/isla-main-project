@@ -1,6 +1,6 @@
 'use client'
 import { useEffect } from 'react'
-import 'bootstrap/dist/js/bootstrap.bundle.min.js' // 若使用 Modal/Collapse 等元件需引入 JS
+// import 'bootstrap/dist/js/bootstrap.bundle.min.js' // 若使用 Modal/Collapse 等元件需引入 JS
 
 export default function BootstrapTestPage() {
   useEffect(() => {
@@ -8,7 +8,26 @@ export default function BootstrapTestPage() {
   }, [])
 
   return (
-    <div className="container py-5">
+    <div
+      className="container py-5"
+      style={{
+        '--s': '84px',
+        '--c1': '#e9e8e8',
+        '--c2': '#f0f0f0',
+        '--c3': '#ebebeb',
+        '--_g': '0 120deg,#0000 0',
+        background: `
+      conic-gradient(at calc(250%/3) calc(100%/3), var(--c3) var(--_g)),
+      conic-gradient(from -120deg at calc(50%/3) calc(100%/3), var(--c2) var(--_g)),
+      conic-gradient(from 120deg at calc(100%/3) calc(250%/3), var(--c1) var(--_g)),
+      conic-gradient(from 120deg at calc(200%/3) calc(250%/3), var(--c1) var(--_g)),
+      conic-gradient(from -180deg at calc(100%/3) 50%, var(--c2) 60deg, var(--c1) var(--_g)),
+      conic-gradient(from 60deg at calc(200%/3) 50%, var(--c1) 60deg, var(--c3) var(--_g)),
+      conic-gradient(from -60deg at 50% calc(100%/3), var(--c1) 120deg, var(--c2) 0 240deg, var(--c3) 0)
+    `,
+        backgroundSize: 'calc(var(--s) * sqrt(3)) var(--s)',
+      }}
+    >
       <h1 className="mb-4">🔧 Bootstrap Component Showcase</h1>
 
       {/* Buttons */}
@@ -30,6 +49,11 @@ export default function BootstrapTestPage() {
       <section className="mb-4">
         <h2>Alerts</h2>
         <div className="alert alert-primary">This is a primary alert</div>
+        <div className="alert alert-secondary">This is a secondary alert</div>
+        <div className="alert alert-info">This is a info alert</div>
+        <div className="alert alert-warning">This is a warning alert</div>
+        <div className="alert alert-light">This is a light alert</div>
+        <div className="alert alert-dark">This is a dark alert</div>
         <div className="alert alert-success">This is a success alert</div>
         <div className="alert alert-danger">This is a danger alert</div>
       </section>
@@ -79,10 +103,143 @@ export default function BootstrapTestPage() {
             <input type="checkbox" className="form-check-input" />
             <label className="form-check-label">Check me out</label>
           </div>
+          <div className="mb-3 form-check">
+            <input type="checkbox" className="form-check-input" disabled />
+            <label className="form-check-label">disabled</label>
+          </div>
           <button type="submit" className="btn btn-primary">
             Submit
           </button>
         </form>
+      </section>
+
+      <section>
+        <div className="container py-5">
+          <h2 className="mb-4">Input 測試區</h2>
+          {/* Text input */}
+          <div className="mb-3">
+            <label htmlFor="inputText" className="form-label">
+              Text Input
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="inputText"
+              placeholder="輸入文字"
+            />
+          </div>
+          {/* Email input */}
+          <div className="mb-3">
+            <label htmlFor="inputEmail" className="form-label">
+              Email Input
+            </label>
+            <input
+              type="email"
+              className="form-control"
+              id="inputEmail"
+              placeholder="name@example.com"
+            />
+          </div>
+          {/* Password input */}
+          <div className="mb-3">
+            <label htmlFor="inputPassword" className="form-label">
+              Password Input
+            </label>
+            <input
+              type="password"
+              className="form-control"
+              id="inputPassword"
+              placeholder="密碼"
+            />
+          </div>
+          {/* Disabled input */}
+          <div className="mb-3">
+            <label htmlFor="inputDisabled" className="form-label">
+              Disabled Input
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="inputDisabled"
+              disabled=""
+              placeholder="無法輸入"
+            />
+          </div>
+          {/* Readonly input */}
+          <div className="mb-3">
+            <label htmlFor="inputReadonly" className="form-label">
+              Readonly Input
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="inputReadonly"
+              readOnly=""
+              defaultValue="唯讀內容"
+            />
+          </div>
+          {/* Checkbox */}
+          <div className="form-check mb-3">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id="checkBoxTest"
+            />
+            <label className="form-check-label" htmlFor="checkBoxTest">
+              Checkbox 選項
+            </label>
+          </div>
+          {/* Radio */}
+          <div className="form-check mb-3">
+            <input
+              className="form-check-input"
+              type="radio"
+              name="radioTest"
+              id="radio1"
+              defaultChecked=""
+            />
+            <label className="form-check-label" htmlFor="radio1">
+              單選一
+            </label>
+          </div>
+          <div className="form-check mb-3">
+            <input
+              className="form-check-input"
+              type="radio"
+              name="radioTest"
+              id="radio2"
+            />
+            <label className="form-check-label" htmlFor="radio2">
+              單選二
+            </label>
+          </div>
+          {/* Valid input */}
+          <div className="mb-3">
+            <label htmlFor="inputValid" className="form-label">
+              Valid Input
+            </label>
+            <input
+              type="text"
+              className="form-control is-valid"
+              id="inputValid"
+              defaultValue="合法輸入"
+            />
+            <div className="valid-feedback">看起來沒問題！</div>
+          </div>
+          {/* Invalid input */}
+          <div className="mb-3">
+            <label htmlFor="inputInvalid" className="form-label">
+              Invalid Input
+            </label>
+            <input
+              type="text"
+              className="form-control is-invalid"
+              id="inputInvalid"
+              defaultValue="錯誤輸入"
+            />
+            <div className="invalid-feedback">請填入正確資料</div>
+          </div>
+        </div>
       </section>
 
       {/* Modal */}

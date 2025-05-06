@@ -43,8 +43,8 @@ a {
   transition: color 0.3s ease;
 
   &:hover {
-    color: var(--sub-text);
-    text-decoration: underline;
+    // color: var(--sub-text);
+    // text-decoration: underline;
   }
 }
 
@@ -83,19 +83,6 @@ h5 {
 h6 {
   font-weight: 600;
   font-size: 1rem;
-}
-
-// 輸入欄位
-input[type='text'],
-input[type='password'] {
-  border: 1px solid var(--sub-element);
-  border-radius: 5px;
-  padding-inline: 0.75rem;
-  padding-block: 0.25rem;
-
-  &:focus {
-    outline: 2px solid var(--sub-element);
-  }
 }
 
 // 卡片樣式
