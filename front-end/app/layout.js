@@ -24,7 +24,7 @@ export default function RootLayout({ children }) {
       <body>
         <Provider>
           <Header />
-          {children}
+          <div style={{ marginTop: '80px' }}>{children}</div>
           <Footer />
         </Provider>
       </body>
