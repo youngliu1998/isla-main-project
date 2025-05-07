@@ -12,7 +12,7 @@ export default function PostIDPage(props) {
   const postID = useParams().postID
   return (
     <>
-      <main className="main col col-10 col-xl-10 col-xxl-8 d-flex flex-column align-items-center">
+      <main className="main col col-10 col-xl-10 col-xxl-8 d-flex flex-column align-items-start">
         <div className="posts d-flex flex-column gap16 w-100">
           <div className="post d-flex flex-column gap-2  rounded-top-3 shadow-forum">
             <div className="post-header d-flex align-items-start">
@@ -271,8 +271,6 @@ export default function PostIDPage(props) {
           </div>
         </div>
       </main>
-      <div className="col col-2 d-none d-xl-block px-0"></div>
-      {/* <ComponentsAd /> */}
     </>
   )
 }

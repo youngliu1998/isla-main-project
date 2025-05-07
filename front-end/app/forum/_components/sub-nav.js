@@ -2,6 +2,7 @@
 
 import './forum.css'
 import Link from 'next/link'
+import { useParams, usePathname } from 'next/navigation'
 import { useEffect } from 'react'
 
 export default function ComponentsSubNav() {
@@ -15,6 +16,8 @@ export default function ComponentsSubNav() {
       )
     })
   }, [])
+
+  const url = usePathname()
   return (
     <>
       <div className="sub-nav-container col col-2 d-none d-lg-block px-0 position-relative">
@@ -22,53 +25,46 @@ export default function ComponentsSubNav() {
           <div className="sub-nav-items">
             <Link
               href="/"
-              className="sub-nav-item d-flex px-3 py-3 gap-1 rounded-3 text-decoration-none fw-medium color-accent"
+              className={`sub-nav-item d-flex px-3 py-3 gap-1 rounded-3 text-decoration-none fw-medium main-color`}
             >
               <i className="bi bi-plus-lg" />
               <span className="">撰寫貼文</span>
             </Link>
             <Link
               href="/forum"
-              className="sub-nav-item d-flex px-3 py-3 gap-1 rounded-3 text-decoration-none fw-medium main-text-color"
+              className={`sub-nav-item d-flex px-3 py-3 gap-1 rounded-3 text-decoration-none fw-medium main-text-color ${url === '/forum' ? 'bg-hover' : ''}`}
             >
               <i className="bi bi-house-door" />
               <span className="">論壇首頁</span>
             </Link>
             <Link
               href="/forum/chat"
-              className="sub-nav-item d-flex px-3 py-3 gap-1 rounded-3 text-decoration-none fw-medium main-text-color"
+              className={`sub-nav-item d-flex px-3 py-3 gap-1 rounded-3 text-decoration-none fw-medium main-text-color ${url === '/forum/chat' ? 'bg-hover' : ''}`}
             >
               <i className="bi bi-chat-dots" />
               <span className="">我的訊息</span>
             </Link>
             <Link
-              href="/member/my-followings"
-              className="sub-nav-item d-flex px-3 py-3 gap-1 rounded-3 text-decoration-none fw-medium main-text-color"
+              href="/member/my-following"
+              className={`sub-nav-item d-flex px-3 py-3 gap-1 rounded-3 text-decoration-none fw-medium main-text-color ${url === '/member/my-following' ? 'bg-hover' : ''}`}
             >
               <i className="bi bi-people" />
               <span className="">追蹤對象</span>
             </Link>
             <Link
-              href="/member/my-posts"
-              className="sub-nav-item d-flex px-3 py-3 gap-1 rounded-3 text-decoration-none fw-medium main-text-color"
+              href="/member/my-post"
+              className={`sub-nav-item d-flex px-3 py-3 gap-1 rounded-3 text-decoration-none fw-medium main-text-color ${url === '/member/my-post' ? 'bg-hover' : ''}`}
             >
               <i className="bi bi-file-earmark-text" />
               <span className="">我的文章</span>
             </Link>
             <Link
-              href="/member/saved-posts"
-              className="sub-nav-item d-flex px-3 py-3 gap-1 rounded-3 text-decoration-none fw-medium main-text-color"
+              href="/member/saved-post"
+              className={`sub-nav-item d-flex px-3 py-3 gap-1 rounded-3 text-decoration-none fw-medium main-text-color ${url === '/member/saved-posts' ? 'bg-hover' : ''}`}
             >
               <i className="bi bi-bookmark" />
               <span className="">文章收藏</span>
             </Link>
-          </div>
-
-          <div className="ad ps-3 d-none d-lg-block">
-            <div className="ad-title fw-medium pt-3 pb-2 bottom-stroke sub-text-color">
-              猜你喜歡
-            </div>
-            <div className="product-card">crystal glam tint</div>
           </div>
         </aside>
       </div>

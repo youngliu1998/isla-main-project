@@ -26,13 +26,29 @@ export default function ForumPage(props) {
             >
               分類
             </button>
-            <ul className="dropdown-menu">
-              <li>
-                <a className="dropdown-item" href="#">
-                  fetch 商品類型
-                </a>
-              </li>
-            </ul>
+            <div className="dropdown-menu px-3 py-2 shadow-lg border-0">
+              <div>
+                <div className="dropdown-label py-1 fs12 sub-text-color">
+                  商品類型
+                </div>
+                <button className="dropdown-item-forum px-2 py-1 rounded-3">
+                  唇膏
+                </button>
+                <button className="dropdown-item-forum rounded-3">唇膏</button>
+                <button className="dropdown-item-forum rounded-3">唇膏</button>
+              </div>
+              <div>
+                <div className="dropdown-label py-1 fs12 sub-text-color">
+                  文章類型
+                </div>
+                <button className="dropdown-item-forum px-2 py-1 rounded-3">
+                  唇膏
+                </button>
+                <button className="dropdown-item-forum rounded-3">唇膏</button>
+                <button className="dropdown-item-forum rounded-3">唇膏</button>
+                <button className="dropdown-item-forum rounded-3">唇膏</button>
+              </div>
+            </div>
           </div>
 
           <Link

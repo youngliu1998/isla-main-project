@@ -79,6 +79,9 @@
 .bg-main {
   background-color: var(--main-color) !important;
 }
+.bg-hover {
+  background-color: var(--hover-gray);
+}
 .main-text-color {
   color: var(--main-text);
 }
@@ -135,7 +138,6 @@
   gap: 10px;
 }
 
-
 /* VVVV微調！VVVV */
 /* layout */
 
@@ -184,6 +186,15 @@
 .switcher {
   width: 130px;
   height: 32px;
+}
+
+.dropdown-item-forum {
+  &:hover {
+    background-color: var(--hover-gray);
+  }
+  &:focus {
+    background-color: var(--focus-gray);
+  }
 }
 
 .post {
