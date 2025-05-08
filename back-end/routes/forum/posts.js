@@ -6,7 +6,30 @@ import db from '../../config/mysql.js'
 // 得到多筆文章
 router.get('/', async function (req, res) {
   // 執行sql
-  const [posts] = await db.query(`SELECT * FROM post`)
+  const [posts] = await db.query(
+    // $sql = "SELECT products.*,
+    // products_stocks.image AS image,
+    // products_stocks.valid AS valid,
+    // products_categories.name AS category,
+    // products_subcategories.name AS subcategory
+    // FROM products
+    // LEFT JOIN products_stocks ON products.id = products_stocks.product_id
+    // LEFT JOIN products_categories ON products.category_id = products_categories.id
+    // LEFT JOIN products_subcategories ON products.subcategory_id = products_subcategories.id
+    // WHERE products.valid = 1";
+
+    // ⚠️🐰用了別名就要貫徹始終
+    // 目前做法是搜集成按讚過的使用者ID陣列，再去計算數量。還是單獨sql WHERE user_id = 登入者_id就好？
+    `SELECT p.*, 
+    pc.name AS post_cate_name, 
+    GROUP_CONCAT(liked.user_id) AS liked_user_ids,
+    GROUP_CONCAT(saved.user_id) AS saved_user_ids 
+    FROM post p 
+    LEFT JOIN post_category pc ON p.post_cate_id = pc.id 
+    LEFT JOIN post_user_liked liked ON p.id = liked.post_id 
+    LEFT JOIN post_user_saved saved ON p.id = saved.post_id
+    GROUP BY p.id`
+  )
   return res.json({ status: 'success', data: { posts } })
 })
 

@@ -16,8 +16,10 @@ export default function ComponentsAuthorInfo({
 }) {
   const router = useRouter()
   const handleNavigate = (e) => {
+    e.preventDefault()
     e.stopPropagation()
     router.push(`/forum/profile/${memberID}`)
+    console.log(memberID)
   }
 
   return (
