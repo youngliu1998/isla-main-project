@@ -1,0 +1,38 @@
+// === 共用 Mixin ===
+@mixin card-shadow($card-border-radius) {
+  border-radius: $card-border-radius;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.18) 0%,
+    rgba(255, 255, 255, 0.9) 100%
+  );
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(10px);
+}
+
+// === 樣式區塊 ===
+.couponShadow {
+  @include card-shadow(0.5rem);
+}
+
+.accordionButton {
+  background: var(--coupon-linear);
+  font-weight: bold;
+  border-radius: 0;
+  box-shadow: none;
+  color: #fff;
+  padding: 1rem;
+
+  &::after {
+    filter: brightness(0) invert(1);
+  }
+
+  &:not(.collapsed) {
+    background: var(--coupon-linear);
+    color: #fff;
+  }
+
+  &:focus {
+    box-shadow: none;
+  }
+}
