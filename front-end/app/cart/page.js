@@ -1,7 +1,9 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import StepProgress from './_component/stepProgress/StepProgress'
+import React, { useState, useEffect, Children } from 'react'
+import styles from './_styles/cart-style.module.scss'
+import StepProgress from './_component/step-progress/step-progress'
+import CouponAccordion from './_component/coupon-accordion/coupon-accordion'
 
 export default function CartPage() {
   return (
@@ -9,7 +11,98 @@ export default function CartPage() {
       <div className="container text-center text-lg-start mt-2">
         <h1 className="text-subtext h2 m-5">購物袋</h1>
       </div>
-      <StepProgress currentStep={3} />
+      {/* step-icon */}
+      <section className="container d-none d-lg-block mb-4">
+        <StepProgress currentStep={1} />
+      </section>
+
+      {/* main */}
+      <section className="container-fluid container-lg">
+        <div className="row gx-5">
+          <div className="col-lg-8 col-12">
+            <div className="form-check m-4 ">
+              <input
+                className={`form-check-input me-2 ${styles.checkboxInput}`}
+                type="checkbox"
+                id="allCheck"
+              />
+              <label htmlFor="allCheck" className="text-subtext">
+                選取所有
+              </label>
+            </div>
+            <div className="col-lg-4 col-12"></div>
+          </div>
+        </div>
+
+        <div className="row gx-5">
+          <div className="col-lg-8 col-12">
+            <div className="card-style mb-3 p-4">
+              {/* 商品篩選 Checkbox */}
+              <div className="form-check mb-3">
+                <input
+                  className={`form-check-input me-2 ${styles.checkboxInput}`}
+                  type="checkbox"
+                  id="productCheck"
+                />
+                <label htmlFor="productCheck" className="text-primary">
+                  彩妝商品
+                </label>
+              </div>
+
+              {/* === Product Card 01（dropdown）=== */}
+              {/* <ProductCard variant="withDropdown" /> */}
+
+              {/* === Product Card 02（color dots）=== */}
+              {/* <ProductCard variant="withColorDots" /> */}
+
+              {/* === 加購商品區塊 === */}
+              <div
+                className="w-100 bg-subtext my-3"
+                style={{ height: '1px' }}
+              ></div>
+              <div className="text-elem">
+                <i className="bi bi-cart-check-fill me-2"></i>加購商品
+              </div>
+
+              {/* === Product Card 03（加購商品、折扣）=== */}
+              {/* <ProductCard variant="addon" /> */}
+            </div>
+
+            <CouponAccordion>
+              {/* 載入優惠券元件 */}
+              <div className="col">
+                <div className="card p-3 coupon-shadow">
+                  <div className="d-flex justify-content-between align-items-center mb-2">
+                    <h6 className="mb-0 fw-bold text-primary">全站折$150</h6>
+                    <span className="badge bg-warning text-dark">全站</span>
+                  </div>
+                  <p className="text-subtext mb-2">滿 $2000 可使用</p>
+                  <div className="d-flex justify-content-end">
+                    <button className="btn btn-outline-primary btn-sm">
+                      套用
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div className="col">
+                <div className="card p-3 coupon-shadow">
+                  <div className="d-flex justify-content-between align-items-center mb-2">
+                    <h6 className="mb-0 fw-bold text-primary">全站折$150</h6>
+                    <span className="badge bg-warning text-dark">全站</span>
+                  </div>
+                  <p className="text-subtext mb-2">滿 $2000 可使用</p>
+                  <div className="d-flex justify-content-end">
+                    <button className="btn btn-outline-primary btn-sm">
+                      套用
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </CouponAccordion>
+          </div>
+          <div className="col-lg-4 col-12"></div>
+        </div>
+      </section>
     </>
   )
 }
