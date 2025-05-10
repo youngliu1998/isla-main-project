@@ -55,21 +55,21 @@ export default function ComponentsSubNav() {
               <span className="">我的訊息</span>
             </Link>
             <Link
-              href="/member/my-following"
+              href="/member/my-forum/my-following"
               className={`sub-nav-item d-flex px-3 py-3 gap-1 rounded-3 text-decoration-none fw-medium main-text-color ${url === '/member/my-following' ? 'bg-hover' : ''}`}
             >
               <i className="bi bi-people" />
               <span className="">追蹤對象</span>
             </Link>
             <Link
-              href="/member/my-post"
+              href="/member/my-forum/my-post"
               className={`sub-nav-item d-flex px-3 py-3 gap-1 rounded-3 text-decoration-none fw-medium main-text-color ${url === '/member/my-post' ? 'bg-hover' : ''}`}
             >
               <i className="bi bi-file-earmark-text" />
               <span className="">我的文章</span>
             </Link>
             <Link
-              href="/member/saved-post"
+              href="/member/my-forum/saved-post"
               className={`sub-nav-item d-flex px-3 py-3 gap-1 rounded-3 text-decoration-none fw-medium main-text-color ${url === '/member/saved-posts' ? 'bg-hover' : ''}`}
             >
               <i className="bi bi-bookmark" />

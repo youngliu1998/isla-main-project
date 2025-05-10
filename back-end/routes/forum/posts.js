@@ -2,42 +2,63 @@ import express from 'express'
 const router = express.Router()
 // 使用mysql
 import db from '../../config/mysql.js'
+import { number } from 'zod'
 
 // 得到多筆文章
 router.get('/', async function (req, res) {
-  // 執行sql
-  const [posts] = await db.query(
-    // $sql = "SELECT products.*,
-    // products_stocks.image AS image,
-    // products_stocks.valid AS valid,
-    // products_categories.name AS category,
-    // products_subcategories.name AS subcategory
-    // FROM products
-    // LEFT JOIN products_stocks ON products.id = products_stocks.product_id
-    // LEFT JOIN products_categories ON products.category_id = products_categories.id
-    // LEFT JOIN products_subcategories ON products.subcategory_id = products_subcategories.id
-    // WHERE products.valid = 1";
-
+  // posts是陣列含多個物件
+  const [postsRaw] = await db.query(
     // ⚠️🐰用了別名就要貫徹始終
     // 目前做法是搜集成按讚過的使用者ID陣列，再去計算數量。還是單獨sql WHERE user_id = 登入者_id就好？
     `SELECT p.*, 
-    pc.name AS post_cate_name, 
-    GROUP_CONCAT(liked.user_id) AS liked_user_ids,
-    GROUP_CONCAT(saved.user_id) AS saved_user_ids 
-    FROM post p 
-    LEFT JOIN post_category pc ON p.post_cate_id = pc.id 
-    LEFT JOIN post_user_liked liked ON p.id = liked.post_id 
-    LEFT JOIN post_user_saved saved ON p.id = saved.post_id
-    GROUP BY p.id`
+    pc.name AS post_cate_name
+    FROM post p
+    JOIN post_category pc ON p.post_cate_id = pc.id`
   )
-  return res.json({ status: 'success', data: { posts } })
+  const [likedRaw] = await db.query(
+    `SELECT liked.post_id,
+    GROUP_CONCAT(liked.user_id) AS liked_user_id
+    FROM post_user_liked liked
+    GROUP BY liked.post_id`
+  )
+  const [savedRaw] = await db.query(
+    `SELECT saved.post_id,
+    GROUP_CONCAT(saved.user_id) AS saved_user_id
+    FROM post_user_saved saved
+    GROUP BY saved.post_id`
+  )
+
+  const extendedPosts = postsRaw.map((post) => {
+    const likedUserIDs =
+      likedRaw
+        .find((el) => el.post_id == post.id)
+        ?.liked_user_id.split(',')
+        .map((el) => Number(el)) ?? []
+
+    const savedUserIDs =
+      savedRaw
+        .find((el) => el.post_id === post.id)
+        ?.saved_user_id.split(',')
+        .map((el) => Number(el)) ?? []
+    // NOTE '大卡點！！！要用?防止undefined！！！'
+
+    return {
+      ...post,
+      liked_user_ids: likedUserIDs,
+      saved_user_ids: savedUserIDs,
+    }
+  })
+
+  return res.json({
+    status: 'success',
+    data: extendedPosts,
+  })
 })
 
 // 得到多筆文章 - 篩選
-router.get('/:queryParam', async function x(req, res) {
+router.get('/:queryParam', async function (req, res) {
   const queryParam = req.params.queryParam
   queryParam.split('&')
-  // 執行sql
   const [posts] = await db.query(`SELECT * FROM post`)
   return res.json({ status: 'success', data: { posts } })
 })
@@ -55,10 +76,8 @@ router.get('/:postID', async function (req, res) {
 // 新增一筆文章 - 網址：POST /api/forum/posts
 router.post('/', async function (req, res) {
   const { title, content, userID, cateID, postCateID } = req.body
-
-  // 執行sql
   const [result] = await db.query(
-    `INSERT INTO post(title,content,updated_at, user_id, cate_id, post_cate_id) VALUES('${title}','${content}', NOW(),'${userID}', '${cateID}', '${postCateID}',);`
+    `INSERT INTO post(title,content,updated_at, user_id, cate_id, post_cate_id) VALUES('${title}','${content}', NOW(),'${userID}', '${cateID}', '${postCateID}')`
   )
   return res.json({ status: 'success', data: null })
 })
@@ -93,5 +112,4 @@ router.delete('/:postID', async function (req, res) {
   }
   return res.json({ status: 'success', data: null })
 })
-
 export default router

@@ -8,35 +8,49 @@ import ComponentsAuthorInfo from './_components/author-info'
 import useSWR from 'swr'
 import { useEffect, useState, useRef } from 'react'
 import EditPostModal from './_components/edit-post-modal'
+import { ClientPageRoot } from 'next/dist/client/components/client-page'
+import { useRouter } from 'next/navigation'
 
 const fetcher = (...arg) => fetch(...arg).then((res) => res.json())
 
 export default function ForumPage(props) {
-  // fetch資料
-  const url = 'http://localhost:3005/api/forum/posts'
-  const { data, isLoading, error } = useSWR(url, fetcher)
+  // 導向
+  const router = useRouter()
+
+  // 取得userID
+  const userID = 7
+
+  // fetch每篇文章的資料
+  const postsAPI = 'http://localhost:3005/api/forum/posts'
+  const { data, isLoading, error, mutate } = useSWR(postsAPI, fetcher)
   if (error) {
     console.log(error)
     return (
       <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center">
-        無文章資料
+        連線錯誤
       </main>
     )
   }
-  const posts = data?.status === 'success' ? data?.data?.posts : []
-
+  // console.log(data)
+  const posts = data?.status === 'success' ? data?.data : []
   if (isLoading) {
     return (
-      <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center">
-        isLoading
-      </main>
+      <>
+        <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center">
+          isLoading
+        </main>
+        <ComponentsSearchBar />
+      </>
     )
   }
   if (posts.length === 0) {
     return (
-      <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center">
-        無文章資料
-      </main>
+      <>
+        <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center">
+          無文章資料
+        </main>
+        <ComponentsSearchBar />
+      </>
     )
   }
 
@@ -84,14 +98,23 @@ export default function ForumPage(props) {
             </div>
           </div>
           {posts.map((post) => {
+            const postID = post.id
             return (
-              <Link
-                href={`/forum/123${post.id}`}
-                className="post d-flex flex-column gap-1 px-4 py-3 rounded-3 shadow-forum"
-                key={post.user_id}
-                onClick={() => {
-                  console.log('到過')
+              <div
+                // href={`/forum/123${post.id}`}
+                className="post-home d-flex flex-column gap-1 px-4 py-3 rounded-3 shadow-forum bg-pure-white"
+                key={post.id}
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  router.push(`/forum/123${post.id}`)
                 }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') router.push(`/forum/123${post.id}`)
+                }} //無障礙通用設計
+                role="link"
+                tabIndex={0} //可被tab鍵聚焦
+                style={{ cursor: 'pointer' }}
               >
                 <ComponentsAuthorInfo
                   memberID={post.user_id}
@@ -119,27 +142,111 @@ export default function ForumPage(props) {
                   <div className="img flex-shrink-0 rounded-3" />
                   <div className="img flex-shrink-0 rounded-3" />
                   <div className="img flex-shrink-0 rounded-3" />
-                  <div className="img flex-shrink-0 rounded-3" />
-                  <div className="img flex-shrink-0 rounded-3" />
-                  <div className="img flex-shrink-0 rounded-3" />
-                  <div className="img flex-shrink-0 rounded-3" />
-                  <div className="img flex-shrink-0 rounded-3" />
-                  <div className="img flex-shrink-0 rounded-3" />
                 </div>
                 <div className="evaluates d-flex fs14 ms-n4">
-                  <button className="evaluate px-2 py-1 border-0 rounded-3 d-flex align-items-center">
-                    <i className="bi bi-heart me-1" />
+                  <button
+                    className="evaluate liked px-2 py-1 border-0 rounded-3 d-flex align-items-center bg-pure-white"
+                    onClick={async (e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      try {
+                        if (!post.liked_user_ids.includes(userID)) {
+                          const res = await fetch(
+                            'http://localhost:3005/api/forum/liked-saved/liked',
+                            {
+                              method: 'post',
+                              headers: {
+                                Accept: 'application/json',
+                                'Content-Type': 'application/json',
+                              },
+                              body: JSON.stringify({ userID, postID }),
+                            }
+                          )
+                          const resData = await res.json()
+                          if (resData.status === 'success') {
+                            mutate()
+                          }
+                        } else {
+                          const res = await fetch(
+                            'http://localhost:3005/api/forum/liked-saved/liked',
+                            {
+                              method: 'delete',
+                              headers: {
+                                Accept: 'application/json',
+                                'Content-Type': 'application/json',
+                              },
+                              body: JSON.stringify({ userID, postID }),
+                            }
+                          )
+                          const resData = await res.json()
+                          if (resData.status === 'success') {
+                            mutate()
+                          }
+                        }
+                      } catch (error) {
+                        console.log(error)
+                      }
+                    }}
+                  >
+                    <i
+                      className={`bi ${post.liked_user_ids.includes(userID) ? 'bi-heart-fill main-color' : 'bi-heart'} me-1`}
+                    />
                     {post.liked_user_ids.length}
                   </button>
-                  <button className="evaluate px-2 py-1 border-0 rounded-3 d-flex align-items-center">
+                  <button className="evaluate comment px-2 py-1 border-0 rounded-3 d-flex align-items-center bg-pure-white">
                     <i className="bi bi-chat-left me-1" />8
                   </button>
-                  <button className="evaluate px-2 py-1 border-0 rounded-3 d-flex align-items-center">
-                    <i className="bi bi-bookmark me-1" />
+                  <button
+                    className="evaluate saved px-2 py-1 border-0 rounded-3 d-flex align-items-center bg-pure-white"
+                    onClick={async (e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      try {
+                        if (!post.saved_user_ids.includes(userID)) {
+                          const res = await fetch(
+                            'http://localhost:3005/api/forum/liked-saved/saved',
+                            {
+                              method: 'post',
+                              headers: {
+                                Accept: 'application/json',
+                                'Content-Type': 'application/json',
+                              },
+                              body: JSON.stringify({ userID, postID }),
+                            }
+                          )
+                          const resData = await res.json()
+                          if (resData.status === 'success') {
+                            mutate()
+                          }
+                        } else {
+                          const res = await fetch(
+                            'http://localhost:3005/api/forum/liked-saved/saved',
+                            {
+                              method: 'delete',
+                              headers: {
+                                Accept: 'application/json',
+                                'Content-Type': 'application/json',
+                              },
+                              body: JSON.stringify({ userID, postID }),
+                            }
+                          )
+                          const resData = await res.json()
+                          if (resData.status === 'success') {
+                            mutate()
+                          }
+                        }
+                      } catch (error) {
+                        console.log(error)
+                      }
+                    }}
+                  >
+                    <i
+                      className={`bi ${post.saved_user_ids.includes(userID) ? 'bi-bookmark-fill bookmark-fill' : 'bi-bookmark'}  me-1`}
+                    />
                     {post.saved_user_ids.length}
                   </button>
                 </div>
-              </Link>
+              </div>
             )
           })}
         </div>

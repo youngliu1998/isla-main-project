@@ -178,6 +178,15 @@
 /* main */
 .posts {
   max-width: 800px;
+  .post-home {
+    transition: 0.3s ease-in-out;
+    &:hover {
+      transform: scale(1.008);
+    }
+    &:focus {
+      transform: scale(0.98);
+    }
+  }
 }
 .post-header {
   min-width: 0;
@@ -197,14 +206,13 @@
   }
 }
 
-.post {
-  background-color: white;
-}
 .evaluates {
   margin-left: -7px;
+  .bookmark-fill {
+    color: #f4b12b;
+  }
 }
 .evaluate {
-  background-color: white;
   &:hover {
     background-color: var(--hover-gray);
   }
