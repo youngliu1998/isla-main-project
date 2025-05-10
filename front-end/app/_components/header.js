@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import { BsHandbag } from 'react-icons/bs'
 import './header.css'
 
 export default function Header() {
@@ -31,10 +32,12 @@ export default function Header() {
             <button>
               <i className="bi bi-search" />
             </button>
-            <button className="cart-icon">
-              <i className="bi bi-handbag" />
-              <div>2</div>
-            </button>
+            <Link href="/cart">
+              <button className="cart-icon">
+                <BsHandbag style={{ color: 'white', fontSize: '30px' }} />
+                <div>2</div>
+              </button>
+            </Link>
             <button>
               <i className="bi bi-person-circle" />
             </button>
