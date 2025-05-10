@@ -1,10 +1,11 @@
 'use client'
 
-import React, { useState, useEffect, Children } from 'react'
 import styles from './_styles/cart-style.module.scss'
 import StepProgress from './_component/step-progress/step-progress'
+import ProductCard from './_component/product-card/product-card'
 import CouponAccordion from './_component/coupon-accordion/coupon-accordion'
 
+import React, { useState, useEffect, Children } from 'react'
 export default function CartPage() {
   return (
     <>
@@ -50,10 +51,10 @@ export default function CartPage() {
               </div>
 
               {/* === Product Card 01（dropdown）=== */}
-              {/* <ProductCard variant="withDropdown" /> */}
+              <ProductCard type="dropDown" />
 
               {/* === Product Card 02（color dots）=== */}
-              {/* <ProductCard variant="withColorDots" /> */}
+              <ProductCard type="colorDots" />
 
               {/* === 加購商品區塊 === */}
               <div
