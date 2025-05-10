@@ -43,8 +43,8 @@
 // 自訂輸入框樣式
 $form-control-border-color: #d7cfcf;
 $form-control-focus-border-color: #505050;
-$form-control-valid-border-color: #28a745;
-$form-control-invalid-border-color: #dc3545;
+$form-control-valid-border-color: #80ae8a;
+$form-control-invalid-border-color: #ac1221;
 $form-control-bg-color: #f7f7f7;
 $form-control-bg-focus: #fff;
 
@@ -168,6 +168,144 @@ $form-radio-disabled-bg: #eee;
 
     &::after {
       background-color: #aaa;
+    }
+  }
+}
+
+//Accordion
+.accordion {
+  --bs-accordion-border-radius: 8px;
+  --bs-accordion-inner-border-radius: 8px;
+  --bs-accordion-bg: rgba(255, 255, 255, 0.2);
+  --bs-accordion-border-color: rgba(255, 255, 255, 0.3);
+  --bs-accordion-btn-focus-box-shadow: none;
+
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.accordion-item {
+  background: transparent;
+  border: none;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.accordion-header {
+  background: #DEDEDE;
+  .accordion-button {
+    background: transparent;
+    font-weight: bold;
+    font-size: 18px;
+    padding: 16px 20px;
+    border-radius: 5px;
+    color: #373737;
+    transition: background 0.3s ease, color 0.3s ease;
+
+    &::after {
+      filter: invert(0.3);
+      transition: transform 0.3s ease;
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    &:not(.collapsed)::after {
+      transform: rotate(-180deg);
+    }
+
+    &:focus {
+      box-shadow: none;
+    }
+  }
+}
+
+.accordion-body {
+  padding: 24px 24px 54px 24px;
+  background: rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgb(222, 222, 222);
+  font-size: 16px;
+  color: #373737;
+  line-height: 32px;
+}
+
+
+//modal
+// 主要容器樣式
+.modal-content {
+  border-radius: 16px;
+  border: 1px solid rgba(129, 129, 129, 0.2);
+  //border-top: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px); // 玻璃擬態
+  background: rgba(231, 214, 214, 0.4);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+// 標題樣式
+.modal-header {
+  border-bottom: none;
+  padding: 1rem 1.5rem;
+
+  .modal-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+  }
+
+  .btn-close {
+    filter: invert(0.5);
+    transition: transform 0.2s ease;
+    &:hover {
+      transform: rotate(90deg);
+    }
+  }
+}
+
+// 內容樣式
+.modal-body {
+  font-size: 1rem;
+  padding: 1.5rem;
+  color: #ffffff;
+}
+
+// 底部樣式
+.modal-footer {
+  border-top: none;
+  padding: 1rem;
+
+  .btn {
+    border-radius: 8px;
+    padding: 10px 25px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+
+    &.btn-primary {
+      background: rgba(213, 57, 57, 0.64);
+      color: #fff;
+      border: none;
+
+      &:hover {
+        background: #fd7061;
+        transform: scale(1.03);
+      }
+    }
+
+    &.btn-secondary {
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      box-shadow: none;
+
+      &:hover {
+        background: #7e7e7e;
+        color: #ffffff;
+      }
     }
   }
 }

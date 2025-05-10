@@ -5,7 +5,7 @@ import db from '../config/mysql.js'
 /* GET home page. */
 router.get('/', async function (req, res) {
 
-  const [members] = await db.query(`SELECT * FROM user`)
+  const [members] = await db.query(`SELECT * FROM user WHERE id = 1`)
   res.json({ status: 'success', data: members })
 })
 

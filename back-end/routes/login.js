@@ -20,6 +20,7 @@ import authenticate from '../middlewares/authenticate.js'
 import path from 'path'
 import multer from 'multer'
 import prisma from '../lib/prisma.js'
+import db from '../config/mysql.js'
 
 // #region ------ multer ------
 //  multer的設定值
@@ -45,9 +46,8 @@ const upload = multer({ storage: storage })
 // 網址: /api/users
 router.get('/', async (req, res) => {
   try {
-    // 需要加上await等待取得資料
-    const users = await getUsers()
-    // successResponse(res, { users })
+    const users = await db.query('SELECT * FROM user')
+
     res.json({ status: 'success', data: users })
   } catch (error) {
     errorResponse(res, error)
@@ -75,19 +75,25 @@ router.get('/me', authenticate, async (req, res) => {
 // 網址: /api/users/:id
 router.get('/:userId', async (req, res) => {
   // 需要轉換成數字
-  const userId = Number(req.params.userId)
-  // 如果是開發環境，顯示訊息
-  if (isDev) console.log('userId', userId)
+  const userId = parseInt(req.params.userId)
+  console.log(req)
 
   try {
-    // 需要加上await等待取得資料
-    const user = await getUserById(userId)
-    successResponse(res, { user })
+    const query = 'SELECT * FROM `user` WHERE id = ?'
+    const user = await db
+      .execute(query, [userId])
+      .then((result) => result[0][0])
+      .catch((err) => {
+        console.log(err)
+      })
+
+    res.json({ status: 'success', data: user })
   } catch (error) {
     errorResponse(res, error)
   }
 })
 // #endregion ------------
+
 
 // #region ------ POST ------
 // 新增會員資料(註冊會員使用)
