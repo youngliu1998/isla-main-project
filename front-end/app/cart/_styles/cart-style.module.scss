@@ -3,6 +3,10 @@ body {
     padding-inline: 24px !important;
   }
 }
+button:disabled {
+  opacity: 0.3 !important;
+  cursor: not-allowed;
+}
 
 .text-ellipsis {
   width: 12em;

@@ -7,7 +7,7 @@ export default function ProductCard({ type, ...props }) {
     case 'dropDown':
       return <ProductCardDropdown {...props} />
 
-    case 'color-dots':
+    case 'colorDots':
       return <ProductCardColorDots {...props} />
 
     case 'addon':
