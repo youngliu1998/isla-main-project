@@ -8,58 +8,6 @@ button:disabled {
   cursor: not-allowed;
 }
 
-.text-ellipsis {
-  width: 12em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  cursor: pointer;
-}
-.order-summary {
-  position: sticky;
-  top: 1rem;
-  bottom: auto;
-  width: auto;
-  padding: 16px;
-  button.btn-primary {
-    width: 100%;
-    font-size: 1rem;
-    display: block;
-    margin-left: auto;
-  }
-}
-
-@media (max-width: 991.98px) {
-  .order-summary {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    padding: 36px;
-    top: auto;
-    z-index: 10;
-    background: var(--white);
-    h5 {
-      font-size: 2.62rem; //42px
-    }
-    h4 {
-      font-size: 3rem; //48px
-    }
-    p,
-    i {
-      font-size: 2.25rem; //36px
-    }
-    .mb-3 {
-      margin-bottom: 1.5rem !important;
-    }
-    button.btn-primary {
-      width: 300px;
-      font-size: 2.5rem;
-      margin-left: auto;
-    }
-  }
-}
-
 .color-dot {
   width: 14px;
   height: 14px;
