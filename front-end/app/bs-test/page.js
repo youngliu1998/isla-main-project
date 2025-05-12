@@ -1,6 +1,6 @@
 'use client'
 import { useEffect } from 'react'
-// import 'bootstrap/dist/js/bootstrap.bundle.min.js' // 若使用 Modal/Collapse 等元件需引入 JS
+import 'bootstrap/dist/js/bootstrap.bundle.min.js' // 若使用 Modal/Collapse 等元件需引入 JS
 
 export default function BootstrapTestPage() {
   useEffect(() => {
@@ -10,23 +10,6 @@ export default function BootstrapTestPage() {
   return (
     <div
       className="container py-5"
-      style={{
-        '--s': '84px',
-        '--c1': '#e9e8e8',
-        '--c2': '#f0f0f0',
-        '--c3': '#ebebeb',
-        '--_g': '0 120deg,#0000 0',
-        background: `
-      conic-gradient(at calc(250%/3) calc(100%/3), var(--c3) var(--_g)),
-      conic-gradient(from -120deg at calc(50%/3) calc(100%/3), var(--c2) var(--_g)),
-      conic-gradient(from 120deg at calc(100%/3) calc(250%/3), var(--c1) var(--_g)),
-      conic-gradient(from 120deg at calc(200%/3) calc(250%/3), var(--c1) var(--_g)),
-      conic-gradient(from -180deg at calc(100%/3) 50%, var(--c2) 60deg, var(--c1) var(--_g)),
-      conic-gradient(from 60deg at calc(200%/3) 50%, var(--c1) 60deg, var(--c3) var(--_g)),
-      conic-gradient(from -60deg at 50% calc(100%/3), var(--c1) 120deg, var(--c2) 0 240deg, var(--c3) 0)
-    `,
-        backgroundSize: 'calc(var(--s) * sqrt(3)) var(--s)',
-      }}
     >
       <h1 className="mb-4">🔧 Bootstrap Component Showcase</h1>
 
@@ -295,12 +278,31 @@ export default function BootstrapTestPage() {
                 data-bs-toggle="collapse"
                 data-bs-target="#collapseOne"
               >
-                Accordion Item #1
+                成份&分析
               </button>
             </h2>
             <div id="collapseOne" className="accordion-collapse collapse show">
               <div className="accordion-body">
-                This is the first item's accordion body.
+                異十二烷、環五聚二甲基矽氧烷、三甲基矽烷氧基矽酸酯、微晶蠟、氫化聚異丁烯、VP/二十碳烯共聚物、二甲基甲矽烷基化矽石、二氧化矽、二硬脂基二甲基胺鋰皂石、三羥基硬脂精、纖維素、碳酸丙烯酯、硬脂醯菊粉、三乙氧基辛基矽烷、乙基己基甘油、丁羥甲苯、印度簕竹莖粉、透明質酸鈉、乙醇、泛醇、生育酚、絲胺基酸、苯氧乙醇、鐵氧化物 (ci 77499)、人工絲、黑 2 (ci 77266)。
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="accordion" id="accordionExample">
+          <div className="accordion-item">
+            <h2 className="accordion-header" id="headingOne">
+              <button
+                  className="accordion-button"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapseOne"
+              >
+                免責聲明
+              </button>
+            </h2>
+            <div id="collapseOne" className="accordion-collapse collapse show">
+              <div className="accordion-body">
+                ISLA 一直努力確保其商品圖像和信息的準確性，但制造商對包裝和/或配料的一些變更，我們網站也需要時間來更新。所以您在購買某款商品的時候， 可能有時候正遇到信息在更新等待隊列中。雖然產品可能會偶爾發貨替代包裝，但正品品質和新鮮度始終有保證。我們建議您在使用產品前閱讀所有的產品標簽、警告和說明，而不是僅依賴 ISLA 網站提供的信息。本網站銷售的商品或相關陳述，未經美國食品與藥品管理局認證，不具有預防疾病或治療功能，不能代替藥物，不被用於診斷、治療、治愈、支持或緩解任何疾病。本網站銷售的商品從生產到規格均為國際標準，可能與買家所在地標準不同，購買前請務必知悉。
               </div>
             </div>
           </div>
