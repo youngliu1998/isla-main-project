@@ -50,3 +50,55 @@
     border: 2px solid var(--main-text);
   }
 }
+
+////
+
+@media (max-width: 767.98px) {
+  .mobileProductCard {
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+  }
+
+  .imageTitleWrapMb {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 1rem;
+    width: 100%;
+    padding-inline: 1rem;
+
+    .card-title {
+      font-size: 1rem;
+      margin: 0;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+    }
+  }
+
+  .productImage {
+    width: 80px;
+    height: auto;
+  }
+
+  .contentAreaMb {
+    padding-inline: 1rem;
+  }
+
+  .priceRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+}
+// .productImage {
+//   width: 130px;
+
+//   @media (max-width: 767.98px) {
+//     width: 80px;
+//   }
+// }

@@ -3,7 +3,7 @@ import { FaCircleChevronLeft, FaCircleChevronRight } from 'react-icons/fa6'
 import styles from './coupon-accordion.module.scss'
 import { useState, useEffect } from 'react'
 
-export default function CouponAccordion({ children }) {
+export default function CouponAccordionCourse({ children }) {
   return (
     <>
       <div className={`accordion mb-3 ${styles.couponShadow}`} id="couponPro">
@@ -13,21 +13,21 @@ export default function CouponAccordion({ children }) {
               className={`accordion-button ${styles.accordionButton}`}
               type="button"
               data-bs-toggle="collapse"
-              data-bs-target="#coupon-product"
+              data-bs-target="#coupon-course"
               aria-expanded="false"
-              aria-controls="coupon-product"
+              aria-controls="coupon-course"
             >
               <div className="d-flex align-items-center text-white">
                 <i className="bi bi-ticket-perforated-fill fs-5 me-2"></i>
-                <h6 className="mb-0">商品優惠券</h6>
+                <h6 className="mb-0">課程優惠券</h6>
               </div>
             </button>
           </h2>
 
           <div
-            id="coupon-product"
+            id="coupon-course"
             className="accordion-collapse collapse "
-            data-bs-parent="#couponPro"
+            data-bs-parent="#couponCourse"
           >
             <div className="accordion-body">
               <div className="d-flex justify-content-between align-items-center py-3">
@@ -38,14 +38,12 @@ export default function CouponAccordion({ children }) {
                     className="btn p-0 border-0 rounded-circle d-flex align-items-center justify-content-center"
                   >
                     <FaCircleChevronLeft className="fs-4 text-subtext" />
-                    {/* <i className="bi bi-chevron-left fs-6 text-maintext"></i> */}
                   </button>
                   <button
                     type="button"
                     className="btn p-0 border-0 rounded-circle d-flex align-items-center justify-content-center"
                   >
                     <FaCircleChevronRight className="fs-4 text-subtext" />
-                    {/* <i className="bi bi-chevron-right "></i> */}
                   </button>
                 </div>
               </div>
