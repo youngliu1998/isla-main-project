@@ -3,15 +3,10 @@ const router = express.Router()
 import db from '../../config/mysql.js'
 import verifyToken from '../../lib/verify-token.js' // token verification
 
-// api settings
-
-// get: Send data if Auth is ok
+/* GET home page. */
 router.get('/', verifyToken, async (req, res) => {
-  let error = {}
-  // if verifyToken works, it would send user's id to req.user.id
+  let error
   const id = req?.user?.id || 0
-
-  // set query here
   try {
     const query = `SELECT * FROM user2 WHERE id=?`
     const user = await db

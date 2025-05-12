@@ -9,11 +9,7 @@ export default function MemberLayout({ children }) {
             <SideBar />
           </aside>
           {/* main-content */}
-          <div className="col-lg-9 col-12">
-            {children}
-            {/* you can delete that, just demo */}
-            <div className="height-demo bg-black" />
-          </div>
+          <div className="col-lg-9 col-12">{children}</div>
         </div>
       </div>
     </>

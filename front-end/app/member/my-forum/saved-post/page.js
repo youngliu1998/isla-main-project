@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect } from 'react'
 
-export default function PostsIDPage(props) {
+export default function SavedPostPage(props) {
   return (
     <>
-      <div>PostsID Page</div>
+      <div>SavedPost Page</div>
     </>
   )
 }
