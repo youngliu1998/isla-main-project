@@ -1,8 +1,13 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import InputText from '../_component/input-text'
-export default function ProfilePage(props) {
+import { useAuth } from '@/hook/use-auth'
+
+export default function ProfilePage() {
+  const router = useRouter()
+  const { isAuth } = useAuth()
   const [text, setText] = useState({
     name: '',
     nickname: '',
@@ -13,6 +18,9 @@ export default function ProfilePage(props) {
     address: '',
   })
   useEffect(() => {
+    // if no auth, go to login
+    if (!isAuth) router.push('login')
+    // if get auth, fetch profile data
     let profileData = {}
     async function getProfile() {
       try {
@@ -32,7 +40,6 @@ export default function ProfilePage(props) {
       }
     }
     getProfile()
-    if (!profileData) return console.log('no profileData')
   }, [])
   return (
     <>

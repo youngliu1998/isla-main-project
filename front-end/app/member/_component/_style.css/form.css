@@ -12,6 +12,9 @@
   h3 {
     font-weight: 500;
   }
+  a {
+    color: var(--string-color);
+  }
 }
 .user-form-input {
   display: flex;
