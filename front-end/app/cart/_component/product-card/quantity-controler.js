@@ -41,9 +41,9 @@ export default function QuantityControler({
     }
   }
   return (
-    <div className="d-flex justify-content-center align-items-center">
+    <div className="d-flex justify-content-center align-items-center ">
       <button
-        className="btn border-0"
+        className="btn border-0 ps-0"
         onClick={minHandler}
         disabled={count <= min}
       >

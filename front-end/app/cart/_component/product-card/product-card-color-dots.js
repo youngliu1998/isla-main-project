@@ -9,7 +9,7 @@ import { useState } from 'react'
 export default function ProductCardColorDots({
   id = 'itemCheck02',
   title = '[Kaja] Eyeshadow Palette',
-  image = '/images/image-02.png',
+  image = '/images/cart-test/image-02.png',
   price = 1250,
   colors = [
     { name: '南瓜橘', color: '#ff8800' },
@@ -35,13 +35,17 @@ export default function ProductCardColorDots({
         {/* 商品圖片 */}
         <div className="col-md-3">
           <div className="d-flex justify-content-center align-items-center">
-            <input className="form-check-input me-2" type="checkbox" id={id} />
+            <input
+              className={`${styles.checkboxInput} form-check-input`}
+              type="checkbox"
+              id={id}
+            />
             <label htmlFor={id}>
               <Image
                 src={image}
                 className="img-fluid"
-                width={100}
-                height={100}
+                width={130}
+                height={130}
                 alt="商品圖"
               />
             </label>
