@@ -12,9 +12,9 @@ export default function PostIDPage(props) {
   const postID = useParams().postID
   return (
     <>
-      <main className="main col col-10 col-xl-10 col-xxl-8 d-flex flex-column align-items-center">
+      <main className="main col col-10 col-xl-10 col-xxl-8 d-flex flex-column align-items-start">
         <div className="posts d-flex flex-column gap16 w-100">
-          <div className="post d-flex flex-column gap-2  rounded-top-3 shadow-forum">
+          <div className="post d-flex flex-column gap-2  rounded-top-3 shadow-forum bg-pure-white">
             <div className="post-header d-flex align-items-start">
               <div className="post-title flex-grow-1 me-3 fs32 ">
                 {`${postID}日本彩妝買什麼😍十二作為緊張計算監傳說`}
@@ -271,8 +271,6 @@ export default function PostIDPage(props) {
           </div>
         </div>
       </main>
-      <div className="col col-2 d-none d-xl-block px-0"></div>
-      {/* <ComponentsAd /> */}
     </>
   )
 }
