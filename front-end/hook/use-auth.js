@@ -6,42 +6,76 @@ const AuthContext = createContext(null)
 AuthContext.displayName = 'AuthContext'
 
 export function AuthProvider({ children }) {
-  const defaultMember = {
+  // set user default status
+  const defaultUser = {
     id: 0,
     name: '',
+    nickname: '',
+    email: '',
+    points: '',
+    level: '',
+    mem_cpon: 0,
   }
-  const [member, setMember] = useState(defaultMember)
-  const isAuth = Boolean(member?.id)
+  const [user, setUser] = useState(defaultUser)
+  const isAuth = Boolean(user?.id)
 
-  // login & logout function
-  const login = async (account, passowrd) => {
-    const formData = new FormData()
-    console.log('email', account)
-    formData.append('email', account)
-    formData.append('password', passowrd)
-    const memberGet = await fetch('http://localhost:3005/api/login', {
-      method: 'POST',
-      body: formData,
-    })
+  // login function
+  const login = async (email, passowrd) => {
+    // setting post info of user
+    // const formData = new FormData()
+    // console.log('email', account)
+    // formData.append('email', account)
+    // formData.append('password', passowrd)
+    // fetch login auth api
+    try {
+      const response = await fetch('http://localhost:3005/api/member/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, password: passowrd }),
+      })
 
-    if (!memberGet) return 'not get value'
+      const data = await response.json()
+      console.log('response', data)
+      if (response.ok) {
+        // localStorage.setItem('jwtToken', data.token)
+        console.log('登入成功')
+      } else {
+        console.error('登入失敗', data.message)
+      }
+      console.log(data['data']['token'])
+      localStorage.setItem('jwtToken', data['data']['token'])
+      // setuser({ id: 3, name: 'harry', email: account })
+    } catch (err) {
+      console.log(err)
+    }
+    // if get Auth, setUser
+    try {
+      const token = localStorage.getItem('jwtToken')
 
-    const memberGetJson = await memberGet.json()
-    console.log(`memberGetJson`, memberGetJson)
+      const response = await fetch('http://localhost:3005/api/member/login', {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${token}` },
+      })
 
-    const member = memberGetJson['data']
-    console.log(`member`, member)
-
-    if (!member) return 'not exist'
-
-    // setMember({ id: 3, name: 'harry', email: account })
+      const data = await response.json()
+      const userData = data['data']
+      console.log('data: ', userData)
+      setUser(userData)
+      console.log('user: ', user)
+    } catch (err) {
+      console.log(err)
+    }
   }
+
+  // logout function
   const logout = () => {
-    setMember(defaultMember)
+    localStorage.removeItem('jwtToken')
+    setUser(defaultUser)
+    console.log(user)
   }
   return (
     <>
-      <AuthContext.Provider value={{ member, isAuth, login, logout }}>
+      <AuthContext.Provider value={{ user, isAuth, login, logout }}>
         {children}
       </AuthContext.Provider>
     </>
