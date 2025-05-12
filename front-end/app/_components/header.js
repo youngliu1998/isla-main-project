@@ -39,7 +39,9 @@ export default function Header() {
               </button>
             </Link>
             <button>
-              <i className="bi bi-person-circle" />
+              <Link href="/member/login">
+                <i className="bi bi-person-circle" />
+              </Link>
             </button>
           </div>
         </div>

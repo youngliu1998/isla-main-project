@@ -3,14 +3,12 @@
 import { useAuth } from '@/hook/use-auth'
 import Link from 'next/link'
 import '../_styles/login.css'
-import React, { useRef, useState } from 'react'
+import React, { useState } from 'react'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [passowrd, setPassword] = useState('')
   const { member, isAuth, login, logout } = useAuth() // Context
-  console.log(member)
-  console.log(isAuth)
 
   return (
     <>
@@ -59,6 +57,15 @@ export default function LoginPage() {
               }}
             >
               登入
+            </button>
+            <button
+              className="btn btn-primary"
+              onClick={(e) => {
+                e.preventDefault()
+                logout(email, passowrd)
+              }}
+            >
+              登出
             </button>
           </form>
           {/* login form end */}
