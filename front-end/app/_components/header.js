@@ -32,11 +32,15 @@ export default function Header() {
               <i className="bi bi-search" />
             </button>
             <button className="cart-icon">
+            <Link href="/cart">
               <i className="bi bi-handbag" />
+            </Link>
               <div>2</div>
             </button>
             <button>
-              <i className="bi bi-person-circle" />
+              <Link href="/member/login">
+                <i className="bi bi-person-circle" />
+              </Link>
             </button>
           </div>
         </div>
