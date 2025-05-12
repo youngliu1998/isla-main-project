@@ -1,0 +1,52 @@
+// product-card-style
+
+.cardSelect {
+  appearance: none;
+  // border: 1px solid var(--main-color);
+  border-radius: 0.25rem;
+  padding: 4px 8px 4px 8px;
+  background: var(--title-linear);
+  color: var(--main-text);
+  font-size: 1rem;
+
+  &:focus {
+    outline: none;
+    border-color: var(--main-color);
+    box-shadow: none;
+  }
+}
+
+// product-cards-checkbox
+.checkboxInput {
+  appearance: none;
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 0.25rem !important;
+  background-color: #fff;
+  transition: all 0.2s ease-in-out;
+}
+
+// .checkboxInput:checked {
+//   background-color: var(--bs-secondary);
+//   border-color: var(--bs-primary);
+// }
+
+.checkboxInput:focus {
+  box-shadow: none;
+}
+
+// color-dots style
+.colorDot {
+  all: unset;
+  width: 14px;
+  height: 14px;
+  display: block;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 1px solid #ccc;
+
+  //選中的顏色
+  &.active {
+    border: 2px solid var(--main-text);
+  }
+}
