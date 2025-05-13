@@ -27,7 +27,7 @@ export default function CouponPage() {
   const { currentType, setCurrentType, showClaimed, setShowClaimed } =
     useCouponFilter()
 
-  // 各自加載
+  // 各自加載10筆優惠券
   const [couponCountMap, setCouponCountMap] = useState({
     ' ': 10,
     1: 10,
@@ -72,7 +72,7 @@ export default function CouponPage() {
       <div className="row mt-sm-4 g-sm-5">
         <AsideProduct />
         <div className="col-lg-9 col-md-8 col-12 mt-0">
-          <CouponHeader type="course" />
+          <CouponHeader type="product" />
           <MobileNav />
           <PcNav
             currentType={currentType}
