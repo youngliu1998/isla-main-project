@@ -20,6 +20,7 @@ export default function LoginPage() {
     // if get auth, go to profile
     // if (isAuth) router.push('profile')
     console.log('login-page-user: ', user)
+    console.log('login-page-isAuth: ', isAuth)
   }, [login])
   return (
     <>

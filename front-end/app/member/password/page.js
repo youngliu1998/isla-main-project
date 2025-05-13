@@ -18,28 +18,30 @@ export default function PasswordPage() {
       <form>
         <div className="user-content">
           <h3>密碼變更</h3>
-          <InputPass
-            password={password}
-            title="當前密碼"
-            name="oriPass"
-            value={password.oriPass}
-            setPassword={setPassword}
-          />
-          <hr />
-          <InputPass
-            password={password}
-            title="新密碼"
-            name="newPass"
-            value={password.newPass}
-            setPassword={setPassword}
-          />
-          <InputPass
-            password={password}
-            title="再輸入一次"
-            name="aginAPass"
-            value={password.aginAPass}
-            setPassword={setPassword}
-          />
+          <div className="row row-cols-1 gy-4">
+            <InputPass
+              password={password}
+              title="當前密碼"
+              name="oriPass"
+              value={password.oriPass}
+              setPassword={setPassword}
+            />
+            <InputPass
+              password={password}
+              title="新密碼"
+              name="newPass"
+              value={password.newPass}
+              setPassword={setPassword}
+            />
+            <InputPass
+              password={password}
+              title="再輸入一次"
+              name="aginAPass"
+              value={password.aginAPass}
+              setPassword={setPassword}
+            />
+          </div>
+          <button className="btn btn-primary">修改</button>
         </div>
       </form>
     </>

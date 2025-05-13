@@ -26,10 +26,21 @@ export default function ProfilePage() {
     AreaName: '',
     ZipCode: '',
   })
-  useEffect(() => {
-    // if no auth, go to login // dev closed
-    // if (!isAuth) router.push('login')
 
+  // define areas
+  const areas = cities.filter((v) => v.CityName == citySelect.CityName)[0]
+    ?.AreaList
+  console.log('areas', areas)
+  // define postcodes
+  const postCodes = cities
+    .filter((v) => v.CityName == citySelect.CityName)[0]
+    ?.AreaList.filter((v) => v.AreaName == citySelect.AreaName)
+
+  useEffect(() => {
+    const token = localStorage.getItem('jwtToken')
+      ? localStorage.getItem('jwtToken')
+      : ''
+    if (!token) router.push('login')
     // if get auth, fetch profile data
     let profileData = {}
     async function getProfile() {
@@ -69,7 +80,7 @@ export default function ProfilePage() {
       <form>
         <div className="user-content">
           <h3>會員資料</h3>
-          <div className="row row-cols-md-2 row-cols-1 g-4 w-100">
+          <div className="row row-cols-md-2 row-cols-1 g-4">
             <InputText
               text={text}
               title="本名"
@@ -91,6 +102,28 @@ export default function ProfilePage() {
               value={text.tel}
               setText={setText}
             />
+            {/* <!-- input[type=radio] --> */}
+            <div className="user-form-input">
+              <label htmlFor="skin_type">膚質</label>
+              <div className="user-input-box user-radio-box">
+                <label htmlFor="middle">
+                  <input type="radio" name="skin_type" value="middle" />
+                  中性
+                </label>
+                <label htmlFor="skin_type">
+                  <input type="radio" name="skin_type" value="dry" />
+                  乾性
+                </label>
+                <label htmlFor="skin_type">
+                  <input type="radio" name="skin_type" value="sensitive" />
+                  敏感
+                </label>
+                <label htmlFor="skin_type">
+                  <input type="radio" name="skin_type" value="" />
+                  不確定
+                </label>
+              </div>
+            </div>
           </div>
           <h3>預設地址</h3>
           <div className="row row-cols-md-3 row-cols-1 g-4 w-100">
@@ -102,8 +135,22 @@ export default function ProfilePage() {
               citySelect={citySelect}
               setCitySelect={setCitySelect}
             />
-            <Select title="市/區/鄉/鎮" name="area" selectKey="AreaName" />
-            <Select title="郵遞區號" name="postcode" selectKey="ZipCode" />
+            <Select
+              title="市/區/鄉/鎮"
+              name="area"
+              arr={areas}
+              selectKey="AreaName"
+              citySelect={citySelect}
+              setCitySelect={setCitySelect}
+            />
+            <Select
+              title="郵遞區號"
+              name="postcode"
+              arr={postCodes}
+              selectKey="ZipCode"
+              citySelect={citySelect}
+              setCitySelect={setCitySelect}
+            />
           </div>
           <div className="row row-cols-md-2 row-cols-1 w-100">
             <InputText

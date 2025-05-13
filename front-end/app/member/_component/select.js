@@ -14,10 +14,12 @@ export default function Select({
         <label htmlFor={name}>{title}</label>
         <select
           name={name}
+          className="form-control"
           onChange={(e) => {
             setCitySelect({ ...citySelect, [selectKey]: e.target.value })
           }}
         >
+          {selectKey != 'ZipCode' && <option value="">請選擇</option>}
           {arr.map((v, i) => {
             return (
               <option value={v[selectKey]} key={i}>
