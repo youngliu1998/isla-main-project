@@ -10,7 +10,7 @@ import { cities } from './data/CityCountyData'
 
 export default function ProfilePage() {
   const router = useRouter()
-  const { isAuth } = useAuth()
+  const { user, isAuth } = useAuth()
   const [text, setText] = useState({
     name: '',
     nickname: '',
@@ -50,6 +50,7 @@ export default function ProfilePage() {
     }
     getProfile()
   }, [])
+  console.log(`user:`, user)
   return (
     <>
       <form>

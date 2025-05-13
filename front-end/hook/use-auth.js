@@ -17,15 +17,11 @@ export function AuthProvider({ children }) {
     mem_cpon: 0,
   }
   const [user, setUser] = useState(defaultUser)
+  let userDataGlobal = {}
   const isAuth = Boolean(user?.id)
 
   // login function
   const login = async (email, passowrd) => {
-    // setting post info of user
-    // const formData = new FormData()
-    // console.log('email', account)
-    // formData.append('email', account)
-    // formData.append('password', passowrd)
     // fetch login auth api
     try {
       const response = await fetch('http://localhost:3005/api/member/login', {
@@ -60,11 +56,12 @@ export function AuthProvider({ children }) {
       const data = await response.json()
       const userData = data['data']
       console.log('data: ', userData)
-      setUser(userData)
-      console.log('user: ', user)
+      userDataGlobal = userData
     } catch (err) {
       console.log(err)
     }
+    setUser(userDataGlobal)
+    console.log('user: ', user)
   }
 
   // logout function
