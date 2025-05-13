@@ -10,7 +10,7 @@ import { cities } from './data/CityCountyData'
 
 export default function ProfilePage() {
   const router = useRouter()
-  const { user, isAuth } = useAuth()
+  const { isAuth } = useAuth()
   const [text, setText] = useState({
     name: '',
     nickname: '',
@@ -20,6 +20,7 @@ export default function ProfilePage() {
     area: '',
     address: '',
   })
+  let user = {}
   const [citySelect, setCitySelect] = useState({
     CityName: '',
     AreaName: '',
@@ -43,14 +44,24 @@ export default function ProfilePage() {
         const data = await response.json()
         profileData = data['data']
         console.log('profileData: ', profileData)
+        user = profileData
         // setText(profileData)
       } catch (err) {
         console.log(err)
       }
     }
     getProfile()
+    setText({
+      name: user?.name || '',
+      nickname: user?.nickname || '',
+      tel: user?.tel || '',
+      skinType: user?.skin_type || '',
+      city: user?.city || '',
+      area: user?.area || '',
+      address: user?.address || '',
+    })
+    console.log('name', user.name)
   }, [])
-  console.log(`user:`, user)
   return (
     <>
       <form>
