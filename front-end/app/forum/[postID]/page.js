@@ -216,20 +216,21 @@ export default function PostIDPage(props) {
               <div className="more-header py-2 bottom-stroke sub-text-color">
                 更多文章
               </div>
-              <div className="more-cards row py-2">
+              <div className="more-cards d-flex flex-wrap py-2">
                 {Array.isArray(morePosts) &&
                   morePosts.map((morePost) => {
                     return (
-                      <ComponentsMorePost
-                        key={morePost.id}
-                        postTitle={morePost.title}
-                        likedUserIDs={morePost.liked_user_ids}
-                        savedUserIDs={morePost.saved_user_ids}
-                        postID={morePost.id}
-                        userID={morePost.user_id}
-                        authorName={morePost.user_name}
-                        mutate={mutate}
-                      />
+                      <div key={morePost.id} className="w-50 p-1">
+                        <ComponentsMorePost
+                          postTitle={morePost.title}
+                          likedUserIDs={morePost.liked_user_ids}
+                          savedUserIDs={morePost.saved_user_ids}
+                          postID={morePost.id}
+                          userID={morePost.user_id}
+                          authorName={morePost.user_name}
+                          mutate={mutate}
+                        />
+                      </div>
                     )
                   })}
               </div>

@@ -16,6 +16,7 @@
   /* --bg-gray-article: #f2f1ef; */
   --bg-gray-article: #fafafa;
   --hover-gray: #e5e5e4;
+  --hover-light-gray: #e5e5e4ad;
   --focus-gray: #d2d2d2b9;
   --main-text: #373737;
   --sub-text: #858585;
@@ -379,5 +380,12 @@
 .author-card {
   @media screen and (min-width: 992px) {
     /* top: 24px; */
+  }
+}
+
+/* pagepost */
+.more-card {
+  &:hover {
+    background-color: var(--hover-light-gray);
   }
 }

@@ -16,7 +16,10 @@ export default function ComponentsMorePost({
 }) {
   return (
     <>
-      <div className="more-card col col-12 col-md-6 d-flex align-items-center gap-2 px-3 py-2">
+      <Link
+        className="more-card d-flex align-items-center gap-2 px-3 py-2 main-text-color rounded-4"
+        href={`/forum/${postID}`}
+      >
         <div className="more-content d-flex flex-column gap-2 flex-grow-1">
           <div className="more-title text-truncate fw-medium">{postTitle}</div>
           <div className="more-actions d-flex fs14">
@@ -59,7 +62,7 @@ export default function ComponentsMorePost({
                     src="./images/7aeeb949-922a-46aa-8f6d-79b7c7134bc8.jpeg"
                     layout="fill"
                   /> */}
-      </div>
+      </Link>
     </>
   )
 }

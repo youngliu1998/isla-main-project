@@ -82,7 +82,6 @@ export default function ForumPage(props) {
     <>
       <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center">
         <div className="posts d-flex flex-column gap-3 w-100">
-          <div>測試merge後branch是否有再長出來</div>
           <div className="switchers d-flex flex-row">
             <div className="switcher d-flex justify-content-center align-items-center">
               熱門
