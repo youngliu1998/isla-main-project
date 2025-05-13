@@ -30,6 +30,12 @@ export default function SideBar() {
           <li>查看文章</li>
           <li>客服資訊</li>
         </ul>
+        <ul>
+          <li className="title">我的論壇</li>
+          <li>我的文章</li>
+          <li>追蹤對象</li>
+          <li>文章蒐藏</li>
+        </ul>
       </div>
     </>
   )

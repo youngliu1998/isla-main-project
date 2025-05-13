@@ -3,7 +3,7 @@
 import './_components/forum.css'
 import ComponentsSubNav from './_components/sub-nav'
 // import 'bootstrap/dist/js/bootstrap.bundle.min.js'
-import { useEffect } from 'react'
+import { useEffect, useLayoutEffect } from 'react'
 
 export default function Layout({ children }) {
   useEffect(() => {
@@ -20,7 +20,8 @@ export default function Layout({ children }) {
   return (
     <>
       {/* <body className="body bg-gray-article"> */}
-      <div className="body bg-gray-article">
+      <div className="bg-article"></div>
+      <div className="body">
         <div className="container-lg my-container">
           <div className="row justify-content-center">
             <ComponentsSubNav />
