@@ -3,7 +3,7 @@
 import { useAuth } from '@/hook/use-auth'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import InputText from '../_component/input-text'
 import InputPass from '../_component/input-pass'
 import '../_styles/login.css'
@@ -15,9 +15,11 @@ export default function LoginPage() {
     email: '',
     password: '',
   })
-  const { member, isAuth, login } = useAuth() // Context
-  // if get auth, go to profile
-  if (isAuth) router.push('profile')
+  const { isAuth, login } = useAuth() // Context
+  useEffect(() => {
+    // if get auth, go to profile
+    if (isAuth) router.push('profile')
+  }, [login])
   return (
     <>
       <div className="d-flex flex-column justify-content-centers gap-5 py-5 postion-middle">

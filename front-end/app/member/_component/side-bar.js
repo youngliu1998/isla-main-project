@@ -5,22 +5,30 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import MemberNav from './_side-bar-component/member-nav'
-import UserMenu from './_side-bar-component/user-menu'
+import OpneNav from './_side-bar-component/open-nav'
 import './_style.css/side-bar.css'
 
 export default function SideBar() {
   const pathname = usePathname()
   const [OpenMenu, setOpenMenu] = useState(false)
   const { member, logout } = useAuth()
-  if (pathname.includes('login')) return <></>
+  // return <></> in login, register, ......
+  if (
+    pathname.includes('login') ||
+    pathname.includes('register') ||
+    pathname.includes('forget-password')
+  ) {
+    return <></>
+  }
   return (
     <>
       {/* aside-bar */}
       <aside className="col-lg-3 col-12 flex-lg-column">
         <div className="d-flex flex-column align-items-center gap-2 w-100 user-head">
+          {/* avatar, nickname, .... (member info) */}
           <div className="avartar" />
-          <h4 className="user-title">DDDDDD</h4>
-          <p>gamil@.com</p>
+          <h4 className="user-title">{member?.nickname || 'Rookie'}</h4>
+          <p>{member?.email || 'illegal@nomail.com'}</p>
           <Link
             onClick={() => {
               logout()
@@ -31,7 +39,7 @@ export default function SideBar() {
           </Link>
         </div>
         {/* panel */}
-        <UserMenu OpenMenu={OpenMenu} setOpenMenu={setOpenMenu} />
+        <OpneNav OpenMenu={OpenMenu} setOpenMenu={setOpenMenu} />
         <MemberNav OpenMenu={OpenMenu} />
       </aside>
     </>

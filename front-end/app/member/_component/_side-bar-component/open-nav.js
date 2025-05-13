@@ -1,6 +1,6 @@
 'use client'
-
-export default function UserMenu({ OpenMenu = false, setOpenMenu = () => {} }) {
+// contorll if the panel is opened or closed
+export default function OpneNav({ OpenMenu = false, setOpenMenu = () => {} }) {
   return (
     <>
       <button
