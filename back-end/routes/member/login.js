@@ -13,7 +13,7 @@ router.get('/', verifyToken, async (req, res) => {
   let error
   const id = req?.user?.id || 0
   try {
-    const query = `SELECT id,name,nickname,email,point,level,mem_cpon FROM user2 WHERE id=?`
+    const query = `SELECT id,name,nickname,email,point,level,mem_cpon FROM users WHERE id=?`
     const user = await db
       .execute(query, [id])
       .then((data) => data[0][0])
@@ -36,7 +36,7 @@ router.post('/', async (req, res) => {
   let error
   const { email, password } = req.body
   try {
-    const query = `SELECT id,email FROM user2 WHERE email=? AND password=?`
+    const query = `SELECT id,email FROM users WHERE email=? AND password=?`
     const user = await db
       .execute(query, [email, password])
       .then((data) => data[0][0])
