@@ -6,9 +6,22 @@ import ProductCard from './_component/product-card/product-card'
 import CouponAccordion from './_component/coupon-accordion/coupon-accordion'
 import CouponAccordionCourse from './_component/coupon-accordion/coupon-accordion-course'
 import OrderSummary from './_component/order-summary/order-summary'
+import MobileOrderBar from './_component/mobile-order-bar/mobile-order-bar'
 
-import React, { useState, useEffect, Children } from 'react'
+import useIsMobile from './hook/useIsMobile'
+
+import { useEffect, useState } from 'react'
+
+// import React, { useState, useEffect, Children } from 'react'
 export default function CartPage() {
+  const isMobile = useIsMobile()
+
+  const [hasMounted, setHasMounted] = useState(false)
+  useEffect(() => {
+    setHasMounted(true)
+  }, [])
+
+  if (!hasMounted) return null // 預防錯誤
   return (
     <>
       <section className="container text-center text-lg-start mt-2">
@@ -20,7 +33,10 @@ export default function CartPage() {
       </section>
 
       {/* main */}
-      <section className="container-fluid container-lg">
+      <section
+        className="container-fluid container-lg"
+        style={{ paddingBottom: '50px' }}
+      >
         <div className="row gy-5">
           <div className="col-lg-4 col-12">
             <div className="form-check m-4 ">
@@ -150,10 +166,9 @@ export default function CartPage() {
               </div>
             </CouponAccordionCourse>
           </div>
-          <div className="col-lg-4 col-12">
-            <OrderSummary />
-          </div>
-          <div className="d-block d-lg-none" style={{ height: '850px' }}></div>
+          <div className="col-lg-4 col-12">{!isMobile && <OrderSummary />}</div>
+          {isMobile && <MobileOrderBar />}
+          {/* <div className="d-block d-lg-none" style={{ height: '850px' }}></div> */}
         </div>
       </section>
     </>
