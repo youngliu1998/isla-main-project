@@ -47,11 +47,15 @@ export default function CouponCard({
     setLoading(true)
 
     try {
+      const token = localStorage.getItem('jwtToken')
       const res = await fetch(
         'http://localhost:3005/api/coupon/products/claim',
         {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
           body: JSON.stringify({
             user_id,
             coupon_id,

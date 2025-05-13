@@ -21,12 +21,6 @@ export function AuthProvider({ children }) {
 
   // login function
   const login = async (email, passowrd) => {
-    // setting post info of user
-    // const formData = new FormData()
-    // console.log('email', account)
-    // formData.append('email', account)
-    // formData.append('password', passowrd)
-    // fetch login auth api
     try {
       const response = await fetch('http://localhost:3005/api/member/login', {
         method: 'POST',

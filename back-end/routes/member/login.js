@@ -13,7 +13,7 @@ router.get('/', verifyToken, async (req, res) => {
   let error
   const id = req?.user?.id || 0
   try {
-    const query = `SELECT id,name,nickname,email,point,level,mem_cpon FROM user2 WHERE id=?`
+    const query = `SELECT id,name,nickname,email,point,level,mem_cpon FROM users WHERE id=?`
     const user = await db
       .execute(query, [id])
       .then((data) => data[0][0])
@@ -36,7 +36,7 @@ router.post('/', async (req, res) => {
   let error
   const { email, password } = req.body
   try {
-    const query = `SELECT id,email FROM user2 WHERE email=? AND password=?`
+    const query = `SELECT id,email FROM users WHERE email=? AND password=?`
     const user = await db
       .execute(query, [email, password])
       .then((data) => data[0][0])
@@ -44,8 +44,7 @@ router.post('/', async (req, res) => {
         error = err
       })
     // if there is no user
-    if (!user)
-      res.json({ status: 'error', message: '查無此會員' })
+    if (!user) res.json({ status: 'error', message: '查無此會員' })
     // if user exist, build token from user
     const token = jwt.sign(
       {
@@ -57,7 +56,7 @@ router.post('/', async (req, res) => {
     )
     console.log('user', user)
     console.log('token', token)
-    
+
     // send user data to client
     res.json({
       status: 'success',
