@@ -13,21 +13,21 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <Provider>
-      <html lang="zh-Hant">
-        <head>
-          <meta name="viewport" content="width=device-width, initial-scale=1" />
-          <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-          />
-        </head>
+    <html lang="zh-Hant">
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+        />
+      </head>
+      <Provider>
         <body>
           <Header />
           <div style={{ marginTop: '80px' }}>{children}</div>
           <Footer />
         </body>
-      </html>
-    </Provider>
+      </Provider>
+    </html>
   )
 }

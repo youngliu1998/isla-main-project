@@ -14,7 +14,7 @@ router.get('/', verifyToken, async (req, res) => {
   let error
   const id = req?.user?.id || 0
   try {
-    const query = `SELECT id,name,nickname,email,point,level,mem_cpon FROM users WHERE id=?`
+    const query = `SELECT id,name,nickname,email,point,level,tel,address,mem_cpon FROM users WHERE id=?`
     const user = await db
       .execute(query, [id])
       .then((data) => data[0][0])
@@ -47,7 +47,7 @@ router.post('/', async (req, res) => {
         error = err
       })
     // if there is no user
-    if (!user) res.json({ status: 'error', message: '查無此會員' })
+    if (!user) return res.json({ status: 'error', message: '查無此會員' })
     // if the password is false
     if (!(await bcrypt.compare(password, user.password)))
       return res.json({ status: 'error', message: '密碼錯誤' })
