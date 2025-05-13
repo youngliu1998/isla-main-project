@@ -1,9 +1,12 @@
 'use client'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { BsHandbag } from 'react-icons/bs'
 import './header.css'
 
 export default function Header() {
+  const pathname = usePathname()
+  if (pathname.includes('login')) return <></>
   return (
     <>
       <header className="header-module">
@@ -24,7 +27,7 @@ export default function Header() {
                 <Link href="">美妝教室</Link>
               </li>
               <li>
-                <Link href="">美妝社群</Link>
+                <Link href="/forum">美妝社群</Link>
               </li>
             </ul>
           </nav>

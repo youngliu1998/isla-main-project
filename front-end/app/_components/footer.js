@@ -9,7 +9,11 @@ import { usePathname } from 'next/navigation'
 
 export default function Footer() {
   const pathname = usePathname()
-  if (pathname.includes('/forum')) {
+  if (
+    pathname.includes('/login') ||
+    pathname.includes('/cart') ||
+    pathname.includes('/forum')
+  ) {
     return <></>
   }
   if (pathname.includes('cart')) {
