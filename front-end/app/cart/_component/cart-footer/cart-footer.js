@@ -7,7 +7,7 @@ import styles from './footer.module.scss'
 export default function CartFooter() {
   return (
     <>
-      <footer className={`${styles['footer']} d-none d-lg-block`}>
+      <footer className={`${styles['footer']} p-3 d-none d-lg-block`}>
         <div>
           <div className="row">
             <div
