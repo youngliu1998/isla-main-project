@@ -5,63 +5,40 @@ export default function AsideProduct() {
     <>
       {/* aside */}
       <aside className="d-none d-md-block col-lg-3 col-md-4 ps-0 mt-0">
-        <div className="position-sticky pt-2">
-          <h3 className="pb-3 border-bottom border-2">品牌</h3>
-          <ul className="nav flex-column mb-3">
-            <li className="nav-item">
-              <a className="menu-brand nav-link sub-text fs-5" href="#">
-                Unleashia
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="menu-brand nav-link sub-text fs-5" href="#">
-                Cosnori
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="menu-brand nav-link sub-text fs-5" href="#">
-                Muzigae Mansion
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="menu-brand nav-link sub-text fs-5" href="#">
-                Kaja
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="menu-brand nav-link sub-text fs-5" href="#">
-                rom&amp;nd
-              </a>
-            </li>
-          </ul>
-          <h3 className="py-3 border-bottom border-2">種類</h3>
-          <ul className="nav flex-column">
-            <li className="nav-item">
-              <a className="menu-category nav-link sub-text fs-5" href="#">
-                眼影
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="menu-category nav-link sub-text fs-5" href="#">
-                唇蜜
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="menu-category nav-link sub-text fs-5" href="#">
-                口紅
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="menu-category nav-link sub-text fs-5" href="#">
-                粉底
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="menu-category nav-link sub-text fs-5" href="#">
-                氣墊粉餅
-              </a>
-            </li>
-          </ul>
+        <div className="position-sticky pt-2 px-3">
+          <section className="mb-4">
+            <h5 className="aside-title">品牌</h5>
+            <ul className="nav flex-column">
+              {[
+                'Unleashia',
+                'Cosnori',
+                'Muzigae Mansion',
+                'Kaja',
+                'rom&nd',
+              ].map((brand, index) => (
+                <li key={index} className="nav-item">
+                  <a href="#" className="aside-link nav-link py-1">
+                    {brand}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section>
+            <h5 className="aside-title">種類</h5>
+            <ul className="nav flex-column">
+              {['眼影', '唇蜜', '口紅', '粉底', '氣墊粉餅'].map(
+                (type, index) => (
+                  <li key={index} className="nav-item">
+                    <a href="#" className="aside-link nav-link py-1">
+                      {type}
+                    </a>
+                  </li>
+                )
+              )}
+            </ul>
+          </section>
         </div>
       </aside>
     </>

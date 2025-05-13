@@ -410,3 +410,27 @@ main {
 .coupon.stamping {
   animation: cardStamp 0.4s ease;
 }
+
+/* 刪除 */
+.aside-title {
+  font-size: 1.125rem; /* h5 大小 */
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: #333;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 0.5rem;
+}
+
+.aside-link {
+  color: #666;
+  font-size: 1rem;
+  transition: all 0.2s ease-in-out;
+  border-radius: 6px;
+  padding-left: 0.5rem;
+}
+
+.aside-link:hover {
+  background-color: rgba(255, 120, 100, 0.08); /* 柔和粉橘 hover */
+  color: #e1575d;
+  font-weight: 500;
+}
