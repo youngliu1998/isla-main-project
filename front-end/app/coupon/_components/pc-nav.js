@@ -2,50 +2,55 @@
 
 import './coupon.css'
 
-export default function PcNav() {
+export default function PcNav({
+  currentType = '',
+  setCurrentType = '',
+  showClaimed,
+  setShowClaimed,
+}) {
   return (
-    <>
-      <ul className="sub-text nav d-none d-md-flex justify-content-center justify-content-md-start mt-3">
-        <li className="hover-underline nav-item col-3 col-sm-auto">
+    <ul className="sub-text nav d-none d-md-flex justify-content-center justify-content-md-start mt-3">
+      {[
+        { label: '全部', value: ' ' },
+        { label: '滿額券', value: 1 },
+        { label: '折扣券', value: 2 },
+        { label: '免運券', value: 3 },
+      ].map((item) => (
+        <li
+          className="hover-underline nav-item col-3 col-sm-auto"
+          key={item.value}
+        >
           <a
-            className="nav-link sub-text active ps-md-0 pe-md-3 text-center"
-            aria-current="page"
+            className={`nav-link sub-text px-0 px-md-2 px-lg-3 text-center ${
+              currentType === item.value ? 'active' : ''
+            }`}
             href="#"
+            onClick={(e) => {
+              e.preventDefault()
+              setCurrentType(item.value)
+            }}
           >
-            全部
+            {item.label}
           </a>
         </li>
-        <li className="hover-underline nav-item col-3 col-sm-auto">
-          <a
-            className="nav-link sub-text px-0 px-md-2 px-lg-3 text-center"
-            href="#"
-          >
-            滿額券
-          </a>
-        </li>
-        <li className="hover-underline nav-item col-3 col-sm-auto">
-          <a
-            className="nav-link sub-text px-0 px-md-2 px-lg-3 text-center"
-            href="#"
-          >
-            折扣券
-          </a>
-        </li>
-        <div className="form-check form-switch d-flex align-items-center ms-4">
-          <input
-            className="form-check-input switch me-2"
-            type="checkbox"
-            role="switch"
-            id="switchCheckDefault"
-          />
-          <label
-            className="form-check-label sub-text"
-            htmlFor="switchCheckDefault"
-          >
-            顯示已領取
-          </label>
-        </div>
-      </ul>
-    </>
+      ))}
+
+      <div className="form-check form-switch d-flex align-items-center ms-4">
+        <input
+          className="form-check-input switch me-2"
+          type="checkbox"
+          role="switch"
+          id="switchCheckDefault"
+          checked={showClaimed}
+          onChange={() => setShowClaimed((prev) => !prev)}
+        />
+        <label
+          className="form-check-label sub-text"
+          htmlFor="switchCheckDefault"
+        >
+          顯示已領取
+        </label>
+      </div>
+    </ul>
   )
 }

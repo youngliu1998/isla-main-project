@@ -1,8 +1,8 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import InputPass from '../_component/input-Pass'
-import '../_component/form.css'
+import React, { useState } from 'react'
+import InputPass from '../_component/input-pass'
+import '../_component/_style.css/form.css'
 
 export default function PasswordPage() {
   const [password, setPassword] = useState({
@@ -22,6 +22,7 @@ export default function PasswordPage() {
             value={password.oriPass}
             setPassword={setPassword}
           />
+          <hr />
           <InputPass
             password={password}
             title="新密碼"
