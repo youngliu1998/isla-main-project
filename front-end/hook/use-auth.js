@@ -54,8 +54,8 @@ export function AuthProvider({ children }) {
       })
 
       const data = await response.json()
-      const userData = data['data']
-      console.log('data: ', userData)
+      const userData = await data['data']
+      console.log('useAuth-login-userData: ', userData)
       userDataGlobal = userData
     } catch (err) {
       console.log(err)

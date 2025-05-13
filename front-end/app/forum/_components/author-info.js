@@ -26,7 +26,7 @@ export default function ComponentsAuthorInfo({
     <>
       <div>
         <button
-          className="author-info d-inline-flex align-items-center gap-2"
+          className="author-info d-inline-flex align-items-center gap-2 px-0"
           // href={'/forum/profile/' + memberID}
           onClick={handleNavigate}
         >
