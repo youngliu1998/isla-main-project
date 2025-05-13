@@ -11,9 +11,9 @@ import React, { useState, useEffect, Children } from 'react'
 export default function CartPage() {
   return (
     <>
-      <div className="container text-center text-lg-start mt-2">
+      <section className="container text-center text-lg-start mt-2">
         <h1 className="text-subtext h2 m-5">購物袋</h1>
-      </div>
+      </section>
       {/* step-icon */}
       <section className="container d-none d-lg-block mb-4">
         <StepProgress currentStep={1} />
@@ -21,7 +21,7 @@ export default function CartPage() {
 
       {/* main */}
       <section className="container-fluid container-lg">
-        <div className="row gx-5">
+        <div className="row gy-5">
           <div className="col-lg-4 col-12">
             <div className="form-check m-4 ">
               <input
@@ -37,40 +37,38 @@ export default function CartPage() {
           <div className="col-lg-8 col-12"></div>
         </div>
 
-        <div className="row gx-5">
+        <div className="row gy-5">
           <div className="col-lg-8 col-12">
             <div className="card-style mb-4 p-4">
-              <form action="" method="POST">
-                <div className="form-check mb-3 ms-1">
-                  <input
-                    className={`form-check-input me-2 ${styles.checkboxInput}`}
-                    type="checkbox"
-                    id="productCheck"
-                    name="productCheck"
-                  />
-                  <label htmlFor="productCheck" className="text-primary">
-                    彩妝商品
-                  </label>
-                </div>
+              <div className="form-check mb-3 ms-1">
+                <input
+                  className={`form-check-input me-2 ${styles.checkboxInput}`}
+                  type="checkbox"
+                  id="productCheck"
+                  name="productCheck"
+                />
+                <label htmlFor="productCheck" className="text-primary">
+                  彩妝商品
+                </label>
+              </div>
 
-                {/* === Product Card 01（dropdown）=== */}
-                <ProductCard type="dropDown" />
+              {/* === Product Card 01（dropdown）=== */}
+              <ProductCard type="dropDown" />
 
-                {/* === Product Card 02（color dots）=== */}
-                <ProductCard type="colorDots" />
+              {/* === Product Card 02（color dots）=== */}
+              <ProductCard type="colorDots" />
 
-                {/* === 加購商品卡片區塊 === */}
-                <div
-                  className="w-100 bg-subtext my-3"
-                  style={{ height: '1px' }}
-                ></div>
-                <div className="text-elem">
-                  <i className="bi bi-cart-check-fill me-2"></i>加購商品
-                </div>
+              {/* === 加購商品卡片區塊 === */}
+              <div
+                className="w-100 bg-subtext my-3"
+                style={{ height: '1px' }}
+              ></div>
+              <div className="text-elem">
+                <i className="bi bi-cart-check-fill me-2"></i>加購商品
+              </div>
 
-                {/* === Product Card 03（加購商品、折扣badge）=== */}
-                <ProductCard type="addon" />
-              </form>
+              {/* === Product Card 03（加購商品、折扣badge）=== */}
+              <ProductCard type="addon" />
             </div>
 
             <CouponAccordion>
