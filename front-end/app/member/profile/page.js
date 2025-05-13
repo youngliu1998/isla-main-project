@@ -36,30 +36,32 @@ export default function ProfilePage() {
       try {
         const token = localStorage.getItem('jwtToken')
 
-        const response = await fetch('http://localhost:3005/api/member/login', {
-          method: 'GET',
-          headers: { Authorization: `Bearer ${token}` },
-        })
+        const response = await fetch(
+          'http://localhost:3005/api/member/profile',
+          {
+            method: 'GET',
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        )
 
         const data = await response.json()
-        profileData = data['data']
+        profileData = await data['data']
         console.log('profileData: ', profileData)
-        user = profileData
-        // setText(profileData)
+        setText({
+          name: profileData?.name || '',
+          nickname: profileData?.nickname || '',
+          tel: profileData?.tel || '',
+          skinType: profileData?.skin_type || '',
+          city: profileData?.city || '',
+          area: profileData?.area || '',
+          address: profileData?.address || '',
+        })
       } catch (err) {
         console.log(err)
       }
     }
     getProfile()
-    setText({
-      name: user?.name || '',
-      nickname: user?.nickname || '',
-      tel: user?.tel || '',
-      skinType: user?.skin_type || '',
-      city: user?.city || '',
-      area: user?.area || '',
-      address: user?.address || '',
-    })
+
     console.log('name', user.name)
   }, [])
   return (
@@ -67,7 +69,7 @@ export default function ProfilePage() {
       <form>
         <div className="user-content">
           <h3>會員資料</h3>
-          <div className="row row-cols-md-2 row-cols-1 g-4">
+          <div className="row row-cols-md-2 row-cols-1 g-4 w-100">
             <InputText
               text={text}
               title="本名"
@@ -91,7 +93,7 @@ export default function ProfilePage() {
             />
           </div>
           <h3>預設地址</h3>
-          <div className="row row-cols-md-3 row-cols-1 g-4">
+          <div className="row row-cols-md-3 row-cols-1 g-4 w-100">
             <Select
               title="城市"
               name="city"
@@ -102,6 +104,15 @@ export default function ProfilePage() {
             />
             <Select title="市/區/鄉/鎮" name="area" selectKey="AreaName" />
             <Select title="郵遞區號" name="postcode" selectKey="ZipCode" />
+          </div>
+          <div className="row row-cols-md-2 row-cols-1 w-100">
+            <InputText
+              text={text}
+              title="地址"
+              name="address"
+              value={text.address}
+              setText={setText}
+            />
           </div>
           <button className="btn btn-primary">送出</button>
         </div>
