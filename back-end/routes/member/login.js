@@ -44,8 +44,7 @@ router.post('/', async (req, res) => {
         error = err
       })
     // if there is no user
-    if (!user)
-      res.json({ status: 'error', message: '查無此會員' })
+    if (!user) res.json({ status: 'error', message: '查無此會員' })
     // if user exist, build token from user
     const token = jwt.sign(
       {
@@ -57,7 +56,7 @@ router.post('/', async (req, res) => {
     )
     console.log('user', user)
     console.log('token', token)
-    
+
     // send user data to client
     res.json({
       status: 'success',

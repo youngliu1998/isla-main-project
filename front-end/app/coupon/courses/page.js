@@ -27,7 +27,7 @@ export default function CouponPage() {
   const { currentType, setCurrentType, showClaimed, setShowClaimed } =
     useCouponFilter()
 
-  // 各自加載
+  // 各自加載10筆優惠券
   const [couponCountMap, setCouponCountMap] = useState({
     ' ': 10,
     1: 10,
@@ -44,10 +44,10 @@ export default function CouponPage() {
 
   const filteredCoupons = coupons
     .filter((coupon) => {
-      const isProduct = coupon.area === 1 || coupon.area === 0
+      const isCourses = coupon.area === 2 || coupon.area === 0
       const typeMatch = currentType === ' ' || coupon.type_id === currentType
       const claimedMatch = showClaimed ? coupon.claimed : true
-      return isProduct && typeMatch && claimedMatch
+      return isCourses && typeMatch && claimedMatch
     })
     .sort((a, b) => {
       const aStyle = getCouponStyle(a.type_id)
