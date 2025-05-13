@@ -5,7 +5,7 @@ export default function ComponentsSearchBar() {
     <>
       <div className="col col-2 d-none d-xl-block px-0 position-relative">
         <aside className="aside d-flex flex-column gap-3 position-sticky">
-          <form action="//localhost:3005/api/forum/posts">
+          <form action="http://localhost:3005/api/forum/posts">
             <div className="search-bar d-flex flex-row align-items-center bottom-stroke">
               <div className="search-header d-flex align-items-center me-auto">
                 {/* icon記得改import */}

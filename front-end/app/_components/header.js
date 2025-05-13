@@ -24,7 +24,7 @@ export default function Header() {
                 <Link href="">美妝教室</Link>
               </li>
               <li>
-                <Link href="">美妝社群</Link>
+                <Link href="/forum">美妝社群</Link>
               </li>
             </ul>
           </nav>
@@ -38,9 +38,11 @@ export default function Header() {
                 <div>2</div>
               </button>
             </Link>
-            <button>
-              <i className="bi bi-person-circle" />
-            </button>
+            <Link href="/member">
+              <button>
+                <i className="bi bi-person-circle" />
+              </button>
+            </Link>
           </div>
         </div>
       </header>
