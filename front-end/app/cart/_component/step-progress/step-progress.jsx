@@ -1,21 +1,24 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import styles from './StepProgress.module.scss'
+import styles from './step-progress.module.scss'
 
 export default function StepProgress({ currentStep = 1 }) {
+  // stepCircle
   const getStepClass = (step) => {
-    // if (step < currentStep) return styles.stepActive
     if (step === currentStep || step < currentStep) return styles.stepActive
     return styles.stepRegular
   }
-
+  // stepBar
   const getLineClass = (step) => {
-    // step 是前一圈的編號（第1圈和第2圈中間的線是 step=1）
-    // return step < currentStep ? styles.stepLineActive : styles.stepLine
     if (step === currentStep) return styles.stepLineProgress
     if (step < currentStep) return styles.stepLineActive
     return styles.stepLine
+  }
+  // stepText
+  const getTextClass = (step) => {
+    if (step === currentStep || step < currentStep) return 'text-secondary'
+    return 'text-subtext'
   }
 
   return (
@@ -25,19 +28,19 @@ export default function StepProgress({ currentStep = 1 }) {
           {/* step1 */}
           <div className={styles.stepContainer}>
             <div className={getStepClass(1)}>1</div>
-            <span className="h5 text-secondary">確認購物車</span>
+            <span className={`h5 ${getTextClass(1)}`}>確認購物車</span>
           </div>
           <div className={`${getLineClass(1)} rounded-pill`}></div>
           {/* step2 */}
           <div className={styles.stepContainer}>
             <div className={getStepClass(2)}>2</div>
-            <span className="h5 text-subtext">付款及運送方式</span>
+            <span className={`h5 ${getTextClass(2)}`}>付款及運送方式</span>
           </div>
           <div className={`${getLineClass(2)} rounded-pill`}></div>
           {/* step3 */}
           <div className={styles.stepContainer}>
             <div className={getStepClass(3)}>3</div>
-            <span className="h5 text-subtext">完成</span>
+            <span className={`h5 ${getTextClass(3)}`}>完成</span>
           </div>
         </div>
       </section>

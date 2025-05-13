@@ -13,7 +13,7 @@ router.get('/', verifyToken, async (req, res) => {
 
   // set query here
   try {
-    const query = `SELECT * FROM user2 WHERE id=?`
+    const query = `SELECT * FROM users WHERE id=?`
     const user = await db
       .execute(query, [id])
       .then((data) => data[0][0])

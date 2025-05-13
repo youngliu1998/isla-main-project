@@ -2,7 +2,7 @@
 
 import './coupon.css'
 
-export default function SideBar() {
+export default function AsideCourse() {
   return (
     <>
       {/* aside */}

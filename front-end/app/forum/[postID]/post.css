@@ -1,15 +1,9 @@
 .post {
   max-width: 800px;
-  padding: 32px;
+  /* padding: 32px; */
 }
 .post-img {
   max-width: 560px;
-}
-
-.user-avatar {
-  width: 32px;
-  height: 32px;
-  position: relative;
 }
 
 .more-img {
@@ -27,4 +21,9 @@
 
 .comment-more {
   margin-left: 42px;
+}
+
+.content-image {
+  max-height: 400px;
+  width: auto;
 }
