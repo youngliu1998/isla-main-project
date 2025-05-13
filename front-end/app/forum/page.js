@@ -78,6 +78,9 @@ export default function ForumPage(props) {
     }
   }
 
+  const userIDTest = localStorage.getItem('user')
+  console.log(userIDTest)
+
   return (
     <>
       <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center">
