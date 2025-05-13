@@ -1,9 +1,12 @@
 'use client'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { BsHandbag } from 'react-icons/bs'
 import './header.css'
 
 export default function Header() {
+  const pathname = usePathname()
+  if (pathname.includes('login')) return <></>
   return (
     <>
       <header className="header-module">
