@@ -12,7 +12,9 @@
 .couponShadow {
   @include card-shadow(0.5rem);
 }
-
+.accordion-body {
+  padding: 1rem 1.25rem;
+}
 .accordionButton {
   background: var(--coupon-linear);
   font-weight: bold;

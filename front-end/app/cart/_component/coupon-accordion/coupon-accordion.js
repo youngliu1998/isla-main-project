@@ -30,7 +30,7 @@ export default function CouponAccordion({ children }) {
             data-bs-parent="#couponPro"
           >
             <div className="accordion-body">
-              <div className="d-flex justify-content-between align-items-center py-3">
+              <div className="d-flex justify-content-between align-items-center">
                 <p className="text-subtext mb-0">可用的優惠券</p>
                 <div className="d-flex gap-2">
                   <button
