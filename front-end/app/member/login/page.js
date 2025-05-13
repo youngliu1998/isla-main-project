@@ -2,17 +2,27 @@
 // import { useAuth } from '@/hook/use-auth'
 import { useAuth } from '@/hook/use-auth'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import React, { useEffect, useState } from 'react'
+import InputText from '../_component/input-text'
+import InputPass from '../_component/input-pass'
 import '../_styles/login.css'
-import React, { useState } from 'react'
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('')
-  const [passowrd, setPassword] = useState('')
-  const { member, isAuth, login, logout } = useAuth() // Context
-
+  const router = useRouter()
+  // const navigater = useNavigate()
+  const [memInfo, setMemInfo] = useState({
+    email: '',
+    password: '',
+  })
+  const { isAuth, login } = useAuth() // Context
+  useEffect(() => {
+    // if get auth, go to profile
+    if (isAuth) router.push('profile')
+  }, [login])
   return (
     <>
-      <div className="container d-flex flex-column justify-content-centers gap-5 py-5">
+      <div className="d-flex flex-column justify-content-centers gap-5 py-5 postion-middle">
         <h1 className="text-center login-title">
           <span className="title">ISLA</span> 會員登入
         </h1>
@@ -23,27 +33,25 @@ export default function LoginPage() {
             method="post"
           >
             {/* Email */}
+
             <div className="login-input-block">
-              <label htmlFor="account">電子信箱</label>
-              <input
-                type="text"
-                name="account"
-                value={email}
-                onChange={(e) => {
-                  setEmail(e.target.value)
-                }}
+              <InputText
+                text={memInfo}
+                title="電子郵件"
+                name="email"
+                value={memInfo.email}
+                setText={setMemInfo}
               />
             </div>
             {/* password */}
+
             <div className="login-input-block">
-              <label htmlFor="account">密碼</label>
-              <input
-                type="password"
-                name="passowrd"
-                value={passowrd}
-                onChange={(e) => {
-                  setPassword(e.target.value)
-                }}
+              <InputPass
+                text={memInfo}
+                title="密碼"
+                name="password"
+                value={memInfo.password}
+                setPassword={setMemInfo}
               />
               <Link href="">忘記密碼?</Link>
             </div>
@@ -52,20 +60,11 @@ export default function LoginPage() {
               className="btn btn-primary"
               onClick={(e) => {
                 e.preventDefault()
-                console.log('account', email)
-                login(email, passowrd)
+                console.log('account', memInfo.email)
+                login(memInfo.email, memInfo.password)
               }}
             >
               登入
-            </button>
-            <button
-              className="btn btn-primary"
-              onClick={(e) => {
-                e.preventDefault()
-                logout(email, passowrd)
-              }}
-            >
-              登出
             </button>
           </form>
           {/* login form end */}

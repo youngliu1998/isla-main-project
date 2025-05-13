@@ -8,7 +8,11 @@ import path from 'path'
 
 export default function Footer() {
   const pathname = usePathname()
-  if (pathname.includes('/cart') || pathname.includes('/forum')) {
+  if (
+    pathname.includes('/login') ||
+    pathname.includes('/cart') ||
+    pathname.includes('/forum')
+  ) {
     return <></>
   }
 
