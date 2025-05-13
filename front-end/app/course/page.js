@@ -12,7 +12,7 @@ export default function CoursePage() {
   return (
     <>
       <section className="banner align-content-center justify-content-center py-sm-5 py-0">
-        <div>測試course branch</div>
+        <div>測試course branch test2</div>
         <div className="d-flex">
           <button className="carousel-button prev">‹</button>
           <button className="carousel-button next">›</button>
