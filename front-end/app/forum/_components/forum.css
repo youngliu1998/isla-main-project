@@ -28,27 +28,6 @@
     border: 0px solid #ffffff00;
     background-color: #ffffff00;
   }
-  ::-webkit-scrollbar {
-    width: 0; /* 垂直滾動條寬度 */
-    height: 0; /* 水平滾動條高度 */
-  }
-  .scroll-bar-settings {
-    ::-webkit-scrollbar {
-      width: 12px; /* 垂直滾動條寬度 */
-      height: 12px; /* 水平滾動條高度 */
-    }
-    ::-webkit-scrollbar-track {
-      background: #ffffff; /* 軌道背景 */
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #45454537; /* 滑塊顏色 */
-      border-radius: 6px; /* 圓角 */
-      border: 2px solid #ffffff; /* 留白效果 */
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #ffffff00;
-    }
-  }
   .dropdown-menu {
     background-color: white;
     .dropdown-item {
@@ -180,8 +159,10 @@
     background-color: var(--accent-color);
   }
 }
+
 .modal-forum {
   justify-content: center;
+
   .modal-content {
     height: 80vh;
     max-width: 756px;
@@ -198,9 +179,7 @@
       color: var(--main-text);
       padding: 0;
     }
-    .edit-area {
-      height: 100%;
-      padding: 24px;
+    .edit-title {
       &:empty::before {
         content: attr(data-placeholder);
         color: var(--sub-text);
@@ -211,6 +190,28 @@
         outline: 0px solid #fff;
       }
     }
+    .titleError {
+      color: var(--accent-color);
+      &::after {
+        content: attr(error-persudo);
+        margin-left: 4px;
+      }
+    }
+    .edit-area {
+      height: 100%;
+      &:empty::before {
+        content: attr(data-placeholder);
+        color: var(--sub-text);
+        pointer-events: none;
+        display: block;
+      }
+      &:focus-visible {
+        outline: 0px solid #fff;
+      }
+    }
+  }
+  .modal-footer {
+    box-shadow: 0 0 16px #54473414;
   }
   .button-picture {
     width: 48px;
@@ -226,6 +227,29 @@
       border: 0px solid #fff;
       outline: 0px solid #fff;
       box-shadow: none;
+    }
+  }
+}
+.no-scroll-bar {
+  ::-webkit-scrollbar {
+    width: 0; /* 垂直滾動條寬度 */
+    height: 0; /* 水平滾動條高度 */
+  }
+  .scroll-bar-settings {
+    ::-webkit-scrollbar {
+      width: 12px; /* 垂直滾動條寬度 */
+      height: 12px; /* 水平滾動條高度 */
+    }
+    ::-webkit-scrollbar-track {
+      background: #ffffff; /* 軌道背景 */
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #45454537; /* 滑塊顏色 */
+      border-radius: 6px; /* 圓角 */
+      border: 2px solid #ffffff; /* 留白效果 */
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #ffffff00;
     }
   }
 }

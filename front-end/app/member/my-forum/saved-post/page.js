@@ -64,7 +64,7 @@ export default function MyPostPage(props) {
                 style={{ cursor: 'pointer' }}
               >
                 <ComponentsAuthorInfo
-                  memberID={post.user_id}
+                  authorID={post.user_id}
                   width="21"
                   src={`/images/forum/320.webp`}
                   alt="user_name"

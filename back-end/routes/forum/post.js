@@ -1,4 +1,5 @@
-import express from 'express'
+// @ts-check
+import express, { json } from 'express'
 const router = express.Router()
 // 使用mysql
 import db from '../../config/mysql.js'
@@ -6,17 +7,18 @@ import db from '../../config/mysql.js'
 // GET 得到單筆文章
 router.get('/:postID', async function (req, res) {
   const postID = Number(req.params.postID)
-
   const [posts] = await db.query(
     `
     SELECT 
         p.*,
         pc.id AS cate_id,
         pc.name AS cate_name,
+        u.nickname AS user_nick,
         IFNULL (liked.user_ids, '') AS liked_user_ids,
         IFNULL (saved.user_ids, '') AS saved_user_ids
     FROM post p
     JOIN post_category pc ON p.cate_id = pc.id
+    JOIN users u ON p.user_id = u.id
     LEFT JOIN (
         SELECT post_id,
         GROUP_CONCAT(user_id) AS user_ids
@@ -33,16 +35,18 @@ router.get('/:postID', async function (req, res) {
     `,
     [postID]
   )
-  const cateID = posts[0].cate_id
+  const cateID = posts[0]?.cate_id
   const [morePosts] = await db.query(
     `
     SELECT p.*,
     pc.id AS cate_id,
     pc.name AS cate_name,
+    u.nickname AS user_nick,
     IFNULL (liked.user_ids, '') AS liked_user_ids,
     IFNULL (saved.user_ids, '') AS saved_user_ids
     FROM post p
     JOIN post_category pc ON p.cate_id = pc.id
+    JOIN users u ON p.user_id = u.id
     LEFT JOIN (
         SELECT post_id,
         GROUP_CONCAT(user_id) AS user_ids

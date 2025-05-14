@@ -1,3 +1,4 @@
+//@ts-check
 'use client'
 
 import ComponentsSearchBar from './_components/search-bar'
@@ -11,6 +12,7 @@ import EditPostModal from './_components/edit-post-modal'
 import { ClientPageRoot } from 'next/dist/client/components/client-page'
 import { useRouter } from 'next/navigation'
 import ComponentsBtnLikedSaved from './_components/btn-liked-saved'
+import ComponentsPostCard from './_components/post-card'
 
 const fetcher = (url) =>
   fetch(url, {
@@ -23,11 +25,12 @@ export default function ForumPage(props) {
   const router = useRouter()
 
   // 取得userID
-  const userID = 7
+  const userID = 1
 
   // fetch每篇文章的資料
-  const postsAPI = 'http://localhost:3005/api/forum/posts'
+  const postsAPI = 'http://localhost:3005/api/forum/posts/home'
   const { data, isLoading, error, mutate } = useSWR(postsAPI, fetcher)
+
   if (error) {
     console.log(error)
     return (
@@ -36,8 +39,21 @@ export default function ForumPage(props) {
       </main>
     )
   }
-  // console.log(data)
-  const posts = data?.status === 'success' ? data?.data : []
+  let posts = data?.data
+  if (Array.isArray(posts)) {
+    posts = posts.map((post) => {
+      return {
+        ...post,
+        liked_user_ids: post.liked_user_ids
+          ? post.liked_user_ids.split(',').map(Number)
+          : [],
+        saved_user_ids: post.saved_user_ids
+          ? post.saved_user_ids.split(',').map(Number)
+          : [],
+      }
+    })
+  }
+
   if (isLoading) {
     return (
       <>
@@ -48,7 +64,7 @@ export default function ForumPage(props) {
       </>
     )
   }
-  if (posts.length === 0) {
+  if (posts?.length === 0) {
     return (
       <>
         <main className="main col col-10 d-flex flex-column align-items-center">
@@ -58,25 +74,25 @@ export default function ForumPage(props) {
       </>
     )
   }
-  // evaluate btn handler
-  const handleEvaluateDelete = async (type, userID, postID) => {
-    const res = await fetch(
-      `http://localhost:3005/api/forum/liked-saved/${type}`,
-      {
-        method: 'DELETE',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userID, postID }),
-      }
-    )
-    const json = await res.json()
-    if (json.status === 'success') {
-      // 需要這個防呆嗎？QU
-      mutate()
-    }
-  }
+  // // evaluate btn handler
+  // const handleEvaluateDelete = async (type, userID, postID) => {
+  //   const res = await fetch(
+  //     `http://localhost:3005/api/forum/liked-saved/${type}`,
+  //     {
+  //       method: 'DELETE',
+  //       headers: {
+  //         Accept: 'application/json',
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify({ userID, postID }),
+  //     }
+  //   )
+  //   const json = await res.json()
+  //   if (json.status === 'success') {
+  //     // 需要這個防呆嗎？QU
+  //     mutate()
+  //   }
+  // }
 
   return (
     <>
@@ -121,7 +137,30 @@ export default function ForumPage(props) {
               </div>
             </div>
           </div>
-          {posts.map((post) => {
+          {posts?.map((post) => {
+            return (
+              <ComponentsPostCard
+                key={post.id}
+                postID={post.id}
+                postTitle={post.title}
+                postCateName={post.cate_name}
+                postContent={post.content}
+                width="21"
+                src={`/images/forum/320.webp`}
+                alt={post.user_name}
+                fontSize="14"
+                color="var(--sub-text)"
+                authorName={post.user_nick}
+                btnLikedActive={post.liked_user_ids.includes(userID)}
+                btnSavedActive={post.saved_user_ids.includes(userID)}
+                btnLikedCount={post.liked_user_ids.length}
+                btnSavedCount={post.saved_user_ids.length}
+                userID={userID}
+                mutate={mutate}
+              />
+            )
+          })}
+          {/* {posts?.map((post) => {
             const postID = post.id
             return (
               <div
@@ -141,7 +180,7 @@ export default function ForumPage(props) {
                 style={{ cursor: 'pointer' }}
               >
                 <ComponentsAuthorInfo
-                  memberID={post.user_id}
+                  authorID={post.user_id}
                   width="21"
                   src={`/images/forum/320.webp`}
                   alt="user_name"
@@ -190,7 +229,7 @@ export default function ForumPage(props) {
                 </div>
               </div>
             )
-          })}
+          })} */}
         </div>
       </main>
       <ComponentsSearchBar />

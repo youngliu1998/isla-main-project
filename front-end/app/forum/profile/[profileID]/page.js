@@ -10,23 +10,19 @@ import { useEffect, useState, useRef } from 'react'
 import EditPostModal from '../../_components/edit-post-modal'
 import { ClientPageRoot } from 'next/dist/client/components/client-page'
 import { useParams, useRouter } from 'next/navigation'
-import ComponentsButtonFollowingChat from '../../_components/button-following-chat'
+import ComponentsButtonFollowingChat from '../../_components/btn-following-chat'
 
-const fetcher = (url) =>
-  fetch(url, {
-    method: 'GET',
-    referrerPolicy: 'no-referrer-when-downgrade',
-  }).then((res) => res.json())
+const fetcher = (url) => fetch(url).then((res) => res.json())
 
 export default function ForumPage(props) {
   // 導向
   const router = useRouter()
 
   const authorID = useParams().profileID
-  const userID = 7
+  const userID = 1
 
   // fetch每篇文章的資料
-  const postsAPI = 'http://localhost:3005/api/forum/posts'
+  const postsAPI = `http://localhost:3005/api/forum/posts/profile?authorID=${authorID}`
   const { data, isLoading, error, mutate } = useSWR(postsAPI, fetcher)
   if (error) {
     console.log(error)
@@ -51,7 +47,7 @@ export default function ForumPage(props) {
     return (
       <>
         <main className="main col col-10 d-flex flex-column align-items-center">
-          此使用者無文章
+          很抱歉，我們找不到這位使用者
         </main>
       </>
     )
@@ -59,9 +55,6 @@ export default function ForumPage(props) {
 
   return (
     <>
-      {/* <div className="col col-10 d-flex"> */}
-      {/* <div className="row "> */}
-
       <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center">
         {/* author-card-sm */}
         <div className="author-card d-block d-xl-none position-relative px-0 mb-3 w-100">
@@ -100,7 +93,7 @@ export default function ForumPage(props) {
                 onClick={(e) => {
                   e.preventDefault()
                   e.stopPropagation()
-                  router.push(`/forum/123${post.id}`)
+                  router.push(`/forum/${post.id}`)
                 }}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') router.push(`/forum/123${post.id}`)
@@ -110,7 +103,7 @@ export default function ForumPage(props) {
                 style={{ cursor: 'pointer' }}
               >
                 <ComponentsAuthorInfo
-                  memberID={post.user_id}
+                  authorID={post.user_id}
                   width="21"
                   src={`/images/forum/320.webp`}
                   alt="user_name"
@@ -270,10 +263,7 @@ export default function ForumPage(props) {
           <ComponentsButtonFollowingChat />
         </aside>
       </div>
-
       <EditPostModal />
-      {/* </div> */}
-      {/* </div> */}
     </>
   )
 }

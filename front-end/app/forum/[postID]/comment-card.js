@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
+import ComponentsAvatar from '../_components/avatar'
 
 export default function PostIDCommentCard(props) {
   return (

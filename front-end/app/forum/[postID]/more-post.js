@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import ComponentsAvatar from '../_components/avatar'
 import ComponentsBtnLikedSaved from '../_components/btn-liked-saved'
+import ComponentsAuthorInfo from '../_components/author-info'
 
 export default function ComponentsMorePost({
   postTitle = '',
@@ -11,7 +12,8 @@ export default function ComponentsMorePost({
   savedUserIDs = [],
   postID = '',
   userID = '',
-  authorName = '',
+  authorID = '',
+  authorNick = '',
   mutate = () => {},
 }) {
   return (
@@ -43,17 +45,23 @@ export default function ComponentsMorePost({
               mutate={mutate}
             />
             <div>
-              <Link
-                href="/"
-                className="author-info d-flex align-items-center gap-2 text-decoration-none h-100 sub-text-color"
-              >
-                <ComponentsAvatar
+              <div className="author-info d-flex align-items-center gap-2 text-decoration-none h-100 sub-text-color">
+                {/* <ComponentsAvatar
                   classWidth="21"
                   src={`/images/forum/320.webp`}
                   alt={authorName}
                 />
-                <span className="author-name">{authorName}</span>
-              </Link>
+                <span className="author-name">{authorName}</span> */}
+                <ComponentsAuthorInfo
+                  authorID={authorID}
+                  width="20"
+                  src={`/images/forum/320.webp`}
+                  alt={authorNick}
+                  fontSize={14}
+                  color={'var(--main-text-color)'}
+                  authorName={authorNick}
+                />
+              </div>
             </div>
           </div>
         </div>

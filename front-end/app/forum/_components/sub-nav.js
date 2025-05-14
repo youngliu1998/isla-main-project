@@ -85,13 +85,13 @@ export default function ComponentsSubNav() {
               id="panelsStayOpen-collapseOne"
               className="accordion-collapse collapse show"
             >
-              <div className="followings fs14 d-flex flex-column px-3 gap-2">
+              <div className="followings fs14 d-flex flex-column px-3 py-1 gap-2">
                 <Link
                   href={`/forum/profile/1`}
                   className="followings-link main-text-color py-1"
                 >
                   <ComponentsAuthorInfo
-                    memberID="1"
+                    authorID="1"
                     width="20"
                     src="/images/forum/320.webp"
                     alt="userName"
@@ -105,7 +105,7 @@ export default function ComponentsSubNav() {
                   className="followings-link main-text-color py-1"
                 >
                   <ComponentsAuthorInfo
-                    memberID="123"
+                    authorID="123"
                     width="20"
                     src="/images/forum/320.webp"
                     alt="userName"
@@ -119,7 +119,7 @@ export default function ComponentsSubNav() {
                   className="followings-link main-text-color py-1"
                 >
                   <ComponentsAuthorInfo
-                    memberID="123"
+                    authorID="123"
                     width="20"
                     src="/images/forum/320.webp"
                     alt="userName"
@@ -128,35 +128,6 @@ export default function ComponentsSubNav() {
                     authorName="lilly"
                   />
                 </Link>
-                <Link
-                  href={`/forum/profile/userID`}
-                  className="followings-link main-text-color py-1"
-                >
-                  <ComponentsAuthorInfo
-                    memberID="123"
-                    width="20"
-                    src="/images/forum/320.webp"
-                    alt="userName"
-                    fontSize="14"
-                    color="var(--main-text)"
-                    authorName="lilly"
-                  />
-                </Link>
-                <Link
-                  href={`/forum/profile/userID`}
-                  className="followings-link main-text-color py-1"
-                >
-                  <ComponentsAuthorInfo
-                    memberID="123"
-                    width="20"
-                    src="/images/forum/320.webp"
-                    alt="userName"
-                    fontSize="14"
-                    color="var(--main-text)"
-                    authorName="lilly"
-                  />
-                </Link>
-
                 <Link
                   href={'/member/my-forum/my-following'}
                   className="more-followings-link main-color text-center rounded-pill px-0 py-1 w-auto"
@@ -255,7 +226,7 @@ export default function ComponentsSubNav() {
               <i className="bi bi-people" />
             </Link>
             <Link
-              href="/member/my-posts"
+              href="/member/my-forum/my-post"
               className="sub-nav-item d-flex px-3 py-3 gap-2 rounded-3 text-decoration-none fw-medium main-text-color"
               data-bs-toggle="tooltip"
               data-bs-placement="right"
@@ -264,7 +235,7 @@ export default function ComponentsSubNav() {
               <i className="bi bi-file-earmark-text" />
             </Link>
             <Link
-              href="/member/saved-posts"
+              href="/member/my-forum/saved-post"
               className="sub-nav-item d-flex px-3 py-3 gap-2 rounded-3 text-decoration-none fw-medium main-text-color"
               data-bs-toggle="tooltip"
               data-bs-placement="right"
