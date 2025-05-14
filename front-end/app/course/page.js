@@ -5,6 +5,8 @@ import { MdOutlineCenterFocusStrong } from 'react-icons/md'
 import Image from 'next/image'
 import '../course/_components/course.css'
 import { MdSearch } from 'react-icons/md'
+import CourseCard from '../course/_components/course-card'
+import Link from 'next/link'
 
 export default function CoursePage() {
   const [sortOption, setSortOption] = useState('1') // 初始值為「最熱門」
@@ -12,7 +14,6 @@ export default function CoursePage() {
   return (
     <>
       <section className="banner align-content-center justify-content-center py-sm-5 py-0">
-        <div>測試course branch test2</div>
         <div className="d-flex">
           <button className="carousel-button prev">‹</button>
           <button className="carousel-button next">›</button>
@@ -22,7 +23,7 @@ export default function CoursePage() {
           精選課程
         </p>
         <div className="d-flex align-content-center justify-content-center py-sm-5">
-          {['banner1.jpeg', 'banner4.jpeg', 'banner2.jpeg'].map((img, i) => (
+          {['banner1.jpg', 'banner4.jpg', 'banner2.jpg'].map((img, i) => (
             <div className={i === 1 ? 'box1-img1' : 'box1-img'} key={i}>
               <Image
                 src={`/images/course/bannerall/${img}`}
@@ -100,7 +101,6 @@ export default function CoursePage() {
               <MdSearch className="position-absolute search-icon" />
             </div>
             <div className="col-xl-3 col-lg-4 p-0 m-0">
-              {/* ✅ 使用受控元件 */}
               <select
                 className="form-select no-border"
                 value={sortOption}
@@ -115,6 +115,221 @@ export default function CoursePage() {
           </div>
         </div>
       </section>
+      {/* search-sticky-bar */}
+      <section>
+        <div className="search-sticky-bar sticky-bar-style d-lg-none w-100">
+          {/* 篩選按鈕 */}
+          <div className="d-flex justify-content-between align-items-center px-3">
+            <button
+              className="text-center w-100 py-2 search-sticky-filter border-0 bg-transparent d-flex justify-content-center align-items-center gap-1"
+              type="button"
+              id="filterToggleBtn"
+            >
+              篩選 <i className="bx bx-chevron-down" id="filterIcon" />
+            </button>
+          </div>
+          {/* 搜尋欄 */}
+          <div className="d-flex justify-content-between align-items-center px-3 position-relative">
+            <div className="py-3 text-center w-100">
+              <input
+                type="text"
+                className="form-control ps-5"
+                placeholder="想學新技巧？搜尋課程、老師、彩妝體驗通通有！"
+              />
+              <i className="bx bx-search search-icon-m position-absolute ps-2" />
+            </div>
+          </div>
+          {/* 篩選內容（預設隱藏） */}
+          <div
+            className="px-3 collapse-content"
+            id="filterCollapse"
+            style={{ display: 'none' }}
+          >
+            <div className="py-3">
+              <p className="mb-1 fw-bold">排序-由高到低</p>
+              <div className="row col-xxl-6 col-xl-7 col-lg-8 p-0 m-0">
+                <ul
+                  className="nav nav-pills d-flex col-12 p-0 m-0 justify-content-start"
+                  id="pills-tab"
+                  role="tablist"
+                >
+                  <li className="nav-item" role="presentation">
+                    <button
+                      className="nav-link search-btn"
+                      id="pills-home-tab"
+                      data-bs-toggle="pill"
+                      data-bs-target="#pills-home"
+                      type="button"
+                      role="tab"
+                      aria-controls="pills-home"
+                      aria-selected="true"
+                    >
+                      最熱門
+                    </button>
+                  </li>
+                  <li className="nav-item" role="presentation">
+                    <button
+                      className="nav-link search-btn"
+                      id="pills-home-tab"
+                      data-bs-toggle="pill"
+                      data-bs-target="#pills-home"
+                      type="button"
+                      role="tab"
+                      aria-controls="pills-home"
+                      aria-selected="true"
+                    >
+                      依人數
+                    </button>
+                  </li>
+                  <li className="nav-item" role="presentation">
+                    <button
+                      className="nav-link search-btn"
+                      id="pills-home-tab"
+                      data-bs-toggle="pill"
+                      data-bs-target="#pills-home"
+                      type="button"
+                      role="tab"
+                      aria-controls="pills-home"
+                      aria-selected="true"
+                    >
+                      依評價
+                    </button>
+                  </li>
+                  <li className="nav-item" role="presentation">
+                    <button
+                      className="nav-link search-btn"
+                      id="pills-home-tab"
+                      data-bs-toggle="pill"
+                      data-bs-target="#pills-home"
+                      type="button"
+                      role="tab"
+                      aria-controls="pills-home"
+                      aria-selected="true"
+                    >
+                      依時間
+                    </button>
+                  </li>
+                </ul>
+              </div>
+              <hr />
+              <p className="mb-1 fw-bold">狀態</p>
+              <ul
+                className="nav nav-pills d-flex col-12 p-0 m-0 justify-content-start"
+                id="pills-tab"
+                role="tablist"
+              >
+                <li className="nav-item" role="presentation">
+                  <button
+                    className="nav-link search-btn"
+                    id="pills-home-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills-home"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills-home"
+                    aria-selected="true"
+                  >
+                    線上課程
+                  </button>
+                </li>
+                <li className="nav-item" role="presentation">
+                  <button
+                    className="nav-link search-btn"
+                    id="pills-home-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills-home"
+                    type="button"
+                    role="tab"
+                    aria-controls="pills-home"
+                    aria-selected="true"
+                  >
+                    彩妝體驗
+                  </button>
+                </li>
+              </ul>
+              <p className="mb-1 fw-bold">類別</p>
+              <div className="row col-xxl-6 col-xl-7 col-lg-8 p-0 m-0">
+                <ul
+                  className="nav nav-pills d-flex col-12 p-0 m-0 justify-content-start"
+                  id="pills-tab"
+                  role="tablist"
+                >
+                  <li className="nav-item" role="presentation">
+                    <button
+                      className="nav-link search-btn"
+                      id="pills-home-tab"
+                      data-bs-toggle="pill"
+                      data-bs-target="#pills-home"
+                      type="button"
+                      role="tab"
+                      aria-controls="pills-home"
+                      aria-selected="true"
+                    >
+                      所有課程
+                    </button>
+                  </li>
+                  <li className="nav-item" role="presentation">
+                    <button
+                      className="nav-link search-btn"
+                      id="pills-home-tab"
+                      data-bs-toggle="pill"
+                      data-bs-target="#pills-home"
+                      type="button"
+                      role="tab"
+                      aria-controls="pills-home"
+                      aria-selected="true"
+                    >
+                      韓式彩妝
+                    </button>
+                  </li>
+                  <li className="nav-item" role="presentation">
+                    <button
+                      className="nav-link search-btn"
+                      id="pills-home-tab"
+                      data-bs-toggle="pill"
+                      data-bs-target="#pills-home"
+                      type="button"
+                      role="tab"
+                      aria-controls="pills-home"
+                      aria-selected="true"
+                    >
+                      專業彩妝
+                    </button>
+                  </li>
+                  <li className="nav-item" role="presentation">
+                    <button
+                      className="nav-link search-btn"
+                      id="pills-home-tab"
+                      data-bs-toggle="pill"
+                      data-bs-target="#pills-home"
+                      type="button"
+                      role="tab"
+                      aria-controls="pills-home"
+                      aria-selected="true"
+                    >
+                      日常彩妝
+                    </button>
+                  </li>
+                  <li className="nav-item" role="presentation">
+                    <button
+                      className="nav-link search-btn"
+                      id="pills-home-tab"
+                      data-bs-toggle="pill"
+                      data-bs-target="#pills-home"
+                      type="button"
+                      role="tab"
+                      aria-controls="pills-home"
+                      aria-selected="true"
+                    >
+                      其他課程
+                    </button>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
       <section className="box3 container p-0">
         <div className="tab-content" id="pills-tabContent">
           <div
@@ -125,6 +340,51 @@ export default function CoursePage() {
             tabIndex={0}
           >
             <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-lg-4 g-4 p-0 m-0 mt-4">
+              <CourseCard
+                id="course123"
+                picture="/images/course/bannerall/banner1.jpg"
+                tag="課程"
+                title="臉部撥筋Ｘ耳穴按摩Ｘ芳療活絡｜現代人的 10 分鐘舒壓養顏術"
+                teacher="李郁文"
+                rating={3.5}
+                student={3550}
+                price={5808}
+                discount={7808}
+              />
+              <CourseCard
+                id="course123"
+                picture="/images/course/bannerall/banner1.jpg"
+                tag="課程"
+                title="臉部撥筋Ｘ耳穴按摩Ｘ芳療活絡｜現代人的 10 分鐘舒壓養顏術"
+                teacher="李郁文"
+                rating={3.5}
+                student={3550}
+                price={5808}
+                discount={7808}
+              />
+              <CourseCard
+                id="course123"
+                picture="/images/course/bannerall/banner1.jpg"
+                tag="課程"
+                title="臉部撥筋Ｘ耳穴按摩Ｘ芳療活絡｜現代人的 10 分鐘舒壓養顏術"
+                teacher="李郁文"
+                rating={3.5}
+                student={3550}
+                price={5808}
+                discount={7808}
+              />
+              <CourseCard
+                id="course123"
+                picture="/images/course/bannerall/banner1.jpg"
+                tag="課程"
+                title="臉部撥筋Ｘ耳穴按摩Ｘ芳療活絡｜現代人的 10 分鐘舒壓養顏術"
+                teacher="李郁文"
+                rating={3.5}
+                student={3550}
+                price={5808}
+                discount={7808}
+              />
+
               <div className="col mb-5">
                 <div
                   className="card h-100 card-hover-course"
@@ -132,7 +392,7 @@ export default function CoursePage() {
                 >
                   <div className="card-img-container-course">
                     <Image
-                      src="/images/course/bannerall/banner1.jpeg"
+                      src="/images/course/bannerall/banner1.jpg"
                       alt="課程名稱"
                       width={800}
                       height={450}
@@ -202,6 +462,37 @@ export default function CoursePage() {
         <div className="d-flex justify-content-center align-content-center mb-5 mt-3 More-courses">
           更多課程
           <i className="bx bx-chevron-down fs-4" />
+        </div>
+      </section>
+      <section className="box4">
+        <div className="container py-5 px-0">
+          <div className="d-flex ms-2">
+            <div className="title-mark me-2" />
+            <h3>熱門講師</h3>
+          </div>
+          <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-lg-4 g-4 p-0 m-0 mt-4">
+            <Link href="/teacher/johnny" className="text-decoration-none">
+              <div className="card card-hover-teacher">
+                <div className="card-img-wrapper-teacher">
+                  <Image
+                    src="/images/course/teacherall/image_73.jpg"
+                    className="card-img-teacher"
+                    alt="Johnny"
+                    width={300} 
+                    height={300} 
+                  />
+                  <div className="card-img-overlay d-flex flex-column justify-content-end overlay-teacher">
+                    <h5 className="card-title-teacher">Johnny</h5>
+                    <p className="card-text-teacher">
+                      深耕耳穴按摩與撥筋 15 年，IFPA & NAHA
+                      國際芳療專業雙認證資深講師
+                      深耕耳穴按摩與撥筋深耕耳穴按摩與撥筋深耕耳穴按摩與撥筋證資深講證資深講證資深講證資深講
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          </div>
         </div>
       </section>
     </>

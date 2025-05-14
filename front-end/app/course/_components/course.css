@@ -1,7 +1,7 @@
-* {
+/* * {
   outline: 1px solid rgb(108, 186, 231);
   box-sizing: border-box;
-}
+} */
 :root {
   --linear: linear-gradient(
     180deg,
@@ -10,7 +10,6 @@
   );
   --MainColor: #fd7061;
 }
-
 
 .banner {
   background-color: #fff4f3;
@@ -123,7 +122,7 @@
 
 /* 動態底線 */
 .nav-link.search-btn::after {
-  content: "";
+  content: '';
   position: absolute;
   left: 0;
   bottom: 0;
@@ -180,6 +179,39 @@
 .search-btntext:hover {
   color: var(--main-color);
 }
+/* search-sticky-bar */
+.search-sticky-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  background-color: #fff;
+  box-shadow: 0 -2px 10px rgba(255, 255, 255, 0.08);
+  z-index: 10;
+}
+.sticky-bar-style {
+  border-radius: 15px;
+  border: 2px solid rgba(185, 185, 185, 0.15);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.8) 0%,
+    rgba(255, 255, 255, 0.9) 100%
+  );
+  /* 漸層玻璃卡片 */
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(10px);
+}
+.search-icon-m {
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
+  position: absolute;
+  font-size: 1.2rem;
+  color: #888;
+  pointer-events: none; /* 防止點到圖示 */
+}
+.search-sticky-filter {
+  color: var(--MainColor);
+}
 /* box3 */
 
 /* ---------- course按鈕樣式 ---------- */
@@ -200,6 +232,25 @@
 .card-btn-course:visited {
   background-color: #fff4f3 !important;
   color: var(--main-color) !important;
+}
+/* ---------- experience-tag按鈕樣式 ---------- */
+.experience-tag {
+  padding: 2px 10px;
+  background-color: #faf3ff;
+  color: #c183fa;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.experience-tag:focus,
+.experience-tag:active,
+.experience-tag:hover,
+.experience-tag:visited {
+  background-color: #faf3ff !important;
+  color: #c183fa !important;
 }
 
 /* ---------- 愛心 icon ---------- */
@@ -274,7 +325,9 @@
 
 /* ---------- 圖片放大 ---------- */
 .card-hover-course {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .card-hover-course:hover .card-img-top-course {
@@ -299,7 +352,9 @@
 /* ---------- 卡片浮起效果 ---------- */
 .card-hover-teacher {
   overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .card-hover-teacher:hover {
