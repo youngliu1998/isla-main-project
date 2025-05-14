@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from 'react'
 
+// FIXME 讚數是否前端修改即可？
+
 export default function ComponentsBtnLikedSaved({
   type = '',
   active = Boolean,

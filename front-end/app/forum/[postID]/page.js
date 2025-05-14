@@ -12,103 +12,34 @@ import EditPostModal from '../_components/edit-post-modal'
 import useSWR from 'swr'
 import ComponentsBtnLikedSaved from '../_components/btn-liked-saved'
 import ComponentsMorePost from './more-post'
+import ComponentsAuthorInfo from '../_components/author-info'
 
 const fetcherReferer = (url) =>
   fetch(url, {
     method: 'GET',
-    // referrerPolicy: 'no-referrer-when-downgrade',
+    referrerPolicy: 'no-referrer-when-downgrade',
   }).then((res) => res.json())
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
 
-const fetcherPost = (url, bodyObj) =>
-  fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(bodyObj),
-  }).then((res) => {
-    res.json()
-  })
-
 export default function PostIDPage(props) {
   const userID = 1
   const postID = useParams().postID
-  // console.log(postID)
-  // //
-  // function usePost() {
-  //   const postAPI = `http://localhost:3005/api/forum/post/${postID}`
-  //   return useSWR(postAPI, fetcher)
-  // }
-  // const {
-  //   data: postData,
-  //   isLoading: postLoading,
-  //   error: postError,
-  //   mutate: postMutate,
-  // } = usePost()
-  //
-  // function useMorePosts() {
-  //   const morePostsAPI = `http://localhost:3005/api/forum/post/${postID}`
-  //   return useSWR(morePostsAPI, fetcher)
-  // }
-  // const {
-  //   data: moreData,
-  //   isLoading: moreLoading,
-  //   error: moreError,
-  //   mutate: moreMutate,
-  // } = useMorePosts()
-  //
-  // if (postError) {
-  //   console.log(postError)
-  //   return (
-  //     <main className="main col col-10 d-flex flex-column align-items-center">
-  //       連線錯誤
-  //     </main>
-  //   )
-  // }
 
-  // // console.log(postData?.data?.extendedPosts[0])
-  // const post =
-  //   postData?.status === 'success' ? postData?.data?.extendedPosts[0] : []
-  // if (postLoading) {
-  //   return (
-  //     <>
-  //       <main className="main col col-10 d-flex flex-column align-items-center">
-  //         isLoading
-  //       </main>
-  //     </>
-  //   )
-  // }
-
-  // if (post.length === 0) {
-  //   return (
-  //     <>
-  //       <main className="main col col-10 d-flex flex-column align-items-center">
-  //         此使用者無文章
-  //       </main>
-  //     </>
-  //   )
-  // }
-
-  // if (moreError) {
-  //   return console.log(moreError)
-  // }
-
-  // const morePosts =
-  //   moreData?.status === 'success' ? postData?.data?.morePosts : []
-  // console.log(morePosts)
-  // if (moreLoading) {
-  //   return console.log('moreLoading')
-  // }
-
-  // if (morePosts.length === 0) {
-  //   return console.log('無資料')
-  // }
-
-  const postAPI = `http://localhost:3005/api/forum/post/${postID}`
+  // const postAPI = `http://localhost:3005/api/forum/post/${postID}`
+  const postAPI = `http://localhost:3005/api/forum/posts/post-detail?postID=${postID}`
   const { data, isLoading, error, mutate } = useSWR(postAPI, fetcher)
   let posts = data?.data?.posts
   let post = {}
   let morePosts = data?.data?.morePosts
+  if (error) {
+    console.log(error)
+    return (
+      <main className="main col col-10 d-flex flex-column align-items-start">
+        連線錯誤
+      </main>
+    )
+  }
   if (Array.isArray(posts)) {
     posts = posts.map((post) => {
       return {
@@ -134,15 +65,6 @@ export default function PostIDPage(props) {
     })
   }
   console.log(morePosts)
-
-  if (error) {
-    console.log(error)
-    return (
-      <main className="main col col-10 d-flex flex-column align-items-start">
-        連線錯誤
-      </main>
-    )
-  }
   if (isLoading) {
     console.log(isLoading)
     return (
@@ -151,7 +73,15 @@ export default function PostIDPage(props) {
       </main>
     )
   }
+  if (morePosts.length === 0) {
+    return (
+      <main className="main col col-10 d-flex flex-column align-items-start">
+        無資料
+      </main>
+    )
+  }
 
+  console.log(post)
   return (
     <>
       <main className="main col col-10 d-flex flex-column align-items-start">
@@ -173,20 +103,18 @@ export default function PostIDPage(props) {
               </button>
             </div>
             <div>
-              <Link
-                href="/"
-                className="author-info d-inline-flex align-items-center gap-2 mb-2"
-                role="button"
-              >
-                <ComponentsAvatar
-                  classWidth="21"
+              <div className="author-info d-inline-flex align-items-center gap-2 mb-2">
+                <ComponentsAuthorInfo
+                  authorID={post.user_id}
+                  width="24"
                   src={`/images/forum/320.webp`}
-                  alt="測試"
+                  alt={post.user_nick}
+                  fontSize={14}
+                  color={'var(--main-text-color)'}
+                  authorName={post.user_nick}
                 />
-                <span className="author-name fs14 sub-text-color">
-                  {post.user_id}
-                </span>
-              </Link>
+                {/* FIXME 放一個追蹤按鈕 */}
+              </div>
             </div>
             <div className="post-content d-flex flex-column gap-3 pb-4 mb-2 bottom-stroke">
               {post.content}
@@ -216,20 +144,22 @@ export default function PostIDPage(props) {
               <div className="more-header py-2 bottom-stroke sub-text-color">
                 更多文章
               </div>
-              <div className="more-cards row py-2">
+              <div className="more-cards d-flex flex-wrap py-2">
                 {Array.isArray(morePosts) &&
                   morePosts.map((morePost) => {
                     return (
-                      <ComponentsMorePost
-                        key={morePost.id}
-                        postTitle={morePost.title}
-                        likedUserIDs={morePost.liked_user_ids}
-                        savedUserIDs={morePost.saved_user_ids}
-                        postID={morePost.id}
-                        userID={morePost.user_id}
-                        authorName={morePost.user_name}
-                        mutate={mutate}
-                      />
+                      <div key={morePost.id} className="w-50 p-1">
+                        <ComponentsMorePost
+                          postTitle={morePost.title}
+                          likedUserIDs={morePost.liked_user_ids}
+                          savedUserIDs={morePost.saved_user_ids}
+                          postID={morePost.id}
+                          userID={userID} //登入使用者
+                          authorID={morePost.user_id}
+                          authorNick={morePost.user_nick}
+                          mutate={mutate}
+                        />
+                      </div>
                     )
                   })}
               </div>
