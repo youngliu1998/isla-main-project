@@ -3,8 +3,11 @@
 import React, { useState } from 'react'
 import InputPass from '../_component/input-pass'
 import '../_component/_style.css/form.css'
+import { useAuth } from '@/hook/use-auth'
 
 export default function PasswordPage() {
+  const { user } = useAuth()
+  console.log('password-page: ', user)
   const [password, setPassword] = useState({
     oriPass: '',
     newPass: '',

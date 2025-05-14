@@ -12,13 +12,14 @@ export default function LoginPage() {
   const router = useRouter()
   // const navigater = useNavigate()
   const [memAuth, setMemAuth] = useState({
-    email: '',
+    email: 'johnwilliams@test.com',
     password: '12345',
   })
-  const { isAuth, login } = useAuth() // Context
+  const { user, isAuth, login } = useAuth() // Context
   useEffect(() => {
     // if get auth, go to profile
-    if (isAuth) router.push('profile')
+    // if (isAuth) router.push('profile')
+    console.log('login-page-user: ', user)
   }, [login])
   return (
     <>

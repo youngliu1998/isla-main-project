@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
 
 const AuthContext = createContext(null)
 AuthContext.displayName = 'AuthContext'
@@ -14,10 +14,11 @@ export function AuthProvider({ children }) {
     email: '',
     points: '',
     level: '',
+    tel: '',
+    address: '',
     mem_cpon: 0,
   }
   const [user, setUser] = useState(defaultUser)
-  let userDataGlobal = {}
   const isAuth = Boolean(user?.id)
 
   // login function
@@ -54,22 +55,46 @@ export function AuthProvider({ children }) {
       })
 
       const data = await response.json()
-      const userData = await data['data']
-      console.log('useAuth-login-userData: ', userData)
-      userDataGlobal = userData
+      const userData = data['data']
+      setUser(userData)
     } catch (err) {
-      console.log(err)
+      console.error('驗證錯誤:', err)
+      localStorage.removeItem('jwtToken')
     }
-    setUser(userDataGlobal)
-    console.log('user: ', user)
   }
 
   // logout function
   const logout = () => {
     localStorage.removeItem('jwtToken')
     setUser(defaultUser)
-    console.log(user)
   }
+  // 初始讀取 jwtToken 並取得使用者資料
+  useEffect(() => {
+    const initAuth = async () => {
+      const token = localStorage.getItem('jwtToken')
+      if (!token) return
+      // fetch data from db
+      try {
+        const response = await fetch('http://localhost:3005/api/member/login', {
+          method: 'GET',
+          headers: { Authorization: `Bearer ${token}` },
+        })
+
+        const data = await response.json()
+        if (response.ok && data?.data) {
+          setUser(data.data)
+        } else {
+          console.warn('驗證失敗，清除 token')
+          localStorage.removeItem('jwtToken')
+        }
+      } catch (err) {
+        console.error('驗證錯誤:', err)
+        localStorage.removeItem('jwtToken')
+      }
+    }
+
+    initAuth()
+  }, [])
   return (
     <>
       <AuthContext.Provider value={{ user, isAuth, login, logout }}>
