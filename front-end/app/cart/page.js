@@ -50,7 +50,7 @@ export default function CartPage() {
               </label>
             </div>
           </div>
-          <div className="col-lg-8 col-12"></div>
+          <div className="col-lg-8 col-12 d-none d-lg-block"></div>
         </div>
 
         <div className="row gy-5">
