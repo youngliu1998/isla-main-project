@@ -1,121 +1,139 @@
-// ProductCard.js
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import RatingComponent from './product-rating.js';
-import './product-card-styles.css'; // 你的樣式表
+// src/components/ProductCard.jsx
+'use client'
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
+import { BiSolidStar, BiStar, BiSolidHeart, BiHeart } from 'react-icons/bi'
+import './_style.css/product-card-s.css'
 
-// 從 react-icons 引入愛心圖標
-import { BsHeartFill, BsHeart } from 'react-icons/bs';
+function ProductCard({ product }) {
+  if (!product) {
+    return <div>無法載入產品資訊。</div>
+  }
 
-const ProductCard = ({
-                       imageUrl,
-                       imageAlt = "商品圖片",
-                       initialIsFavorited = false,
-                       rating,
-                       reviewCount,
-                       brandName,
-                       productName,
-                       mainPrice,
-                       basicPrice,
-                       currencySymbol = "$",
-                       onFavoriteToggle,
-                       onAddToCart,
-                       productId,
-                     }) => {
-  const [isFavorited, setIsFavorited] = useState(initialIsFavorited);
+  const {
+    id,
+    brand = 'N/A',
+    name = 'Unnamed Product',
+    price = '$0.00',
+    originalPrice,
+    rating = 0,
+    reviews = 0,
+    imageUrl = `/images/product/test/test1.png`,
+    isBookmarked: initialIsBookmarked = false,
+  } = product
 
-  const handleFavoriteClick = (e) => {
-    e.preventDefault();
-    const newFavoriteState = !isFavorited;
-    setIsFavorited(newFavoriteState);
-    if (onFavoriteToggle) {
-      onFavoriteToggle(productId, newFavoriteState);
+  const [bookmarked, setBookmarked] = useState(initialIsBookmarked)
+
+  const handleAddToCart = (e) => {
+    e.preventDefault()
+    console.log(`Product ${id} (${name}) added to cart.`)
+    // TODO: Add to cart logic
+  }
+
+  const toggleBookmark = (e) => {
+    e.preventDefault()
+    setBookmarked(!bookmarked)
+    console.log(`Product ${id} (${name}) bookmark status: ${!bookmarked}`)
+    // TODO: Update bookmark logic
+  }
+
+  const renderStars = (currentRating) => {
+    const stars = []
+    const totalStars = 5
+    for (let i = 1; i <= totalStars; i++) {
+      stars.push(
+        i <= currentRating ? (
+          <BiSolidStar
+            key={`star-solid-${i}`}
+            className="product-card-star product-card-star-active"
+          />
+        ) : (
+          <BiStar key={`star-empty-${i}`} className="product-card-star" />
+        )
+      )
     }
-  };
-
-  const handleAddToCartClick = (e) => {
-    e.preventDefault();
-    if (onAddToCart) {
-      onAddToCart({
-        productId,
-        name: productName,
-        price: mainPrice,
-      });
-    }
-  };
-
-  const isSpecialOffer = basicPrice && parseFloat(String(mainPrice).replace(/,/g, '')) < parseFloat(String(basicPrice).replace(/,/g, ''));
+    return stars
+  }
 
   return (
-    <div className="product_card">
-      <div className="product_card-head">
-        <div className="head-top d-flex">
-          {(rating !== undefined && reviewCount !== undefined) && (
-            <div className="rating rating-desktop">
-              <RatingComponent rating={rating} reviewCount={reviewCount} />
-            </div>
-          )}
-          <div className="bookmark">
-            <a href="#" onClick={handleFavoriteClick} role="button" aria-pressed={isFavorited} aria-label={isFavorited ? "從我的最愛移除" : "加入我的最愛"}>
-              {isFavorited ? <BsHeartFill /> : <BsHeart />}
+    <div className="product-card-product_card">
+      <div className="product-card-product_card-head">
+        <div className="product-card-head-top d-flex">
+          <div className="product-card-rating product-card-rating-desktop">
+            <div className="product-card-star-box">{renderStars(rating)}</div>
+            <div className="product-card-rating_text">{reviews} 則評論</div>
+          </div>
+
+          <div className="product-card-bookmark">
+            <a
+              href="#"
+              onClick={toggleBookmark}
+              aria-label={bookmarked ? '移除書籤' : '加入書籤'}
+            >
+              {bookmarked ? (
+                <BiSolidHeart className="product-card-bookmark-icon bookmarked" />
+              ) : (
+                <BiHeart className="product-card-bookmark-icon" />
+              )}
             </a>
           </div>
         </div>
-        <div className="product_card-img">
-          <img src={imageUrl} alt={imageAlt} className="card-img" />
+
+        <div className="product-card-product_card-img">
+          <img src={imageUrl} alt={name} className="card-img" />
         </div>
-        <div className="hover-add-cart">
-          <a href="#" onClick={handleAddToCartClick} className="add-cart-btn">加入購物車</a>
+
+        <div className="product-card-hover-add-cart">
+          <a
+            href="#"
+            onClick={handleAddToCart}
+            className="product-card-add-cart-btn"
+          >
+            加入購物車
+          </a>
         </div>
       </div>
 
-      <div className="product_card-info">
-        <div className="info">
-          <div className="product_details">
-            {brandName && <div className="brand">{brandName}</div>}
-            <div className="product_name">{productName}</div>
+      <div className="product-card-product_card-info">
+        <div className="product-card-info">
+          <div className="product-card-product_details">
+            <div className="product-card-brand">{brand}</div>
+            <div className="product-card-product_name">{name}</div>
           </div>
         </div>
-        {(rating !== undefined && reviewCount !== undefined) && (
-          <div className="rating rating-mobile">
-            <RatingComponent rating={rating} reviewCount={reviewCount} />
-          </div>
-        )}
-        <div className="price">
-          <div className="price-box d-flex gap-2">
-            <div className="main-price">
-              {currencySymbol}
-              {typeof mainPrice === 'number' ? mainPrice.toLocaleString() : String(mainPrice)}
-            </div>
-            {isSpecialOffer && basicPrice && (
-              <div className="basic-price">
-                <del>
-                  {currencySymbol}
-                  {typeof basicPrice === 'number' ? basicPrice.toLocaleString() : String(basicPrice)}
-                </del>
+
+        <div className="product-card-rating product-card-rating-mobile">
+          <div className="product-card-star-box">{renderStars(rating)}</div>
+          <div className="product-card-rating_text">{reviews} 則評論</div>
+        </div>
+
+        <div className="product-card-price">
+          <div className="product-card-price-box d-flex gap-2">
+            <div className="product-card-main-price">{price}</div>
+            {originalPrice && (
+              <div className="product-card-basic-price">
+                <del>{originalPrice}</del>
               </div>
             )}
           </div>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 ProductCard.propTypes = {
-  productId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  imageUrl: PropTypes.string.isRequired,
-  imageAlt: PropTypes.string,
-  initialIsFavorited: PropTypes.bool,
-  rating: PropTypes.number,
-  reviewCount: PropTypes.number,
-  brandName: PropTypes.string,
-  productName: PropTypes.string.isRequired,
-  mainPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-  basicPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-  currencySymbol: PropTypes.string,
-  onFavoriteToggle: PropTypes.func,
-  onAddToCart: PropTypes.func,
-};
+  product: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    brand: PropTypes.string,
+    name: PropTypes.string,
+    price: PropTypes.string,
+    originalPrice: PropTypes.string,
+    rating: PropTypes.number,
+    reviews: PropTypes.number,
+    imageUrl: PropTypes.string,
+    isBookmarked: PropTypes.bool,
+  }).isRequired,
+}
 
-export default ProductCard;
+export default ProductCard
