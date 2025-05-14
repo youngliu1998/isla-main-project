@@ -2,13 +2,13 @@
 
 import React, { useState, useEffect } from 'react'
 
-import inputCheckbox from "../_components/input-checkbox"
+import ProductCard from "./_components/product-card-s"
 
 export default function MemberPage(props) {
   return (
     <>
       <div>Product List</div>
-      <inputCheckbox/>
+      <ProductCard/>
     </>
   )
 }
