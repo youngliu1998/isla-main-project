@@ -6,6 +6,7 @@ import Image from 'next/image'
 import '../course/_components/course.css'
 import { MdSearch } from 'react-icons/md'
 import CourseCard from '../course/_components/course-card'
+import TeacherCard from '../course/_components/teacher-card'
 import Link from 'next/link'
 
 export default function CoursePage() {
@@ -341,7 +342,7 @@ export default function CoursePage() {
           >
             <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-lg-4 g-4 p-0 m-0 mt-4">
               <CourseCard
-                id="course123"
+                id="1"
                 picture="/images/course/bannerall/banner1.jpg"
                 tag="課程"
                 title="臉部撥筋Ｘ耳穴按摩Ｘ芳療活絡｜現代人的 10 分鐘舒壓養顏術"
@@ -471,15 +472,33 @@ export default function CoursePage() {
             <h3>熱門講師</h3>
           </div>
           <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-lg-4 g-4 p-0 m-0 mt-4">
-            <Link href="/teacher/johnny" className="text-decoration-none">
+            <TeacherCard
+              id="johnny"
+              name="Johnny"
+              image="/images/course/teacherall/image_73.jpg"
+              about="深耕耳穴按摩與撥筋 15 年，IFPA & NAHA 國際芳療專業雙認證資深講師深耕耳穴按摩與撥筋 15 年，IFPA & NAHA 國際芳療專業雙認證資深講師"
+            />
+            <TeacherCard
+              id="johnny"
+              name="Johnny"
+              image="/images/course/teacherall/image_73.jpg"
+              about="深耕耳穴按摩與撥筋 15 年，IFPA & NAHA 國際芳療專業雙認證資深講師深耕耳穴按摩與撥筋 15 年，IFPA & NAHA 國際芳療專業雙認證資深講師"
+            />
+            <TeacherCard
+              id="johnny"
+              name="Johnny"
+              image="/images/course/teacherall/image_73.jpg"
+              about="深耕耳穴按摩與撥筋 15 年，IFPA & NAHA 國際芳療專業雙認證資深講師深耕耳穴按摩與撥筋 15 年，IFPA & NAHA 國際芳療專業雙認證資深講師"
+            />
+            <Link href="/teacher/${id}" className="text-decoration-none">
               <div className="card card-hover-teacher">
                 <div className="card-img-wrapper-teacher">
                   <Image
                     src="/images/course/teacherall/image_73.jpg"
                     className="card-img-teacher"
                     alt="Johnny"
-                    width={300} 
-                    height={300} 
+                    width={300}
+                    height={300}
                   />
                   <div className="card-img-overlay d-flex flex-column justify-content-end overlay-teacher">
                     <h5 className="card-title-teacher">Johnny</h5>

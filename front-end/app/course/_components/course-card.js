@@ -7,15 +7,15 @@ export default function CourseCard({
   tag = '',
   title = '',
   teacher = '',
-  rating = {},
-  student = {},
-  price = {},
-  discount = {},
+  rating = 0,
+  student = 0,
+  price = 0,
+  discount = 0,
 }) {
   const renderStars = () => {
-    const fullStars = Math.floor(rating)
-    const halfStar = rating % 1 >= 0.5
-    const emptyStars = 5 - fullStars - (halfStar ? 1 : 0)
+    const fullStars = Math.floor(rating) // 整數星數
+    const halfStar = rating % 1 >= 0.5 // 判斷是否需要半顆星
+    const emptyStars = 5 - fullStars - (halfStar ? 1 : 0) // 剩餘為空星
 
     return (
       <>

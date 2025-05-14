@@ -1,22 +1,24 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { MdOutlineCenterFocusStrong } from 'react-icons/md'
 import Image from 'next/image'
 import '../../_components/course-list.css'
 import Link from 'next/link'
 
 export default function CourseIDPage() {
+  const [loaded, setLoaded] = useState(false)
   return (
     <>
-      <section>
-        <div className="d-flex flex-column justify-content-center text-bg-dark overflow-hidden position-relative">
+      {/* <section>
+        <div className="d-flex flex-column justify-content-center text-bg-dark overflow-hidden position-relative ">
           <Image
             src="/images/course/bannerall/banner1.jpg"
             alt="課程圖片"
             width={800}
-            height={450}
-            className="card-img-top-course"
+            height={200}
+            className="card-img-top-course object-fit-cover"
+            priority
           />
           <div className="card-img-overlay banner-img-mask-course">
             <div className="row d-lg-flex d-none">
@@ -68,11 +70,18 @@ export default function CourseIDPage() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
       {/* box1 */}
-      <section className="box1">
+      <div className="box0">
         <div className="container">
-          <div className="row row-cols-2 row-cols-md-4 justify-content-evenly align-items-center py-md-4 py-3 gy-2 gy-md-0">
+          <div className="row row-cols-2">
+            <div className="col">字字字字字</div>
+          </div>
+        </div>
+      </div>
+      <div className="box1">
+        <div className="container">
+          <div className="row row-cols-2 row-cols-md-4 justify-content-evenly py-md-4 py-3 gy-2 gy-md-0">
             <div className="col text-center">
               <div className="text-center box1-h1">課程包含</div>
               <div className="box1-p">5章15單元</div>
@@ -97,7 +106,7 @@ export default function CourseIDPage() {
             </div>
           </div>
         </div>
-      </section>
+      </div>
       {/* box2 */}
       <section className="box2 container my-5">
         <div className="row">
