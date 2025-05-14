@@ -53,6 +53,8 @@ const callback_url = isDev
   ? serverConfig.lineLogin.development.callbackUrl
   : serverConfig.lineLogin.production.callbackUrl
 
+/*
+暫時註解
 const LineLogin = new line_login({
   channel_id,
   channel_secret,
@@ -64,6 +66,7 @@ const LineLogin = new line_login({
   prompt: 'consent',
   bot_prompt: 'normal',
 })
+*/
 
 // 登入主機共用，產生JWT存取令牌(access token)
 // 需要準備登入完成放在最後一行，例如: `await generateAccessToken(res, user)`
