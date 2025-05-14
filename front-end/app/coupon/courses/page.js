@@ -1,109 +1,137 @@
 'use client'
-
-import Image from 'next/image'
+import useSWR from 'swr'
 import '../_components/coupon.css'
-import SideBar from '../_components/side-bar'
+import AsideCourse from '../_components/aside-course'
 import MobileNav from '../_components/mobile-nav'
 import PcNav from '../_components/pc-nav'
+import CouponList from '../_components/coupon-list'
+import LoadMoreButton from '../_components/more-button'
+import DataStatus from '../_components/data-status'
+import CouponHeader from '../_components/coupon-header'
+import useCouponFilter from '../../../hook/coupon-filter'
+import { useState } from 'react'
+import { useAuth } from '@/hook/use-auth'
+
+// fetcher 給 SWR 使用
+const fetcher = (...args) => fetch(...args).then((res) => res.json())
+
+// type_id 對應樣式
+const typeIdToStyle = {
+  1: 'button-orange',
+  2: 'button-purple',
+  3: 'button-blue',
+}
+const getCouponStyle = (typeId) => typeIdToStyle[typeId] || 'button-all'
 
 export default function CouponPage() {
+  // SWR 取得資料
+  const { user } = useAuth()
+  const url = user
+    ? `http://localhost:3005/api/coupon/products?user_id=${user.id}`
+    : null
+  const { data, error } = useSWR(url, fetcher)
+
+  // 使用hook管理篩選狀態
+  const {
+    currentType,
+    setCurrentType,
+    showClaimed,
+    setShowClaimed,
+    courseCategory = '',
+    setcourseCategory = '',
+  } = useCouponFilter()
+
+  // 各分頁顯示狀態
+  const [couponCountMap, setCouponCountMap] = useState({
+    ' ': 10,
+    1: 10,
+    2: 10,
+    3: 10,
+  })
+  const currentCount = couponCountMap[currentType] || 10
+
+  // 判斷狀態
+  const isLoading = !data
+  const isError = error || data?.status === 'false'
+
+  // 取得原始資料陣列
+  const coupons = Array.isArray(data?.data?.coupons) ? data.data.coupons : []
+
+  // 篩選 + 排序
+  const filteredCoupons = coupons
+    .filter((coupon) => {
+      const isCourses = coupon.area === 2 || coupon.area === 0
+      const typeMatch = currentType === ' ' || coupon.type_id === currentType
+      const claimedMatch = showClaimed ? coupon.claimed : true
+      const courseMatch =
+        !courseCategory || coupon.course_category_name === courseCategory
+
+      return isCourses && typeMatch && claimedMatch && courseMatch
+    })
+    .sort((a, b) => {
+      const aStyle = getCouponStyle(a.type_id)
+      const bStyle = getCouponStyle(b.type_id)
+      if (aStyle === 'button-all' && bStyle !== 'button-all') return -1
+      if (aStyle !== 'button-all' && bStyle === 'button-all') return 1
+      return 0
+    })
+
+  // 判斷是否為空結果
+  const isEmpty = !isLoading && !isError && filteredCoupons.length === 0
+  const emptyMsg = showClaimed ? '尚未有已領取的優惠券' : '尚未有優惠券'
+
+  // 載入更多
+  const displayCoupon = filteredCoupons.slice(0, currentCount)
+  // 是否顯示載入更多按鈕
+  const moreBtn = currentCount < filteredCoupons.length
+
+  // 點擊載入更多
+  const handleLoadMore = () => {
+    setCouponCountMap((prev) => ({
+      ...prev,
+      [currentType]: (prev[currentType] || 10) + 10,
+    }))
+  }
+
   return (
-    <>
-      <main className="px-md-5 px-3">
-        <div className="row mt-sm-4 g-sm-5">
-          {/* aside */}
-          <SideBar />
-          {/* content */}
-          <div className="col-lg-9 col-md-8 col-12 mt-0">
-            <h2 className="d-none d-md-flex">優惠券專區 - 課程</h2>
+    <main className="px-md-5 px-3 container">
+      <div className="row mt-sm-4 g-sm-5">
+        <AsideCourse
+          courseCategory={courseCategory}
+          setcourseCategory={setcourseCategory}
+        />
 
-            <div className="d-flex d-md-none py-3 px-5 bg-white justify-content-center">
-              <h4 className="sub-color ">菜單</h4>
-            </div>
+        <div className="col-lg-9 col-md-8 col-12 mt-0">
+          <CouponHeader type="course" />
+          <MobileNav />
+          <PcNav
+            currentType={currentType}
+            setCurrentType={setCurrentType}
+            showClaimed={showClaimed}
+            setShowClaimed={setShowClaimed}
+            isMemberCenter={false}
+            couponPageType="course"
+          />
 
-            {/* mobile nav  */}
-            <MobileNav />
+          <DataStatus
+            isLoading={isLoading}
+            isError={isError}
+            isEmpty={isEmpty}
+            message={emptyMsg}
+            errorMessage="伺服器忙線中，請稍後再試"
+          />
 
-            {/* pc nav  */}
-            <PcNav />
-
-            <div className="d-flex flex-column gap-lg-0 gap-3 mt-4 mt-lg-0">
-              <div className="d-flex flex-lg-nowrap flex-wrap justify-content-md-between justify-content-center gap-xl-5 gap-lg-4 gap-3">
-                {/* coupon-1 */}
-                <div className="coupon mt-lg-4 mb-lg-3 d-flex flex-nowrap justify-content-between">
-                  {/* img */}
-                  <div className="d-flex align-items-center flex-shrink-1">
-                    <img
-                      src="../_images/ISLA.png"
-                      alt
-                      className="img-fluid w-lg-75 w-xl-100"
-                    />
-                  </div>
-                  {/* text */}
-                  <div className="content flex-shrink-0 ps-lg-0 ps-xl-2 pe-lg-4 pe-xl-2">
-                    <div className="top">
-                      <h2 className="text-truncate">折$150</h2>
-                    </div>
-                    <div className="bottom">
-                      <div>
-                        <p className="main-text fw-medium pb-2">
-                          全站商品 / 課程 - 滿2000元即享優惠NT$150
-                        </p>
-                        <p className="main-text mb-0 fw-light">
-                          有效至 2025/12/31
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  {/* button */}
-                  <div className="button-all d-flex align-items-center flex-shrink-0">
-                    <div className="text-group white d-flex flex-column gap-2">
-                      <h5 className="mb-0 fw-light">領</h5>
-                      <h5 className="mb-0 fw-light">取</h5>
-                    </div>
-                  </div>
-                </div>
-                {/* coupon-2 */}
-                <div className="coupon mt-lg-4 mb-lg-3 d-flex flex-nowrap justify-content-between">
-                  {/* img */}
-                  <div className="d-flex align-items-center flex-shrink-1">
-                    <Image
-                      src="../_images/ISLA.png"
-                      alt="ISLA"
-                      width={200}
-                      height={200}
-                      classname="img-fluid w-lg-75 w-xl-100"
-                    />
-                  </div>
-                  {/* text */}
-                  <div className="content flex-shrink-0 ps-lg-0 ps-xl-2 pe-lg-4 pe-xl-2">
-                    <div className="top">
-                      <h2 className="text-truncate">折$150</h2>
-                    </div>
-                    <div className="bottom">
-                      <div>
-                        <p className="main-text fw-medium pb-2">
-                          全站商品 / 課程 - 滿2000元即享優惠NT$150
-                        </p>
-                        <p className="main-text mb-0 fw-light">
-                          有效至 2025/12/31
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  {/* button */}
-                  <div className="button-orange d-flex align-items-center flex-shrink-0">
-                    <div className="text-group white d-flex flex-column gap-2 ">
-                      <h5 className="mb-0 fw-light">領</h5>
-                      <h5 className="mb-0 fw-light">取</h5>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          {!isLoading && !isError && (
+            <>
+              <CouponList
+                coupons={displayCoupon}
+                getCouponStyle={getCouponStyle}
+              />
+              <LoadMoreButton visible={moreBtn} onClick={handleLoadMore} />
+            </>
+          )}
         </div>
-      </main>
-    </>
+      </div>
+    </main>
   )
 }

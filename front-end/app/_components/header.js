@@ -1,8 +1,12 @@
 'use client'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { BsHandbag } from 'react-icons/bs'
 import './header.css'
 
 export default function Header() {
+  const pathname = usePathname()
+  if (pathname.includes('login')) return <></>
   return (
     <>
       <header className="header-module">
@@ -11,7 +15,7 @@ export default function Header() {
           <nav className="d-lg-block d-none">
             <ul>
               <li>
-                <Link href="">所有產品</Link>
+                <Link href="/product">所有產品</Link>
               </li>
               <li>
                 <Link href="">品牌總覽</Link>
@@ -20,10 +24,10 @@ export default function Header() {
                 <Link href="">優惠券專區</Link>
               </li>
               <li>
-                <Link href="">美妝教室</Link>
+                <Link href="/course">美妝教室</Link>
               </li>
               <li>
-                <Link href="">美妝社群</Link>
+                <Link href="/forum">美妝社群</Link>
               </li>
             </ul>
           </nav>
@@ -31,12 +35,12 @@ export default function Header() {
             <button>
               <i className="bi bi-search" />
             </button>
-            <button className="cart-icon">
             <Link href="/cart">
-              <i className="bi bi-handbag" />
+              <button className="cart-icon">
+                <BsHandbag style={{ color: 'white', fontSize: '30px' }} />
+                <div>2</div>
+              </button>
             </Link>
-              <div>2</div>
-            </button>
             <button>
               <Link href="/member/login">
                 <i className="bi bi-person-circle" />

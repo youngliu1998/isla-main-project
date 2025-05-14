@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 export default function ComponentsAuthorInfo({
-  memberID = '',
+  authorID = '',
   width = '',
   src = '',
   alt = '',
@@ -18,16 +18,15 @@ export default function ComponentsAuthorInfo({
   const handleNavigate = (e) => {
     e.stopPropagation() //卡片從Link換成div role=link後，要用這個才能止住事件冒泡
     e.preventDefault()
-    router.push(`/forum/profile/${memberID}`)
-    console.log(memberID)
+    router.push(`/forum/profile/${authorID}`)
+    console.log(authorID)
   }
 
   return (
     <>
       <div>
         <button
-          className="author-info d-inline-flex align-items-center gap-2"
-          // href={'/forum/profile/' + memberID}
+          className="author-info d-inline-flex align-items-center gap-2 px-0"
           onClick={handleNavigate}
         >
           <ComponentsAvatar classWidth={width} src={src} alt={alt} />

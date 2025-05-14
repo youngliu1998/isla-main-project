@@ -5,14 +5,14 @@
   right: 0;
   z-index: 999;
 }
-.header-module .promo-banner {
+/* .header-module .promo-banner {
   height: 30px;
   display: flex;
   color: white;
   font-size: 1rem;
   background: #fc9186;
   backdrop-filter: blur(35px);
-}
+} */
 
 .header-body {
   height: 80px;

@@ -5,46 +5,28 @@
   left: 0;
   right: 0;
   z-index: -999; */
-  min-height: 100vh;
+  /* min-height: 100vh; */
   /* box-sizing: border-box; */
   /* outline: 1px solid #2a8aff; */
-  /* font-family: 'Noto Sans TC', 'Montserrat'; */
+  font-family: 'Noto Sans TC', 'Montserrat';
+
   --main-color: #fd7061;
   --accent-color: #fd4f3c;
   --sub-color: #fa8e83;
-  --bg-gray-article: #f2f1ef;
+  /* --bg-gray-article: #f2f1ef; */
+  --bg-gray-article: #fafafa;
   --hover-gray: #e5e5e4;
-  --focus-gray: #d2d2d2;
+  --hover-light-gray: #e5e5e4ad;
+  --focus-gray: #d2d2d2b9;
   --main-text: #373737;
   --sub-text: #858585;
   --isla-white: #fbfbfb;
-  --stroke-color: #bebebe;
+  --stroke-color: #bebebe80;
   --badge-color: #f4b12b;
   /* overscroll-behavior: none; */
   button {
     border: 0px solid #ffffff00;
     background-color: #ffffff00;
-  }
-  ::-webkit-scrollbar {
-    width: 0; /* 垂直滾動條寬度 */
-    height: 0; /* 水平滾動條高度 */
-  }
-  .scroll-bar-settings {
-    ::-webkit-scrollbar {
-      width: 12px; /* 垂直滾動條寬度 */
-      height: 12px; /* 水平滾動條高度 */
-    }
-    ::-webkit-scrollbar-track {
-      background: #ffffff; /* 軌道背景 */
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #45454537; /* 滑塊顏色 */
-      border-radius: 6px; /* 圓角 */
-      border: 2px solid #ffffff; /* 留白效果 */
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #ffffff00;
-    }
   }
   .dropdown-menu {
     background-color: white;
@@ -58,6 +40,17 @@
       }
     }
   }
+}
+
+.bg-article {
+  height: 100vh;
+  position: fixed;
+  z-index: -99999;
+  top: 0;
+  left: 0;
+  right: 0;
+  /* background-color: #f2f1ef; */
+  background-color: #f2f1ef;
 }
 
 /* color */
@@ -75,6 +68,9 @@
 }
 .main-color {
   color: var(--main-color);
+}
+.badge-color {
+  color: var(--badge-color);
 }
 .bg-main {
   background-color: var(--main-color) !important;
@@ -98,6 +94,10 @@
 /* 樣式 */
 .bottom-stroke {
   border-bottom: 1px solid var(--stroke-color) !important;
+}
+.card-border {
+  /* border: 1px solid #4e221d1d; */
+  border: 1px solid #48484821;
 }
 /* .top-stroke {
   border-top: 1px solid var(--stroke-color) !important;
@@ -132,10 +132,126 @@
 .fs12 {
   font-size: 12px;
 }
+.fw900 {
+  font-weight: 900;
+}
 
 /* 距離 */
 .gap10 {
   gap: 10px;
+}
+
+/* 元件 */
+.button-triggerable {
+  &.default {
+    color: var(--isla-white);
+    background-color: var(--main-color);
+    border: 1px solid var(--main-color);
+  }
+  &.active {
+    color: var(--main-color);
+    border: 1px solid var(--main-color);
+  }
+}
+.button-bounce {
+  background-color: var(--main-color);
+  &:hover {
+    background-color: var(--accent-color);
+  }
+}
+
+.modal-forum {
+  justify-content: center;
+
+  .modal-content {
+    height: 80vh;
+    max-width: 756px;
+    .modal-header {
+      border-bottom: 1px solid var(--stroke-color);
+      text-align: center;
+      .modal-title {
+        font-size: 20px;
+        width: 100%;
+        color: var(--main-text);
+      }
+    }
+    .modal-body {
+      color: var(--main-text);
+      padding: 0;
+    }
+    .edit-title {
+      &:empty::before {
+        content: attr(data-placeholder);
+        color: var(--sub-text);
+        pointer-events: none;
+        display: block;
+      }
+      &:focus-visible {
+        outline: 0px solid #fff;
+      }
+    }
+    .titleError {
+      color: var(--accent-color);
+      &::after {
+        content: attr(error-persudo);
+        margin-left: 4px;
+      }
+    }
+    .edit-area {
+      height: 100%;
+      &:empty::before {
+        content: attr(data-placeholder);
+        color: var(--sub-text);
+        pointer-events: none;
+        display: block;
+      }
+      &:focus-visible {
+        outline: 0px solid #fff;
+      }
+    }
+  }
+  .modal-footer {
+    box-shadow: 0 0 16px #54473414;
+  }
+  .button-picture {
+    width: 48px;
+    height: 48px;
+  }
+  .btn-close {
+    &:focus-visible {
+      border: 0px solid #fff;
+      outline: 0px solid #fff;
+      box-shadow: none;
+    }
+    &:focus {
+      border: 0px solid #fff;
+      outline: 0px solid #fff;
+      box-shadow: none;
+    }
+  }
+}
+.no-scroll-bar {
+  ::-webkit-scrollbar {
+    width: 0; /* 垂直滾動條寬度 */
+    height: 0; /* 水平滾動條高度 */
+  }
+  .scroll-bar-settings {
+    ::-webkit-scrollbar {
+      width: 12px; /* 垂直滾動條寬度 */
+      height: 12px; /* 水平滾動條高度 */
+    }
+    ::-webkit-scrollbar-track {
+      background: #ffffff; /* 軌道背景 */
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #45454537; /* 滑塊顏色 */
+      border-radius: 6px; /* 圓角 */
+      border: 2px solid #ffffff; /* 留白效果 */
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #ffffff00;
+    }
+  }
 }
 
 /* VVVV微調！VVVV */
@@ -144,7 +260,7 @@
 .my-container {
   /* max-width: 1440px !important; */
   height: auto;
-  padding-top: 104px;
+  padding-top: 24px;
   /* overscroll-behavior: none; */
 }
 
@@ -178,16 +294,16 @@
 /* main */
 .posts {
   max-width: 800px;
-  .post-home {
-    transition: 0.3s ease-in-out;
-    &:hover {
-      transform: scale(1.008);
-    }
-    &:focus {
-      transform: scale(0.98);
-    }
-  }
 }
+/* .post-home {
+  transition: 0.3s ease-in-out;
+  &:hover {
+    transform: scale(1.008);
+  }
+  &:focus {
+    transform: scale(0.98);
+  }
+} */
 .post-header {
   min-width: 0;
 }
@@ -208,9 +324,6 @@
 
 .evaluates {
   margin-left: -7px;
-  .bookmark-fill {
-    color: #f4b12b;
-  }
 }
 .evaluate {
   &:hover {
@@ -233,6 +346,7 @@
   position: relative;
   top: 104px;
   .sub-nav-item {
+    transition: 0.05s;
     &:hover {
       background: var(--hover-gray);
     }
@@ -240,6 +354,18 @@
       background: var(--focus-gray);
     }
     /* 要.blur()取消焦點 */
+  }
+  .followings-link {
+    &:hover {
+      .author-info {
+        text-decoration: underline;
+      }
+    }
+  }
+  .more-followings-link {
+    &:hover {
+      background-color: var(--hover-gray);
+    }
   }
 }
 @media screen and (max-width: 991px) {
@@ -257,5 +383,33 @@
       display: block;
       z-index: 999;
     } */
+  }
+}
+
+/* my-following */
+.my-following {
+  max-width: 800px;
+  /* min-width: 375px; */
+}
+
+.my-following-header {
+  a {
+    &:hover {
+      background-color: var(--bg-gray-article);
+    }
+  }
+}
+
+/* autho-card */
+.author-card {
+  @media screen and (min-width: 992px) {
+    /* top: 24px; */
+  }
+}
+
+/* pagepost */
+.more-card {
+  &:hover {
+    background-color: var(--hover-light-gray);
   }
 }
