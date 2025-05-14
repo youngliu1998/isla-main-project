@@ -1,9 +1,12 @@
 'use client'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { BsHandbag } from 'react-icons/bs'
 import './header.css'
 
 export default function Header() {
+  const pathname = usePathname()
+  if (pathname.includes('login')) return <></>
   return (
     <>
       <header className="header-module">
@@ -12,7 +15,7 @@ export default function Header() {
           <nav className="d-lg-block d-none">
             <ul>
               <li>
-                <Link href="">所有產品</Link>
+                <Link href="/product">所有產品</Link>
               </li>
               <li>
                 <Link href="">品牌總覽</Link>
@@ -21,7 +24,7 @@ export default function Header() {
                 <Link href="">優惠券專區</Link>
               </li>
               <li>
-                <Link href="">美妝教室</Link>
+                <Link href="/course">美妝教室</Link>
               </li>
               <li>
                 <Link href="/forum">美妝社群</Link>
@@ -38,11 +41,11 @@ export default function Header() {
                 <div>2</div>
               </button>
             </Link>
-            <Link href="/member">
-              <button>
+            <button>
+              <Link href="/member/login">
                 <i className="bi bi-person-circle" />
-              </button>
-            </Link>
+              </Link>
+            </button>
           </div>
         </div>
       </header>

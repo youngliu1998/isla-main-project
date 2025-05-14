@@ -21,13 +21,13 @@ export default function RootLayout({ children }) {
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
         />
       </head>
-      <body>
-        <Provider>
+      <Provider>
+        <body>
           <Header />
           <div style={{ marginTop: '80px' }}>{children}</div>
           <Footer />
-        </Provider>
-      </body>
+        </body>
+      </Provider>
     </html>
   )
 }
