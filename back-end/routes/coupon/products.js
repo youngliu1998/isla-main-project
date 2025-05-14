@@ -6,7 +6,18 @@ const router = express.Router()
 // 查詢所有優惠券
 router.get('/', async (req, res) => {
   try {
-    const [coupons] = await db.query('SELECT * FROM coupons')
+    const [coupons] = await db.query(`
+    SELECT 
+      coupons.*, 
+      brands.name AS brand_name, 
+      categories.name AS category_name,
+      courses_categories.name AS course_category_name
+    FROM coupons
+    LEFT JOIN brands ON coupons.brand_id = brands.brand_id
+    LEFT JOIN categories ON coupons.category_id = categories.category_id
+    LEFT JOIN courses_categories ON coupons.course_categories_id = courses_categories.id
+`)
+
     res.json({ status: 'success', data: { coupons } })
   } catch (err) {
     console.error('撈取優惠券錯誤:', err)

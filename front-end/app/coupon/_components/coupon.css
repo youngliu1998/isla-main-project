@@ -413,24 +413,33 @@ main {
 
 /* 刪除 */
 .aside-title {
-  font-size: 1.125rem; /* h5 大小 */
+  font-size: 1.5rem;
   font-weight: 600;
-  margin-bottom: 0.75rem;
   color: #333;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1rem;
 }
 
 .aside-link {
-  color: #666;
-  font-size: 1rem;
-  transition: all 0.2s ease-in-out;
-  border-radius: 6px;
-  padding-left: 0.5rem;
+  font-size: 1.05rem;
+  color: #444;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .aside-link:hover {
-  background-color: rgba(255, 120, 100, 0.08); /* 柔和粉橘 hover */
+  background-color: rgba(255, 114, 114, 0.08); /* 柔和粉橘 */
   color: #e1575d;
-  font-weight: 500;
+}
+
+.aside-link.active {
+  font-weight: 600;
+  color: #e1575d;
+  background-color: rgba(255, 114, 114, 0.15);
+  border-left: 4px solid #e1575d;
+  padding-left: 0.75rem;
 }

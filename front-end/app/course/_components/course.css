@@ -1,6 +1,11 @@
 * {
-  outline: 1px solid rgb(108, 186, 231);
   box-sizing: border-box;
+  /* outline: 1px solid rgb(108, 186, 231); */
+}
+.course {
+  * {
+    outline: 1px solid rgb(108, 186, 231);
+  }
 }
 :root {
   --linear: linear-gradient(
@@ -10,7 +15,6 @@
   );
   --MainColor: #fd7061;
 }
-
 
 .banner {
   background-color: #fff4f3;
@@ -123,7 +127,7 @@
 
 /* 動態底線 */
 .nav-link.search-btn::after {
-  content: "";
+  content: '';
   position: absolute;
   left: 0;
   bottom: 0;
@@ -274,7 +278,9 @@
 
 /* ---------- 圖片放大 ---------- */
 .card-hover-course {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .card-hover-course:hover .card-img-top-course {
@@ -299,7 +305,9 @@
 /* ---------- 卡片浮起效果 ---------- */
 .card-hover-teacher {
   overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .card-hover-teacher:hover {
