@@ -11,14 +11,15 @@ import '../_styles/login.css'
 export default function LoginPage() {
   const router = useRouter()
   // const navigater = useNavigate()
-  const [memInfo, setMemInfo] = useState({
-    email: '',
-    password: '',
+  const [memAuth, setMemAuth] = useState({
+    email: 'johnwilliams@test.com',
+    password: '12345',
   })
-  const { isAuth, login } = useAuth() // Context
+  const { user, isAuth, login } = useAuth() // Context
   useEffect(() => {
     // if get auth, go to profile
-    if (isAuth) router.push('profile')
+    // if (isAuth) router.push('profile')
+    console.log('login-page-user: ', user)
   }, [login])
   return (
     <>
@@ -36,22 +37,21 @@ export default function LoginPage() {
 
             <div className="login-input-block">
               <InputText
-                text={memInfo}
+                text={memAuth}
                 title="電子郵件"
                 name="email"
-                value={memInfo.email}
-                setText={setMemInfo}
+                value={memAuth.email}
+                setText={setMemAuth}
               />
             </div>
             {/* password */}
-
             <div className="login-input-block">
               <InputPass
-                text={memInfo}
+                password={memAuth}
                 title="密碼"
                 name="password"
-                value={memInfo.password}
-                setPassword={setMemInfo}
+                value={memAuth.password}
+                setPassword={setMemAuth}
               />
               <Link href="">忘記密碼?</Link>
             </div>
@@ -60,8 +60,8 @@ export default function LoginPage() {
               className="btn btn-primary"
               onClick={(e) => {
                 e.preventDefault()
-                console.log('account', memInfo.email)
-                login(memInfo.email, memInfo.password)
+                console.log('account', memAuth.email)
+                login(memAuth.email, memAuth.password)
               }}
             >
               登入

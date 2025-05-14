@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
 
 const AuthContext = createContext(null)
 AuthContext.displayName = 'AuthContext'
@@ -14,6 +14,8 @@ export function AuthProvider({ children }) {
     email: '',
     points: '',
     level: '',
+    tel: '',
+    address: '',
     mem_cpon: 0,
   }
   const [user, setUser] = useState(defaultUser)
@@ -21,11 +23,6 @@ export function AuthProvider({ children }) {
 
   // login function
   const login = async (email, passowrd) => {
-    // setting post info of user
-    // const formData = new FormData()
-    // console.log('email', account)
-    // formData.append('email', account)
-    // formData.append('password', passowrd)
     // fetch login auth api
     try {
       const response = await fetch('http://localhost:3005/api/member/login', {
@@ -59,11 +56,10 @@ export function AuthProvider({ children }) {
 
       const data = await response.json()
       const userData = data['data']
-      console.log('data: ', userData)
       setUser(userData)
-      console.log('user: ', user)
     } catch (err) {
-      console.log(err)
+      console.error('驗證錯誤:', err)
+      localStorage.removeItem('jwtToken')
     }
   }
 
@@ -71,8 +67,34 @@ export function AuthProvider({ children }) {
   const logout = () => {
     localStorage.removeItem('jwtToken')
     setUser(defaultUser)
-    console.log(user)
   }
+  // 初始讀取 jwtToken 並取得使用者資料
+  useEffect(() => {
+    const initAuth = async () => {
+      const token = localStorage.getItem('jwtToken')
+      if (!token) return
+      // fetch data from db
+      try {
+        const response = await fetch('http://localhost:3005/api/member/login', {
+          method: 'GET',
+          headers: { Authorization: `Bearer ${token}` },
+        })
+
+        const data = await response.json()
+        if (response.ok && data?.data) {
+          setUser(data.data)
+        } else {
+          console.warn('驗證失敗，清除 token')
+          localStorage.removeItem('jwtToken')
+        }
+      } catch (err) {
+        console.error('驗證錯誤:', err)
+        localStorage.removeItem('jwtToken')
+      }
+    }
+
+    initAuth()
+  }, [])
   return (
     <>
       <AuthContext.Provider value={{ user, isAuth, login, logout }}>

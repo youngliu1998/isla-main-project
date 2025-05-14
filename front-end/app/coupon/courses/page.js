@@ -1,7 +1,7 @@
 'use client'
 import useSWR from 'swr'
 import '../_components/coupon.css'
-import AsideProduct from '../_components/aside-product'
+import AsideCourse from '../_components/aside-course'
 import MobileNav from '../_components/mobile-nav'
 import PcNav from '../_components/pc-nav'
 import CouponList from '../_components/coupon-list'
@@ -24,10 +24,23 @@ export default function CouponPage() {
   const url = 'http://localhost:3005/api/coupon/products'
   const { data, error } = useSWR(url, fetcher)
 
-  const { currentType, setCurrentType, showClaimed, setShowClaimed } =
-    useCouponFilter()
+  const {
+    currentType,
+    setCurrentType,
+    showClaimed,
+    setShowClaimed,
+    courseCategory = '',
+    setcourseCategory = '',
+  } = useCouponFilter()
+  // course
+  const coursesMap = {
+    1: '韓式彩妝',
+    2: '專業彩妝',
+    3: '日常彩妝',
+    4: '其他課程',
+  }
 
-  // 各自加載
+  // 各自加載10筆優惠券
   const [couponCountMap, setCouponCountMap] = useState({
     ' ': 10,
     1: 10,
@@ -44,10 +57,13 @@ export default function CouponPage() {
 
   const filteredCoupons = coupons
     .filter((coupon) => {
-      const isProduct = coupon.area === 1 || coupon.area === 0
+      const isCourses = coupon.area === 2 || coupon.area === 0
       const typeMatch = currentType === ' ' || coupon.type_id === currentType
       const claimedMatch = showClaimed ? coupon.claimed : true
-      return isProduct && typeMatch && claimedMatch
+      const courseMatch =
+        !courseCategory || coupon.course_category_name === courseCategory
+
+      return isCourses && typeMatch && claimedMatch && courseMatch
     })
     .sort((a, b) => {
       const aStyle = getCouponStyle(a.type_id)
@@ -70,7 +86,10 @@ export default function CouponPage() {
   return (
     <main className="px-md-5 px-3 container">
       <div className="row mt-sm-4 g-sm-5">
-        <AsideProduct />
+        <AsideCourse
+          courseCategory={courseCategory}
+          setcourseCategory={setcourseCategory}
+        />
         <div className="col-lg-9 col-md-8 col-12 mt-0">
           <CouponHeader type="course" />
           <MobileNav />

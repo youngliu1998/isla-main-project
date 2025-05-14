@@ -1,6 +1,7 @@
 import express from 'express'
 const router = express.Router()
 import db from '../../config/mysql.js'
+import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import verifyToken from '../../lib/verify-token.js' // token verification
 // jwt key
@@ -13,7 +14,7 @@ router.get('/', verifyToken, async (req, res) => {
   let error
   const id = req?.user?.id || 0
   try {
-    const query = `SELECT id,name,nickname,email,point,level,mem_cpon FROM users WHERE id=?`
+    const query = `SELECT id,name,nickname,email,point,level,tel,address,mem_cpon FROM users WHERE id=?`
     const user = await db
       .execute(query, [id])
       .then((data) => data[0][0])
@@ -35,17 +36,21 @@ router.get('/', verifyToken, async (req, res) => {
 router.post('/', async (req, res) => {
   let error
   const { email, password } = req.body
+  const bcryptPass =
+    '$2a$12$YalWu8B2/EyriKGygN7mre0H055iD5hSNehecjoAyiUpzHgj7QjTe'
   try {
-    const query = `SELECT id,email FROM users WHERE email=? AND password=?`
+    const query = `SELECT id,email, password FROM users WHERE email=?`
     const user = await db
-      .execute(query, [email, password])
+      .execute(query, [email])
       .then((data) => data[0][0])
       .catch((err) => {
         error = err
       })
     // if there is no user
-    if (!user)
-      res.json({ status: 'error', message: '查無此會員' })
+    if (!user) return res.json({ status: 'error', message: '查無此會員' })
+    // if the password is false
+    if (!(await bcrypt.compare(password, user.password)))
+      return res.json({ status: 'error', message: '密碼錯誤' })
     // if user exist, build token from user
     const token = jwt.sign(
       {
@@ -57,7 +62,7 @@ router.post('/', async (req, res) => {
     )
     console.log('user', user)
     console.log('token', token)
-    
+
     // send user data to client
     res.json({
       status: 'success',
