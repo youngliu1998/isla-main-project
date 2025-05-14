@@ -5,9 +5,12 @@ export default function Select({
   name = '',
   arr = [],
   selectKey = '',
-  citySelect = {},
-  setCitySelect = () => {},
+  text = {},
+  setText = () => {},
 }) {
+  console.log('text', text)
+  console.log('selectKey', selectKey)
+  console.log('text.selectKey', text[`${selectKey}`])
   return (
     <>
       <div className="user-form-input">
@@ -15,17 +18,21 @@ export default function Select({
         <select
           name={name}
           className="form-control"
+          defaultValue={text[`${selectKey}`]}
           onChange={(e) => {
-            setCitySelect({ ...citySelect, [selectKey]: e.target.value })
+            setText({ ...text, [selectKey]: e.target.value })
           }}
         >
-          {selectKey != 'ZipCode' && <option value="">請選擇</option>}
+          <option value={text.selectKey}>{text[`${selectKey}`]}</option>
+
           {arr.map((v, i) => {
-            return (
-              <option value={v[selectKey]} key={i}>
-                {v[selectKey]}
-              </option>
-            )
+            if (v[selectKey] != text[`${selectKey}`]) {
+              return (
+                <option value={v[selectKey]} key={i}>
+                  {v[selectKey]}
+                </option>
+              )
+            }
           })}
         </select>
       </div>
