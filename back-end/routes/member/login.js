@@ -2,7 +2,6 @@ import express from 'express'
 const router = express.Router()
 import db from '../../config/mysql.js'
 import bcrypt from 'bcrypt'
-import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import verifyToken from '../../lib/verify-token.js' // token verification
 // jwt key
@@ -39,13 +38,9 @@ router.post('/', async (req, res) => {
   const { email, password } = req.body
   const bcryptPass =
     '$2a$12$YalWu8B2/EyriKGygN7mre0H055iD5hSNehecjoAyiUpzHgj7QjTe'
-  const bcryptPass =
-    '$2a$12$YalWu8B2/EyriKGygN7mre0H055iD5hSNehecjoAyiUpzHgj7QjTe'
   try {
     const query = `SELECT id,email, password FROM users WHERE email=?`
-    const query = `SELECT id,email, password FROM users WHERE email=?`
     const user = await db
-      .execute(query, [email])
       .execute(query, [email])
       .then((data) => data[0][0])
       .catch((err) => {
@@ -67,7 +62,6 @@ router.post('/', async (req, res) => {
     )
     console.log('user', user)
     console.log('token', token)
-
 
     // send user data to client
     res.json({
