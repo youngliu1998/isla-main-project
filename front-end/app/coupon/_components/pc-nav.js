@@ -8,13 +8,21 @@ export default function PcNav({
   showClaimed,
   setShowClaimed,
   isMemberCenter = false,
+  couponPageType = 'product', // 'product' 或 'course'
 }) {
-  const couponTypes = [
+  // 定義所有優惠券類型
+  const allCouponTypes = [
     { label: '全部', value: ' ' },
     { label: '滿額券', value: 1 },
     { label: '折扣券', value: 2 },
     { label: '免運券', value: 3 },
   ]
+
+  // 如果是課程頁，移除免運券
+  const couponTypes =
+    couponPageType === 'course'
+      ? allCouponTypes.filter((item) => item.value !== 3)
+      : allCouponTypes
 
   const couponStates = [
     { label: '已領取', value: 1 },
@@ -22,6 +30,7 @@ export default function PcNav({
     { label: '已使用', value: 2 },
     { label: '已過期', value: 3 },
   ]
+
   const navList = isMemberCenter ? couponStates : couponTypes
 
   return (

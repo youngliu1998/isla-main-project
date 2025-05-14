@@ -411,7 +411,7 @@ main {
   animation: cardStamp 0.4s ease;
 }
 
-/* 刪除 */
+/* aside style */
 .aside-title {
   font-size: 1.5rem;
   font-weight: 600;
@@ -425,14 +425,14 @@ main {
   font-size: 1.05rem;
   color: #444;
   padding: 0.75rem 1rem;
-  border-radius: 8px;
+  border-radius: 5px;
   transition:
     background-color 0.2s ease,
     color 0.2s ease;
 }
 
 .aside-link:hover {
-  background-color: rgba(255, 114, 114, 0.08); /* 柔和粉橘 */
+  background-color: rgba(255, 114, 114, 0.08);
   color: #e1575d;
 }
 
