@@ -26,7 +26,7 @@ export default function ComponentsAuthorInfo({
     <>
       <div>
         <button
-          className="author-info d-inline-flex align-items-center gap-2 px-0"
+          className="author-info d-inline-flex align-items-center gap-2 px-0 button-clear"
           onClick={handleNavigate}
         >
           <ComponentsAvatar classWidth={width} src={src} alt={alt} />

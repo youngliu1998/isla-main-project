@@ -1,5 +1,4 @@
 'use client'
-// @ts-check
 
 import './post.css'
 import { useParams } from 'next/navigation'

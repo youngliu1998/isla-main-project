@@ -1,4 +1,3 @@
-//@ts-check
 'use client'
 
 import ComponentsSearchBar from './_components/search-bar'

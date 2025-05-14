@@ -8,7 +8,7 @@ import '@/app/forum/_components/forum.css'
 import Link from 'next/link'
 import ComponentsAvatar from '@/app/forum/_components/avatar'
 import FollowingCard from './following-card'
-import ComponentsButtonFollowingChat from '@/app/forum/_components/button-following-chat'
+import ComponentsButtonFollowingChat from '@/app/forum/_components/btn-following-chat'
 
 export default function MyPostPage(props) {
   const router = useRouter()

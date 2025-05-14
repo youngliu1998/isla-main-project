@@ -24,7 +24,7 @@
   --stroke-color: #bebebe80;
   --badge-color: #f4b12b;
   /* overscroll-behavior: none; */
-  button {
+  .button-clear {
     border: 0px solid #ffffff00;
     background-color: #ffffff00;
   }
@@ -229,6 +229,9 @@
       box-shadow: none;
     }
   }
+}
+.button-submit-disable {
+  background-color: var(--bg-gray-article);
 }
 .no-scroll-bar {
   ::-webkit-scrollbar {

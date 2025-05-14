@@ -40,8 +40,10 @@ export default function EditPostModal(props) {
     })
   }
   // 字數
-  const [titleCount, setTitleCount] = useState(0)
+  const [titleLength, setTitleLength] = useState(0)
   const [isTitleValid, setTitleValid] = useState(true)
+  const [isTitleFill, setTitleFill] = useState(false)
+  const [isContentValid, setContentValid] = useState(false)
 
   return (
     <>
@@ -89,24 +91,38 @@ export default function EditPostModal(props) {
                     data-placeholder="輸入文章標題"
                     onInput={(e) => {
                       // 沒有trim的話會剩下，可能殘留<br>
-                      const titleCount = e.target.innerText.trim().length
-                      setTitleCount(titleCount)
-                      if (titleCount > 50) {
+                      const titleLength = e.target.innerText.trim().length
+                      setTitleLength(titleLength)
+                      if (titleLength > 50) {
                         setTitleValid(false)
-                      } else {
+                      } else if (titleLength <= 50) {
                         setTitleValid(true)
                       }
+                    }}
+                    onPaste={(e) => {
+                      e.preventDefault()
+                      const text = e.clipboardData.getData('text/plain')
+                      document.execCommand('insertText', false, text)
                     }}
                   ></div>
                 </div>
                 <div
                   className={`fs14 sub-text-color px-4 ${isTitleValid ? '' : 'titleError'}`}
                   error-persudo="已超過標題字數上限"
-                >{`(${titleCount}/50)`}</div>
+                >{`(${titleLength}/50)`}</div>
                 <div
                   className="edit-area px-4 py-2 main-text-color"
                   contentEditable
                   data-placeholder="分享你的美妝新發現✨"
+                  onInput={(e) => {
+                    const contentlength = e.target.innerText.trim().length
+                  }}
+                  onPaste={(e) => {
+                    // 防止xss攻擊
+                    e.preventDefault()
+                    const text = e.clipboardData.getData('text/plain')
+                    document.execCommand('insertText', false, text)
+                  }}
                 ></div>
               </div>
               <div className="modal-footer px-4 py-2">
@@ -128,7 +144,7 @@ export default function EditPostModal(props) {
                 </button>
                 <button
                   type="button-bounce"
-                  className="px-4 py-2 bg-main color-isla-white rounded-3"
+                  className={`px-4 py-2 color-isla-white rounded-3 ${isTitleValid && isContentValid && isTitleFill ? 'bg-main' : 'button-submit-disable'}`}
                 >
                   發布
                 </button>
