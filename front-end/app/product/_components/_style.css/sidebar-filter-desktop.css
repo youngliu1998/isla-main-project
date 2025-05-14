@@ -1,0 +1,160 @@
+.sidebar-filter-filter {
+  /*padding: 20px;*/
+  background-color: #ffffff;
+  width: 325px;
+  /*height: 100vh;*/
+}
+.Mobile-filter-btn-box {
+  display: none;
+}
+
+.sidebar-filter-search-box {
+  height: 65px;
+  width: 100%;
+  box-shadow: 0px 3px 10px 0px rgba(0, 0, 0, 0.15);
+  border-radius: 15px;
+  border-top: 1px solid #fff;
+  background: #f6f6f6;
+}
+.sidebar-filter-search-icon {
+  display: flex;
+  font-size: 32px;
+}
+.sidebar-filter-search-x-icon {
+  font-size: 36px;
+}
+.sidebar-filter-search {
+  height: 100%;
+  width: 100%;
+  border: none;
+  background: none;
+}
+.sidebar-filter-order-box {
+  margin: 10px 0 20px 0;
+  padding: 0 12px;
+  gap: 5px;
+  display: flex;
+  flex-direction: column;
+}
+.sidebar-filter-order-menu {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px;
+}
+.sidebar-filter-order-menu a {
+  text-decoration: none;
+  color: #8f8f8f;
+}
+.sidebar-filter-order-menu .sidebar-filter-order-btn-active {
+  color: #000000;
+}
+
+.sidebar-filter-order-label {
+  font-size: 14px;
+  font-weight: 700;
+  color: #858585;
+}
+.sidebar-filter-order-btn {
+  display: flex;
+  padding: 5px 12px;
+  justify-content: center;
+  align-items: center;
+  gap: 3px;
+  color: #000000;
+}
+.sidebar-filter-order-order {
+  width: 26px;
+  height: 26px;
+  background: linear-gradient(180deg, #fd7061 0%, #fa8e83 100%);
+  aspect-ratio: 1/1;
+  border-radius: 50px;
+}
+.sidebar-filter-order-order i {
+  font-size: 14px;
+  color: #fff;
+}
+.sidebar-filter-main-filter-box {
+  display: flex;
+  flex-direction: column;
+  margin: 32px 24px 32px 24px;
+  gap: 16px;
+}
+.sidebar-filter-main-filter-box a {
+  text-decoration: none;
+  color: #fa8e83;
+}
+.sidebar-filter-filter-btn {
+  display: flex;
+  height: 45px;
+  align-items: center;
+  gap: 10px;
+  align-self: stretch;
+}
+.sidebar-filter-filter-btn a {
+  text-decoration: none;
+  color: #858585;
+}
+.sidebar-filter-filter-btn .sidebar-filter-input-label {
+  color: #858585;
+}
+.sidebar-filter-filter-btn input {
+  margin: 0 8px;
+}
+.sidebar-filter-filter-btn:hover {
+  a {
+    color: #2a2a2a;
+  }
+}
+.sidebar-filter-filter-btn-active {
+  a {
+    color: #fa8e83;
+  }
+}
+
+.sidebar-filter-filter-label {
+  font-size: 16px;
+  font-weight: 700;
+  height: 32px;
+}
+.sidebar-filter-star-box {
+}
+.sidebar-filter-star-box .sidebar-filter-star {
+  color: #bebebe;
+}
+.sidebar-filter-star-box .sidebar-filter-star-active {
+  color: #656464;
+}
+.sidebar-filter-star-box input {
+  margin: 0 8px;
+}
+
+.sidebar-filter-link {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.sidebar-filter-link i {
+  position: absolute;
+  font-size: 22px;
+  top: 2px;
+}
+
+.sidebar-filter-link:hover {
+  color: #000;
+}
+
+.mobile-filter-btn-box {
+  display: none;
+}
+/* Added missing classes from HTML */
+.sidebar-filter-filter-top {
+}
+.sidebar-filter-search-input {
+}
+.sidebar-filter-link-box {
+}
+.sidebar-filter-filter-menu {
+}
+.sidebar-filter-filter-btn-container {
+}
