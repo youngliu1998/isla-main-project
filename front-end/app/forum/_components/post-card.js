@@ -10,7 +10,7 @@ export default function ComponentsPostCard({
   postTitle = '',
   postCateName = '',
   postContent = '',
-  //   authorID = '',
+  authorID = '',
   width = '',
   src = '',
   alt = '',
@@ -43,7 +43,7 @@ export default function ComponentsPostCard({
         style={{ cursor: 'pointer' }}
       >
         <ComponentsAuthorInfo
-          authorID={postID}
+          authorID={authorID}
           width={width}
           src={src}
           alt={alt}

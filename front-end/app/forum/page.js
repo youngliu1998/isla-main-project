@@ -147,6 +147,7 @@ export default function ForumPage(props) {
                 postTitle={post.title}
                 postCateName={post.cate_name}
                 postContent={post.content}
+                authorID={post.user_id}
                 width="21"
                 src={`/images/forum/320.webp`}
                 alt={post.user_name}

@@ -106,7 +106,7 @@ export default function PostIDPage(props) {
                 <ComponentsAuthorInfo
                   authorID={post.user_id}
                   width="24"
-                  src={`/images/forum/320.webp`}
+                  src={`http://localhost:3005/images/forum/320.webp`}
                   alt={post.user_nick}
                   fontSize={14}
                   color={'var(--main-text-color)'}
@@ -126,6 +126,7 @@ export default function PostIDPage(props) {
                 postID={postID}
                 userID={userID}
                 mutate={mutate}
+                color={''}
               />
               <button className="evaluate px-2 py-1 border-0 rounded-3 d-flex align-items-center">
                 <i className="bi bi-chat me-1 fs16" />8

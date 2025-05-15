@@ -1,7 +1,9 @@
 import express from 'express'
+import multer from 'multer'
+import db from '../../config/mysql.js' // 使用mysql
+
 const router = express.Router()
-// 使用mysql
-import db from '../../config/mysql.js'
+const upload = multer()
 
 // router.get('/', async function (req, res) {
 //   return res.json({})
@@ -114,13 +116,22 @@ router.get('/:queryParam', async function (req, res) {
 })
 
 // 新增一筆文章 - 網址：POST /api/forum/posts
-router.post('/', async function (req, res) {
+router.post('/', upload.none(), async function (req, res) {
   // const { title, content, userID, cateID, postCateID } = req.body
   // const [result] = await db.query(
   //   `INSERT INTO post(title,content,updated_at, user_id, cate_id, cate_id) VALUES('${title}','${content}', NOW(),'${userID}', '${cateID}', '${postCateID}')`
   // )
+  const { title, content } = req.body
+  const [result] = await db.query(
+    'INSERT INTO post(title, content, user_id, cate_id) VALUES (?,?,?,?)',
+    [title, content, 1, 1]
+  )
   console.log(req.body)
-  return res.json({ status: 'success', data: null })
+  if (result.affectedRows === 0) throw new Error('沒有資料被更改(put)')
+  return res.json({
+    status: 'success',
+    data: null,
+  })
 })
 
 // 修改文章 網址：PUT /api/forum/posts/:id
