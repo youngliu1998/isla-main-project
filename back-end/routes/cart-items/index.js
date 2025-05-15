@@ -1,13 +1,13 @@
 import express from 'express'
 import db from '../../config/mysql.js'
-// import verifyToken from '../../lib/verify-token.js'
+import verifyToken from '../../lib/verify-token.js'
 
 // http://localhost:3005/api/cart-items?user_id=1
 const router = express.Router()
 // 取得購物車商品列表
-router.get('/', async (req, res) => {
-  const user_id = req.query.user_id
-  // const user_id = req.user.user_id
+router.get('/', verifyToken, async (req, res) => {
+  // const user_id = req.query.user_id
+  const user_id = req.user.user_id
 
   if (!user_id) {
     return res.status(400).json({ status: 'fail', message: '請提供 user_id' })
