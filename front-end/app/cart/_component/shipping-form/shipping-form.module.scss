@@ -1,0 +1,43 @@
+.checkboxInput {
+  appearance: none;
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 0.25rem !important;
+  background-color: #fff;
+  transition: all 0.2s ease-in-out;
+}
+
+.checkboxInput:checked {
+  background-color: var(--bs-secondary);
+  border-color: var(--bs-primary);
+}
+
+.checkboxInput:focus {
+  box-shadow: none;
+}
+
+:global(.form-check-input[type='radio']) {
+  appearance: none;
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 50%;
+  background-color: #fff;
+  position: relative;
+  transition: all 0.2s ease-in-out;
+}
+
+:global(.form-check-input[type='radio']:checked) {
+  background-color: var(--bs-secondary) !important; // 背景改secondary
+  border-color: var(--bs-primary) !important;
+}
+
+:global(.form-check-input[type='radio']:checked)::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: #fff; // 實心圓
+  transform: translate(-50%, -50%);
+}

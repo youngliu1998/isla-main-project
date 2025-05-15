@@ -123,7 +123,7 @@ export default function OrderSummary() {
       </div>
 
       <div className="w-100 d-flex justify-content-end">
-        <Link href="/payment">
+        <Link href="/cart/payment">
           <button className="btn btn-primary text-white">結帳</button>
         </Link>
       </div>

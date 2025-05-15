@@ -42,4 +42,8 @@
   &:focus {
     box-shadow: none;
   }
+
+  &:hover {
+    background: var(--coupon-linear) !important;
+  }
 }

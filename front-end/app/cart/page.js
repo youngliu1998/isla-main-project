@@ -116,10 +116,8 @@ export default function CartPage() {
                 </label>
               </div>
 
-              {/* === Product Card 01（dropdown）=== */}
+              {/* === Product Card group*/}
               <ProductCard type="dropDown" />
-
-              {/* === Product Card 02（color dots）=== */}
               <ProductCard type="colorDots" />
 
               {/* === 加購商品卡片區塊 === */}
@@ -130,8 +128,6 @@ export default function CartPage() {
               <div className="text-elem">
                 <i className="bi bi-cart-check-fill me-2"></i>加購商品
               </div>
-
-              {/* === Product Card 03（加購商品、折扣badge）=== */}
               <ProductCard type="addon" />
             </div>
 
@@ -162,7 +158,6 @@ export default function CartPage() {
           </div>
           <div className="col-lg-4 col-12">{!isMobile && <OrderSummary />}</div>
           {isMobile && <MobileOrderBar />}
-          {/* <div className="d-block d-lg-none" style={{ height: '850px' }}></div> */}
         </div>
       </section>
     </>

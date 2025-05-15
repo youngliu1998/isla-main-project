@@ -8,7 +8,7 @@ export default function MobileOrderBar() {
 
   return (
     <>
-      {/* 遮罩 */}
+      {/* 黑遮罩 */}
       {open && (
         <button
           className={styles.overlay}
@@ -81,8 +81,8 @@ export default function MobileOrderBar() {
             ></i>
           </button>
         </div>
-        <Link href="/payment">
-          <button className="btn btn-primary rounded-pill px-4">結帳</button>
+        <Link href="/cart/payment">
+          <button className="btn btn-primary rounded-pill px-5">結帳</button>
         </Link>
       </div>
     </>
