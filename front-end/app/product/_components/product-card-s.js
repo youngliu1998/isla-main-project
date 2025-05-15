@@ -1,9 +1,11 @@
 // src/components/ProductCard.jsx
 'use client'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { BiSolidStar, BiStar, BiSolidHeart, BiHeart } from 'react-icons/bi'
 import './_style.css/product-card-s.css'
+import RatingComponent from './product-rating.js'
+import BookmarkComponent from './product-bookmark.js'
+import Image from 'next/image'
 
 function ProductCard({ product }) {
   if (!product) {
@@ -14,7 +16,7 @@ function ProductCard({ product }) {
     id,
     brand = 'N/A',
     name = 'Unnamed Product',
-    price = '$0.00',
+    price = 'NT$0.00',
     originalPrice,
     rating = 0,
     reviews = 0,
@@ -26,6 +28,7 @@ function ProductCard({ product }) {
 
   const handleAddToCart = (e) => {
     e.preventDefault()
+    setBookmarked(!bookmarked)
     console.log(`Product ${id} (${name}) added to cart.`)
     // TODO: Add to cart logic
   }
@@ -37,50 +40,48 @@ function ProductCard({ product }) {
     // TODO: Update bookmark logic
   }
 
-  const renderStars = (currentRating) => {
-    const stars = []
-    const totalStars = 5
-    for (let i = 1; i <= totalStars; i++) {
-      stars.push(
-        i <= currentRating ? (
-          <BiSolidStar
-            key={`star-solid-${i}`}
-            className="product-card-star product-card-star-active"
-          />
-        ) : (
-          <BiStar key={`star-empty-${i}`} className="product-card-star" />
-        )
-      )
-    }
-    return stars
+  const useIsMobile = (breakpoint = 1400) => {
+    const [isMobile, setIsMobile] = useState(window.innerWidth < breakpoint)
+
+    useEffect(() => {
+      const handleResize = () => {
+        setIsMobile(window.innerWidth < breakpoint)
+      }
+
+      window.addEventListener('resize', handleResize)
+      return () => window.removeEventListener('resize', handleResize)
+    }, [breakpoint])
+
+    return isMobile
   }
+
+  const isMobile = useIsMobile()
 
   return (
     <div className="product-card-product_card">
       <div className="product-card-product_card-head">
         <div className="product-card-head-top d-flex">
           <div className="product-card-rating product-card-rating-desktop">
-            <div className="product-card-star-box">{renderStars(rating)}</div>
-            <div className="product-card-rating_text">{reviews} 則評論</div>
+            <div className="product-card-star-box">
+              <RatingComponent rating={rating} reviewCount={reviews} />
+            </div>
           </div>
-
-          <div className="product-card-bookmark">
-            <a
-              href="#"
-              onClick={toggleBookmark}
-              aria-label={bookmarked ? '移除書籤' : '加入書籤'}
-            >
-              {bookmarked ? (
-                <BiSolidHeart className="product-card-bookmark-icon bookmarked" />
-              ) : (
-                <BiHeart className="product-card-bookmark-icon" />
-              )}
-            </a>
-          </div>
+          <BookmarkComponent
+            isbookmarked={bookmarked}
+            isMobile={isMobile}
+            onToggle={toggleBookmark}
+          />
         </div>
 
         <div className="product-card-product_card-img">
-          <img src={imageUrl} alt={name} className="card-img" />
+          <Image
+            src={imageUrl}
+            alt={name}
+            className="card-img"
+            width={0}
+            height={0}
+            style={{ width: '100%', height: 'auto' }}
+          />
         </div>
 
         <div className="product-card-hover-add-cart">
@@ -103,8 +104,13 @@ function ProductCard({ product }) {
         </div>
 
         <div className="product-card-rating product-card-rating-mobile">
-          <div className="product-card-star-box">{renderStars(rating)}</div>
-          <div className="product-card-rating_text">{reviews} 則評論</div>
+          <div className="product-card-star-box">
+            <RatingComponent
+              rating={rating}
+              reviewCount={reviews}
+              isMobile={true}
+            />
+          </div>
         </div>
 
         <div className="product-card-price">

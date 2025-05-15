@@ -1,3 +1,4 @@
+'use client'
 // src/components/MobileFilterSidebar.jsx
 import React, { useState } from 'react'
 // 從 react-icons/bi 導入 Boxicons 圖標

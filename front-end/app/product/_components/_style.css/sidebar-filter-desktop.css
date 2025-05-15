@@ -155,6 +155,10 @@
 .sidebar-filter-link-box {
 }
 .sidebar-filter-filter-menu {
+  /* background: #000; */
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 .sidebar-filter-filter-btn-container {
 }

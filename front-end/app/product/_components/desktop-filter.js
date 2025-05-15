@@ -8,11 +8,18 @@ import {
   BsStarFill,
 } from 'react-icons/bs'
 import './_style.css/sidebar-filter-desktop.css'
+import DesktopFilterButtons from './desktop-filter-buttons.js'
+import FilterStarRatingButtons from './rating-filter-buttons.js'
 
 const brands = ['Unleashia', 'Cosnori', 'Muzigae Mansion', 'Kaja', 'rom&nd']
 const categories = ['眼影', '唇蜜', '口紅', '粉底', '氣墊粉餅']
 const priceRanges = ['500元以下', '500 - 1000', '1000 - 2000', '2000 元以上']
-const ratingStars = [5, 4, 3, 2, 1]
+const items = [
+  { value: 'apple', label: 'Apple' },
+  { value: 'banana', label: 'Banana' },
+  { value: 'orange', label: 'Orange' },
+  { value: 'grape', label: 'Grape' },
+]
 
 export default function SidebarFilter({ onFilterChange }) {
   const [searchInputItems, setSearchInputItems] = useState([])
@@ -107,70 +114,35 @@ export default function SidebarFilter({ onFilterChange }) {
 
         <div className="sidebar-filter-filter-menu">
           <div className="sidebar-filter-filter-label">品牌</div>
-          <div className="sidebar-filter-filter-btn-container">
-            {brands.map((brand) => (
-              <div
-                key={brand}
-                className={`sidebar-filter-filter-btn ${selectedBrands.includes(brand) ? 'sidebar-filter-filter-btn-active' : ''}`}
-                onClick={() =>
-                  toggleSelection(brand, selectedBrands, setSelectedBrands)
-                }
-              >
-                <a href="#">{brand}</a>
-              </div>
-            ))}
-          </div>
+          <DesktopFilterButtons
+            options={brands}
+            selected={selectedBrands}
+            onToggle={(option, selected) =>
+              toggleSelection(option, selected, setSelectedBrands)
+            }
+          />
         </div>
 
         <div className="sidebar-filter-filter-menu">
           <div className="sidebar-filter-filter-label">種類</div>
-          <div className="sidebar-filter-filter-btn-container">
-            {categories.map((category) => (
-              <div
-                key={category}
-                className={`sidebar-filter-filter-btn ${selectedCategories.includes(category) ? 'sidebar-filter-filter-btn-active' : ''}`}
-                onClick={() =>
-                  toggleSelection(
-                    category,
-                    selectedCategories,
-                    setSelectedCategories
-                  )
-                }
-              >
-                <a href="#">{category}</a>
-              </div>
-            ))}
-          </div>
+          <DesktopFilterButtons
+            options={categories}
+            selected={selectedCategories}
+            onToggle={(option, selected) =>
+              toggleSelection(option, selected, setSelectedCategories)
+            }
+          />
         </div>
 
         <div className="sidebar-filter-filter-menu">
           <div className="sidebar-filter-filter-label">評分</div>
-          <div className="sidebar-filter-filter-btn-container">
-            {ratingStars.map((star) => (
-              <div
-                key={star}
-                className="sidebar-filter-filter-btn"
-                onClick={() =>
-                  toggleSelection(star, selectedRatings, setSelectedRatings)
-                }
-              >
-                <div className="sidebar-filter-star-box">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    checked={selectedRatings.includes(star)}
-                    readOnly
-                  />
-                  {[...Array(5)].map((_, i) => (
-                    <BsStarFill
-                      key={i}
-                      className={`sidebar-filter-star ${i < star ? 'sidebar-filter-star-active' : ''}`}
-                    />
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
+          <FilterStarRatingButtons
+            maxStar={5}
+            selected={selectedRatings}
+            onToggle={(option, selected) =>
+              toggleSelection(option, selected, setSelectedRatings)
+            }
+          />
         </div>
 
         <div className="sidebar-filter-filter-menu">
