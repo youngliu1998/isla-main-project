@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { MdOutlineCenterFocusStrong } from 'react-icons/md'
 import Image from 'next/image'
 import '../course/_components/course.css'
@@ -10,10 +10,26 @@ import TeacherCard from '../course/_components/teacher-card'
 import Link from 'next/link'
 
 export default function CoursePage() {
+  const [courseCard, setCourseCard] = useState([])
   const [sortOption, setSortOption] = useState('1') // 初始值為「最熱門」
+  useEffect(function () {
+    const url = 'http://localhost:3005/api/course/course/22222'
+
+    async function getCard() {
+      const data = await fetch(url, {
+        method: 'GET',
+      })
+      const cardsraw = await data.json()
+      const cards = cardsraw.data
+      setCourseCard(cards)
+      console.log(cards)
+    }
+    getCard()
+  }, [])
 
   return (
     <>
+      {console.log('courseCard', courseCard)}
       <section className="banner align-content-center justify-content-center py-sm-5 py-0">
         <div className="d-flex">
           <button className="carousel-button prev">‹</button>
@@ -41,7 +57,7 @@ export default function CoursePage() {
             <div className="box1-dot" key={i} />
           ))}
         </div>
-        <h1 className="box1-h1">TRENDING NOW</h1>
+        <h1 className="box1-banner-title">TRENDING NOW</h1>
       </section>
 
       <section className="box2 container">
@@ -341,6 +357,24 @@ export default function CoursePage() {
             tabIndex={0}
           >
             <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-lg-4 g-4 p-0 m-0 mt-4">
+              {courseCard.map(function (v, i) {
+                return (
+                  <>
+                    <CourseCard
+                      key={v.id}
+                      id={v.id}
+                      picture={'/images/course/bannerall/' + v.picture}
+                      tag={v.tag}
+                      title={v.title}
+                      teacher={v.teacher}
+                      rating={v.rating}
+                      student={v.student}
+                      price={v.price}
+                      discount={v.discount}
+                    />
+                  </>
+                )
+              })}
               <CourseCard
                 id="1"
                 picture="/images/course/bannerall/banner1.jpg"
@@ -490,7 +524,7 @@ export default function CoursePage() {
               image="/images/course/teacherall/image_73.jpg"
               about="深耕耳穴按摩與撥筋 15 年，IFPA & NAHA 國際芳療專業雙認證資深講師深耕耳穴按摩與撥筋 15 年，IFPA & NAHA 國際芳療專業雙認證資深講師"
             />
-            <Link href="/teacher/${id}" className="text-decoration-none">
+            <Link href="course/teacher/${id}" className="text-decoration-none">
               <div className="card card-hover-teacher">
                 <div className="card-img-wrapper-teacher">
                   <Image
