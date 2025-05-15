@@ -1,42 +1,18 @@
-import React from 'react'
+'use client'
+
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation } from 'swiper/modules'
 import 'swiper/css'
 import 'swiper/css/navigation'
-import './coupon-swiper.module.scss'
+import styles from './coupon-swiper.module.scss'
 
-const coupons = [
-  {
-    id: 1,
-    title: '全站折$150',
-    condition: '滿 $2000 可使用',
-    tag: '全站',
-  },
-  {
-    id: 2,
-    title: '全站折$150',
-    condition: '滿 $2000 可使用',
-    tag: '全站',
-  },
-
-  {
-    id: 3,
-    title: '眼部彩妝系列滿兩件85折',
-    condition: '滿 $2000 可使用',
-    tag: '眼部彩妝',
-  },
-  {
-    id: 4,
-    title: '唇部彩妝系列滿兩件88折',
-    condition: '滿 $1500 可使用',
-    tag: '唇部彩妝',
-  },
-]
-
-const CouponSwiper = () => {
+const CouponSwiper = ({ coupons, swiperRef }) => {
   return (
-    <div className="coupon-wrapper">
+    <div className={styles.couponWrapper}>
       <Swiper
+        onSwiper={(swiper) => {
+          swiperRef.current = swiper
+        }}
         modules={[Navigation]}
         navigation
         spaceBetween={20}
@@ -44,12 +20,12 @@ const CouponSwiper = () => {
       >
         {coupons.map((coupon) => (
           <SwiperSlide key={coupon.id}>
-            <div className="coupon-card">
-              <div className="coupon-title">{coupon.title}</div>
-              <div className="coupon-condition">{coupon.condition}</div>
-              <div className="coupon-footer">
-                <span className="coupon-tag">{coupon.tag}</span>
-                <button className="coupon-button">套用</button>
+            <div className={styles.couponCard}>
+              <div className={styles.couponTitle}>{coupon.title}</div>
+              <div className={styles.couponCondition}>{coupon.condition}</div>
+              <div className={styles.couponFooter}>
+                <span className={styles.couponTag}>{coupon.tag}</span>
+                <button className={styles.couponButton}>套用</button>
               </div>
             </div>
           </SwiperSlide>
