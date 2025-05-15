@@ -3,9 +3,9 @@ const router = express.Router()
 // 使用mysql
 import db from '../../config/mysql.js'
 
-router.get('/', async function (req, res) {
-  return res.json({})
-})
+// router.get('/', async function (req, res) {
+//   return res.json({})
+// })
 // 得到多筆文章
 router.get('/:pageName', async function (req, res) {
   // 取得userID
