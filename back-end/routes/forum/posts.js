@@ -43,20 +43,21 @@ router.get('/:pageName', async function (req, res) {
 
   switch (pageName) {
     case 'post-detail': {
+      // const postAPI = `http://localhost:3005/api/forum/posts/post-detail?postID=${postID}`
       const postID = req.query.postID
+      postsResult = await db.query(`${postsQuery} WHERE p.id=${postID}`)
       morePostsResult = await db.query(`${postsQuery} WHERE p.cate_id = 
         (SELECT cate_id FROM post WHERE id = ${postID}) AND p.id != ${postID} LIMIT 4`)
-      // fall through
-    }
-    case 'home': {
-      postsResult = await db.query(`${postsQuery}`)
       if (morePostsResult) {
         return res.json({
           status: 'success',
           data: { posts: postsResult[0], morePosts: morePostsResult[0] },
-          test: 'hello',
         })
       }
+      break
+    }
+    case 'home': {
+      postsResult = await db.query(`${postsQuery}`)
       break
     }
     case 'profile': {
