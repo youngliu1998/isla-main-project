@@ -8,7 +8,7 @@ export default function TeacherCard({
   about = '',
 }) {
   return (
-    <Link href={`/teacher/${id}`} className="text-decoration-none">
+    <Link href={`course/teacher/${id}`} className="text-decoration-none">
       <div className="card card-hover-teacher">
         <div className="card-img-wrapper-teacher">
           <Image

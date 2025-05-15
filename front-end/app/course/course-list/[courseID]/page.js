@@ -10,10 +10,10 @@ export default function CourseIDPage() {
   const [loaded, setLoaded] = useState(false)
   return (
     <>
-      {/* <section>
+      <section>
         <div className="d-flex flex-column justify-content-center text-bg-dark overflow-hidden position-relative ">
           <Image
-            src="/images/course/bannerall/banner1.jpg"
+            src="/images/course/bannerall/banner19.jpg"
             alt="課程圖片"
             width={800}
             height={200}
@@ -36,16 +36,18 @@ export default function CourseIDPage() {
                 </div>
               </div>
               <div className="container">
-                <div className="banner-author d-flex justify-content-center align-content-center my-xl-4 my-2">
-                  <Image
-                    src="/images/course/teacherall/image_73.jpg"
-                    alt="講師圖片"
-                    width={800}
-                    height={450}
-                    className="banner-author-img my-auto me-md-3 me-1"
-                  />
-                  <p className="banner-author-name my-auto">李郁文</p>
-                </div>
+                <Link href="course/teacher/1">
+                  <div className="banner-author d-flex justify-content-center align-content-center my-xl-4 my-2">
+                    <Image
+                      src="/images/course/teacherall/image_73.jpg"
+                      alt="講師圖片"
+                      width={800}
+                      height={450}
+                      className="banner-author-img my-auto me-md-3 me-1"
+                    />
+                    <p className="banner-author-name my-auto">李郁文</p>
+                  </div>
+                </Link>
                 <h1 className="text-white banner-h1 my-xl-4 my-2 fw-bold">
                   打造你的五官漂亮戰隊 堯蘭達高級臉精緻彩妝術
                 </h1>
@@ -70,15 +72,8 @@ export default function CourseIDPage() {
             </div>
           </div>
         </div>
-      </section> */}
+      </section>
       {/* box1 */}
-      <div className="box0">
-        <div className="container">
-          <div className="row row-cols-2">
-            <div className="col">字字字字字</div>
-          </div>
-        </div>
-      </div>
       <div className="box1">
         <div className="container">
           <div className="row row-cols-2 row-cols-md-4 justify-content-evenly py-md-4 py-3 gy-2 gy-md-0">
