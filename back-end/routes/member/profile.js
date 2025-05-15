@@ -48,18 +48,18 @@ router.post('/', verifyToken, async (req, res) => {
     postcode,
     address,
   } = req.body
-  console.log(
-    name,
-    nickname,
-    birthday,
-    gender,
-    tel,
-    skin_type,
-    city,
-    area,
-    postcode,
-    address
-  )
+  // console.log(
+  //   name,
+  //   nickname,
+  //   birthday,
+  //   gender,
+  //   tel,
+  //   skin_type,
+  //   city,
+  //   area,
+  //   postcode,
+  //   address
+  // )
   try {
     const query = `UPDATE users SET ${updateProfile} WHERE id=?`
     const user = await db

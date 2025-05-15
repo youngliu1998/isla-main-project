@@ -67,7 +67,7 @@ export default function ProfilePage() {
   useEffect(() => {
     const token = localStorage.getItem('jwtToken')
       ? localStorage.getItem('jwtToken')
-      : ''
+      : null
     if (!token) router.push('login')
     // if get auth, fetch profile data
     let profileData = {}
@@ -135,50 +135,54 @@ export default function ProfilePage() {
             <div className="user-form-input">
               <label htmlFor="skin_type">膚質</label>
               <div className="user-input-box user-radio-box">
-                <label htmlFor="skin_type">
-                  <input
-                    type="radio"
-                    name="skin_type"
-                    value="中性"
-                    onChange={(e) => {
-                      setText({ ...text, ['skinType']: e.target.value })
-                    }}
-                  />
-                  中性
-                </label>
-                <label htmlFor="skin_type">
-                  <input
-                    type="radio"
-                    name="skin_type"
-                    value="乾性"
-                    onChange={(e) => {
-                      setText({ ...text, ['skinType']: e.target.value })
-                    }}
-                  />
-                  乾性
-                </label>
-                <label htmlFor="skin_type">
-                  <input
-                    type="radio"
-                    name="skin_type"
-                    value="敏感性"
-                    onChange={(e) => {
-                      setText({ ...text, ['skinType']: e.target.value })
-                    }}
-                  />
-                  敏感性
-                </label>
-                <label htmlFor="skin_type">
-                  <input
-                    type="radio"
-                    name="skin_type"
-                    value=""
-                    onChange={(e) => {
-                      setText({ ...text, ['skinType']: e.target.value })
-                    }}
-                  />
-                  不確定
-                </label>
+                <div className="row row-cols-2">
+                  <label htmlFor="skin_type">
+                    <input
+                      type="radio"
+                      name="skin_type"
+                      value="中性"
+                      onChange={(e) => {
+                        setText({ ...text, ['skinType']: e.target.value })
+                      }}
+                    />
+                    中性
+                  </label>
+                  <label htmlFor="skin_type">
+                    <input
+                      type="radio"
+                      name="skin_type"
+                      value="乾性"
+                      onChange={(e) => {
+                        setText({ ...text, ['skinType']: e.target.value })
+                      }}
+                    />
+                    乾性
+                  </label>
+                </div>
+                <div className="row row-cols-2">
+                  <label htmlFor="skin_type">
+                    <input
+                      type="radio"
+                      name="skin_type"
+                      value="敏感性"
+                      onChange={(e) => {
+                        setText({ ...text, ['skinType']: e.target.value })
+                      }}
+                    />
+                    敏感性
+                  </label>
+                  <label htmlFor="skin_type">
+                    <input
+                      type="radio"
+                      name="skin_type"
+                      value=""
+                      onChange={(e) => {
+                        setText({ ...text, ['skinType']: e.target.value })
+                      }}
+                    />
+                    不確定
+                  </label>
+                </div>
               </div>
             </div>
           </div>

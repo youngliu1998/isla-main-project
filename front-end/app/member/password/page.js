@@ -1,21 +1,44 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import InputPass from '../_component/input-pass'
 import '../_component/_style.css/form.css'
 import { useAuth } from '@/hook/use-auth'
 
 export default function PasswordPage() {
-  const { user } = useAuth()
-  console.log('password-page: ', user)
   const [password, setPassword] = useState({
     oriPass: '',
     newPass: '',
-    aginAPass: '',
+    againPass: '',
   })
+  console.log(password)
+  async function changePass() {
+    try {
+      const token = localStorage?.getItem('jwtToken') || null
+      const response = await fetch(
+        'http://localhost:3005/api/member/password',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(password),
+        }
+      )
+      const data = await response.json()
+      console.log(data)
+    } catch (err) {
+      console.log(err)
+    }
+  }
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    changePass()
+  }
   return (
     <>
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className="user-content">
           <h3>密碼變更</h3>
           <div className="row row-cols-1 gy-4">
@@ -26,6 +49,7 @@ export default function PasswordPage() {
               value={password.oriPass}
               setPassword={setPassword}
             />
+            <div className="bottom-line"></div>
             <InputPass
               password={password}
               title="新密碼"
@@ -36,8 +60,8 @@ export default function PasswordPage() {
             <InputPass
               password={password}
               title="再輸入一次"
-              name="aginAPass"
-              value={password.aginAPass}
+              name="againPass"
+              value={password.againPass}
               setPassword={setPassword}
             />
           </div>

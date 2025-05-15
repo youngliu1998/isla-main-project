@@ -18,10 +18,10 @@ export default function LoginPage() {
   const { user, isAuth, login } = useAuth() // Context
   useEffect(() => {
     // if get auth, go to profile
-    // if (isAuth) router.push('profile')
+    if (isAuth) router.push('profile')
     console.log('login-page-user: ', user)
     console.log('login-page-isAuth: ', isAuth)
-  }, [login])
+  }, [isAuth])
   return (
     <>
       <div className="d-flex flex-column justify-content-centers gap-5 py-5 postion-middle">
@@ -70,7 +70,7 @@ export default function LoginPage() {
           </form>
           {/* login form end */}
           {/* register and google */}
-          <Link href="">註冊</Link>
+          <Link href="register">註冊</Link>
           <div className="d-flex justify-content-center align-items-center gap-2 w-100">
             <div className="gray-line" />
             <div>或者</div>
