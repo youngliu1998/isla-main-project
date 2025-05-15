@@ -18,9 +18,7 @@
   "author": "Eddy Chang",
   "license": "ISC",
   "dependencies": {
-    "@prisma/client": "^6.7.0"
-  },
-  "devDependencies": {
+    "@prisma/client": "^6.7.0",
     "@vercel/blob": "^0.26.0",
     "@vercel/postgres": "^0.10.0",
     "bcrypt": "^5.1.1",
@@ -54,6 +52,14 @@
     "sql-template-strings": "^2.2.2",
     "sqlstring": "^2.3.3",
     "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "eslint": "^8.44.0",
+    "eslint-import-resolver-alias": "^1.1.2",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-node": "^11.1.0",
+    "nodemon": "^3.1.7",
+    "prisma": "^6.7.0"
   },
   "type": "module",
   "nodemonConfig": {
