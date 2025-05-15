@@ -19,7 +19,7 @@ export default function EditPostModal(props) {
           backdrop: true,
           keyboard: true,
         })
-        modal.show()
+        // modal.show()
       }
     })
   }, [])

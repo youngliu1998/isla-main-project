@@ -9,6 +9,7 @@
   /* box-sizing: border-box; */
   /* outline: 1px solid #2a8aff; */
   font-family: 'Noto Sans TC', 'Montserrat';
+  letter-spacing: 0.1;
 
   --main-color: #fd7061;
   --accent-color: #fd4f3c;
@@ -77,6 +78,9 @@
 }
 .bg-hover {
   background-color: var(--hover-gray);
+}
+.bg-light-hover {
+  background-color: var(--hover-light-gray);
 }
 .main-text-color {
   color: var(--main-text);
@@ -275,10 +279,10 @@
   /* position: fixed; */
   top: 104px;
   .cate-item {
-    padding: 16px 24px;
+    /* padding: 16px 24px;
     border-radius: 8px;
     font-size: 16px;
-    font-weight: 500;
+    font-weight: 500; */
     &:hover {
       background-color: var(--hover-gray);
     }
@@ -300,23 +304,22 @@
 /* main */
 .posts {
   max-width: 800px;
+  .updated-at {
+    letter-spacing: 0.5;
+  }
 }
-/* .post-home {
-  transition: 0.3s ease-in-out;
+.post-home {
+  cursor: pointer;
+  /* transition: 0.3s ease-in-out;
   &:hover {
     transform: scale(1.008);
   }
   &:focus {
     transform: scale(0.98);
-  }
-} */
+  } */
+}
 .post-header {
   min-width: 0;
-}
-
-.switcher {
-  width: 130px;
-  height: 32px;
 }
 
 .dropdown-item-forum {
@@ -339,7 +342,7 @@
 }
 
 .imgs {
-  /* .photos-switcher d-flex會讓子元素寬度自動壓縮 */
+  /* .photos-tab d-flex會讓子元素寬度自動壓縮 */
   /* 利用flex-shrink-0來讓子元素不被壓縮 */
 
   .img {
