@@ -8,6 +8,7 @@ import CouponList from '../_components/coupon-list'
 import LoadMoreButton from '../_components/more-button'
 import DataStatus from '../_components/data-status'
 import CouponHeader from '../_components/coupon-header'
+import LoginModal from '../_components/login-modal'
 import useCouponFilter from '../../../hook/coupon-filter'
 import { useState } from 'react'
 import { useAuth } from '@/hook/use-auth'
@@ -32,9 +33,9 @@ export default function CouponPage() {
   const { data, error } = useSWR(user ? url : null, fetcher)
 
   // 使用hook管理篩選狀態
+  const { currentType, setCurrentType } = useCouponFilter(' ')
+
   const {
-    currentType,
-    setCurrentType,
     showClaimed,
     setShowClaimed,
     currentBrand,
@@ -54,6 +55,13 @@ export default function CouponPage() {
   const nameToId = Object.fromEntries(
     Object.entries(brandMap).map(([id, name]) => [name, Number(id)])
   )
+  // nav li
+  const couponTypes = [
+    { label: '全部', value: ' ' },
+    { label: '滿額券', value: 1 },
+    { label: '折扣券', value: 2 },
+    { label: '免運券', value: 3 },
+  ]
 
   // 各分頁顯示狀態
   const [couponCountMap, setCouponCountMap] = useState({
@@ -71,7 +79,7 @@ export default function CouponPage() {
   // 取得原始資料陣列
   const coupons = Array.isArray(data?.data?.coupons) ? data.data.coupons : []
 
-  console.log('coupons from API:', coupons)
+  // console.log('coupons from API:', coupons)
 
   // 篩選 + 排序
   const filteredCoupons = coupons
@@ -89,14 +97,24 @@ export default function CouponPage() {
       )
     })
     .sort((a, b) => {
+      const stylePriority = {
+        'button-all': '',
+        'button-orange': 1,
+        'button-purple': 2,
+        'button-blue': 3,
+      }
+
       const aStyle = getCouponStyle(a.type_id)
       const bStyle = getCouponStyle(b.type_id)
-      if (aStyle === 'button-all' && bStyle !== 'button-all') return -1
-      if (aStyle !== 'button-all' && bStyle === 'button-all') return 1
-      return 0
+
+      const aPriority = stylePriority[aStyle] ?? 99
+      const bPriority = stylePriority[bStyle] ?? 99
+
+      return aPriority - bPriority
     })
 
   const isEmpty = !isLoading && !isError && filteredCoupons.length === 0
+  // 是否有領取優惠券
   const emptyMsg = showClaimed ? '尚未有已領取的優惠券' : '尚未有優惠券'
 
   // 載入更多
@@ -111,6 +129,8 @@ export default function CouponPage() {
       [currentType]: (prev[currentType] || 10) + 10,
     }))
   }
+  // 未登入警告
+  const [showLoginModal, setShowLoginModal] = useState(false)
 
   return (
     <main className="px-md-5 px-3 container">
@@ -126,11 +146,12 @@ export default function CouponPage() {
           <CouponHeader type="product" />
           <MobileNav />
           <PcNav
-            currentType={currentType}
-            setCurrentType={setCurrentType}
-            showClaimed={showClaimed}
-            setShowClaimed={setShowClaimed}
-            couponPageType="product"
+            options={couponTypes}
+            currentValue={currentType}
+            onChange={setCurrentType}
+            showSwitch={true}
+            isChecked={showClaimed}
+            onToggleSwitch={() => setShowClaimed((prev) => !prev)}
           />
 
           <DataStatus
@@ -146,12 +167,17 @@ export default function CouponPage() {
               <CouponList
                 coupons={displayCoupon}
                 getCouponStyle={getCouponStyle}
+                isLogin={() => setShowLoginModal(true)}
               />
               <LoadMoreButton visible={moreBtn} onClick={handleLoadMore} />
             </>
           )}
         </div>
       </div>
+      <LoginModal
+        show={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+      />
     </main>
   )
 }
