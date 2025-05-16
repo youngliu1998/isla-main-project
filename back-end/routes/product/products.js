@@ -8,6 +8,7 @@ import { getFilteredProducts } from '../../services/product-controller.js'
 router.get('/', async (req, res) => {
   try {
     const {
+      keyword,
       brandIds,
       categoryIds,
       tagIds,
@@ -15,11 +16,14 @@ router.get('/', async (req, res) => {
       maxPrice,
       minRating,
       maxRating,
+      onSaleOnly,
       offset = 0,
       limit = 20,
     } = req.query
 
     const filters = {
+      onSaleOnly: onSaleOnly === 'true',
+      keyword: keyword || '',
       brandIds: brandIds
         ? brandIds
             .split(',')
