@@ -1,78 +1,55 @@
 'use client'
+
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 
-export default function CourseCard({
+export default function ExperienceCard({
   id = '',
   picture = '',
   tag = '',
   title = '',
-  teacher = '',
-  avg_star = 0,
-  comment_count = 0,
-  student = 0,
+  city = '',
+  activity_data = '',
   price = 0,
   discount = 0,
-  status = 0,
+  status = '',
 }) {
   const tagLabel =
     tag === 1 || tag === '1' ? '課程' : tag === 2 || tag === '2' ? '體驗' : tag
-
   const [isFavorited, setIsFavorited] = useState(false)
   const [hover, setHover] = useState(false)
   const [animate, setAnimate] = useState(false)
 
   useEffect(() => {
-    const stored = localStorage.getItem(`favorite_${id}`) === 'true'
+    const stored = localStorage.getItem(`experience_favorite_${id}`) === 'true'
     setIsFavorited(stored)
   }, [id])
 
   const toggleFavorite = () => {
     const newState = !isFavorited
     setIsFavorited(newState)
-    localStorage.setItem(`favorite_${id}`, newState.toString())
+    localStorage.setItem(`experience_favorite_${id}`, newState.toString())
     setAnimate(true)
     setTimeout(() => setAnimate(false), 400)
   }
-
-  // ✅ 將條件渲染移到底部
-  if (tag === 0 || tag === '0') return null
-
-  const renderStars = (score) => {
-    const ratingNum = Number(score)
-    const fullStars = Math.floor(ratingNum)
-    const halfStar = ratingNum % 1 >= 0.5
-    const emptyStars = 5 - fullStars - (halfStar ? 1 : 0)
-
-    return (
-      <>
-        {[...Array(fullStars)].map((_, i) => (
-          <i className="bx bxs-star" key={`full-${i}`} />
-        ))}
-        {halfStar && <i className="bx bxs-star-half" key="half" />}
-        {[...Array(emptyStars)].map((_, i) => (
-          <i className="bx bx-star" key={`empty-${i}`} />
-        ))}
-      </>
-    )
-  }
+  // if (status === 0 || status === '0') return null
 
   return (
     <div
-      className="col mb-5"
+      className="col-md-4 col-sm-6 mb-5"
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
-      <Link href={`/course/course-list/${id}`} className="text-decoration-none">
+      <Link href={`/course/experience/${id}`} className="text-decoration-none">
         <div className="card h-100 card-hover-course" data-course-id={id}>
           <div className="card-img-container-course position-relative">
             <Image
               src={picture}
-              alt={title}
-              width={800}
               height={450}
+              width={800}
               className="card-img-top-course"
+              alt={title}
             />
             {/* ❤️ 收藏 icon */}
             <button
@@ -91,25 +68,13 @@ export default function CourseCard({
             </button>
           </div>
           <div className="card-body">
-            <button className="btn card-btn-course mb-2">{tagLabel}</button>
+            <button className="btn experience-tag mb-2">{tagLabel}</button>
             <h5 className="card-title mb-2">{title}</h5>
-            <p className="card-teacher-course mb-2">{teacher}</p>
-
-            <div className="d-flex align-content-center">
-              <div className="mb-2 me-3 card-score-course">
-                {avg_star.toFixed(1)} {renderStars(avg_star)}
-                {/* <small className="text-muted ms-2">
-                  ({comment_count} 則留言)
-                </small> */}
-              </div>
-              <div className="d-flex">
-                <i className="bi bi-people me-2" />
-                <div className="card-people-course">
-                  {Number(student).toLocaleString()}
-                </div>
-              </div>
-            </div>
-
+            <p className="card-teacher-course mb-2">
+              <i className="bi bi-geo-alt me-1" />
+              {city}
+            </p>
+            <p className="card-teacher-course mb-2">{activity_data}</p>
             <div className="d-flex align-items-end text-end">
               <h5 className="card-text me-3">
                 NT {Number(price).toLocaleString()}
