@@ -48,6 +48,18 @@ export default function MemberNav({ OpenMenu = false }) {
             <Link href="teacher">教師管理</Link>
           </li>
         </ul>
+        <ul>
+          <li className="title">文章</li>
+          <li>
+            <Link href="my-following">我的追蹤</Link>
+          </li>
+          <li>
+            <Link href="my-post">我的文章</Link>
+          </li>
+          <li>
+            <Link href="saved-post">收藏文章</Link>
+          </li>
+        </ul>
       </div>
     </>
   )

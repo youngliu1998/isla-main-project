@@ -69,16 +69,29 @@ router.get('/:pageName', async function (req, res) {
       break
     }
     case 'my-post': {
-      postsResult = await db.query(`${postsQuery} WHERE p.user_id = ${userID}`)
+      postsResult = await db.query(
+        `${postsQuery} WHERE p.user_id = ${userID} ORDER BY p.updated_at DESC`
+      )
+      break
+    }
+    case 'my-following': {
+      // postsResult = await db.query(`${}`)
+      break
+    }
+    case 'saved-post': {
+      postsResult = await db.query(`${postsQuery} ORDER BY p.updated_at DESC`)
+      console.log(postsResult[0])
+      postsResult[0] = postsResult[0].filter((p) =>
+        p.saved_user_ids.split(',').map(Number).includes(userID)
+      )
       break
     }
   }
 
-  const [posts] = postsResult
+  // const [posts] = postsResult
   return res.json({
     status: 'success',
     data: postsResult[0],
-    test: 'hello',
   })
   // referer歷史遺跡
   // // 取得WHERE參數、判斷路由

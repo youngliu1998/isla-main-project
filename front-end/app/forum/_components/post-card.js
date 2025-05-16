@@ -73,12 +73,11 @@ export default function ComponentsPostCard({
         <div
           className="post-content text-truncate fs14 sub-text-color"
           dangerouslySetInnerHTML={{
-            __html: postContent.replace('<br/>', ' '),
+            __html: postContent.replace('<br/>', ' ').slice(0, 50),
           }}
         />
         <div className="imgs d-flex gap-3 overflow-auto">
           <div className="img flex-shrink-0 rounded-3" />
-
           <div className="img flex-shrink-0 rounded-3" />
           <div className="img flex-shrink-0 rounded-3" />
           <div className="img flex-shrink-0 rounded-3" />

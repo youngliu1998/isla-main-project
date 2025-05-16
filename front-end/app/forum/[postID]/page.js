@@ -100,7 +100,7 @@ export default function PostIDPage(props) {
                 </span>
               </div>
               <button
-                className={`post-update main-text-color ${post.user_id === userID ? 'd-block' : 'd-none'}`}
+                className={`post-update button-clear main-text-color ${post.user_id === userID ? 'd-block' : 'd-none'}`}
                 data-bs-toggle="modal"
                 data-bs-target="#editPostModal"
               >

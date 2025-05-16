@@ -10,8 +10,8 @@ import Componentstab from '../_components/tab'
 
 const fetcher = (url) =>
   fetch(url, {
-    method: 'GET',
-    referrerPolicy: 'no-referrer-when-downgrade',
+    // method: 'GET',
+    // referrerPolicy: 'no-referrer-when-downgrade',
   }).then((res) => res.json())
 
 export default function ForumPage(props) {
@@ -47,7 +47,7 @@ export default function ForumPage(props) {
   const paramsString = params.toString()
 
   // fetch每篇文章的資料
-  const postsAPI = `http://localhost:3005/api/forum/posts/home?${paramsString}`
+  const postsAPI = `http://localhost:3005/api/forum/posts/home`
   console.log(postsAPI)
   const { data, isLoading, error, mutate } = useSWR(postsAPI, fetcher)
 
@@ -94,6 +94,7 @@ export default function ForumPage(props) {
       </>
     )
   }
+  console.log(posts)
 
   // FIXME 這邊要重新fetch資料庫做更新比較好，還是在前端假
   // // https://localhost:3000/forum?keyword=粉刺&tab=0&pdCate=唇膏&poCate=討論

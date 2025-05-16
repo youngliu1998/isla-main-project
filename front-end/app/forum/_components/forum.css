@@ -154,6 +154,7 @@
   }
   &.active {
     color: var(--main-color);
+    background-color: #00000000;
     border: 1px solid var(--main-color);
   }
 }
