@@ -11,7 +11,8 @@ const RatingComponent = ({
   reviewTextSuffix = '則評論',
   isMobile = false,
 }) => {
-  const fullStars = Math.floor(rating)
+  const roundedRating = Math.round(rating)
+  const fullStars = roundedRating
   const emptyStars = maxStars - fullStars
 
   return (

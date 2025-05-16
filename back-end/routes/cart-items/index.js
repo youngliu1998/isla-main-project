@@ -6,13 +6,8 @@ import verifyToken from '../../lib/verify-token.js'
 const router = express.Router()
 // 取得購物車商品列表
 router.get('/', verifyToken, async (req, res) => {
-<<<<<<< HEAD
   // const user_id = req.query.user_id
   const user_id = req.user.user_id
-=======
-  const user_id = req.query.user_id
-  // const user_id = req.user.user_id
->>>>>>> 57679f93a6bf85d917b5af3b7902751b5365718c
 
   if (!user_id) {
     return res.status(400).json({ status: 'fail', message: '請提供 user_id' })
