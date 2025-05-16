@@ -132,14 +132,14 @@ router.get('/member', async (req, res) => {
 })
 // 已使用
 router.post('/use', async (req, res) => {
-  const { user_id, coupon_id } = req.body
-
+  const { user_id, order_id } = req.body
+  // console.log({ user_id, order_id })
   try {
     await db.execute(
-      `UPDATE coupons_user
-       SET state = 2
-       WHERE user_id = ? AND coupon_id = ? AND state IN (1, 4)`,
-      [user_id, coupon_id]
+      ` UPDATE coupons_user
+        SET state = 2
+        WHERE user_id = ? AND coupon_id IN (SELECT coupon_id FROM order_coupons WHERE order_id = ?)`,
+      [user_id, order_id]
     )
 
     res.json({ status: 'success', message: '優惠券已標記為已使用' })

@@ -35,12 +35,13 @@ export default function CouponPage() {
     // 轉成dayjs格式
     const validTo = dayjs(coupon.valid_to)
     // 剩幾天到期
-    const daysToExpire = validTo.diff(now, 'day')
+    const daysToExpire = validTo.startOf('day').diff(now.startOf('day'), 'day')
     // 過期我先設0-3天內
-    const isSoonExpired =
-      daysToExpire >= 0 && daysToExpire <= 3 && coupon.state_id === 1
 
-    const isExpired = validTo.isBefore(now.startOf('day')) // 僅昨天以前才算過期
+    const isClaimedState = coupon.state_id === 1 || coupon.state_id === 4
+    const isSoonExpired =
+      daysToExpire >= 0 && daysToExpire <= 3 && isClaimedState
+    const isExpired = validTo.startOf('day').isBefore(now.startOf('day'))
 
     let time = false
     switch (currentType) {
