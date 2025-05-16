@@ -25,7 +25,7 @@ export default function ChatList() {
       >
         <div className="chat-list-header d-flex px-3 py-2 fs24 fw-bold position-absolute bg-pure-white rounded-top-3 shadow-sm z-1">
           <span className="me-auto"> 我的訊息</span>
-          <button>
+          <button className="button-clear">
             <i className="bi bi-pencil-square"></i>
           </button>
         </div>

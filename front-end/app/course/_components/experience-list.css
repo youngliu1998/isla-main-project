@@ -295,7 +295,7 @@
 .card-img-container-course {
   position: relative;
   overflow: hidden;
-  height: 100%;
+  aspect-ratio: 16/9;
   object-fit: cover;
 }
 

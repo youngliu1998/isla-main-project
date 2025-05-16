@@ -17,8 +17,7 @@ export default function CourseIDPage() {
             alt="課程圖片"
             width={800}
             height={200}
-            className="card-img-top-course object-fit-cover"
-            priority
+            className="card-img-top-course"
           />
           <div className="card-img-overlay banner-img-mask-course">
             <div className="row d-lg-flex d-none">

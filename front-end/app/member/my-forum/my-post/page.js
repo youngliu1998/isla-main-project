@@ -65,7 +65,7 @@ export default function MyPostPage(props) {
   return (
     <>
       <div className="body">
-        <div className="my-following-header d-flex align-items-center px-4 pt-4 pb-2">
+        <div className="my-post-header d-flex align-items-center px-4 pt-4 pb-3">
           <div className="me-auto fs32 fw-bold">我的文章</div>
           <Link className="text-main px-3 py-2 rounded-pill" href={'/forum'}>
             <i className="bi bi-box-arrow-left me-2"></i>
@@ -81,11 +81,13 @@ export default function MyPostPage(props) {
                 postTitle={post.title}
                 postCateName={post.cate_name}
                 postContent={post.content}
+                authorID={post.user_id}
                 width="21"
                 src={`/images/forum/320.webp`} //FIXME
                 alt={post.user_name}
                 fontSize="14"
                 color="var(--sub-text)"
+                updatedAt={post.updated_at}
                 authorName={post.user_nick}
                 btnLikedActive={post.liked_user_ids.includes(userID)}
                 btnSavedActive={post.saved_user_ids.includes(userID)}
