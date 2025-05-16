@@ -2,6 +2,8 @@
 import React, { useRef, useState, useLayoutEffect, useEffect } from 'react'
 import './tab.css'
 
+// 註： cate值為索引值+1，方便用?判斷是否賦值（因為0為falsy），也方便對應資料表的類別id
+// 如： tab ? new URLSearchParams().append('tab', tab) : ''
 export default function Componentstab({
   items = [],
   height = 60, // 預設高度，直接用數字
@@ -65,7 +67,7 @@ export default function Componentstab({
             }`}
             onClick={() => {
               setActiveIndex(i)
-              setCate(i)
+              setCate(i + 1)
               mutate()
             }}
           >

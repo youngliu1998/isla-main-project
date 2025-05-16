@@ -80,7 +80,7 @@ export default function ComponentsSearchBar({
                   key={i}
                   className={`button-clear cate-item px-4 py-3 rounded-2 fs16 main-text-color text-start rounded-pill`}
                   onClick={() => {
-                    setProductCate(item)
+                    setProductCate(i + 1)
                   }}
                 >
                   {item}
@@ -98,7 +98,7 @@ export default function ComponentsSearchBar({
                   key={i}
                   className={`button-clear cate-item px-4 py-3 rounded-2 fs16 main-text-color text-start rounded-pill`}
                   onClick={() => {
-                    setPostCate(item)
+                    setPostCate(i + 1)
                   }}
                 >
                   {item}

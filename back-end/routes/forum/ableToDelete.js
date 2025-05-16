@@ -1,4 +1,3 @@
-// @ts-check
 import express, { json } from 'express'
 const router = express.Router()
 // 使用mysql

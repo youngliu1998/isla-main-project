@@ -20,36 +20,24 @@ export default function ForumPage(props) {
 
   // 取得userID
   const userID = 1
-  const [tab, setTab] = useState('')
-  const [keyword, setKeyword] = useState('')
-  const [productCate, setProductCate] = useState('')
-  const [postCate, setPostCate] = useState('')
+  const [tab, setTab] = useState(null)
+  // const [keyword, setKeyword] = useState(null)
+  // const [productCate, setProductCate] = useState(null)
+  // const [postCate, setPostCate] = useState(null)
 
   // 分類篩選
   const postCateItems = ['分享', '請益', '討論', '試色']
   const productCateItems = ['唇膏', '底妝']
 
-  let tabParam = tab === 0 ? 'popular' : tab === 1 ? 'new' : ''
-  let keywordParam = keyword ?? ''
-  let productParam = productCate ?? ''
-  let postParam = postCate ?? ''
-  // const allParam = tabParam
-  //   console.log(
-  //     `http://localhost:3005/api/forum/posts/home?${tabParam}${keywordParam}${productParam}${postParam}`
-  //   )
-  // }
-  //
-  const params = new URLSearchParams()
-  params.append('keyword', keywordParam)
-  params.append('tab', tabParam)
-  params.append('product', productParam)
-  params.append('post', postParam)
-  const paramsString = params.toString()
+  // paramsString = '' //FIXME 要去按鈕那邊將重複點選設定清除params
+  useEffect(() => {
+    // fetch每篇文章的資料
+    const postsAPI = paramsString
+      ? `http://localhost:3005/api/forum/posts/home?${paramsString}`
+      : `http://localhost:3005/api/forum/posts/home`
 
-  // fetch每篇文章的資料
-  const postsAPI = `http://localhost:3005/api/forum/posts/home`
-  console.log(postsAPI)
-  const { data, isLoading, error, mutate } = useSWR(postsAPI, fetcher)
+    const { data, isLoading, error, mutate } = useSWR(postsAPI, fetcher)
+  }, [searchParams])
 
   if (error) {
     console.log(error)
@@ -78,9 +66,68 @@ export default function ForumPage(props) {
     return (
       <>
         <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center">
-          isLoading
+          <div className="posts d-flex flex-column gap-3 w-100">
+            <div className="tabs d-flex">
+              <Componentstab
+                items={['熱門', '最新']}
+                height={'40'}
+                setCate={setTab}
+                mutate={mutate}
+              />
+
+              <button
+                className="switcher button-clear dropdown-toggle d-flex d-xl-none justify-content-center align-items-center gap-1 bg-hover sub-text-color"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                分類
+              </button>
+              <div className="dropdown-menu px-3 py-2 shadow-lg border-0">
+                <div>
+                  <div className="dropdown-label py-1 fs12 sub-text-color">
+                    商品類型
+                  </div>
+                  <button className="dropdown-item-forum px-2 py-1 rounded-3">
+                    唇膏
+                  </button>
+                  <button className="dropdown-item-forum rounded-3">
+                    唇膏
+                  </button>
+                  <button className="dropdown-item-forum rounded-3">
+                    唇膏
+                  </button>
+                </div>
+                <div>
+                  <div className="dropdown-label py-1 fs12 sub-text-color">
+                    文章類型
+                  </div>
+                  <button className="dropdown-item-forum px-2 py-1 rounded-3 button-clear">
+                    唇膏
+                  </button>
+                  <button className="dropdown-item-forum rounded-3 button-clear">
+                    唇膏
+                  </button>
+                  <button className="dropdown-item-forum rounded-3 button-clear">
+                    唇膏
+                  </button>
+                  <button className="dropdown-item-forum rounded-3 button-clear">
+                    唇膏
+                  </button>
+                </div>
+              </div>
+            </div>
+            isLoading
+          </div>
         </main>
-        <ComponentsSearchBar />
+        <ComponentsSearchBar
+          setKeyword={setKeyword}
+          setTab={setTab}
+          setProductCate={setProductCate}
+          setPostCate={setPostCate}
+          postCateItems={postCateItems}
+          productCateItems={productCateItems}
+        />
       </>
     )
   }
@@ -88,30 +135,58 @@ export default function ForumPage(props) {
     return (
       <>
         <main className="main col col-10 d-flex flex-column align-items-center">
-          無文章資料
+          <div className="posts d-flex flex-column gap-3 w-100">
+            <div className="tabs d-flex">
+              <Componentstab />
+              <button
+                className="switcher button-clear dropdown-toggle d-flex d-xl-none justify-content-center align-items-center gap-1 bg-hover sub-text-color"
+                type="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                分類
+              </button>
+              <div className="dropdown-menu px-3 py-2 shadow-lg border-0">
+                <div>
+                  <div className="dropdown-label py-1 fs12 sub-text-color">
+                    商品類型
+                  </div>
+                  <button className="dropdown-item-forum px-2 py-1 rounded-3">
+                    唇膏
+                  </button>
+                  <button className="dropdown-item-forum rounded-3">
+                    唇膏
+                  </button>
+                  <button className="dropdown-item-forum rounded-3">
+                    唇膏
+                  </button>
+                </div>
+                <div>
+                  <div className="dropdown-label py-1 fs12 sub-text-color">
+                    文章類型
+                  </div>
+                  <button className="dropdown-item-forum px-2 py-1 rounded-3 button-clear">
+                    唇膏
+                  </button>
+                  <button className="dropdown-item-forum rounded-3 button-clear">
+                    唇膏
+                  </button>
+                  <button className="dropdown-item-forum rounded-3 button-clear">
+                    唇膏
+                  </button>
+                  <button className="dropdown-item-forum rounded-3 button-clear">
+                    唇膏
+                  </button>
+                </div>
+              </div>
+            </div>
+            查無文章，請稍後再試
+          </div>
         </main>
         <ComponentsSearchBar />
       </>
     )
   }
-  console.log(posts)
-
-  // FIXME 這邊要重新fetch資料庫做更新比較好，還是在前端假
-  // // https://localhost:3000/forum?keyword=粉刺&tab=0&pdCate=唇膏&poCate=討論
-  // let tabParam
-  // let pdCate
-  // let poCate
-  // console.log(cate)
-  // if (cate.length !== 0) {
-  //   posts = posts.filter((post) => post.cate_name === cate)
-  //   if (cate === 1) {
-  //     posts = posts.sort(
-  //       (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
-  //     )
-  //     tabParam = 'tab=1'
-  //   }
-  //   router.replace({})
-  // }
 
   return (
     <>
@@ -126,39 +201,43 @@ export default function ForumPage(props) {
             />
 
             <button
-              className="switcher button-clear dropdown-toggle d-flex d-xl-none justify-content-center align-items-center gap-1 text-decoration-none sub-text-color"
+              className="switcher button-clear dropdown-toggle d-flex d-xl-none justify-content-center align-items-center gap-1 bg-hover sub-text-color"
               type="button"
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
               分類
             </button>
-            <div className="dropdown-menu px-3 py-2 shadow-lg border-0">
-              <div>
+            <div className="dropdown-menu px-3 py-2 shadow-lg border-0 main-text-color">
+              <div className="pb-2">
                 <div className="dropdown-label py-1 fs12 sub-text-color">
                   商品類型
                 </div>
-                <button className="dropdown-item-forum px-2 py-1 rounded-3">
+                <button className="dropdown-item-forum px-2 py-1 rounded-pill button-clear">
                   唇膏
                 </button>
-                <button className="dropdown-item-forum rounded-3">唇膏</button>
-                <button className="dropdown-item-forum rounded-3">唇膏</button>
+                <button className="dropdown-item-forum px-2 py-1 rounded-pill button-clear">
+                  底妝
+                </button>
+                <button className="dropdown-item-forum px-2 py-1 rounded-pill button-clear">
+                  眼影
+                </button>
               </div>
-              <div>
+              <div className="pb-2">
                 <div className="dropdown-label py-1 fs12 sub-text-color">
                   文章類型
                 </div>
-                <button className="dropdown-item-forum px-2 py-1 rounded-3 button-clear">
-                  唇膏
+                <button className="dropdown-item-forum px-2 py-1 px-2 py-1 rounded-pill button-clear">
+                  分享
                 </button>
-                <button className="dropdown-item-forum rounded-3 button-clear">
-                  唇膏
+                <button className="dropdown-item-forum px-2 py-1 rounded-pill button-clear">
+                  請益
                 </button>
-                <button className="dropdown-item-forum rounded-3 button-clear">
-                  唇膏
+                <button className="dropdown-item-forum px-2 py-1 rounded-pill button-clear">
+                  討論
                 </button>
-                <button className="dropdown-item-forum rounded-3 button-clear">
-                  唇膏
+                <button className="dropdown-item-forum px-2 py-1 rounded-pill button-clear">
+                  試色
                 </button>
               </div>
             </div>

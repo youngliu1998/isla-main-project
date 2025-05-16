@@ -43,7 +43,6 @@ router.get('/:pageName', async function (req, res) {
 
   switch (pageName) {
     case 'post-detail': {
-      // const postAPI = `http://localhost:3005/api/forum/posts/post-detail?postID=${postID}`
       const postID = req.query.postID
       postsResult = await db.query(`${postsQuery} WHERE p.id=${postID}`)
       morePostsResult = await db.query(`${postsQuery} WHERE p.cate_id = 
@@ -57,7 +56,22 @@ router.get('/:pageName', async function (req, res) {
       break
     }
     case 'home': {
-      postsResult = await db.query(`${postsQuery}`)
+      console.log(req.query)
+      const params = req.query
+      if (
+        params.keyword ||
+        params.tab ||
+        params.productCate ||
+        params.postCate
+      ) {
+        const postCate = params.postCate
+        postsResult = postsResult = await db.query(
+          `${postsQuery} WHERE p.cate_id = ${postCate}`
+        )
+      } else {
+        postsResult = await db.query(`${postsQuery}`)
+      }
+
       break
     }
     case 'profile': {
@@ -80,7 +94,7 @@ router.get('/:pageName', async function (req, res) {
     }
     case 'saved-post': {
       postsResult = await db.query(`${postsQuery} ORDER BY p.updated_at DESC`)
-      console.log(postsResult[0])
+      // console.log(postsResult[0])
       postsResult[0] = postsResult[0].filter((p) =>
         p.saved_user_ids.split(',').map(Number).includes(userID)
       )

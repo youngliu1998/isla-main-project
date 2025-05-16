@@ -424,3 +424,11 @@
     background-color: var(--hover-light-gray);
   }
 }
+
+/* member */
+.my-post-header {
+  max-width: 800px;
+}
+.saved-post-header {
+  max-width: 800px;
+}

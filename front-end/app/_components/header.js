@@ -32,7 +32,7 @@ export default function Header() {
                 <Link href="/course">美妝教室</Link>
               </li>
               <li>
-                <Link href="/forum">美妝社群</Link>
+                <Link href="/forum">美妝論壇</Link>
               </li>
             </ul>
           </nav>
