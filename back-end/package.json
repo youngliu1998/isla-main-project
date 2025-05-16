@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node ./api/index.js",
     "cstart": "node ./app.js",
-    "dev": "nodemon ./app.js",
+    "dev": "nodemon ./api/index.js",
     "cdev": "nodemon ./api/index.js",
     "build": "prisma generate && prisma db push --force-reset && prisma db seed",
     "debug": "DEBUG=express:* node ./api/index.js",
