@@ -178,7 +178,8 @@
 .card-img-container-course {
   position: relative;
   overflow: hidden;
-  height: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
 }
 
 .card-img-top-course {
@@ -189,7 +190,9 @@
 }
 /* ---------- 圖片放大 ---------- */
 .card-hover-course {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .card-hover-course:hover .card-img-top-course {
