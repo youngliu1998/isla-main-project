@@ -7,7 +7,7 @@ export default function MemberLayout({ children }) {
         <div className="row justify-content-center">
           <SideBar />
           {/* main-content */}
-          <div className="col-lg-9 col-12">{children}</div>
+          <div className="col">{children}</div>
         </div>
       </div>
     </>

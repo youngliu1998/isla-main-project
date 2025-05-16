@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 export default function InputPass({
   password = {},
   title = '',
@@ -7,6 +8,7 @@ export default function InputPass({
   value = '',
   setPassword = () => {},
 }) {
+  // const [passType, setPassType] = useState('password')
   return (
     <>
       <div className="user-form-input">
@@ -20,6 +22,21 @@ export default function InputPass({
           }}
           className="form-control"
         />
+        {/* show password or not */}
+        {/* <button
+          className="passEye"
+          onClick={() => {
+            switch (passType) {
+              case 'password':
+                setPassType('Text')
+                break
+              case 'text':
+                setPassType('password')
+            }
+          }}
+        >
+          <i className="bi bi-eye"></i>
+        </button> */}
       </div>
     </>
   )

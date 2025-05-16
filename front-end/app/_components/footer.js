@@ -9,6 +9,13 @@ import { usePathname } from 'next/navigation'
 
 export default function Footer() {
   const pathname = usePathname()
+
+  if (
+    pathname.includes('/login') ||
+    pathname.includes('register') ||
+    pathname.includes('forget-password') ||
+    pathname.includes('/forum')
+  ) {
   if (pathname.includes('/login') || pathname.includes('/forum')) {
     return <></>
   }

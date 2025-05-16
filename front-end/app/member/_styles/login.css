@@ -23,6 +23,12 @@
   gap: 2rem;
   padding-inline: 2rem;
   padding-block: 3rem;
+  a {
+    color: var(--sub-color);
+  }
+  a:hover {
+    color: var(--strong-color);
+  }
 }
 .login-form {
   width: 100%;
