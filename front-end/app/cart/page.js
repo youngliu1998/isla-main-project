@@ -12,7 +12,6 @@ import MobileOrderBar from './_component/mobile-order-bar/mobile-order-bar'
 import useIsMobile from './hook/useIsMobile'
 import { useAuth } from '@/hook/use-auth'
 // fetch data
-import axios from 'axios'
 import cartApi from './utils/axios'
 import { useEffect, useState } from 'react'
 
@@ -22,13 +21,16 @@ export default function CartPage() {
 
   //init
   useEffect(() => {
-    // const cartItemsData = async () => {
-    //   const res = axios.cartApi.get('/cart-items')
-    //   console.log(res)
-    // }
-    const res = axios.cartApi.get('/cart-items')
-    console.log(res)
-  }, [])
+    const cartItemsData = async () => {
+      try {
+        const res = await cartApi.get('/cart-items')
+        console.log('後端資料抓到：', res.data)
+      } catch (error) {
+        console.error('資料抓取失敗:', error.message)
+      }
+    }
+    cartItemsData()
+  }, [isAuth])
 
   // 判斷是否為手機裝置
   const isMobile = useIsMobile()
@@ -135,6 +137,7 @@ export default function CartPage() {
               {/* === Product Card group*/}
               <ProductCard type="dropDown" />
               <ProductCard type="colorDots" />
+              <ProductCard type="normal" />
 
               {/* === 加購商品卡片區塊 === */}
               <div
