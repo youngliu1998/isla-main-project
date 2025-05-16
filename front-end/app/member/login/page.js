@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import InputText from '../_component/input-text'
-import InputPass from '../_component/input-Pass'
+import InputPass from '../_component/input-pass'
 import '../_styles/login.css'
 
 export default function LoginPage() {
