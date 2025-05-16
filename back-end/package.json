@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node ./api/index.js",
     "cdev": "dotenv -e .env.chris -- node --inspect ./app.js",
+    "cdevindex": "dotenv -e .env.chris -- node --inspect ./api/index.js",
     "dev": "nodemon ./api/index.js",
     "build": "prisma generate && prisma db push --force-reset && prisma db seed",
     "debug": "DEBUG=express:* node ./api/index.js",
