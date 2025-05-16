@@ -11,6 +11,7 @@ export default function ComponentsBtnLikedSaved({
   postID = '',
   userID = '',
   mutate = () => {},
+  color = '',
 }) {
   const iconClass =
     type === 'liked'
@@ -24,7 +25,7 @@ export default function ComponentsBtnLikedSaved({
   return (
     <>
       <button
-        className="evaluate saved px-2 py-1 border-0 rounded-3 d-flex align-items-center bg-pure-white"
+        className={`evaluate saved px-2 py-1 border-0 rounded-3 d-flex align-items-center ${color}`}
         onClick={async (e) => {
           e.preventDefault()
           e.stopPropagation()
