@@ -6,7 +6,7 @@ import verifyToken from '../../lib/verify-token.js'
 const router = express.Router()
 // 取得購物車商品列表
 router.get('/', verifyToken, async (req, res) => {
-  // const user_id = req.query.user_id 不用token
+  // const user_id = req.query.user_id 不使用token
   const user_id = req.user.user_id
 
   if (!user_id) {
