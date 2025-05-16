@@ -2,6 +2,8 @@ import db from '../config/mysql.js'
 
 export async function getFilteredProducts(filters) {
   const {
+    keyword,
+    onSaleOnly,
     brandIds,
     categoryIds,
     tagIds,
@@ -70,7 +72,7 @@ export async function getFilteredProducts(filters) {
     LEFT JOIN product_tags ON product_tags.tag_id = product_tag_relations.tag_id
   `
 
-  // 添加篩選條件
+  // 篩選
   if (brandIds && brandIds.length > 0) {
     conditions.push(
       `products.brand_id IN (${brandIds.map(() => '?').join(',')})`
@@ -127,13 +129,40 @@ export async function getFilteredProducts(filters) {
     conditions.push(`review_summary.avg_rating <= ?`)
     params.push(maxRating)
   }
+  // 關鍵字搜尋
+  if (keyword) {
+    const loweredKeyword = `%${keyword.toLowerCase()}%`
+    conditions.push(`
+    (
+      LOWER(products.name) LIKE ?
+      OR LOWER(brand.name) LIKE ?
+      OR LOWER(category.name) LIKE ?
+      OR EXISTS (
+        SELECT 1
+        FROM product_tags pt
+        JOIN product_tag_relations ptr ON ptr.tag_id = pt.tag_id
+        WHERE ptr.product_id = products.product_id
+        AND LOWER(pt.name) LIKE ?
+      )
+    )
+  `)
+    params.push(loweredKeyword, loweredKeyword, loweredKeyword, loweredKeyword)
+  }
+
+  if (onSaleOnly) {
+    conditions.push(`
+    products.sale_price IS NOT NULL
+    AND NOW() >= products.sale_start_date
+    AND NOW() <= products.sale_end_date
+  `)
+  }
 
   // 添加 WHERE 子句（如果需要）
   if (conditions.length > 0) {
     sql += ' WHERE ' + conditions.join(' AND ')
   }
 
-  // 添加 GROUP BY, ORDER BY, LIMIT 和 OFFSET
+  // GROUP BY, ORDER BY, LIMIT 和 OFFSET
   sql += `
     GROUP BY products.product_id
     ORDER BY products.product_id
@@ -141,59 +170,24 @@ export async function getFilteredProducts(filters) {
   `
 
   try {
-    console.log('==== SQL ====')
+    // DEBUG
+    // console.log('==== SQL ====')
     console.log(sql)
-    console.log('==== Params ====')
-    console.log(params)
-    console.log(
-      `Params length: ${params.length}, Placeholders count: ${
-        (sql.match(/\?/g) || []).length
-      }`
-    )
-
-    // 嘗試使用不同的方法執行查詢
+    // console.log('==== Params ====')
+    // console.log(params)
+    // console.log(
+    //   `Params length: ${params.length}, Placeholders count: ${
+    //     (sql.match(/\?/g) || []).length
+    //   }`
+    // )
     try {
-      // 首先嘗試使用 query 方法
       const [rows] = await db.query(sql, params)
       return rows
     } catch (queryError) {
-      console.error('query 方法失敗:', queryError)
-
-      // 如果 query 失敗，嘗試使用 execute
-      try {
-        const [rows] = await db.execute(sql, params)
-        return rows
-      } catch (executeError) {
-        console.error('execute 方法也失敗:', executeError)
-
-        // 如果都失敗，則嘗試完全不使用參數化查詢
-        // 警告：這種方法不安全，容易導致 SQL 注入
-        // 僅作為最後的手段
-
-        // 創建一個安全替換參數的函數
-        const escapeValue = (val) => {
-          if (val === null || val === undefined) return 'NULL'
-          if (typeof val === 'number') return val.toString()
-          if (typeof val === 'boolean') return val ? '1' : '0'
-          // 對字符串進行轉義，避免 SQL 注入
-          return `'${val.toString().replace(/'/g, "''")}'`
-        }
-
-        // 替換所有問號為實際值
-        let finalSql = sql
-        params.forEach((param) => {
-          finalSql = finalSql.replace('?', escapeValue(param))
-        })
-
-        console.log('==== 最終 SQL （直接值）====')
-        console.log(finalSql)
-
-        const [rows] = await db.query(finalSql)
-        return rows
-      }
+      console.error('Error:', queryError)
     }
   } catch (error) {
-    console.error('SQL執行錯誤:', error)
+    console.error('SQL Run Time Error:', error)
     throw error
   }
 }
