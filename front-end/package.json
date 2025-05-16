@@ -12,6 +12,7 @@
   "dependencies": {
     "@fontsource/noto-sans-tc": "^5.2.5",
     "@fontsource/plaster": "^5.2.5",
+    "axios": "^1.9.0",
     "bootstrap": "^5.3.5",
     "canvas-confetti": "^1.9.3",
     "downshift": "^9.0.9",

@@ -1,6 +1,6 @@
 'use client'
-
 import styles from './_styles/cart-style.module.scss'
+//import component
 import StepProgress from './_component/step-progress/step-progress'
 import ProductCard from './_component/product-card/product-card'
 import CouponAccordion from './_component/coupon-accordion/coupon-accordion'
@@ -8,21 +8,37 @@ import CouponAccordionCourse from './_component/coupon-accordion/coupon-accordio
 import CouponSwiper from './_component/coupon-swiper/coupon-swiper'
 import OrderSummary from './_component/order-summary/order-summary'
 import MobileOrderBar from './_component/mobile-order-bar/mobile-order-bar'
-
+// coustom-hook
 import useIsMobile from './hook/useIsMobile'
-
+import { useAuth } from '@/hook/use-auth'
+// fetch data
+import axios from 'axios'
+import cartApi from './utils/axios'
 import { useEffect, useState } from 'react'
 
-// import React, { useState, useEffect, Children } from 'react'
 export default function CartPage() {
+  const { user, isAuth } = useAuth()
+  const [cartItems, setCartItems] = useState([])
+
+  //init
+  useEffect(() => {
+    // const cartItemsData = async () => {
+    //   const res = axios.cartApi.get('/cart-items')
+    //   console.log(res)
+    // }
+    const res = axios.cartApi.get('/cart-items')
+    console.log(res)
+  }, [])
+
+  // 判斷是否為手機裝置
   const isMobile = useIsMobile()
 
+  // 記錄元件是否 已Mounted完成
   const [hasMounted, setHasMounted] = useState(false)
   useEffect(() => {
     setHasMounted(true)
   }, [])
-
-  if (!hasMounted) return null // 預防錯誤
+  if (!hasMounted) return null // 預防報錯
 
   const couponDataProd = [
     {
