@@ -33,7 +33,7 @@ export default function ProductCardColorDots({
     <div className="card border-0">
       <div className="row g-3">
         {/* 商品圖片 */}
-        <div className="col-md-3">
+        <div className="col-md-3 flex">
           <div className="d-flex justify-content-center align-items-center">
             <input
               className={`${styles.checkboxInput} form-check-input`}

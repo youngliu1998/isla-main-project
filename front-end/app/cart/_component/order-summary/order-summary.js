@@ -7,8 +7,8 @@ import { Collapse } from 'react-bootstrap'
 import { useState } from 'react'
 
 export default function OrderSummary() {
-  const [openProducts, setOpenProducts] = useState(false)
-  const [openCourses, setOpenCourses] = useState(false)
+  const [openProdList, setOpenProdList] = useState(false)
+  const [openCourList, setOpenCourList] = useState(false)
 
   return (
     <div className={`${styles.orderSummary} card-style mb-3`}>
@@ -21,8 +21,8 @@ export default function OrderSummary() {
           <button
             type="button"
             className="btn btn-link p-0 text-center"
-            onClick={() => setOpenProducts(!openProducts)}
-            aria-expanded={openProducts}
+            onClick={() => setOpenProdList(!openProdList)}
+            aria-expanded={openProdList}
           >
             <i className="bi bi-caret-down-fill text-subtext"></i>
           </button>
@@ -31,7 +31,7 @@ export default function OrderSummary() {
           <strong>NT$2500</strong>
         </p>
       </div>
-      <Collapse in={openProducts}>
+      <Collapse in={openProdList}>
         <div>
           <div className="d-flex justify-content-between text-elem mb-2">
             <p>[Kaja] Crystal Glam Tint</p>
@@ -56,8 +56,8 @@ export default function OrderSummary() {
           <button
             type="button"
             className="btn btn-link p-0 text-center"
-            onClick={() => setOpenCourses(!openCourses)}
-            aria-expanded={openCourses}
+            onClick={() => setOpenCourList(!openCourList)}
+            aria-expanded={openCourList}
           >
             <i className="bi bi-caret-down-fill text-subtext"></i>
           </button>
@@ -66,7 +66,7 @@ export default function OrderSummary() {
           <strong>NT$1800</strong>
         </p>
       </div>
-      <Collapse in={openCourses}>
+      <Collapse in={openCourList}>
         <div>
           <div className="d-flex justify-content-between text-elem mb-2">
             <p
@@ -123,7 +123,7 @@ export default function OrderSummary() {
       </div>
 
       <div className="w-100 d-flex justify-content-end">
-        <Link href="/payment">
+        <Link href="/cart/payment">
           <button className="btn btn-primary text-white">結帳</button>
         </Link>
       </div>

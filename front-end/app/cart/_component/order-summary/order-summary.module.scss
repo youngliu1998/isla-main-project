@@ -1,55 +1,3 @@
-// .text-ellipsis {
-//   width: 12em;
-//   white-space: nowrap;
-//   overflow: hidden;
-//   text-overflow: ellipsis;
-//   cursor: pointer;
-// }
-// .order-summary {
-//   position: sticky;
-//   top: 1rem;
-//   bottom: auto;
-//   width: auto;
-//   padding: 16px;
-//   button.btn-primary {
-//     width: 100%;
-//     font-size: 1rem;
-//     display: block;
-//     margin-left: auto;
-//   }
-// }
-
-// @media (max-width: 991.98px) {
-//   .order-summary {
-//     position: fixed;
-//     bottom: 0;
-//     left: 0;
-//     width: 100%;
-//     padding: 36px;
-//     top: auto;
-//     z-index: 10;
-//     background: var(--white);
-//     h5 {
-//       font-size: 2.62rem; //42px
-//     }
-//     h4 {
-//       font-size: 3rem; //48px
-//     }
-//     p,
-//     i {
-//       font-size: 2.25rem; //36px
-//     }
-//     .mb-3 {
-//       margin-bottom: 1.5rem !important;
-//     }
-//     button.btn-primary {
-//       width: 300px;
-//       font-size: 2.5rem;
-//       margin-left: auto;
-//     }
-//   }
-// }
-
 .orderSummary {
   position: sticky;
   top: 6rem;
@@ -77,38 +25,39 @@
   border-radius: 999px;
 }
 
-@media (max-width: 991.98px) {
-  .orderSummary {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    top: auto;
-    z-index: 10;
-    background: var(--white);
-    padding: 36px;
+// @media (max-width: 991.98px) {
+//   .orderSummary {
+//     position: fixed;
+//     bottom: 0;
+//     left: 0;
+//     width: 100%;
+//     top: auto;
+//     z-index: 10;
+//     background: var(--white);
+//     padding: 24px;
 
-    h5 {
-      font-size: 2.62rem; // 42px
-    }
+//     h5 {
+//       font-size: 1.25rem; // 約 20px
+//     }
 
-    h4 {
-      font-size: 3rem; // 48px
-    }
+//     h4 {
+//       font-size: 1.5rem; // 約 24px
+//     }
 
-    p,
-    i {
-      font-size: 2.25rem; // 36px
-    }
+//     p,
+//     i {
+//       font-size: 1rem; // 16px（保持可讀）
+//     }
 
-    .mb-3 {
-      margin-bottom: 1.5rem !important;
-    }
+//     .mb-3 {
+//       margin-bottom: 1.25rem !important;
+//     }
 
-    button.btn-primary {
-      width: 300px;
-      font-size: 2.5rem;
-      margin: 0 auto;
-    }
-  }
-}
+//     button.btn-primary {
+//       width: 100%;
+//       max-width: 280px;
+//       font-size: 1.125rem; // 約 18px
+//       margin: 0 auto;
+//     }
+//   }
+// }

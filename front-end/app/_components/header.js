@@ -20,7 +20,7 @@ export default function Header() {
           <nav className="d-lg-block d-none">
             <ul>
               <li>
-                <Link href="">所有產品</Link>
+                <Link href="/product">所有產品</Link>
               </li>
               <li>
                 <Link href="">品牌總覽</Link>
@@ -29,10 +29,10 @@ export default function Header() {
                 <Link href="">優惠券專區</Link>
               </li>
               <li>
-                <Link href="">美妝教室</Link>
+                <Link href="/course">美妝教室</Link>
               </li>
               <li>
-                <Link href="">美妝社群</Link>
+                <Link href="/forum">美妝社群</Link>
               </li>
             </ul>
           </nav>

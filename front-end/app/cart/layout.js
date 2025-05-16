@@ -1,6 +1,6 @@
 'use client'
 import { useEffect } from 'react'
-import CartFooter from './_component/cart-footer/cart-footer'
+// import CartFooter from './_component/cart-footer/cart-footer'
 import '@/app/_styles/globals.scss'
 
 export default function CartLayout({ children }) {
@@ -9,8 +9,7 @@ export default function CartLayout({ children }) {
   }, [])
   return (
     <>
-      {children}
-      <CartFooter />
+      <main>{children}</main>
     </>
   )
 }

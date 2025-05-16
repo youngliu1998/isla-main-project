@@ -1,58 +1,124 @@
 import express from 'express'
+import multer from 'multer'
+import db from '../../config/mysql.js' // 使用mysql
+
 const router = express.Router()
-// 使用mysql
-import db from '../../config/mysql.js'
-import { number } from 'zod'
+const upload = multer()
 
+// router.get('/', async function (req, res) {
+//   return res.json({})
+// })
 // 得到多筆文章
-router.get('/', async function (req, res) {
-  // posts是陣列含多個物件
-  const [postsRaw] = await db.query(
-    // ⚠️🐰用了別名就要貫徹始終
-    // 目前做法是搜集成按讚過的使用者ID陣列，再去計算數量。還是單獨sql WHERE user_id = 登入者_id就好？
-    `SELECT p.*, 
-    pc.name AS post_cate_name
+router.get('/:pageName', async function (req, res) {
+  // 取得userID
+  const userID = 1
+  const postsQuery = `SELECT 
+        p.*,
+        pc.id AS cate_id,
+        pc.name AS cate_name,
+        u.nickname AS user_nick,
+        IFNULL (liked.user_ids, '') AS liked_user_ids,
+        IFNULL (saved.user_ids, '') AS saved_user_ids
     FROM post p
-    JOIN post_category pc ON p.post_cate_id = pc.id`
-  )
-  const [likedRaw] = await db.query(
-    `SELECT liked.post_id,
-    GROUP_CONCAT(liked.user_id) AS liked_user_id
-    FROM post_user_liked liked
-    GROUP BY liked.post_id`
-  )
-  const [savedRaw] = await db.query(
-    `SELECT saved.post_id,
-    GROUP_CONCAT(saved.user_id) AS saved_user_id
-    FROM post_user_saved saved
-    GROUP BY saved.post_id`
-  )
+    JOIN post_category pc ON p.cate_id = pc.id
+    JOIN users u ON p.user_id = u.id
+    LEFT JOIN (
+        SELECT post_id,
+        GROUP_CONCAT(user_id) AS user_ids
+        FROM post_user_liked
+        GROUP BY post_id
+    ) liked ON p.id = liked.post_id
+    LEFT JOIN (
+        SELECT post_id,
+        GROUP_CONCAT(user_id) AS user_ids
+        FROM post_user_saved
+        GROUP BY post_id
+    ) saved ON p.id = saved.post_id`
 
-  const extendedPosts = postsRaw.map((post) => {
-    const likedUserIDs =
-      likedRaw
-        .find((el) => el.post_id == post.id)
-        ?.liked_user_id.split(',')
-        .map((el) => Number(el)) ?? []
+  const pageName = req.params.pageName
+  let postsResult
+  let morePostsResult
 
-    const savedUserIDs =
-      savedRaw
-        .find((el) => el.post_id === post.id)
-        ?.saved_user_id.split(',')
-        .map((el) => Number(el)) ?? []
-    // NOTE '大卡點！！！要用?防止undefined！！！'
+  if (!userID) return res.json({ status: 'success', data: '未登入成功' })
 
-    return {
-      ...post,
-      liked_user_ids: likedUserIDs,
-      saved_user_ids: savedUserIDs,
+  switch (pageName) {
+    case 'post-detail': {
+      // const postAPI = `http://localhost:3005/api/forum/posts/post-detail?postID=${postID}`
+      const postID = req.query.postID
+      postsResult = await db.query(`${postsQuery} WHERE p.id=${postID}`)
+      morePostsResult = await db.query(`${postsQuery} WHERE p.cate_id = 
+        (SELECT cate_id FROM post WHERE id = ${postID}) AND p.id != ${postID} LIMIT 4`)
+      if (morePostsResult) {
+        return res.json({
+          status: 'success',
+          data: { posts: postsResult[0], morePosts: morePostsResult[0] },
+        })
+      }
+      break
     }
-  })
+    case 'home': {
+      postsResult = await db.query(`${postsQuery}`)
+      break
+    }
+    case 'profile': {
+      // req網址 http://localhost:3000/forum/profile
+      const authorID = req.query.authorID
+      postsResult = await db.query(
+        `${postsQuery} WHERE p.user_id = ${authorID}`
+      )
+      break
+    }
+    case 'my-post': {
+      postsResult = await db.query(
+        `${postsQuery} WHERE p.user_id = ${userID} ORDER BY p.updated_at DESC`
+      )
+      break
+    }
+    case 'my-following': {
+      // postsResult = await db.query(`${}`)
+      break
+    }
+    case 'saved-post': {
+      postsResult = await db.query(`${postsQuery} ORDER BY p.updated_at DESC`)
+      console.log(postsResult[0])
+      postsResult[0] = postsResult[0].filter((p) =>
+        p.saved_user_ids.split(',').map(Number).includes(userID)
+      )
+      break
+    }
+  }
 
+  // const [posts] = postsResult
   return res.json({
     status: 'success',
-    data: extendedPosts,
+    data: postsResult[0],
   })
+  // referer歷史遺跡
+  // // 取得WHERE參數、判斷路由
+  // const referer = req.get('Referer')
+  // const isHome = referer === 'http://localhost:3000/forum'
+  // const isPost = referer.includes('http://localhost:3000/forum/post')
+  // const isProfile = referer.includes('http://localhost:3000/forum/profile/')
+  // const isMyPost = referer.includes(
+  //   'http://localhost:3000/member/my-forum/my-post'
+  // )
+
+  // // whereClause
+  // let whereClause = ''
+  // if (isProfile) {
+  //   const profileID = req.get('Referer').match(/\/profile\/(\d+)$/)[1]
+  //   whereClause = profileID ? `WHERE p.user_id = ${profileID}` : '' //有必要嗎？
+  // } else if (isMyPost) {
+  //   whereClause = `WHERE p.user_id = ${userID}`
+  // } else if (isPost) {
+  //   // BUG 點擊至post再跳回上一頁時，上一頁論壇首頁只剩在where篩選後的單篇資料
+  //   const postID = req.get(`Referer`).match(/\/forum\/post\/(\d+)$/)[1]
+  //   whereClause = `WHERE p.id = ${postID}`
+  // } else if (isHome) {
+  //   whereClause = ''
+  // }
+
+  // posts是陣列含多個物件
 })
 
 // 得到多筆文章 - 篩選
@@ -63,23 +129,23 @@ router.get('/:queryParam', async function (req, res) {
   return res.json({ status: 'success', data: { posts } })
 })
 
-// 得到單筆文章
-router.get('/:postID', async function (req, res) {
-  // 從動態網址中得到id（需要轉換為數字，因在資料表的id是自動遞增的數字）
-  const id = Number(req.params.postID)
-  // 執行sql，取得一個陣列[]，內含多筆符合的資料物件{}
-  const [posts] = await db.query(`SELECT * FROM post WHERE id = ${id}`)
-  const post = posts[0]
-  res.json({ status: 'success', data: { post } })
-})
-
 // 新增一筆文章 - 網址：POST /api/forum/posts
-router.post('/', async function (req, res) {
-  const { title, content, userID, cateID, postCateID } = req.body
+router.post('/', upload.none(), async function (req, res) {
+  // const { title, content, userID, cateID, postCateID } = req.body
+  // const [result] = await db.query(
+  //   `INSERT INTO post(title,content,updated_at, user_id, cate_id, cate_id) VALUES('${title}','${content}', NOW(),'${userID}', '${cateID}', '${postCateID}')`
+  // )
+  const { title, content } = req.body
   const [result] = await db.query(
-    `INSERT INTO post(title,content,updated_at, user_id, cate_id, post_cate_id) VALUES('${title}','${content}', NOW(),'${userID}', '${cateID}', '${postCateID}')`
+    'INSERT INTO post(title, content, user_id, cate_id) VALUES (?,?,?,?)',
+    [title, content, 1, 1]
   )
-  return res.json({ status: 'success', data: null })
+  console.log(req.body)
+  if (result.affectedRows === 0) throw new Error('沒有資料被更改(put)')
+  return res.json({
+    status: 'success',
+    data: null,
+  })
 })
 
 // 修改文章 網址：PUT /api/forum/posts/:id
@@ -89,7 +155,7 @@ router.put('/:postID', async function (req, res) {
     const id = Number(req.params.postID)
     const { title, content, userID, cateID, postCateID } = req.body
     const [result] = await db.query(
-      `UPDATE post SET title='${title}', content='${content}', updated_at='NOW()', user_id='${userID}', cate_id='${cateID}', post_cate_id='${postCateID}' WHERE id=${id}`
+      `UPDATE post SET title='${title}', content='${content}', updated_at='NOW()', user_id='${userID}', cate_id='${cateID}', cate_id='${postCateID}' WHERE id=${id}`
     )
     if (result.affectedRows === 0) throw new Error('沒有資料被更改(put)')
     // console.log(result)
