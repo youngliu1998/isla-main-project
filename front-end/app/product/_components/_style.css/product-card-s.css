@@ -1,0 +1,229 @@
+/* ./_style.css/product-card-s.css */
+
+/* Original styles if any were above the .product-card-product_card rule */
+/*.product-card-container {*/
+/* height: 100vh;*/
+/* width: 100vw;*/
+/* background-color: #ececec;*/
+/* display: flex;*/
+/* align-items: center;*/
+/* justify-content: center;*/
+/*}*/
+
+.product-card-product_card {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  height: 349px;
+  width: 230px;
+  padding: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 -1px 0 #ffffff;
+  transition: all 0.4s ease-in-out;
+}
+.product-card-product_card:hover {
+  cursor: pointer;
+  box-shadow:
+    0 -2px 0 #dcdcdc,
+    0 3px 10px rgba(0, 0, 0, 0.45);
+  background: #f1f1f1;
+  border-radius: 8px;
+}
+
+.product-card-head-top {
+  display: flex;
+  opacity: 0;
+  align-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  width: 100%;
+  padding: 4px 10px;
+  transition: all 0.3s;
+  justify-content: space-between;
+}
+
+.product-card-product_card-img {
+  transition: transform 0.6s ease-in-out;
+  transform-origin: center center;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.product-card-product_card-img .card-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain; /* or cover */
+}
+
+.product-card-product_card-head {
+  position: relative;
+  /* Define a height for the head section if image size is not fixed,
+     to prevent layout shifts or ensure consistency.
+     For example: height: 200px;
+  */
+}
+
+.product-card-hover-add-cart {
+  opacity: 0;
+  display: flex;
+  position: absolute;
+  z-index: 100;
+  bottom: -7px;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 40px;
+  background-color: rgba(255, 255, 255, 0.7);
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  padding: 10px 0 10px 0;
+  backdrop-filter: blur(2px);
+}
+.product-card-hover-add-cart a {
+  text-decoration: none;
+  color: #585252;
+  font-weight: 400;
+  font-size: 16px;
+  transition: all 0.1s;
+}
+.product-card-hover-add-cart:hover a {
+  /* cursor: pointer; /* Already on .product-card-bookmark, not strictly needed here but fine */
+  color: #fd7061;
+}
+
+.product-card-star-box {
+  text-align: center;
+}
+.product-card-star-box .product-card-star {
+  color: #bebebe;
+  vertical-align: middle;
+}
+.product-card-star-box .product-card-star-active {
+  color: #fd7061;
+}
+
+.product-card-rating {
+  display: flex;
+  align-items: center;
+  /* justify-content: center; */
+  gap: 6px;
+}
+.product-card-rating .product-card-rating_text {
+  padding: 6px 0 0 0;
+  font-size: 13px;
+  font-weight: 300;
+  color: #858585;
+}
+
+.product-card-rating-mobile {
+  display: none;
+}
+
+.product-card-product_card:hover .product-card-hover-add-cart {
+  opacity: 1;
+}
+
+.product-card-product_card:hover .product-card-head-top {
+  opacity: 1;
+}
+
+.product-card-product_card:hover .product-card-product_card-img {
+  transform: scale(1.06);
+}
+
+.product-card-product_card-info {
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  gap: 3px;
+  height: 100%; /* This makes the info section try to fill the parent's height */
+  /* Be cautious if .product-card-product_card doesn't have a flexible height for this section */
+  flex-grow: 1; /* Add this to make product_card-info take available space if product_card is flex column */
+}
+
+.product-card-info {
+  display: flex;
+  /* align-items: start; /* This will left-align items */
+  justify-content: center; /* This will center items if the container is wider */
+  flex-direction: column;
+  gap: 10px;
+}
+
+.product-card-product_details {
+  display: flex;
+  flex-direction: column;
+  /* text-align: left; /* Default, but good to be explicit if needed */
+}
+.product-card-product_details .product-card-brand {
+  font-size: 14px;
+  font-weight: 300;
+  color: #373737;
+}
+.product-card-product_details .product-card-product_name {
+  font-size: 16px;
+  font-weight: 500;
+  color: #373737;
+}
+
+.product-card-price {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  /* align-items: flex-start; /* To align price to the left if desired */
+}
+.product-card-price-box {
+  display: flex;
+  align-items: center; /* Vertically aligns main price and basic price if they have different font sizes */
+  /* justify-content: flex-start; /* To ensure prices start from left */
+}
+.product-card-price-box .product-card-main-price {
+  font-size: 20px;
+  font-weight: 500;
+  color: #fd7061;
+}
+.product-card-price-box .product-card-basic-price {
+  font-size: 16px;
+  font-weight: 500;
+  color: #bebebe;
+}
+
+@media (max-width: 1400px) {
+  .product-card-product_card {
+    height: 470px;
+    width: 300px;
+  }
+
+  .product-card-product_card-info {
+    /* justify-content: space-between; /* Already defined in base */
+  }
+  .product-card-product_card-info .product-card-brand {
+    font-size: 16px;
+  }
+  .product-card-product_card-info .product-card-product_name {
+    font-size: 18px;
+  }
+
+  .product-card-rating-desktop {
+    display: none;
+  }
+  .product-card-rating-mobile {
+    display: flex;
+  }
+  .product-card-head-top {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  /* .product-card-hover-add-cart styles remain the same as base or are overridden if needed */
+  /* .product-card-hover-add-cart a styles remain the same as base or are overridden if needed */
+
+  /* .product-card-product_card-info height and justify-content are already set in base */
+  /* If they need to be different for mobile, specify here. */
+}

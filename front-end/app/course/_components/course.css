@@ -1,12 +1,8 @@
-* {
-  box-sizing: border-box;
-  /* outline: 1px solid rgb(108, 186, 231); */
-}
-.course {
+/* .course {
   * {
     outline: 1px solid rgb(108, 186, 231);
   }
-}
+} */
 :root {
   --linear: linear-gradient(
     180deg,
@@ -24,7 +20,7 @@
 .box1-p {
   color: var(--main-color);
 }
-.box1-h1 {
+.box1-banner-title {
   color: var(--main-color);
   text-align: end;
   margin: -100px 10px 20px 0px;
@@ -43,6 +39,23 @@
   overflow: hidden;
   margin: auto;
 }
+.box1-img::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #fff4f3; /* 遮罩 */
+  opacity: 0.7;
+  z-index: 1;
+}
+
+/* 為了讓圖片蓋在下層，要設定 z-index */
+.box1-img {
+  z-index: 0;
+  position: relative;
+}
 .responsive-img {
   height: 100%;
   width: auto; /* 高度優先，保持比例 */
@@ -57,12 +70,17 @@
 .box1-dot {
   width: 10px;
   height: 10px;
-  background: #bbb;
   border-radius: 50%;
-  margin: 5px;
-  cursor: pointer;
-  /* transition: background 0.5s; */
+  background: #bbb;
+  margin: 0 4px;
+  transition: background 0.3s;
+  border: none;
 }
+
+.box1-dot.active {
+  background: var(--main-color);
+}
+
 .carousel-button {
   position: absolute;
   top: 50%;
@@ -128,6 +146,7 @@
 /* 動態底線 */
 .nav-link.search-btn::after {
   content: '';
+  content: '';
   position: absolute;
   left: 0;
   bottom: 0;
@@ -184,6 +203,39 @@
 .search-btntext:hover {
   color: var(--main-color);
 }
+/* search-sticky-bar */
+.search-sticky-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  background-color: #fff;
+  box-shadow: 0 -2px 10px rgba(255, 255, 255, 0.08);
+  z-index: 10;
+}
+.sticky-bar-style {
+  border-radius: 15px;
+  border: 2px solid rgba(185, 185, 185, 0.15);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.8) 0%,
+    rgba(255, 255, 255, 0.9) 100%
+  );
+  /* 漸層玻璃卡片 */
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(10px);
+}
+.search-icon-m {
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
+  position: absolute;
+  font-size: 1.2rem;
+  color: #888;
+  pointer-events: none; /* 防止點到圖示 */
+}
+.search-sticky-filter {
+  color: var(--MainColor);
+}
 /* box3 */
 
 /* ---------- course按鈕樣式 ---------- */
@@ -205,6 +257,25 @@
   background-color: #fff4f3 !important;
   color: var(--main-color) !important;
 }
+/* ---------- experience-tag按鈕樣式 ---------- */
+.experience-tag {
+  padding: 2px 10px;
+  background-color: #faf3ff;
+  color: #c183fa;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.experience-tag:focus,
+.experience-tag:active,
+.experience-tag:hover,
+.experience-tag:visited {
+  background-color: #faf3ff !important;
+  color: #c183fa !important;
+}
 
 /* ---------- 愛心 icon ---------- */
 .heart-icon-course {
@@ -215,6 +286,10 @@
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.3s ease;
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
 }
 
 .heart-icon-course i {
@@ -266,7 +341,10 @@
 .card-img-container-course {
   position: relative;
   overflow: hidden;
-  height: 100%;
+  /* height: clamp(180px, 22vw, 200px); */
+  /* height: 100%; */
+  aspect-ratio: 16/9;
+  object-fit: cover;
 }
 
 .card-img-top-course {
@@ -274,6 +352,8 @@
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
+  object-position: center;
+  display: block;
 }
 
 /* ---------- 圖片放大 ---------- */

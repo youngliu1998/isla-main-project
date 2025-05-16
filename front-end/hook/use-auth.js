@@ -19,7 +19,7 @@ export function AuthProvider({ children }) {
     mem_cpon: 0,
   }
   const [user, setUser] = useState(defaultUser)
-  const isAuth = Boolean(user?.id)
+  let isAuth = Boolean(user?.id)
 
   // login function
   const login = async (email, passowrd) => {

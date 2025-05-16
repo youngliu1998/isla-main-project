@@ -1,11 +1,13 @@
 import express from 'express'
-const router = express.Router()
-// 使用mysql
-import db from '../../config/mysql.js'
+import multer from 'multer'
+import db from '../../config/mysql.js' // 使用mysql
 
-router.get('/', async function (req, res) {
-  return res.json({})
-})
+const router = express.Router()
+const upload = multer()
+
+// router.get('/', async function (req, res) {
+//   return res.json({})
+// })
 // 得到多筆文章
 router.get('/:pageName', async function (req, res) {
   // 取得userID
@@ -41,20 +43,21 @@ router.get('/:pageName', async function (req, res) {
 
   switch (pageName) {
     case 'post-detail': {
+      // const postAPI = `http://localhost:3005/api/forum/posts/post-detail?postID=${postID}`
       const postID = req.query.postID
+      postsResult = await db.query(`${postsQuery} WHERE p.id=${postID}`)
       morePostsResult = await db.query(`${postsQuery} WHERE p.cate_id = 
         (SELECT cate_id FROM post WHERE id = ${postID}) AND p.id != ${postID} LIMIT 4`)
-      // fall through
-    }
-    case 'home': {
-      postsResult = await db.query(`${postsQuery}`)
       if (morePostsResult) {
         return res.json({
           status: 'success',
           data: { posts: postsResult[0], morePosts: morePostsResult[0] },
-          test: 'hello',
         })
       }
+      break
+    }
+    case 'home': {
+      postsResult = await db.query(`${postsQuery}`)
       break
     }
     case 'profile': {
@@ -66,16 +69,29 @@ router.get('/:pageName', async function (req, res) {
       break
     }
     case 'my-post': {
-      postsResult = await db.query(`${postsQuery} WHERE p.user_id = ${userID}`)
+      postsResult = await db.query(
+        `${postsQuery} WHERE p.user_id = ${userID} ORDER BY p.updated_at DESC`
+      )
+      break
+    }
+    case 'my-following': {
+      // postsResult = await db.query(`${}`)
+      break
+    }
+    case 'saved-post': {
+      postsResult = await db.query(`${postsQuery} ORDER BY p.updated_at DESC`)
+      console.log(postsResult[0])
+      postsResult[0] = postsResult[0].filter((p) =>
+        p.saved_user_ids.split(',').map(Number).includes(userID)
+      )
       break
     }
   }
 
-  const [posts] = postsResult
+  // const [posts] = postsResult
   return res.json({
     status: 'success',
     data: postsResult[0],
-    test: 'hello',
   })
   // referer歷史遺跡
   // // 取得WHERE參數、判斷路由
@@ -114,13 +130,22 @@ router.get('/:queryParam', async function (req, res) {
 })
 
 // 新增一筆文章 - 網址：POST /api/forum/posts
-router.post('/', async function (req, res) {
+router.post('/', upload.none(), async function (req, res) {
   // const { title, content, userID, cateID, postCateID } = req.body
   // const [result] = await db.query(
   //   `INSERT INTO post(title,content,updated_at, user_id, cate_id, cate_id) VALUES('${title}','${content}', NOW(),'${userID}', '${cateID}', '${postCateID}')`
   // )
+  const { title, content } = req.body
+  const [result] = await db.query(
+    'INSERT INTO post(title, content, user_id, cate_id) VALUES (?,?,?,?)',
+    [title, content, 1, 1]
+  )
   console.log(req.body)
-  return res.json({ status: 'success', data: null })
+  if (result.affectedRows === 0) throw new Error('沒有資料被更改(put)')
+  return res.json({
+    status: 'success',
+    data: null,
+  })
 })
 
 // 修改文章 網址：PUT /api/forum/posts/:id

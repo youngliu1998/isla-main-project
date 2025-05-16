@@ -9,6 +9,7 @@
   /* box-sizing: border-box; */
   /* outline: 1px solid #2a8aff; */
   font-family: 'Noto Sans TC', 'Montserrat';
+  letter-spacing: 0.1;
 
   --main-color: #fd7061;
   --accent-color: #fd4f3c;
@@ -16,7 +17,7 @@
   /* --bg-gray-article: #f2f1ef; */
   --bg-gray-article: #fafafa;
   --hover-gray: #e5e5e4;
-  --hover-light-gray: #e5e5e4ad;
+  --hover-light-gray: #eeeeed;
   --focus-gray: #d2d2d2b9;
   --main-text: #373737;
   --sub-text: #858585;
@@ -24,7 +25,7 @@
   --stroke-color: #bebebe80;
   --badge-color: #f4b12b;
   /* overscroll-behavior: none; */
-  button {
+  .button-clear {
     border: 0px solid #ffffff00;
     background-color: #ffffff00;
   }
@@ -77,6 +78,9 @@
 }
 .bg-hover {
   background-color: var(--hover-gray);
+}
+.bg-light-hover {
+  background-color: var(--hover-light-gray);
 }
 .main-text-color {
   color: var(--main-text);
@@ -150,6 +154,7 @@
   }
   &.active {
     color: var(--main-color);
+    background-color: #00000000;
     border: 1px solid var(--main-color);
   }
 }
@@ -230,6 +235,12 @@
     }
   }
 }
+.bounce {
+  transition: 0.1s ease;
+  &:active {
+    scale: 0.95;
+  }
+}
 .no-scroll-bar {
   ::-webkit-scrollbar {
     width: 0; /* 垂直滾動條寬度 */
@@ -269,10 +280,10 @@
   /* position: fixed; */
   top: 104px;
   .cate-item {
-    padding: 16px 24px;
+    /* padding: 16px 24px;
     border-radius: 8px;
     font-size: 16px;
-    font-weight: 500;
+    font-weight: 500; */
     &:hover {
       background-color: var(--hover-gray);
     }
@@ -294,23 +305,22 @@
 /* main */
 .posts {
   max-width: 800px;
+  .updated-at {
+    letter-spacing: 0.5;
+  }
 }
-/* .post-home {
-  transition: 0.3s ease-in-out;
+.post-home {
+  cursor: pointer;
+  /* transition: 0.3s ease-in-out;
   &:hover {
     transform: scale(1.008);
   }
   &:focus {
     transform: scale(0.98);
-  }
-} */
+  } */
+}
 .post-header {
   min-width: 0;
-}
-
-.switcher {
-  width: 130px;
-  height: 32px;
 }
 
 .dropdown-item-forum {
@@ -326,13 +336,14 @@
   margin-left: -7px;
 }
 .evaluate {
+  background-color: #00000000;
   &:hover {
-    background-color: var(--hover-gray);
+    background-color: var(--hover-light-gray);
   }
 }
 
 .imgs {
-  /* .photos-switcher d-flex會讓子元素寬度自動壓縮 */
+  /* .photos-tab d-flex會讓子元素寬度自動壓縮 */
   /* 利用flex-shrink-0來讓子元素不被壓縮 */
 
   .img {

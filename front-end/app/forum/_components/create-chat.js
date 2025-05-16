@@ -58,14 +58,14 @@ export default function EditPostModal(props) {
                   <i className="bi bi-image fs32 sub-text-color"></i>
                 </button>
                 <button
-                  type="button"
+                  type="button button-clear"
                   className="sub-text-color"
                   data-bs-dismiss="modal"
                 >
                   取消
                 </button>
                 <button
-                  type="button-bounce"
+                  type="button-bounce button-clear"
                   className="px-4 py-2 bg-main color-isla-white rounded-3"
                 >
                   發布

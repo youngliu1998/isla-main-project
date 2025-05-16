@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import InputText from '../_component/input-text'
-import InputPass from '../_component/input-pass'
+import InputPass from '../_component/input-Pass'
 import '../_styles/login.css'
 
 export default function LoginPage() {
@@ -18,9 +18,10 @@ export default function LoginPage() {
   const { user, isAuth, login } = useAuth() // Context
   useEffect(() => {
     // if get auth, go to profile
-    // if (isAuth) router.push('profile')
+    if (isAuth) router.push('profile')
     console.log('login-page-user: ', user)
-  }, [login])
+    console.log('login-page-isAuth: ', isAuth)
+  }, [isAuth])
   return (
     <>
       <div className="d-flex flex-column justify-content-centers gap-5 py-5 postion-middle">
@@ -69,7 +70,7 @@ export default function LoginPage() {
           </form>
           {/* login form end */}
           {/* register and google */}
-          <Link href="">註冊</Link>
+          <Link href="register">註冊</Link>
           <div className="d-flex justify-content-center align-items-center gap-2 w-100">
             <div className="gray-line" />
             <div>或者</div>

@@ -1,5 +1,4 @@
 'use client'
-// @ts-check
 
 import './post.css'
 import { useParams } from 'next/navigation'
@@ -25,6 +24,7 @@ const fetcher = (url) => fetch(url).then((res) => res.json())
 export default function PostIDPage(props) {
   const userID = 1
   const postID = useParams().postID
+  console.log(postID)
 
   // const postAPI = `http://localhost:3005/api/forum/post/${postID}`
   const postAPI = `http://localhost:3005/api/forum/posts/post-detail?postID=${postID}`
@@ -81,7 +81,12 @@ export default function PostIDPage(props) {
     )
   }
 
-  console.log(post)
+  // 日期格式
+  const date = new Date(post.updated_at.replace(' ', 'T'))
+  const month = date.getMonth()
+  const day = date.getDate()
+  const dateFormat = `${month}月${day}日`
+
   return (
     <>
       <main className="main col col-10 d-flex flex-column align-items-start">
@@ -90,12 +95,12 @@ export default function PostIDPage(props) {
             <div className="post-header d-flex  align-items-start">
               <div className="post-title flex-grow-1 me-3 fs24 fw-medium">
                 {post.title}
-                <span className="post-tag d-inline align-middle px-2 py-1 ms-2 my-auto rounded-pill fs12 text-nowrap bg-gray-article main-color">
+                <span className="post-tag d-inline align-middle px-2 py-1 ms-2 my-auto rounded-pill fs12 text-nowrap bg-light-hover main-color">
                   {post.cate_name}
                 </span>
               </div>
               <button
-                className={`post-update main-text-color ${post.user_id === userID ? 'd-block' : 'd-none'}`}
+                className={`post-update button-clear main-text-color ${post.user_id === userID ? 'd-block' : 'd-none'}`}
                 data-bs-toggle="modal"
                 data-bs-target="#editPostModal"
               >
@@ -113,12 +118,16 @@ export default function PostIDPage(props) {
                   color={'var(--main-text-color)'}
                   authorName={post.user_nick}
                 />
-                {/* FIXME 放一個追蹤按鈕 */}
+                <button className="button-clear fs12 main-color">追蹤</button>
+                <div className="updated-at sub-text-color fs12 fw-light">
+                  {dateFormat}
+                </div>
               </div>
             </div>
-            <div className="post-content d-flex flex-column gap-3 pb-4 mb-2 bottom-stroke">
-              {post.content}
-            </div>
+            <div
+              className="post-content d-flex flex-column gap-3 pb-4 mb-2 bottom-stroke"
+              dangerouslySetInnerHTML={{ __html: post.content }}
+            />
             <div className="evaluates d-flex mb-5">
               <ComponentsBtnLikedSaved
                 type="liked"
@@ -127,6 +136,7 @@ export default function PostIDPage(props) {
                 postID={postID}
                 userID={userID}
                 mutate={mutate}
+                color={''}
               />
               <button className="evaluate px-2 py-1 border-0 rounded-3 d-flex align-items-center">
                 <i className="bi bi-chat me-1 fs16" />8

@@ -24,18 +24,18 @@ export default function ComponentsAuthorInfo({
 
   return (
     <>
-      <div>
-        <button
-          className="author-info d-inline-flex align-items-center gap-2 px-0"
-          onClick={handleNavigate}
-        >
-          <ComponentsAvatar classWidth={width} src={src} alt={alt} />
-          {/* author-name fs14 sub-text-color */}
-          <span style={{ fontSize: fontSize + 'px', color: color }}>
-            {authorName}
-          </span>
-        </button>
-      </div>
+      {/* <div> */}
+      <button
+        className="author-info d-inline-flex align-items-center gap-2 px-0 button-clear me-auto"
+        onClick={handleNavigate}
+      >
+        <ComponentsAvatar classWidth={width} src={src} alt={alt} />
+        {/* author-name fs14 sub-text-color */}
+        <span style={{ fontSize: fontSize + 'px', color: color }}>
+          {authorName}
+        </span>
+      </button>
+      {/* </div> */}
     </>
   )
 }
