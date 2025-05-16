@@ -1,3 +1,6 @@
+:global(.accordion-body) {
+  padding: 1.5rem 1.5rem 0 1.5rem;
+}
 // === 共用 Mixin ===
 @mixin card-shadow($card-border-radius) {
   border-radius: $card-border-radius;
@@ -12,9 +15,10 @@
 .couponShadow {
   @include card-shadow(0.5rem);
 }
-.accordion-body {
-  padding: 1rem 1.25rem;
-}
+
+// .accordion .accordion-item .accordion-collapse .accordion-body {
+//   padding: 0 !important;
+// }
 .accordionButton {
   background: var(--coupon-linear);
   font-weight: bold;
@@ -37,5 +41,9 @@
 
   &:focus {
     box-shadow: none;
+  }
+
+  &:hover {
+    background: var(--coupon-linear) !important;
   }
 }
