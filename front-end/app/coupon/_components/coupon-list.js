@@ -1,10 +1,10 @@
 import CouponCard from './coupon-card'
 import { useAuth } from '@/hook/use-auth'
 
-export default function CouponList({ coupons, getCouponStyle }) {
+export default function CouponList({ coupons, getCouponStyle, isLogin }) {
   const { user } = useAuth()
 
-  console.log('CouponList-user', user)
+  // console.log('CouponList-user', user)
 
   return (
     <div className="row row-cols-lg-2 row-cols-1 justify-content-center mt-3 mt-lg-0 gap-3 gap-lg-0">
@@ -20,7 +20,9 @@ export default function CouponList({ coupons, getCouponStyle }) {
           couponstyle={getCouponStyle(coupon.type_id)}
           valid_to={coupon.valid_to}
           area={coupon.area}
-          claimed={coupon.claimed}
+          claimed_at={coupon.claimed}
+          isLogin={isLogin}
+          state_id={coupon.state_id}
         />
       ))}
     </div>

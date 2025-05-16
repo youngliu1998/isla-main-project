@@ -1,3 +1,4 @@
+import Link from 'next/link'
 export default function CouponHeader({ type = ' ' }) {
   const titleMap = {
     product: '優惠券專區 - 商品',
@@ -11,9 +12,12 @@ export default function CouponHeader({ type = ' ' }) {
       <div className="d-none d-md-flex align-items-center ps-3">
         <h2 className="me-3 mb-0">{titleMap[type]}</h2>
         {type === 'member' && (
-          <a href="#" className="personal-coupon-tab text-decoration-none">
+          <Link
+            href="/coupon/create"
+            className="personal-coupon-tab text-decoration-none"
+          >
             🎁 專屬優惠券
-          </a>
+          </Link>
         )}
       </div>
 
