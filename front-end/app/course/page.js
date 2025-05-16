@@ -7,59 +7,48 @@ import '../course/_components/course.css'
 import { MdSearch } from 'react-icons/md'
 import CourseCard from '../course/_components/course-card'
 import TeacherCard from '../course/_components/teacher-card'
+import CourseBanner from '../course/_components/course-banner'
+import ExperienceCard from '../course/_components/experience-card'
 import Link from 'next/link'
+import { courseUrl } from '../../_route/courseUrl'
 
 export default function CoursePage() {
   const [courseCard, setCourseCard] = useState([])
   const [sortOption, setSortOption] = useState('1') // 初始值為「最熱門」
-  useEffect(function () {
-    const url = 'http://localhost:3005/api/course/course/22222'
-
-    async function getCard() {
-      const data = await fetch(url, {
-        method: 'GET',
-      })
-      const cardsraw = await data.json()
-      const cards = cardsraw.data
-      setCourseCard(cards)
-      console.log(cards)
+  // useEffect(function () {
+  //   const url = 'http://localhost:3005/api/course/course/'
+  //   async function getCard() {
+  //     const data = await fetch(url, {
+  //       method: 'GET',
+  //     })
+  //     const cardsraw = await data.json()
+  //     const cards = cardsraw.data
+  //     setCourseCard(cards)
+  //     console.log(cards)
+  //   }
+  //   getCard()
+  // }, [])
+  useEffect(() => {
+    async function getCourse() {
+      const res = await fetch(courseUrl + 'course/')
+      const json = await res.json()
+      setCourseCard(json.data || [])
     }
-    getCard()
+    getCourse()
+  }, [])
+  const [experienceCard, setExperienceCard] = useState([])
+  useEffect(() => {
+    async function getExperience() {
+      const res = await fetch(courseUrl + 'experience/')
+      const json = await res.json()
+      setExperienceCard(json.data || [])
+    }
+    getExperience()
   }, [])
 
   return (
     <>
-      {console.log('courseCard', courseCard)}
-      <section className="banner align-content-center justify-content-center py-sm-5 py-0">
-        <div className="d-flex">
-          <button className="carousel-button prev">‹</button>
-          <button className="carousel-button next">›</button>
-        </div>
-        <p className="d-flex align-items-center d-lg-none box1-p mt-sm-0 my-sm-0 my-4 ms-2 fs-3">
-          <MdOutlineCenterFocusStrong className="me-2" />
-          精選課程
-        </p>
-        <div className="d-flex align-content-center justify-content-center py-sm-5">
-          {['banner1.jpg', 'banner4.jpg', 'banner2.jpg'].map((img, i) => (
-            <div className={i === 1 ? 'box1-img1' : 'box1-img'} key={i}>
-              <Image
-                src={`/images/course/bannerall/${img}`}
-                alt="Course banner"
-                width={100}
-                height={100}
-                className="responsive-img"
-              />
-            </div>
-          ))}
-        </div>
-        <div className="justify-content-center d-lg-flex d-none">
-          {[...Array(4)].map((_, i) => (
-            <div className="box1-dot" key={i} />
-          ))}
-        </div>
-        <h1 className="box1-banner-title">TRENDING NOW</h1>
-      </section>
-
+      <CourseBanner />
       <section className="box2 container">
         <div className="row d-lg-flex d-none">
           <p className="bread-crumbs mt-5">首頁 / 美妝學院 / 所有課程</p>
@@ -357,9 +346,10 @@ export default function CoursePage() {
             tabIndex={0}
           >
             <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-lg-4 g-4 p-0 m-0 mt-4">
-              {courseCard.map(function (v, i) {
-                return (
-                  <>
+              {courseCard
+                .filter((v) => v.status != 0 && v.status != '0')
+                .map(function (v, i) {
+                  return (
                     <CourseCard
                       key={v.id}
                       id={v.id}
@@ -367,103 +357,30 @@ export default function CoursePage() {
                       tag={v.tag}
                       title={v.title}
                       teacher={v.teacher}
-                      rating={v.rating}
                       student={v.student}
                       price={v.price}
                       discount={v.discount}
+                      avg_star={v.avg_star}
+                      comment_count={v.comment_count}
                     />
-                  </>
-                )
-              })}
-              <CourseCard
-                id="1"
-                picture="/images/course/bannerall/banner1.jpg"
-                tag="課程"
-                title="臉部撥筋Ｘ耳穴按摩Ｘ芳療活絡｜現代人的 10 分鐘舒壓養顏術"
-                teacher="李郁文"
-                rating={3.5}
-                student={3550}
-                price={5808}
-                discount={7808}
-              />
-              <CourseCard
-                id="course123"
-                picture="/images/course/bannerall/banner1.jpg"
-                tag="課程"
-                title="臉部撥筋Ｘ耳穴按摩Ｘ芳療活絡｜現代人的 10 分鐘舒壓養顏術"
-                teacher="李郁文"
-                rating={3.5}
-                student={3550}
-                price={5808}
-                discount={7808}
-              />
-              <CourseCard
-                id="course123"
-                picture="/images/course/bannerall/banner1.jpg"
-                tag="課程"
-                title="臉部撥筋Ｘ耳穴按摩Ｘ芳療活絡｜現代人的 10 分鐘舒壓養顏術"
-                teacher="李郁文"
-                rating={3.5}
-                student={3550}
-                price={5808}
-                discount={7808}
-              />
-              <CourseCard
-                id="course123"
-                picture="/images/course/bannerall/banner1.jpg"
-                tag="課程"
-                title="臉部撥筋Ｘ耳穴按摩Ｘ芳療活絡｜現代人的 10 分鐘舒壓養顏術"
-                teacher="李郁文"
-                rating={3.5}
-                student={3550}
-                price={5808}
-                discount={7808}
-              />
+                  )
+                })}
 
-              <div className="col mb-5">
-                <div
-                  className="card h-100 card-hover-course"
-                  data-course-id="course123"
-                >
-                  <div className="card-img-container-course">
-                    <Image
-                      src="/images/course/bannerall/banner1.jpg"
-                      alt="課程名稱"
-                      width={800}
-                      height={450}
-                      className="card-img-top-course"
-                    />
-                    <div className="heart-icon-course">
-                      <i className="bx bx-heart" />
-                    </div>
-                  </div>
-                  <div className="card-body">
-                    <button className="btn card-btn-course mb-2">課程</button>
-                    <h5 className="card-title mb-2">
-                      臉部撥筋Ｘ耳穴按摩Ｘ芳療活絡｜現代人的 10 分鐘舒壓養顏術
-                    </h5>
-                    <p className="card-teacher-course mb-2">李郁文</p>
-                    <div className="d-flex align-content-center">
-                      <div className="mb-2 me-3 card-score-course">
-                        3.5
-                        <i className="bx bxs-star" />
-                        <i className="bx bxs-star" />
-                        <i className="bx bxs-star" />
-                        <i className="bx bxs-star-half" />
-                        <i className="bx bx-star" />
-                      </div>
-                      <div className="d-flex">
-                        <i className="bi bi-people me-2" />
-                        <div className="card-people-course">3,550</div>
-                      </div>
-                    </div>
-                    <div className="d-flex align-items-end text-end">
-                      <h5 className="card-text me-3">NT 5,808</h5>
-                      <p className="card-text-discount m-0">NT 7,808</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              {experienceCard
+                .filter((v) => v.status != 0 && v.status != '0')
+                .map((v, i) => (
+                  <ExperienceCard
+                    key={v.id}
+                    id={v.id}
+                    picture={'/images/course/bannerall/' + v.picture}
+                    tag={v.tag}
+                    title={v.title}
+                    city={v.city}
+                    activity_data={v.activity_data}
+                    price={v.price}
+                    discount={v.discount}
+                  />
+                ))}
             </div>
           </div>
           <div
@@ -507,18 +424,21 @@ export default function CoursePage() {
           </div>
           <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-lg-4 g-4 p-0 m-0 mt-4">
             <TeacherCard
+              key="1"
               id="johnny"
               name="Johnny"
               image="/images/course/teacherall/image_73.jpg"
               about="深耕耳穴按摩與撥筋 15 年，IFPA & NAHA 國際芳療專業雙認證資深講師深耕耳穴按摩與撥筋 15 年，IFPA & NAHA 國際芳療專業雙認證資深講師"
             />
             <TeacherCard
+              key="2"
               id="johnny"
               name="Johnny"
               image="/images/course/teacherall/image_73.jpg"
               about="深耕耳穴按摩與撥筋 15 年，IFPA & NAHA 國際芳療專業雙認證資深講師深耕耳穴按摩與撥筋 15 年，IFPA & NAHA 國際芳療專業雙認證資深講師"
             />
             <TeacherCard
+              key="3"
               id="johnny"
               name="Johnny"
               image="/images/course/teacherall/image_73.jpg"

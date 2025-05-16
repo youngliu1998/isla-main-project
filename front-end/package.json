@@ -18,6 +18,7 @@
     "canvas-confetti": "^1.9.3",
     "downshift": "^9.0.9",
     "lodash": "^4.17.21",
+    "dayjs": "^1.11.13",
     "next": "15.2.4",
     "nprogress": "^0.2.0",
     "react": "^19.0.0",

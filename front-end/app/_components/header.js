@@ -6,7 +6,12 @@ import './header.css'
 
 export default function Header() {
   const pathname = usePathname()
-  if (pathname.includes('login')) return <></>
+  if (
+    pathname.includes('login') ||
+    pathname.includes('register') ||
+    pathname.includes('forget-password')
+  )
+    return <></>
   return (
     <>
       <header className="header-module">

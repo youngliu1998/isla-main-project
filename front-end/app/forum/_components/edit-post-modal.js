@@ -19,35 +19,61 @@ export default function EditPostModal(props) {
           backdrop: true,
           keyboard: true,
         })
-        modal.show()
+        // modal.show()
       }
     })
   }, [])
   //
   // 新增貼文
-  const formRef = useRef()
+  //FIXME 等待體驗 const [isLoading, setLoading] = useState()
+  // FIXME 為輸入的警告提示體驗
+  const titleRef = useRef()
+  const contentRef = useRef()
+
   const handleSubmit = async (e) => {
     e.preventDefault()
-    // 無輸入標題 -> 請輸入標題
-    // 標題超過50字 -> 標題請小於50字、發布按鈕失效
-    // 無輸入內容 -> 請輸入貼文內容
-    // 內容超過 1000字？ -> 發布按鈕失效
+    const title = titleRef.current.innerHTML.trim() //QU WHY trim
+    const content = contentRef.current.innerHTML.trim()
+    if (title === '' || title === '<br>') {
+      // QU 怎麼精簡判斷式
+      console.log('請輸入標題')
+      console.log(title)
+      return
+    } else if (content === '' || content === '<br>') {
+      console.log('未輸入標題')
+      return
+    }
 
-    const formData = new FormData(formRef.current)
-    await fetch('http://localhost:3005/api/forum/posts', {
-      method: 'POST',
-      body: formData,
-    })
+    try {
+      const fd = new FormData()
+      const newFd = fd.append('title', title) //fd長怎樣QU
+      fd.append('content', content)
+      console.log(fd.content)
+      const res = await fetch('http://localhost:3005/api/forum/posts', {
+        method: 'POST',
+        body: fd,
+      })
+      const result = await res.json()
+      if (result.status === 'success') {
+        console.log('送出成功')
+        // FIXME 關閉modal、導向主頁、出現下方小提示框
+      } else {
+        //發布失敗
+      }
+    } catch (err) {
+      console.log(err)
+      // FIXME 畫面顯示上傳錯誤提示
+    }
   }
   // 字數
   const [titleLength, setTitleLength] = useState(0)
-  const [isTitleValid, setTitleValid] = useState(true)
-  const [isTitleFill, setTitleFill] = useState(false)
+  const [isTitleValid, setTitleValid] = useState(false)
+  const [hasTitleTouched, setHasTitleTouched] = useState(false)
   const [isContentValid, setContentValid] = useState(false)
 
   return (
     <>
-      <form ref={formRef} onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}>
         <div
           className="modal fade"
           id="editPostModal"
@@ -63,7 +89,7 @@ export default function EditPostModal(props) {
                   className="modal-title main-text-color fs20"
                   id="editPostModalLabel"
                 >
-                  新增貼文
+                  建立貼文
                 </h5>
                 <button
                   type="button"
@@ -86,6 +112,8 @@ export default function EditPostModal(props) {
               <div className="modal-body w-100">
                 <div className="d-flex align-items-center px-4 py-2">
                   <div
+                    // QU 避免標題換行、第一行沒有div包裹
+                    ref={titleRef}
                     className="edit-title main-text-color fs20 me-auto text-wrap w-100"
                     contentEditable
                     data-placeholder="輸入文章標題"
@@ -93,11 +121,10 @@ export default function EditPostModal(props) {
                       // 沒有trim的話會剩下，可能殘留<br>
                       const titleLength = e.target.innerText.trim().length
                       setTitleLength(titleLength)
-                      if (titleLength > 50) {
-                        setTitleValid(false)
-                      } else if (titleLength <= 50) {
-                        setTitleValid(true)
-                      }
+                      setHasTitleTouched(true)
+                      titleLength <= 50 && titleLength != 0
+                        ? setTitleValid(true)
+                        : setTitleValid(false)
                     }}
                     onPaste={(e) => {
                       e.preventDefault()
@@ -107,15 +134,25 @@ export default function EditPostModal(props) {
                   ></div>
                 </div>
                 <div
-                  className={`fs14 sub-text-color px-4 ${isTitleValid ? '' : 'titleError'}`}
-                  error-persudo="已超過標題字數上限"
+                  className={`fs14 sub-text-color px-4 ${!isTitleValid && hasTitleTouched ? 'titleError' : ''} `}
+                  error-persudo={
+                    titleLength > 50
+                      ? '標題已超過字數上限'
+                      : titleLength < 1
+                        ? `請輸入標題`
+                        : ''
+                  }
                 >{`(${titleLength}/50)`}</div>
                 <div
+                  ref={contentRef}
                   className="edit-area px-4 py-2 main-text-color"
                   contentEditable
                   data-placeholder="分享你的美妝新發現✨"
                   onInput={(e) => {
                     const contentlength = e.target.innerText.trim().length
+                    if (contentlength > 0 && contentlength <= 50) {
+                      setContentValid(true)
+                    }
                   }}
                   onPaste={(e) => {
                     // 防止xss攻擊
@@ -137,14 +174,19 @@ export default function EditPostModal(props) {
                 </label>
                 <button
                   type="button"
-                  className="sub-text-color"
+                  className="sub-text-color button-clear bounce"
                   data-bs-dismiss="modal"
                 >
                   取消
                 </button>
                 <button
                   type="button-bounce"
-                  className={`px-4 py-2 color-isla-white rounded-3 ${isTitleValid && isContentValid && isTitleFill ? 'bg-main' : 'button-submit-disable'}`}
+                  className={`px-4 py-2 rounded-3 border-0 bounce ${isTitleValid && isContentValid ? 'bg-main color-isla-white' : 'bg-hover-gray sub-text-color border-0'}`}
+                  onClick={() => {
+                    setHasTitleTouched(false)
+                    console.log(hasTitleTouched)
+                    // FIXME modal剛出現 按按鈕時出現警示
+                  }}
                 >
                   發布
                 </button>
