@@ -8,7 +8,7 @@ export default function FollowingCard(props) {
   return (
     <>
       <Link
-        href={'/forum/profile/123'}
+        href={'/forum/profile/1'}
         className="following-card w-auto d-flex flex-column flex-lg-row flex-grow-1 align-items-center px-3 py-3  gap-3 rounded-3 card-border bg-pure-white forum-shadow"
       >
         {/* <div className="row"> */}
