@@ -3,7 +3,7 @@ import db from '../../config/mysql.js'
 
 const router = express.Router()
 
-// 查詢所有優惠券
+// 查詢所有優惠券，是否已領取
 router.get('/', async (req, res) => {
   const user_id = req.query.user_id
   try {
@@ -35,7 +35,13 @@ router.get('/', async (req, res) => {
 // 領取優惠券（防止重複領取）
 router.post('/claim', async (req, res) => {
   const { user_id, coupon_id } = req.body
-
+  // 沒登入擋掉
+  if (!user_id || user_id === 0) {
+    return res.status(401).json({
+      status: 'false',
+      message: '未登入無法領取優惠券',
+    })
+  }
   try {
     const [rows] = await db.query(
       'SELECT * FROM coupons_user WHERE user_id = ? AND coupon_id = ?',
@@ -66,25 +72,80 @@ router.post('/claim', async (req, res) => {
   }
 })
 
-// 查詢會員已領取優惠券
+// 查詢會員已領取的優惠券（含狀態）
 router.get('/member', async (req, res) => {
-  const { user_id, state_id } = req.query
+  const { user_id } = req.query
+
+  if (!user_id) {
+    return res.status(400).json({ status: 'false', message: '缺少 user_id' })
+  }
 
   try {
+    // 1. 過期 → state = 3（已過期）
+    await db.execute(
+      `
+      UPDATE coupons_user
+      JOIN coupons ON coupons_user.coupon_id = coupons.id
+      SET coupons_user.state = 3
+      WHERE coupons_user.user_id = ?
+        AND coupons_user.state = 1
+        AND coupons.valid_to < CURDATE()
+    `,
+      [user_id]
+    )
+
+    // 2. 即將過期（剩三天內）→ state = 4
+    await db.execute(
+      `
+      UPDATE coupons_user
+      JOIN coupons ON coupons_user.coupon_id = coupons.id
+      SET coupons_user.state = 4
+      WHERE coupons_user.user_id = ?
+        AND coupons_user.state = 1
+        AND coupons.valid_to BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 3 DAY)
+    `,
+      [user_id]
+    )
+
+    // 查詢更新後的紀錄
     const [coupons] = await db.query(
       `
-      SELECT coupons.*, coupons_user.state
+      SELECT 
+        coupons.*, 
+        coupons_user.user_id,
+        coupons_user.state AS state_id,
+        coupons_user.claimed_at,
+        coupons_state.name AS state_name
       FROM coupons_user
       JOIN coupons ON coupons_user.coupon_id = coupons.id
-      WHERE coupons_user.user_id = ? AND coupons_user.state = ?
-      `,
-      [user_id, state_id]
+      LEFT JOIN coupons_state ON coupons_user.state = coupons_state.id
+      WHERE coupons_user.user_id = ?
+    `,
+      [user_id]
     )
 
     res.json({ status: 'success', data: { coupons } })
   } catch (error) {
     console.error('查詢會員優惠券錯誤:', error)
     res.status(500).json({ status: 'false', message: '資料庫錯誤' })
+  }
+})
+// 已使用
+router.post('/use', async (req, res) => {
+  const { user_id, coupon_id } = req.body
+
+  try {
+    await db.execute(
+      `UPDATE coupons_user
+       SET state = 2
+       WHERE user_id = ? AND coupon_id = ? AND state IN (1, 4)`,
+      [user_id, coupon_id]
+    )
+
+    res.json({ status: 'success', message: '優惠券已標記為已使用' })
+  } catch (err) {
+    console.error('更新優惠券為已使用失敗:', err)
+    res.status(500).json({ status: 'false', message: '更新失敗' })
   }
 })
 

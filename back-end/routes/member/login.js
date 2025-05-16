@@ -36,8 +36,6 @@ router.get('/', verifyToken, async (req, res) => {
 router.post('/', async (req, res) => {
   let error
   const { email, password } = req.body
-  const bcryptPass =
-    '$2a$12$YalWu8B2/EyriKGygN7mre0H055iD5hSNehecjoAyiUpzHgj7QjTe'
   try {
     const query = `SELECT id,email, password FROM users WHERE email=?`
     const user = await db

@@ -11,39 +11,39 @@ import FollowingCard from './following-card'
 import ComponentsButtonFollowingChat from '@/app/forum/_components/btn-following-chat'
 
 export default function MyPostPage(props) {
-  const router = useRouter()
-  const userID = 1
-  const fetcher = (...arg) => fetch(...arg).then((res) => res.json())
-  const postsAPI = 'http://localhost:3005/api/forum/posts'
-  const { data, isLoading, error, mutate } = useSWR(postsAPI, fetcher)
-  if (error) {
-    console.log(error)
-    return (
-      <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center">
-        連線錯誤
-      </main>
-    )
-  }
-  // console.log(data)
-  const posts = data?.status === 'success' ? data?.data : []
-  if (isLoading) {
-    return (
-      <>
-        <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center">
-          isLoading
-        </main>
-      </>
-    )
-  }
-  if (posts.length === 0) {
-    return (
-      <>
-        <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center">
-          無文章資料
-        </main>
-      </>
-    )
-  }
+  // const router = useRouter()
+  // const userID = 1
+  // const fetcher = (...arg) => fetch(...arg).then((res) => res.json())
+  // const postsAPI = 'http://localhost:3005/api/forum/posts/my-following'
+  // const { data, isLoading, error, mutate } = useSWR(postsAPI, fetcher)
+  // if (error) {
+  //   console.log(error)
+  //   return (
+  //     <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center">
+  //       連線錯誤
+  //     </main>
+  //   )
+  // }
+  // // console.log(data)
+  // const posts = data?.status === 'success' ? data?.data : []
+  // if (isLoading) {
+  //   return (
+  //     <>
+  //       <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center">
+  //         isLoading
+  //       </main>
+  //     </>
+  //   )
+  // }
+  // if (posts.length === 0) {
+  //   return (
+  //     <>
+  //       <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center">
+  //         無文章資料
+  //       </main>
+  //     </>
+  //   )
+  // }
   return (
     <>
       <div className="body">
@@ -60,7 +60,7 @@ export default function MyPostPage(props) {
           </div>
           <div className="my-following-main d-flex flex-lg-column flex-row flex-wrap gap-3">
             <Link
-              href={'/forum/profile/123'}
+              href={'/forum/profile/1'}
               className="following-card w-auto d-flex flex-column flex-lg-row flex-grow-1 align-items-center px-3 py-3  gap-3 rounded-3 card-border bg-pure-white forum-shadow"
             >
               {/* <div className="row"> */}

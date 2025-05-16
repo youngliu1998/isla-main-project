@@ -8,6 +8,7 @@ import CouponList from '../_components/coupon-list'
 import LoadMoreButton from '../_components/more-button'
 import DataStatus from '../_components/data-status'
 import CouponHeader from '../_components/coupon-header'
+import LoginModal from '../_components/login-modal'
 import useCouponFilter from '../../../hook/coupon-filter'
 import { useState } from 'react'
 import { useAuth } from '@/hook/use-auth'
@@ -32,14 +33,13 @@ export default function CouponPage() {
   const { data, error } = useSWR(url, fetcher)
 
   // 使用hook管理篩選狀態
+  const { currentType, setCurrentType } = useCouponFilter(' ')
   const {
-    currentType,
-    setCurrentType,
     showClaimed,
     setShowClaimed,
     courseCategory = '',
     setcourseCategory = '',
-  } = useCouponFilter()
+  } = useCouponFilter('')
 
   // 各分頁顯示狀態
   const [couponCountMap, setCouponCountMap] = useState({
@@ -49,6 +49,12 @@ export default function CouponPage() {
     3: 10,
   })
   const currentCount = couponCountMap[currentType] || 10
+  // nav li
+  const couponTypes = [
+    { label: '全部', value: ' ' },
+    { label: '滿額券', value: 1 },
+    { label: '折扣券', value: 2 },
+  ]
 
   // 判斷狀態
   const isLoading = !data
@@ -69,11 +75,19 @@ export default function CouponPage() {
       return isCourses && typeMatch && claimedMatch && courseMatch
     })
     .sort((a, b) => {
+      const stylePriority = {
+        'button-all': '',
+        'button-orange': 1,
+        'button-purple': 2,
+      }
+
       const aStyle = getCouponStyle(a.type_id)
       const bStyle = getCouponStyle(b.type_id)
-      if (aStyle === 'button-all' && bStyle !== 'button-all') return -1
-      if (aStyle !== 'button-all' && bStyle === 'button-all') return 1
-      return 0
+
+      const aPriority = stylePriority[aStyle] ?? 99
+      const bPriority = stylePriority[bStyle] ?? 99
+
+      return aPriority - bPriority
     })
 
   // 判斷是否為空結果
@@ -92,7 +106,8 @@ export default function CouponPage() {
       [currentType]: (prev[currentType] || 10) + 10,
     }))
   }
-
+  // 未登入警告
+  const [showLoginModal, setShowLoginModal] = useState(false)
   return (
     <main className="px-md-5 px-3 container">
       <div className="row mt-sm-4 g-sm-5">
@@ -105,12 +120,12 @@ export default function CouponPage() {
           <CouponHeader type="course" />
           <MobileNav />
           <PcNav
-            currentType={currentType}
-            setCurrentType={setCurrentType}
-            showClaimed={showClaimed}
-            setShowClaimed={setShowClaimed}
-            isMemberCenter={false}
-            couponPageType="course"
+            options={couponTypes}
+            currentValue={currentType}
+            onChange={setCurrentType}
+            showSwitch={true}
+            isChecked={showClaimed}
+            onToggleSwitch={() => setShowClaimed((prev) => !prev)}
           />
 
           <DataStatus
@@ -126,12 +141,17 @@ export default function CouponPage() {
               <CouponList
                 coupons={displayCoupon}
                 getCouponStyle={getCouponStyle}
+                isLogin={() => setShowLoginModal(true)}
               />
               <LoadMoreButton visible={moreBtn} onClick={handleLoadMore} />
             </>
           )}
         </div>
       </div>
+      <LoginModal
+        show={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+      />
     </main>
   )
 }

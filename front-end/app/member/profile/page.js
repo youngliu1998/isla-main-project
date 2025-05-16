@@ -15,21 +15,60 @@ export default function ProfilePage() {
     name: '',
     nickname: '',
     tel: '',
+    gender: '',
+    birthday: '',
     skinType: '',
-    city: '',
-    area: '',
-    address: '',
-  })
-  let user = {}
-  const [citySelect, setCitySelect] = useState({
     CityName: '',
     AreaName: '',
     ZipCode: '',
+    address: '',
   })
-  useEffect(() => {
-    // if no auth, go to login // dev closed
-    // if (!isAuth) router.push('login')
+  console.log('text', text)
 
+  // define array areas for selct
+  const areas = cities.filter((v) => v.CityName == text.CityName)[0]?.AreaList
+  // console.log('areas', areas)
+  // define array postcodes for selct
+  const postCodes = cities
+    .filter((v) => v.CityName == text.CityName)[0]
+    ?.AreaList.filter((v) => v.AreaName == text.AreaName)
+  // form submit fucntion
+  const handleSubmit = async (event) => {
+    event.preventDefault()
+    const formData = {
+      name: text?.name || '',
+      nickname: text?.nickname || '',
+      tel: text?.tel || '',
+      gender: text?.gender || '',
+      birthday: text?.birthday || '',
+      skin_type: text?.skinType || '',
+      city: text?.CityName || '',
+      area: text?.AreaName || '',
+      postcode: text?.ZipCode || '',
+      address: text?.address || '',
+    }
+    try {
+      const token = localStorage.getItem('jwtToken')
+      const response = await fetch('http://localhost:3005/api/member/profile', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(formData),
+      })
+      const result = await response.json()
+      alert('提交成功：' + JSON.stringify(result))
+    } catch (error) {
+      console.error('錯誤：', error)
+    }
+  }
+
+  useEffect(() => {
+    const token = localStorage.getItem('jwtToken')
+      ? localStorage.getItem('jwtToken')
+      : null
+    if (!token) router.push('login')
     // if get auth, fetch profile data
     let profileData = {}
     async function getProfile() {
@@ -50,10 +89,13 @@ export default function ProfilePage() {
         setText({
           name: profileData?.name || '',
           nickname: profileData?.nickname || '',
+          birthday: profileData?.birthday || '',
+          gender: profileData?.gender || '',
           tel: profileData?.tel || '',
           skinType: profileData?.skin_type || '',
-          city: profileData?.city || '',
-          area: profileData?.area || '',
+          CityName: profileData?.city || '',
+          AreaName: profileData?.area || '',
+          ZipCode: profileData?.postcode || '',
           address: profileData?.address || '',
         })
       } catch (err) {
@@ -61,15 +103,13 @@ export default function ProfilePage() {
       }
     }
     getProfile()
-
-    console.log('name', user.name)
   }, [])
   return (
     <>
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className="user-content">
           <h3>會員資料</h3>
-          <div className="row row-cols-md-2 row-cols-1 g-4 w-100">
+          <div className="row row-cols-md-2 row-cols-1 g-4">
             <InputText
               text={text}
               title="本名"
@@ -91,6 +131,60 @@ export default function ProfilePage() {
               value={text.tel}
               setText={setText}
             />
+            {/* <!-- input[type=radio] --> */}
+            <div className="user-form-input">
+              <label htmlFor="skin_type">膚質</label>
+              <div className="user-input-box user-radio-box">
+                <div className="row row-cols-2">
+                  <label htmlFor="skin_type">
+                    <input
+                      type="radio"
+                      name="skin_type"
+                      value="中性"
+                      onChange={(e) => {
+                        setText({ ...text, ['skinType']: e.target.value })
+                      }}
+                    />
+                    中性
+                  </label>
+                  <label htmlFor="skin_type">
+                    <input
+                      type="radio"
+                      name="skin_type"
+                      value="乾性"
+                      onChange={(e) => {
+                        setText({ ...text, ['skinType']: e.target.value })
+                      }}
+                    />
+                    乾性
+                  </label>
+                </div>
+                <div className="row row-cols-2">
+                  <label htmlFor="skin_type">
+                    <input
+                      type="radio"
+                      name="skin_type"
+                      value="敏感性"
+                      onChange={(e) => {
+                        setText({ ...text, ['skinType']: e.target.value })
+                      }}
+                    />
+                    敏感性
+                  </label>
+                  <label htmlFor="skin_type">
+                    <input
+                      type="radio"
+                      name="skin_type"
+                      value=""
+                      onChange={(e) => {
+                        setText({ ...text, ['skinType']: e.target.value })
+                      }}
+                    />
+                    不確定
+                  </label>
+                </div>
+              </div>
+            </div>
           </div>
           <h3>預設地址</h3>
           <div className="row row-cols-md-3 row-cols-1 g-4 w-100">
@@ -99,11 +193,25 @@ export default function ProfilePage() {
               name="city"
               arr={cities}
               selectKey="CityName"
-              citySelect={citySelect}
-              setCitySelect={setCitySelect}
+              text={text}
+              setText={setText}
             />
-            <Select title="市/區/鄉/鎮" name="area" selectKey="AreaName" />
-            <Select title="郵遞區號" name="postcode" selectKey="ZipCode" />
+            <Select
+              title="市/區/鄉/鎮"
+              name="area"
+              arr={areas}
+              selectKey="AreaName"
+              text={text}
+              setText={setText}
+            />
+            <Select
+              title="郵遞區號"
+              name="postcode"
+              arr={postCodes}
+              selectKey="ZipCode"
+              text={text}
+              setText={setText}
+            />
           </div>
           <div className="row row-cols-md-2 row-cols-1 w-100">
             <InputText
