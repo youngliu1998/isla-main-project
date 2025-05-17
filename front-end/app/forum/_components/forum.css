@@ -16,7 +16,7 @@
   --sub-color: #fa8e83;
   /* --bg-gray-article: #f2f1ef; */
   --bg-gray-article: #fafafa;
-  --hover-gray: #e5e5e4;
+  --hover-gray: #dfdfdf;
   --hover-light-gray: #eeeeed;
   --focus-gray: #d2d2d2b9;
   --main-text: #373737;
@@ -290,6 +290,9 @@
     &:focus {
       background-color: var(--focus-gray);
     }
+  }
+  .active {
+    background-color: var(--hover-gray);
   }
 }
 .search-bar {

@@ -4,6 +4,7 @@ import './_components/forum.css'
 import ComponentsSubNav from './_components/sub-nav'
 // import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import { useEffect, useLayoutEffect } from 'react'
+import { FilterProvider } from './_context/filterContext'
 
 export default function Layout({ children }) {
   useEffect(() => {
@@ -18,7 +19,7 @@ export default function Layout({ children }) {
   }, [])
 
   return (
-    <>
+    <FilterProvider>
       {/* <body className="body bg-gray-article"> */}
       <div className="bg-article"></div>
       <div className="body">
@@ -30,6 +31,6 @@ export default function Layout({ children }) {
         </div>
       </div>
       {/* </body> */}
-    </>
+    </FilterProvider>
   )
 }

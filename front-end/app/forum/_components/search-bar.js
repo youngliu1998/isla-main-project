@@ -1,17 +1,48 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRef } from 'react'
+import { useFilter } from '../_context/filterContext'
+import { useRouter } from 'next/navigation'
 
 export default function ComponentsSearchBar({
-  setKeyword = () => {},
-  setProductCate = () => {},
-  setPostCate = () => {},
+  // setKeyword = () => {},
+  // setProductCate = () => {},
+  // setPostCate = () => {},
   postCateItems = [],
   productCateItems = [],
+  handleRouterPush = () => {},
 }) {
+  const router = useRouter()
+  const {
+    setKeyword,
+    keyword,
+    setProductCate,
+    productCate,
+    setPostCate,
+    postCate,
+  } = useFilter()
   const searchParamsRef = useRef()
   const [isSearchEmpty, setSearchEmpty] = useState(true)
+
+  // useEffect(() => {
+  //   // NOTE 本來拆開在button事件中，使用button點擊事件作為跳轉判端依據，需要寫重複兩次程式，每次也會是新params因此product和post無法相互繼承
+  //   // 篩選網址
+  //   // 1.點擊篩選項目->紀錄至陣列中 -> 已存的刪除，新的加入
+  //   // 2.用URLSearchParams結合productCate PostCate keywordCate
+  //   // 2.陣列有變動時，推送新網址
+  //   const params = new URLSearchParams()
+  //   if (keyword.length) {
+  //     params.append('keyword', keyword)
+  //   }
+  //   if (productCate.length) {
+  //     params.append('productCate', productCate.join('+'))
+  //   }
+  //   if (postCate.length) {
+  //     params.append('postCate', postCate.join('+'))
+  //   }
+  //   router.push(`http://localhost:3000/forum?${params.toString()}`)
+  // }, [keyword, productCate, postCate, router])
 
   return (
     <>
@@ -29,14 +60,13 @@ export default function ComponentsSearchBar({
                     setSearchEmpty(false)
                   }}
                   onKeyDown={(e) => {
-                    const keyword = searchParamsRef.current.value.trim()
+                    const inputKeyword = searchParamsRef.current.value.trim()
                     if (
                       e.key === 'Enter' &&
-                      keyword.length !== 0 &&
+                      inputKeyword.length !== 0 &&
                       !isSearchEmpty
                     ) {
-                      // e.preventDefault()
-                      setKeyword(keyword)
+                      setKeyword(inputKeyword)
                       searchParamsRef.current.value = ''
                       setSearchEmpty(false)
                     }
@@ -61,7 +91,8 @@ export default function ComponentsSearchBar({
                 onClick={(e) => {
                   e.preventDefault()
                   if (!isSearchEmpty) {
-                    setKeyword(searchParamsRef.current.value)
+                    const inputKeyword = searchParamsRef.current.value
+                    setKeyword(inputKeyword)
                     setSearchEmpty(true)
                   }
                 }}
@@ -78,9 +109,13 @@ export default function ComponentsSearchBar({
               {productCateItems.map((item, i) => (
                 <button
                   key={i}
-                  className={`button-clear cate-item px-4 py-3 rounded-2 fs16 main-text-color text-start rounded-pill`}
-                  onClick={() => {
-                    setProductCate(i + 1)
+                  className={`button-clear cate-item px-3 py-2 m-1 rounded-2 fs16 main-text-color text-start rounded-pill ${productCate.includes(i + 1) ? 'active' : ''}`}
+                  onClick={(e) => {
+                    productCate.includes(i + 1)
+                      ? setProductCate(productCate.filter((c) => c !== i + 1))
+                      : setProductCate([...productCate, i + 1])
+                    handleRouterPush('', i + 1, '')
+                    e.target.blur()
                   }}
                 >
                   {item}
@@ -96,9 +131,12 @@ export default function ComponentsSearchBar({
               {postCateItems.map((item, i) => (
                 <button
                   key={i}
-                  className={`button-clear cate-item px-4 py-3 rounded-2 fs16 main-text-color text-start rounded-pill`}
-                  onClick={() => {
-                    setPostCate(i + 1)
+                  className={`button-clear cate-item px-3 py-2 m-1 rounded-2 fs16 main-text-color text-start rounded-pill ${postCate.includes(i + 1) ? 'active' : ''}`}
+                  onClick={(e) => {
+                    postCate.includes(i + 1)
+                      ? setPostCate(postCate.filter((c) => c !== i + 1))
+                      : setPostCate([...postCate, i + 1])
+                    e.target.blur()
                   }}
                 >
                   {item}

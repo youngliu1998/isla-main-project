@@ -63,19 +63,19 @@ export default function ComponentsPostCard({
           </div>
         </div>
         <div className="post-header d-flex">
-          <div className="post-title me-2 fw-medium text-truncate main-text-color">
-            {postTitle}
-          </div>
-          <div className="post-tag px-2 py-1 rounded-pill fs12 text-nowrap bg-light-hover main-color">
+          <div className="post-tag px-2 py-1 me-2 rounded-pill fs12 text-nowrap bg-light-hover main-color">
             {postCateName}
           </div>
+          <div className="post-title fw-medium text-truncate main-text-color">
+            {postTitle}
+          </div>
         </div>
-        <div
+        {/* <div
           className="post-content text-truncate fs14 sub-text-color"
           dangerouslySetInnerHTML={{
             __html: postContent.replace('<br/>', ' ').slice(0, 50),
           }}
-        />
+        /> */}
         <div className="imgs d-flex gap-3 overflow-auto">
           <div className="img flex-shrink-0 rounded-3" />
           <div className="img flex-shrink-0 rounded-3" />

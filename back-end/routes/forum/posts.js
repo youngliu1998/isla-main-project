@@ -5,10 +5,8 @@ import db from '../../config/mysql.js' // 使用mysql
 const router = express.Router()
 const upload = multer()
 
-// router.get('/', async function (req, res) {
-//   return res.json({})
-// })
 // 得到多筆文章
+// 後端送出的post_user_liked, post_user_saved 為字串
 router.get('/:pageName', async function (req, res) {
   // 取得userID
   const userID = 1
@@ -18,13 +16,15 @@ router.get('/:pageName', async function (req, res) {
         pc.name AS cate_name,
         u.nickname AS user_nick,
         IFNULL (liked.user_ids, '') AS liked_user_ids,
+        IFNULL( liked.likes, 0) AS likes,
         IFNULL (saved.user_ids, '') AS saved_user_ids
     FROM post p
     JOIN post_category pc ON p.cate_id = pc.id
     JOIN users u ON p.user_id = u.id
     LEFT JOIN (
         SELECT post_id,
-        GROUP_CONCAT(user_id) AS user_ids
+        GROUP_CONCAT(user_id) AS user_ids,
+        COUNT(user_id) AS likes
         FROM post_user_liked
         GROUP BY post_id
     ) liked ON p.id = liked.post_id
@@ -56,21 +56,75 @@ router.get('/:pageName', async function (req, res) {
       break
     }
     case 'home': {
-      console.log(req.query)
-      const params = req.query
-      if (
-        params.keyword ||
-        params.tab ||
-        params.productCate ||
-        params.postCate
-      ) {
-        const postCate = params.postCate
-        postsResult = postsResult = await db.query(
-          `${postsQuery} WHERE p.cate_id = ${postCate}`
+      const tab = req.query.tab
+      const keyword = req.query.keyword
+      const productCate = req.query.productCate?.split('+')
+      const postCate = req.query.postCate?.split('+')
+      console.log({ keyword, productCate, postCate })
+
+      const tabValue = tab !== 1 ? 'updated_at' : 'likes'
+
+      // WHERE p.title LIKE ? OR p.content LIKE ? AND p.cate_id = ? AND p.product_cate_id = ?
+      // 冷靜的找到篩選問題是括號，我好棒！
+      if (keyword || productCate || postCate) {
+        const keywordClause = keyword
+          ? `(p.title LIKE ? OR p.content LIKE ?)`
+          : ''
+        const keywordValue = keyword ? `%${keyword}%` : ''
+        // console.log(productCate.length)
+        const productClause = productCate
+          ? `p.product_cate_id IN (${productCate.map((c) => '?').join(',')})`
+          : ''
+        const productValue = productCate ?? []
+        const postClause = postCate
+          ? `p.cate_id IN (${postCate.map((c) => '?').join(',')})`
+          : ''
+        const postValue = postCate ?? []
+
+        const totalClause = [keywordClause, productClause, postClause]
+          .filter((c) => c.length > 0)
+          .join(' AND ')
+        const totalValue = [
+          keywordValue,
+          keywordValue,
+          ...productValue,
+          ...postValue,
+        ].filter((v) => v)
+
+        //
+        postsResult = await db.query(
+          `${postsQuery} WHERE ${totalClause} ORDER BY ${tabValue} DESC`,
+          totalValue
         )
+        // console.log(`WHERE ${totalClause} `)
+        // console.log('totalClause: ' + totalClause)
+        // console.log('totalValue: ' + totalValue.length)
+        // console.log(productCate.length)
       } else {
-        postsResult = await db.query(`${postsQuery}`)
+        postsResult = await db.query(`${postsQuery} ORDER BY ${tabValue} DESC`)
+        // ORDER BY p.likes DESC
+        // console.log(postsResult[0].map((p) => p.liked_user_ids))
       }
+      // if (Object.keys(params).length !== 0) {
+      //   const { keyword, productCate, postCate } = params
+      //   console.log(keyword, productCate, postCate)
+      //   let where = []
+      //   let value = []
+      //   if (keyword) {
+      //     where.push('p.title LIKE ? OR p.content LIKE ?')
+      //     value.push(keyword)
+      //   }
+      //   if (postCate) {
+      //     where.push('p.cate_id = ?')
+      //     value.push(postCate)
+      //   }
+      //   const whereClause = 'WHERE ' + where.join('AND')
+
+      //   postsResult = await db.query(`${postsQuery} ${whereClause}`, [value])
+
+      // } else {
+      //   postsResult = await db.query(`${postsQuery}`)
+      // }
 
       break
     }
