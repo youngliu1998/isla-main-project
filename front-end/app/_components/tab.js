@@ -1,13 +1,24 @@
 'use client'
 import React, { useRef, useState, useLayoutEffect, useEffect } from 'react'
 import './tab.css'
+import { useRouter } from 'next/navigation'
 
+// 註： cate值為索引值+1，方便用?判斷是否賦值（因為0為falsy），也方便對應資料表的類別id
+// 如： tab ? new URLSearchParams().append('tab', tab) : ''
 export default function Componentstab({
-  items = [],
-  height = 60, // 預設高度，直接用數字
-  setCate = () => {},
-  mutate = () => {},
+  items = [], //tab項目文字
+  height = 60, // 預設高度，直接用數字；寬度請在此元件外套一個目標寬度的div容器
+  handleTabChange = () => {}, //帶入參數為tab的編號（如下）
+  // >>>>>>>使用方式：在自己的引入頁面中設置cb，帶入tab編號<<<<<<<<
+  // 點擊後跳轉頁面，再透過抓取路由查詢參數重新fetch、完成篩選
+  // const handleTabChange = (newTab) => {
+  //   const currentParams = new URLSearchParams(params)
+  //   currentParams.append('tab', newTab)
+  //   router.push(`http://localhost:3000/forum?${currentParams.toString()}`)
+  // }
+  // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 }) {
+  // const router = useRouter()
   const [activeIndex, setActiveIndex] = useState(0)
   const containerRef = useRef(null)
   const [underlineStyle, setUnderlineStyle] = useState({ left: 0, width: 0 })
@@ -60,13 +71,14 @@ export default function Componentstab({
         {items.map((cat, i) => (
           <button
             key={i}
-            className={`btn btn-link flex-fill text-decoration-none fw-semibold ${
+            className={`btn btn-link flex-fill text-decoration-none fw-semibold text-nowrap ${
               i === activeIndex ? 'text-primary' : 'subtext'
             }`}
             onClick={() => {
               setActiveIndex(i)
-              setCate(i)
-              mutate()
+              // setTab(i + 1)
+              // mutate()
+              handleTabChange(i + 1)
             }}
           >
             {cat}
