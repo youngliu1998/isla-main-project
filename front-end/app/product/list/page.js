@@ -8,7 +8,7 @@ import '../_style.css/product-list.css'
 
 const fetchProducts = async () => {
   const res = await axios.get(
-    'http://localhost:3000/products??keyword=保濕&limit=20&offset=0&onSaleOnly=false&brandIds=4,2&minRating=1&maxRating=4&maxPrice=900&minPrice=500&categoryIds=1'
+    'http://localhost:3000/api/products?keyword=保濕&limit=20&offset=0&onSaleOnly=false&brandIds=4,2&minRating=1&maxRating=4&maxPrice=900&minPrice=500&categoryIds=1'
   )
   console.log('後端回傳資料:', res.data)
   return res.data.data
