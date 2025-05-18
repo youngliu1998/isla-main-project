@@ -33,6 +33,7 @@ export default function RegisterPage() {
       )
       const result = await response.json()
       alert('提交成功：' + JSON.stringify(result))
+      router.push('/login')
     } catch (err) {
       console.log(err)
     }
@@ -43,7 +44,7 @@ export default function RegisterPage() {
     console.log('register-page-user: ', user)
     console.log('register-page-isAuth: ', isAuth)
   }, [isAuth])
-  console.log('regiInfo', regiInfo)
+  // console.log('regiInfo', regiInfo)
 
   return (
     <>
