@@ -3,7 +3,7 @@ import db from '../../config/mysql.js'
 import verifyToken from '../../lib/verify-token.js'
 
 // 取得購物車商品列表
-// http://localhost:3005/api/cart-items?user_id=1
+// http://localhost:3005/api/cart-items
 const router = express.Router()
 router.get('/', verifyToken, async (req, res) => {
   // const user_id = req.query.user_id 不使用token
@@ -29,7 +29,7 @@ router.get('/', verifyToken, async (req, res) => {
       })
     }
 
-    // #step01 分類 ID
+    // 分類 ID
     const productIds = cartItems
       .filter((i) => i.product_id)
       .map((i) => i.product_id)
