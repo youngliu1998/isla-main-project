@@ -14,8 +14,8 @@
   --main-color: #fd7061;
   --accent-color: #fd4f3c;
   --sub-color: #fa8e83;
-  /* --bg-gray-article: #f2f1ef; */
-  --bg-gray-article: #fafafa;
+  --bg-gray-article: #f2f1ef;
+  /* --bg-gray-article: #fafafa; */
   --hover-gray: #dfdfdf;
   --hover-light-gray: #eeeeed;
   --focus-gray: #d2d2d2b9;
@@ -50,7 +50,6 @@
   top: 0;
   left: 0;
   right: 0;
-  /* background-color: #f2f1ef; */
   background-color: #f2f1ef;
 }
 
@@ -169,7 +168,7 @@
   justify-content: center;
 
   .modal-content {
-    height: 80vh;
+    height: 70vh;
     max-width: 756px;
     .modal-header {
       border-bottom: 1px solid var(--stroke-color);
@@ -203,7 +202,7 @@
       }
     }
     .edit-area {
-      height: 100%;
+      height: calc(100% - 66px);
       &:empty::before {
         content: attr(data-placeholder);
         color: var(--sub-text);
@@ -306,6 +305,15 @@
 }
 
 /* main */
+.posts-section {
+  height: calc(100vh);
+}
+.tabs {
+  padding-inline: 12px;
+  max-width: 800px;
+  background-color: var(--bg-gray-article);
+  z-index: 999;
+}
 .posts {
   max-width: 800px;
   .updated-at {

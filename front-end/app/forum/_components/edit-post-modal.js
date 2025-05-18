@@ -19,7 +19,7 @@ export default function EditPostModal(props) {
           backdrop: true,
           keyboard: true,
         })
-        // modal.show()
+        modal.show()
       }
     })
   }, [])
@@ -163,7 +163,14 @@ export default function EditPostModal(props) {
                 ></div>
               </div>
               <div className="modal-footer px-4 py-2">
-                <input name="images" type="file" id="uploadImage" hidden />
+                <input
+                  name="images"
+                  type="file"
+                  id="uploadImage"
+                  accept="image/*"
+                  multiple
+                  hidden
+                />
                 <label
                   htmlFor="uploadImage"
                   className="mx-0 my-0 me-auto h-100"

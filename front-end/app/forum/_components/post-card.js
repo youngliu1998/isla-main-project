@@ -26,10 +26,36 @@ export default function ComponentsPostCard({
   mutate = () => {},
 }) {
   const router = useRouter()
-  const date = new Date(updatedAt.replace(' ', 'T'))
-  const month = date.getMonth()
+  const date = new Date(updatedAt)
+  const time = date.getTime()
+  const month = date.getMonth() + 1
   const day = date.getDate()
-  const dateFormat = `${month}月${day}日`
+  const oneDay = 24 * 60 * 60 * 1000
+  const todayNow = new Date()
+  const todayMidTime = new Date(
+    todayNow.getFullYear(),
+    todayNow.getMonth(),
+    todayNow.getDate()
+  ).getTime()
+
+  let dateFormat
+  if (Date.now() - time <= 120000) {
+    dateFormat = '剛剛'
+  } else if (time >= todayMidTime) {
+    dateFormat = date.toLocaleTimeString('zh-TW', {
+      hour: 'numeric',
+      minute: 'numeric',
+    })
+  } else if (time >= todayMidTime - oneDay) {
+    const time = date.toLocaleTimeString('zh-TW', {
+      hour: 'numeric',
+      minute: 'numeric',
+    })
+    dateFormat = `昨日 ${time}`
+  } else {
+    dateFormat = `${month}月${day}日`
+  }
+
   return (
     <>
       {/* FIXME cursor pointer */}

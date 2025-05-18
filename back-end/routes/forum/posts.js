@@ -58,73 +58,47 @@ router.get('/:pageName', async function (req, res) {
     case 'home': {
       const tab = req.query.tab
       const keyword = req.query.keyword
-      const productCate = req.query.productCate?.split('+')
-      const postCate = req.query.postCate?.split('+')
-      console.log({ keyword, productCate, postCate })
-
-      const tabValue = tab !== 1 ? 'updated_at' : 'likes'
+      const productCate = req.query.productCate?.split(',')
+      const postCate = req.query.postCate?.split(',')
+      // console.log({ keyword, productCate, postCate })
 
       // WHERE p.title LIKE ? OR p.content LIKE ? AND p.cate_id = ? AND p.product_cate_id = ?
       // 冷靜的找到篩選問題是括號，我好棒！
-      if (keyword || productCate || postCate) {
-        const keywordClause = keyword
-          ? `(p.title LIKE ? OR p.content LIKE ?)`
-          : ''
-        const keywordValue = keyword ? `%${keyword}%` : ''
-        // console.log(productCate.length)
-        const productClause = productCate
-          ? `p.product_cate_id IN (${productCate.map((c) => '?').join(',')})`
-          : ''
-        const productValue = productCate ?? []
-        const postClause = postCate
-          ? `p.cate_id IN (${postCate.map((c) => '?').join(',')})`
-          : ''
-        const postValue = postCate ?? []
-
-        const totalClause = [keywordClause, productClause, postClause]
-          .filter((c) => c.length > 0)
-          .join(' AND ')
-        const totalValue = [
-          keywordValue,
-          keywordValue,
-          ...productValue,
-          ...postValue,
-        ].filter((v) => v)
-
-        //
-        postsResult = await db.query(
-          `${postsQuery} WHERE ${totalClause} ORDER BY ${tabValue} DESC`,
-          totalValue
-        )
-        // console.log(`WHERE ${totalClause} `)
-        // console.log('totalClause: ' + totalClause)
-        // console.log('totalValue: ' + totalValue.length)
-        // console.log(productCate.length)
-      } else {
+      if (tab) {
+        const tabValue = tab !== '1' ? 'p.updated_at' : 'likes'
+        // console.log(tab, tabValue)
         postsResult = await db.query(`${postsQuery} ORDER BY ${tabValue} DESC`)
-        // ORDER BY p.likes DESC
-        // console.log(postsResult[0].map((p) => p.liked_user_ids))
+        if (keyword || productCate || postCate) {
+          const keywordClause = keyword
+            ? `(p.title LIKE ? OR p.content LIKE ?)`
+            : ''
+          const keywordValue = keyword ? `%${keyword}%` : ''
+          const productClause = productCate
+            ? `p.product_cate_id IN (${productCate.map((c) => '?').join(',')})`
+            : ''
+          const productValue = productCate ?? []
+          const postClause = postCate
+            ? `p.cate_id IN (${postCate.map((c) => '?').join(',')})`
+            : ''
+          const postValue = postCate ?? []
+
+          const totalClause = [keywordClause, productClause, postClause]
+            .filter((c) => c.length > 0)
+            .join(' AND ')
+          const totalValue = [
+            keywordValue,
+            keywordValue,
+            ...productValue,
+            ...postValue,
+          ].filter((v) => v)
+          postsResult = await db.query(
+            `${postsQuery} WHERE ${totalClause} ORDER BY ${tabValue} DESC`,
+            totalValue
+          )
+        }
+      } else {
+        postsResult = await db.query(`${postsQuery} ORDER BY likes DESC`)
       }
-      // if (Object.keys(params).length !== 0) {
-      //   const { keyword, productCate, postCate } = params
-      //   console.log(keyword, productCate, postCate)
-      //   let where = []
-      //   let value = []
-      //   if (keyword) {
-      //     where.push('p.title LIKE ? OR p.content LIKE ?')
-      //     value.push(keyword)
-      //   }
-      //   if (postCate) {
-      //     where.push('p.cate_id = ?')
-      //     value.push(postCate)
-      //   }
-      //   const whereClause = 'WHERE ' + where.join('AND')
-
-      //   postsResult = await db.query(`${postsQuery} ${whereClause}`, [value])
-
-      // } else {
-      //   postsResult = await db.query(`${postsQuery}`)
-      // }
 
       break
     }
@@ -161,32 +135,6 @@ router.get('/:pageName', async function (req, res) {
     status: 'success',
     data: postsResult[0],
   })
-  // referer歷史遺跡
-  // // 取得WHERE參數、判斷路由
-  // const referer = req.get('Referer')
-  // const isHome = referer === 'http://localhost:3000/forum'
-  // const isPost = referer.includes('http://localhost:3000/forum/post')
-  // const isProfile = referer.includes('http://localhost:3000/forum/profile/')
-  // const isMyPost = referer.includes(
-  //   'http://localhost:3000/member/my-forum/my-post'
-  // )
-
-  // // whereClause
-  // let whereClause = ''
-  // if (isProfile) {
-  //   const profileID = req.get('Referer').match(/\/profile\/(\d+)$/)[1]
-  //   whereClause = profileID ? `WHERE p.user_id = ${profileID}` : '' //有必要嗎？
-  // } else if (isMyPost) {
-  //   whereClause = `WHERE p.user_id = ${userID}`
-  // } else if (isPost) {
-  //   // BUG 點擊至post再跳回上一頁時，上一頁論壇首頁只剩在where篩選後的單篇資料
-  //   const postID = req.get(`Referer`).match(/\/forum\/post\/(\d+)$/)[1]
-  //   whereClause = `WHERE p.id = ${postID}`
-  // } else if (isHome) {
-  //   whereClause = ''
-  // }
-
-  // posts是陣列含多個物件
 })
 
 // 得到多筆文章 - 篩選
@@ -205,8 +153,8 @@ router.post('/', upload.none(), async function (req, res) {
   // )
   const { title, content } = req.body
   const [result] = await db.query(
-    'INSERT INTO post(title, content, user_id, cate_id) VALUES (?,?,?,?)',
-    [title, content, 1, 1]
+    'INSERT INTO post(title, content, user_id, cate_id, product_cate_id) VALUES (?,?,?,?,?)',
+    [title, content, 1, 1, 1]
   )
   console.log(req.body)
   if (result.affectedRows === 0) throw new Error('沒有資料被更改(put)')
