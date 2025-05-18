@@ -1,6 +1,6 @@
 'use client'
 import React, { useRef, useState, useLayoutEffect, useEffect } from 'react'
-import './tab.css'
+import './switcher.css'
 
 const categories = ['全部', '熱門', '最新', '追蹤中']
 

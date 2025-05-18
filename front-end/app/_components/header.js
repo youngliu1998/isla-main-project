@@ -1,11 +1,23 @@
 'use client'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
+import useCartCount from '@/app/cart/hook/useCartCount'
 import { BsHandbag } from 'react-icons/bs'
 import './header.css'
 
 export default function Header() {
+  const cartIconNum = useCartCount()
   const pathname = usePathname()
+  const router = useRouter()
+
+  const handleCartClick = () => {
+    const token = localStorage.getItem('jwtToken')
+    if (!token) {
+      router.push('/member/login')
+    } else {
+      router.push('/cart')
+    }
+  }
   if (
     pathname.includes('login') ||
     pathname.includes('register') ||
@@ -40,12 +52,13 @@ export default function Header() {
             <button>
               <i className="bi bi-search" />
             </button>
-            <Link href="/cart">
-              <button className="cart-icon">
-                <BsHandbag style={{ color: 'white', fontSize: '30px' }} />
-                <div>2</div>
-              </button>
-            </Link>
+
+            <button className="cart-icon" onClick={handleCartClick}>
+              <BsHandbag style={{ color: 'white', fontSize: '30px' }} />
+              {/* <div>2</div> */}
+              {cartIconNum > 0 && <div>{cartIconNum}</div>}
+            </button>
+
             <button>
               <Link href="/member/login">
                 <i className="bi bi-person-circle" />

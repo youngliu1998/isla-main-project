@@ -1,11 +1,12 @@
 'use client'
 // import { useAuth } from '@/hook/use-auth'
 import { useAuth } from '@/hook/use-auth'
+import { useCartContext } from '../../cart/context/cart-context'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import InputText from '../_component/input-text'
-import InputPass from '../_component/input-Pass'
+import InputPass from '../_component/input-pass'
 import '../_styles/login.css'
 
 export default function LoginPage() {
@@ -22,6 +23,7 @@ export default function LoginPage() {
     console.log('login-page-user: ', user)
     console.log('login-page-isAuth: ', isAuth)
   }, [isAuth])
+
   return (
     <>
       <div className="d-flex flex-column justify-content-centers gap-5 py-5 postion-middle">

@@ -1,5 +1,6 @@
 'use client'
 import styles from './_styles/cart-style.module.scss'
+import { toast } from 'react-toastify'
 //import component
 import StepProgress from './_component/step-progress/step-progress'
 import ProductCard from './_component/product-card/product-card'
@@ -18,13 +19,14 @@ import { useEffect, useState } from 'react'
 export default function CartPage() {
   const { user, isAuth } = useAuth()
   const [cartItems, setCartItems] = useState([])
+  const [selectAll, setSelectAll] = useState(false)
+  const [checkedItems, setCheckedItems] = useState({}) // 以 id 為 key 儲存是否勾選
 
-  //init
+  //fetch get-cart-items
   useEffect(() => {
     const cartItemsData = async () => {
       try {
         const res = await cartApi.get('/cart-items')
-        // console.log('後端資料抓到：', res.data)
         const rawCartItems = res.data.data.cartItems
 
         console.log('前端抓到的購物車資料：', rawCartItems)
@@ -52,9 +54,32 @@ export default function CartPage() {
     cartItemsData()
   }, [isAuth])
 
+  // fetch delete
+  const handleDeleteItem = async (cartItemId) => {
+    try {
+      const res = await cartApi.delete(`/cart-items/delete/${cartItemId}`)
+
+      if (res.data.status === 'success') {
+        const updated = cartItems.filter((item) => item.id !== cartItemId)
+        setCartItems(updated)
+        localStorage.setItem('cartItems', JSON.stringify(updated))
+        toast.success('已從購物車移除', {
+          position: 'top-right',
+          autoClose: 2000,
+          hideProgressBar: false,
+        })
+      } else {
+        console.error(res.data.message)
+        toast.error(res.data.message || '刪除失敗')
+      }
+    } catch (err) {
+      console.error('刪除失敗：', err)
+      toast.error('伺服器錯誤，請稍後再試')
+    }
+  }
+
   // 判斷是否為手機裝置
   const isMobile = useIsMobile()
-
   // 記錄元件是否 已Mounted完成
   const [hasMounted, setHasMounted] = useState(false)
   useEffect(() => {
@@ -66,6 +91,26 @@ export default function CartPage() {
     (item) => item.type === 'normal' || item.type === 'colorDots'
   )
   const courseItems = cartItems.filter((item) => item.type === 'course')
+
+  // 全選切換
+  const handleSelectAll = (checked) => {
+    setSelectAll(checked)
+    const newChecked = {}
+    cartItems.forEach((item) => {
+      newChecked[item.id] = checked
+    })
+    setCheckedItems(newChecked)
+  }
+
+  // 單個項目勾選改變
+  const handleItemCheckChange = (id, checked) => {
+    const updated = { ...checkedItems, [id]: checked }
+    setCheckedItems(updated)
+
+    // 若有任何一個沒被勾選，就取消全選
+    const isAllChecked = cartItems.every((item) => updated[item.id])
+    setSelectAll(isAllChecked)
+  }
 
   const couponDataProd = [
     {
@@ -136,6 +181,10 @@ export default function CartPage() {
                 className={`form-check-input me-2 ${styles.checkboxInput}`}
                 type="checkbox"
                 id="allCheck"
+                checked={selectAll}
+                onChange={(evt) => {
+                  handleSelectAll(evt.target.checked)
+                }}
               />
               <label htmlFor="allCheck" className="text-subtext">
                 選取所有
@@ -148,16 +197,9 @@ export default function CartPage() {
         <div className="row gy-5">
           <div className="col-lg-8 col-12 gy-5">
             <div className="card-style mb-4 p-4">
-              <div className="form-check mb-3 ms-1">
-                <input
-                  className={`form-check-input me-2 ${styles.checkboxInput}`}
-                  type="checkbox"
-                  id="productCheck"
-                  name="productCheck"
-                />
-                <label htmlFor="productCheck" className="text-primary">
-                  彩妝商品
-                </label>
+              <div className="mb-3 d-flex align-items-center text-primary">
+                <i className="bi bi-cart4 fs-6 mb-1 me-1"></i>
+                <div>彩妝商品</div>
               </div>
               {productItems.map((item) => (
                 <ProductCard
@@ -172,9 +214,13 @@ export default function CartPage() {
                   color={item.color}
                   colorOptions={item.color_options}
                   category={item.category}
-                  onDelete={() => console.log('刪除', item.id)}
+                  onDelete={() => handleDeleteItem(item.id)}
                   onQuantityChange={(newQty) =>
-                    console.log('變更數量', item.id, newQty)
+                    console.log(`cartItem-id：${item.id}, 數量變更：${newQty}`)
+                  }
+                  isChecked={checkedItems[item.id] || false}
+                  onCheckChange={(checked) =>
+                    handleItemCheckChange(item.id, checked)
                   }
                 />
               ))}
@@ -220,9 +266,13 @@ export default function CartPage() {
                   color={item.color}
                   colorOptions={item.color_options}
                   category={item.category}
-                  onDelete={() => console.log('刪除', item.id)}
+                  onDelete={() => handleDeleteItem(item.id)}
                   onQuantityChange={(newQty) =>
                     console.log('變更數量', item.id, newQty)
+                  }
+                  isChecked={checkedItems[item.id] || false}
+                  onCheckChange={(checked) =>
+                    handleItemCheckChange(item.id, checked)
                   }
                 />
               ))}

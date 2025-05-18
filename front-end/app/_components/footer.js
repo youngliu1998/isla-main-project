@@ -14,7 +14,8 @@ export default function Footer() {
     pathname.includes('/login') ||
     pathname.includes('register') ||
     pathname.includes('forget-password') ||
-    pathname.includes('/forum')
+    pathname.includes('/forum') ||
+    pathname.includes('/cart')
   ) {
     if (pathname.includes('/login') || pathname.includes('/forum')) {
       return <></>

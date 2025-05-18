@@ -11,7 +11,7 @@ const cartApi = axios.create({
 // 加入token
 cartApi.interceptors.request.use((config) => {
   const token = localStorage.getItem('jwtToken')
-  console.log('攔截器加上的 token:', token)
+  console.log('攔截到的 token:', token)
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
