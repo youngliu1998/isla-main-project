@@ -2,11 +2,15 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import ComponentsAuthorInfo from './author-info'
+import { useAuth } from '../../../hook/use-auth'
 
 export default function EditPostModal(props) {
   const modalRef = useRef()
-  const userID = 1
-  const userNick = 'Mandy'
+  const { user, isAuth } = useAuth() //NOTE
+  const userID = user.id
+  const userNick = user.nickname
+  // console.log(user, isAuth)
+  const [imagesList, setImagesList] = useState([])
   useEffect(() => {
     import('bootstrap/dist/js/bootstrap.bundle.min.js').then((bootstrap) => {
       document
@@ -19,7 +23,7 @@ export default function EditPostModal(props) {
           backdrop: true,
           keyboard: true,
         })
-        modal.show()
+        // modal.show()
       }
     })
   }, [])
@@ -29,6 +33,95 @@ export default function EditPostModal(props) {
   // FIXME 為輸入的警告提示體驗
   const titleRef = useRef()
   const contentRef = useRef()
+
+  // 圖片上傳
+  const handleFilesChange = (e) => {
+    const files = Array.from(e.target.files || [])
+    // console.log(files)
+    // setImagesList((prev) => [...prev, ...files])
+    const imageFD = new FormData()
+    imageFD.append('userID', userID)
+    files.forEach((f) => {
+      imageFD.append('images', f)
+    })
+
+    fetch('http://localhost:3005/api/forum/posts/upload-image', {
+      method: 'POST',
+      body: imageFD,
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error('上傳失敗')
+        return res.json() //FIXME 上傳成功的提示
+      })
+      .then((data) => {
+        // console.log(`上傳成功-應該是含url的物件: ${data.filenames}`)
+        const { filenames } = data
+        const filenamesToUrl = filenames.map(
+          (f) => `http://localhost:3005/images/forum/${f}`
+        )
+
+        files.forEach((f, i) => {
+          const objectUrl = URL.createObjectURL(f)
+          const url = filenamesToUrl[i]
+          // console.log('inner', filenamesToUrl)
+          // console.log(url)
+          insertImage(url)
+        })
+      })
+      .catch((err) => {
+        console.log(err) //FIXME 上傳失敗的提示
+      })
+
+    e.target.value = []
+  }
+  // 圖片預覽
+  const insertImage = (filename) => {
+    const select = window.getSelection()
+    let range
+    // 確認輸入區域在content內
+    if (
+      !select ||
+      select.rangeCount === 0 ||
+      !contentRef.current.contains(select.anchorNode)
+    ) {
+      contentRef.current.focus() //強制上傳位置為content區域
+      range = document.createRange()
+      range.selectNodeContents(contentRef.current)
+      range.collapse(false)
+    } else {
+      range = select.getRangeAt(0)
+    }
+    // // 確認是否為新的一行
+    // const isAtLineStart = (() => {
+    //   const preRange = range.cloneRange()
+    //   preRange.setStart(contentRef.current, 0)
+    //   const fragment = preRange.cloneContents()
+    //   return !fragment.textContent.trim() && fragment.childNodes.length === 0
+    // })()
+    // if (!isAtLineStart) {
+    //   const br = document.createElement('br')
+    //   range.insertNode(br)
+    //   range.setStartAfter(br)
+    //   range.collapse(true)
+    // }
+    // 新增圖片
+    const img = document.createElement('img')
+    img.setAttribute('class', 'd-block')
+    // const br = document.createElement('br')
+    // img.src = objectUrl
+    img.src = filename
+    img.style.maxWidth = '60%'
+    img.onload = () => {
+      URL.revokeObjectURL(filename)
+    }
+    range.insertNode(img)
+    range.setStartAfter(img)
+    // range.insertNode(br)
+    range.collapse(false)
+    select.removeAllRanges()
+    select.addRange(range)
+    // img src: blob:...3000/970f494f-bc90-4bd7-8919-93a2af43af7f
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -40,30 +133,32 @@ export default function EditPostModal(props) {
       console.log(title)
       return
     } else if (content === '' || content === '<br>') {
-      console.log('未輸入標題')
+      console.log('請輸入內容')
       return
     }
 
-    try {
-      const fd = new FormData()
-      const newFd = fd.append('title', title) //fd長怎樣QU
-      fd.append('content', content)
-      console.log(fd.content)
-      const res = await fetch('http://localhost:3005/api/forum/posts', {
-        method: 'POST',
-        body: fd,
+    const fd = new FormData()
+    fd.append('title', title) //fd長怎樣QU
+    fd.append('content', content)
+    fd.append('userID', userID)
+    console.log({ title, content, userID })
+    // imagesList.forEach((image) => fd.append('images', image))
+    // console.log('fd-----', imagesList)
+    fetch('http://localhost:3005/api/forum/posts', {
+      method: 'POST',
+      body: fd,
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error(`錯誤：${res.status}`)
+        return res.json()
       })
-      const result = await res.json()
-      if (result.status === 'success') {
-        console.log('送出成功')
-        // FIXME 關閉modal、導向主頁、出現下方小提示框
-      } else {
-        //發布失敗
-      }
-    } catch (err) {
-      console.log(err)
-      // FIXME 畫面顯示上傳錯誤提示
-    }
+      .then((data) => {
+        console.log(data)
+      })
+      .catch((err) => {
+        console.log(err)
+        // FIXME 畫面顯示上傳錯誤提示
+      })
   }
   // 字數
   const [titleLength, setTitleLength] = useState(0)
@@ -163,6 +258,7 @@ export default function EditPostModal(props) {
                 ></div>
               </div>
               <div className="modal-footer px-4 py-2">
+                {/* NOTE */}
                 <input
                   name="images"
                   type="file"
@@ -170,6 +266,9 @@ export default function EditPostModal(props) {
                   accept="image/*"
                   multiple
                   hidden
+                  onChange={(e) => {
+                    handleFilesChange(e)
+                  }}
                 />
                 <label
                   htmlFor="uploadImage"
@@ -191,7 +290,6 @@ export default function EditPostModal(props) {
                   className={`px-4 py-2 rounded-3 border-0 bounce ${isTitleValid && isContentValid ? 'bg-main color-isla-white' : 'bg-hover-gray sub-text-color border-0'}`}
                   onClick={() => {
                     setHasTitleTouched(false)
-                    console.log(hasTitleTouched)
                     // FIXME modal剛出現 按按鈕時出現警示
                   }}
                 >

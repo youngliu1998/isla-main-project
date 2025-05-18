@@ -12,6 +12,7 @@ import useSWR from 'swr'
 import ComponentsBtnLikedSaved from '../_components/btn-liked-saved'
 import ComponentsMorePost from './more-post'
 import ComponentsAuthorInfo from '../_components/author-info'
+import { useAuth } from '../../../hook/use-auth'
 
 const fetcherReferer = (url) =>
   fetch(url, {
@@ -22,7 +23,9 @@ const fetcherReferer = (url) =>
 const fetcher = (url) => fetch(url).then((res) => res.json())
 
 export default function PostIDPage(props) {
-  const userID = 1
+  const { user, isAuth } = useAuth() //NOTE
+  const userID = user.id
+  const userNick = user.nickname
   const postID = useParams().postID
   console.log(postID)
 
@@ -82,10 +85,35 @@ export default function PostIDPage(props) {
   }
 
   // 日期格式
-  const date = new Date(post.updated_at.replace(' ', 'T'))
-  const month = date.getMonth()
+  const date = new Date(post.updated_at)
+  const time = date.getTime()
+  const month = date.getMonth() + 1
   const day = date.getDate()
-  const dateFormat = `${month}月${day}日`
+  const oneDay = 24 * 60 * 60 * 1000
+  const todayNow = new Date()
+  const todayMidTime = new Date(
+    todayNow.getFullYear(),
+    todayNow.getMonth(),
+    todayNow.getDate()
+  ).getTime()
+
+  let dateFormat
+  if (Date.now() - time <= 120000) {
+    dateFormat = '剛剛'
+  } else if (time >= todayMidTime) {
+    dateFormat = date.toLocaleTimeString('zh-TW', {
+      hour: 'numeric',
+      minute: 'numeric',
+    })
+  } else if (time >= todayMidTime - oneDay) {
+    const time = date.toLocaleTimeString('zh-TW', {
+      hour: 'numeric',
+      minute: 'numeric',
+    })
+    dateFormat = `昨日 ${time}`
+  } else {
+    dateFormat = `${month}月${day}日`
+  }
 
   return (
     <>

@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import ComponentsAuthorInfo from './author-info'
 import ComponentsBtnLikedSaved from './btn-liked-saved'
 import { useRouter } from 'next/navigation'
@@ -26,6 +26,8 @@ export default function ComponentsPostCard({
   mutate = () => {},
 }) {
   const router = useRouter()
+
+  // 日期格式
   const date = new Date(updatedAt)
   const time = date.getTime()
   const month = date.getMonth() + 1
@@ -55,6 +57,14 @@ export default function ComponentsPostCard({
   } else {
     dateFormat = `${month}月${day}日`
   }
+
+  // 整理卡片顯示
+  const contentText = postContent
+    .replace('<br>', '')
+    .replace(/<div><br><\/div>/, '')
+    .replace('<div><\/div>', '')
+    .replace(/<img\b[^>]*>/g, '')
+  const contentImg = postContent.match(/<img\b[^>]*>/g) || []
 
   return (
     <>
@@ -96,17 +106,20 @@ export default function ComponentsPostCard({
             {postTitle}
           </div>
         </div>
-        {/* <div
+        <div
           className="post-content text-truncate fs14 sub-text-color"
           dangerouslySetInnerHTML={{
-            __html: postContent.replace('<br/>', ' ').slice(0, 50),
+            __html: contentText.replace('<br/>', ' ').slice(0, 80),
           }}
-        /> */}
+        />
         <div className="imgs d-flex gap-3 overflow-auto">
-          <div className="img flex-shrink-0 rounded-3" />
-          <div className="img flex-shrink-0 rounded-3" />
-          <div className="img flex-shrink-0 rounded-3" />
-          <div className="img flex-shrink-0 rounded-3" />
+          {/* {contentImg.map((v, i) => (
+            <div
+              key={i}
+              className="img flex-shrink-0 rounded-3"
+              dangerouslySetInnerHTML={{ __html: v }}
+            />
+          ))} */}
         </div>
         <div className="evaluates d-flex fs14 ms-n4">
           <ComponentsBtnLikedSaved

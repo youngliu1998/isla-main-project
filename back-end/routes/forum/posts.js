@@ -1,9 +1,9 @@
 import express from 'express'
 import multer from 'multer'
 import db from '../../config/mysql.js' // 使用mysql
+import path from 'path'
 
 const router = express.Router()
-const upload = multer()
 
 // 得到多筆文章
 // 後端送出的post_user_liked, post_user_saved 為字串
@@ -92,7 +92,7 @@ router.get('/:pageName', async function (req, res) {
             ...postValue,
           ].filter((v) => v)
           postsResult = await db.query(
-            `${postsQuery} WHERE ${totalClause} ORDER BY ${tabValue} DESC`,
+            `${postsQuery} WHERE ${totalClause} AND ORDER BY ${tabValue} DESC`,
             totalValue
           )
         }
@@ -137,26 +137,46 @@ router.get('/:pageName', async function (req, res) {
   })
 })
 
-// 得到多筆文章 - 篩選
-router.get('/:queryParam', async function (req, res) {
-  const queryParam = req.params.queryParam
-  queryParam.split('&')
-  const [posts] = await db.query(`SELECT * FROM post`)
-  return res.json({ status: 'success', data: { posts } })
-})
+// // 得到多筆文章 - 篩選
+// router.get('/:queryParam', async function (req, res) {
+//   const queryParam = req.params.queryParam
+//   queryParam.split('&')
+//   const [posts] = await db.query(`SELECT * FROM post`)
+//   return res.json({ status: 'success', data: { posts } })
+// })
 
 // 新增一筆文章 - 網址：POST /api/forum/posts
+const storage = multer.diskStorage({
+  destination: path.join(import.meta.dirname, '../../public/images/forum'),
+  // QU path是內建方法嗎？
+  filename: (req, file, cb) => {
+    const userID = req.body.userID
+    const filename = path.basename(file.originalname)
+    // const ext = path.extname(file.originalname)
+    cb(null, `${userID}_${Date.now()}_${filename}`)
+  },
+})
+const upload = multer({ storage })
+// 上傳圖片
+router.post(
+  '/upload-image',
+  upload.fields([{ name: 'images', maxCount: 50 }]),
+  async function (req, res) {
+    const files = req.files.images
+    const filenames = files.map((f) => f.filename)
+    console.log('req----' + filenames)
+    return res.json({ filenames })
+  }
+)
+// 新增文章
 router.post('/', upload.none(), async function (req, res) {
-  // const { title, content, userID, cateID, postCateID } = req.body
-  // const [result] = await db.query(
-  //   `INSERT INTO post(title,content,updated_at, user_id, cate_id, cate_id) VALUES('${title}','${content}', NOW(),'${userID}', '${cateID}', '${postCateID}')`
-  // )
-  const { title, content } = req.body
+  // const images = req.files.images
+  const { title, content, userID } = req.body
   const [result] = await db.query(
     'INSERT INTO post(title, content, user_id, cate_id, product_cate_id) VALUES (?,?,?,?,?)',
-    [title, content, 1, 1, 1]
+    [title, content, userID, 1, 1]
   )
-  console.log(req.body)
+
   if (result.affectedRows === 0) throw new Error('沒有資料被更改(put)')
   return res.json({
     status: 'success',
