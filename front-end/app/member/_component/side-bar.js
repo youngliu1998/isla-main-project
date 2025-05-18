@@ -15,30 +15,26 @@ export default function SideBar() {
   const [OpenMenu, setOpenMenu] = useState(false) // open nav bar in RWD
   const [openAvatar, setOpenAvatar] = useState(false)
   const { user, logout } = useAuth()
-  const [sidebarInfo, setSidebarInfo] = useState({
-    nickname: '',
-    ava_url: '',
-  })
 
-  useEffect(() => {
-    const token = localStorage.getItem('jwtToken')
-    async function getSideInfo() {
-      const response = await fetch(
-        'http://localhost:3005/api/member/side-bar',
-        {
-          method: 'GET',
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      )
-      const data = await response.json()
-      console.log("data['data']", data)
-      if (!data['data']) return 'no login'
-      const { nickname, ava_url, email } = data['data']
-      setSidebarInfo({ nickname, ava_url, email })
-      console.log('sidebarInfo', nickname, ava_url)
-    }
-    getSideInfo()
-  }, [user])
+  // useEffect(() => {
+  //   const token = localStorage.getItem('jwtToken')
+  //   async function getSideInfo() {
+  //     const response = await fetch(
+  //       'http://localhost:3005/api/member/side-bar',
+  //       {
+  //         method: 'GET',
+  //         headers: { Authorization: `Bearer ${token}` },
+  //       }
+  //     )
+  //     const data = await response.json()
+  //     console.log("data['data']", data)
+  //     if (!data['data']) return 'no login'
+  //     const { nickname, ava_url, email } = data['data']
+  //     setuser({ nickname, ava_url, email })
+  //     console.log('user', nickname, ava_url)
+  //   }
+  //   getSideInfo()
+  // }, [user])
   // return <></> in login, register, ......
   if (
     pathname.includes('login') ||
@@ -61,9 +57,7 @@ export default function SideBar() {
           >
             <div className="avartar overflow-hidden">
               <Image
-                src={
-                  'http://localhost:3005/images/member/' + sidebarInfo.ava_url
-                }
+                src={'http://localhost:3005/images/member/' + user.ava_url}
                 alt="Picture of the member"
                 width={100}
                 height={100}
@@ -71,8 +65,8 @@ export default function SideBar() {
             </div>
           </button>
           <UploadAva openAvatar={openAvatar} setOpenAvatar={setOpenAvatar} />
-          <h4 className="user-title">{sidebarInfo?.nickname || 'Rookie'}</h4>
-          <p>{sidebarInfo?.email || 'illegal@nomail.com'}</p>
+          <h4 className="user-title">{user?.nickname || 'Rookie'}</h4>
+          <p>{user?.email || 'illegal@nomail.com'}</p>
           <Link
             onClick={() => {
               logout()

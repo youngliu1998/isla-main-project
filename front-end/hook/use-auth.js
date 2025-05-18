@@ -12,6 +12,7 @@ export function AuthProvider({ children }) {
     name: '',
     nickname: '',
     email: '',
+    ava_url: '',
     points: '',
     level: '',
     tel: '',
@@ -20,47 +21,57 @@ export function AuthProvider({ children }) {
   }
   const [user, setUser] = useState(defaultUser)
   let isAuth = Boolean(user?.id)
-
-  // login function
-  const login = async (email, passowrd) => {
-    // fetch login auth api
+  // 取得使用者資料(驗證後才可使用)
+  const initAuth = async () => {
+    const token = localStorage.getItem('jwtToken')
+    if (!token) return console.log('not get token')
+    // get user's data from db
     try {
-      const response = await fetch('http://localhost:3005/api/member/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email, password: passowrd }),
-      })
-
-      const data = await response.json()
-      console.log('response', data)
-      if (response.ok) {
-        // localStorage.setItem('jwtToken', data.token)
-        console.log('登入成功')
-      } else {
-        console.error('登入失敗', data.message)
-      }
-      console.log(data['data']['token'])
-      localStorage.setItem('jwtToken', data['data']['token'])
-      // setuser({ id: 3, name: 'harry', email: account })
-    } catch (err) {
-      console.log(err)
-    }
-    // if get Auth, setUser
-    try {
-      const token = localStorage.getItem('jwtToken')
-
       const response = await fetch('http://localhost:3005/api/member/login', {
         method: 'GET',
         headers: { Authorization: `Bearer ${token}` },
       })
 
       const data = await response.json()
-      const userData = data['data']
-      setUser(userData)
+      if (response.ok && data?.data) {
+        console.log('useAuth: ', data.data)
+        setUser(data.data)
+      } else {
+        console.warn('驗證失敗，清除 token')
+        localStorage.removeItem('jwtToken')
+      }
     } catch (err) {
       console.error('驗證錯誤:', err)
       localStorage.removeItem('jwtToken')
     }
+  }
+  // login function
+  const login = async (email, passowrd) => {
+    // fetch login auth api (post)
+    try {
+      const response = await fetch('http://localhost:3005/api/member/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, password: passowrd }),
+      })
+      const data = await response.json()
+
+      if (response.ok) {
+        if (!data['data']['token']) {
+          return console.log('沒有取得token，登入失敗')
+        }
+        // set token to localStorage
+        localStorage.setItem('jwtToken', data['data']['token'])
+        console.log('check token: ', data['data']['token'])
+        console.log('後端回應成功')
+      } else {
+        console.error('登入失敗', data.message)
+      }
+    } catch (err) {
+      console.log(err)
+    }
+    // 取得使用者資料
+    initAuth()
   }
 
   // logout function
@@ -70,29 +81,7 @@ export function AuthProvider({ children }) {
   }
   // 初始讀取 jwtToken 並取得使用者資料
   useEffect(() => {
-    const initAuth = async () => {
-      const token = localStorage.getItem('jwtToken')
-      if (!token) return
-      // fetch data from db
-      try {
-        const response = await fetch('http://localhost:3005/api/member/login', {
-          method: 'GET',
-          headers: { Authorization: `Bearer ${token}` },
-        })
-
-        const data = await response.json()
-        if (response.ok && data?.data) {
-          setUser(data.data)
-        } else {
-          console.warn('驗證失敗，清除 token')
-          localStorage.removeItem('jwtToken')
-        }
-      } catch (err) {
-        console.error('驗證錯誤:', err)
-        localStorage.removeItem('jwtToken')
-      }
-    }
-
+    // 取得使用者資料
     initAuth()
   }, [])
   return (

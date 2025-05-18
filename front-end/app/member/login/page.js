@@ -1,6 +1,7 @@
 'use client'
 // import { useAuth } from '@/hook/use-auth'
 import { useAuth } from '@/hook/use-auth'
+// import { signIn, signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
@@ -10,12 +11,13 @@ import '../_styles/login.css'
 
 export default function LoginPage() {
   const router = useRouter()
-  // const navigater = useNavigate()
+
   const [memAuth, setMemAuth] = useState({
     email: 'johnwilliams@test.com',
     password: '12345',
   })
   const { user, isAuth, login } = useAuth() // Context
+
   useEffect(() => {
     // if get auth, go to profile
     if (isAuth) router.push('profile')
