@@ -13,8 +13,21 @@ export async function getFilteredProducts(filters) {
     maxRating,
     limit = 20,
     offset = 0,
+    sortOrder,
+    sortBy,
   } = filters
 
+  const allowedSortMap = {
+    final_price: 'final_price',
+    average_rating: 'review_summary.avg_rating',
+    created_at: 'products.created_at',
+  }
+  let sortValue = allowedSortMap[filters.sortBy] || 'products.product_id'
+  // console.log('sortBy:', sortBy)
+  console.log('sortValue:', sortValue)
+  console.log('sortOrder:', sortOrder)
+  const onSaleFlag = Boolean(onSaleOnly)
+  console.log('onSaleFlag:', onSaleFlag)
   const conditions = []
   const params = []
 
@@ -121,14 +134,28 @@ export async function getFilteredProducts(filters) {
     `)
     params.push(maxPrice)
   }
-  if (minRating !== undefined && minRating !== null) {
-    conditions.push(`review_summary.avg_rating >= ?`)
+  if (
+    minRating !== undefined &&
+    minRating !== null &&
+    maxRating !== undefined &&
+    maxRating !== null
+  ) {
+    conditions.push(
+      `(review_summary.avg_rating IS NOT NULL AND review_summary.avg_rating >= ? AND review_summary.avg_rating <= ?)`
+    )
+    params.push(minRating, maxRating)
+  } else if (minRating !== undefined && minRating !== null) {
+    conditions.push(
+      `(review_summary.avg_rating IS NOT NULL AND review_summary.avg_rating >= ?)`
+    )
     params.push(minRating)
-  }
-  if (maxRating !== undefined && maxRating !== null) {
-    conditions.push(`review_summary.avg_rating <= ?`)
+  } else if (maxRating !== undefined && maxRating !== null) {
+    conditions.push(
+      `(review_summary.avg_rating IS NOT NULL AND review_summary.avg_rating <= ?)`
+    )
     params.push(maxRating)
   }
+
   // 關鍵字搜尋
   if (keyword) {
     const loweredKeyword = `%${keyword.toLowerCase()}%`
@@ -149,7 +176,8 @@ export async function getFilteredProducts(filters) {
     params.push(loweredKeyword, loweredKeyword, loweredKeyword, loweredKeyword)
   }
 
-  if (onSaleOnly) {
+  //只顯示特價開關，判斷特價欄位及日期
+  if (onSaleFlag) {
     conditions.push(`
     products.sale_price IS NOT NULL
     AND NOW() >= products.sale_start_date
@@ -165,7 +193,7 @@ export async function getFilteredProducts(filters) {
   // GROUP BY, ORDER BY, LIMIT 和 OFFSET
   sql += `
     GROUP BY products.product_id
-    ORDER BY products.product_id
+    ORDER BY ${sortValue} ${sortOrder === 'desc' ? 'DESC' : 'ASC'}
     LIMIT ${limit} OFFSET ${offset};
   `
 
@@ -185,6 +213,7 @@ export async function getFilteredProducts(filters) {
       return rows
     } catch (queryError) {
       console.error('Error:', queryError)
+      throw queryError
     }
   } catch (error) {
     console.error('SQL Run Time Error:', error)
