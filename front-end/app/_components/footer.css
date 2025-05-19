@@ -20,6 +20,7 @@ footer {
   padding-inline: 12px;
 }
 .footer-side {
+  min-height: 230px;
   background: #f2e7e7;
 }
 .footer-body {
@@ -78,14 +79,18 @@ footer {
   justify-content: space-between;
 }
 .footer-body .source-media-block {
-  height: 14rem;
+  max-height: 30rem;
   display: flex;
   padding: 1rem;
   flex-direction: column;
   justify-content: space-between;
+  gap: 1.5rem;
   border-radius: 15px;
-  border: 3px solid rgba(255, 255, 255, 0.1);
-  background: var(--footer-source-bg);
+  @media (min-width: 992px) {
+    aspect-ratio: 672 / 212;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    background: var(--footer-source-bg);
+  }
 }
 .footer-body .source-media-block h3 {
   font-size: 1.5rem;
