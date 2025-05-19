@@ -6,7 +6,8 @@ const secretKey = process.env.JWT_SECRET_KEY
 
 // get: Send data if Auth is ok
 router.post('/', async (req, res) => {
-  let error
+  let error = ''
+  let message = '' // too much steps, need to check all steps are down
   const { token } = req.body
 
   try {
@@ -23,15 +24,50 @@ router.post('/', async (req, res) => {
     // 整合原有ISLA的登入系統
     try {
       const query = `SELECT id,email, password FROM users WHERE email=?`
-      const user = await db
+      let user = await db
         .execute(query, [userData['email']])
         .then((data) => data[0][0])
         .catch((err) => {
           error = err
         })
-      // if there is no user
-      if (!user) return res.json({ status: 'error', message: '查無此會員' })
-      // if user exist, build token from user
+      // ----- START of create -----
+      // if user doesn't exist, create an account
+      if (!user) {
+        try {
+          const query = `INSERT INTO users (email) VALUES (?)`
+          await db
+            .execute(query, [userData['email']])
+            .then((data) => data[0][0])
+            .catch((err) => {
+              error = err
+            })
+          // if create fail, return ...
+          if (error) {
+            return res.json({
+              status: 'error',
+              message: `新增會員失敗: ${error}`,
+            })
+          }
+          message += '--新增成功--,'
+          // search user's email, id to create token
+          try {
+            const query = `SELECT id,email, password FROM users WHERE email=?`
+            user = await db
+              .execute(query, [userData['email']])
+              .then((data) => data[0][0])
+              .catch((err) => {
+                error = err
+              })
+            message += '--搜尋成功--,'
+          } catch (err) {
+            return res.json({ status: 'error', message: err })
+          }
+        } catch (err) {
+          return res.json({ status: 'error', message: err })
+        }
+      }
+      // ----- END of create -----
+      // build token from user
       const islaToken = jwt.sign(
         {
           id: user.id,
@@ -40,14 +76,18 @@ router.post('/', async (req, res) => {
         secretKey,
         { expiresIn: '30d' }
       )
-      console.log('user', user)
-      console.log('token', islaToken)
+      message += '--token創建成功--'
 
       // send user data to client
       res.json({
         status: 'success',
-        data: { token: islaToken, id: user.id, name: user.name },
-        message: '登入成功',
+        data: {
+          token: islaToken,
+          tokenGoogle: token,
+          id: user.id,
+          name: user.name,
+        },
+        message,
       })
     } catch (err) {
       res.json({ status: 'error', message: error, flag: 'sys err' })

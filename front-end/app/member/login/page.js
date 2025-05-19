@@ -37,7 +37,9 @@ export default function LoginPage() {
     }
     // set token to localStorage
     localStorage.setItem('jwtToken', data['data']['token'])
+    localStorage.setItem('googleToken', data['data']['tokenGoogle'])
     console.log('check token: ', data['data']['token'])
+    console.log('check google: ', data['data']['tokenGoogle'])
     console.log('後端回應成功')
     console.log(response)
   }

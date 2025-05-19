@@ -12,6 +12,7 @@ export function AuthProvider({ children }) {
     name: '',
     nickname: '',
     email: '',
+    birthday: '',
     ava_url: '',
     points: '',
     level: '',
@@ -39,10 +40,12 @@ export function AuthProvider({ children }) {
       } else {
         console.warn('驗證失敗，清除 token')
         localStorage.removeItem('jwtToken')
+        localStorage.removeItem('googleToken')
       }
     } catch (err) {
       console.error('驗證錯誤:', err)
       localStorage.removeItem('jwtToken')
+      localStorage.removeItem('googleToken')
     }
   }
   // login function
@@ -77,6 +80,7 @@ export function AuthProvider({ children }) {
   // logout function
   const logout = () => {
     localStorage.removeItem('jwtToken')
+    localStorage.removeItem('googleToken')
     setUser(defaultUser)
   }
   // 初始讀取 jwtToken 並取得使用者資料
@@ -86,7 +90,7 @@ export function AuthProvider({ children }) {
   }, [])
   return (
     <>
-      <AuthContext.Provider value={{ user, isAuth, login, logout }}>
+      <AuthContext.Provider value={{ user, isAuth, login, logout, initAuth }}>
         {children}
       </AuthContext.Provider>
     </>
