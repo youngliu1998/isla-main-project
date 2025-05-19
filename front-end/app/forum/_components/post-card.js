@@ -22,7 +22,7 @@ export default function ComponentsPostCard({
   btnSavedActive = Boolean,
   btnLikedCount = '',
   btnSavedCount = '',
-  userID = '',
+  // userID = '',
   mutate = () => {},
 }) {
   const router = useRouter()
@@ -60,17 +60,21 @@ export default function ComponentsPostCard({
 
   // 整理卡片顯示
   const contentText = postContent
-    .replace('<br>', '')
-    .replace(/<div><br><\/div>/, '')
-    .replace('<div><\/div>', '')
+    // .replace('<br>', '')
     .replace(/<img\b[^>]*>/g, '')
+    .replace(/<br>/g, '')
+  // .replace(/<div>[<br>]*<\/div>/, '')
+  // .replace('<div></div>', '')
   const contentImg = postContent.match(/<img\b[^>]*>/g) || []
+  const contentImgSm = contentImg.map((v) =>
+    v.replace('w-50', 'w-100 h-100 object-fit-cover rounded-3')
+  )
 
   return (
     <>
       {/* FIXME cursor pointer */}
       <div
-        className="post-home d-flex flex-column gap-1 px-4 py-3 rounded-3 shadow-forum bg-pure-white card-border"
+        className="post-home d-flex flex-column gap-1 py-3 rounded-3 shadow-forum bg-pure-white card-border"
         key={postID}
         onClick={(e) => {
           e.preventDefault()
@@ -84,7 +88,7 @@ export default function ComponentsPostCard({
         tabIndex={0} //可被tab鍵聚焦
         style={{ cursor: 'pointer' }}
       >
-        <div className="d-flex align-items-center">
+        <div className="d-flex align-items-center px-4">
           <ComponentsAuthorInfo
             authorID={authorID}
             width={width}
@@ -98,7 +102,7 @@ export default function ComponentsPostCard({
             {dateFormat}
           </div>
         </div>
-        <div className="post-header d-flex">
+        <div className="post-header d-flex px-4">
           <div className="post-tag px-2 py-1 me-2 rounded-pill fs12 text-nowrap bg-light-hover main-color">
             {postCateName}
           </div>
@@ -107,27 +111,27 @@ export default function ComponentsPostCard({
           </div>
         </div>
         <div
-          className="post-content text-truncate fs14 sub-text-color"
+          className="post-content text-truncate fs14 sub-text-color px-4"
           dangerouslySetInnerHTML={{
             __html: contentText.replace('<br/>', ' ').slice(0, 80),
           }}
         />
-        <div className="imgs d-flex gap-3 overflow-auto">
-          {/* {contentImg.map((v, i) => (
+        <div className="imgs d-flex gap-3 overflow-auto ps-4">
+          {contentImgSm.map((v, i) => (
             <div
               key={i}
               className="img flex-shrink-0 rounded-3"
               dangerouslySetInnerHTML={{ __html: v }}
             />
-          ))} */}
+          ))}
         </div>
-        <div className="evaluates d-flex fs14 ms-n4">
+        <div className="evaluates d-flex fs14 ms-n4 px-4">
           <ComponentsBtnLikedSaved
             type={'liked'}
             active={btnLikedActive}
             count={btnLikedCount}
             postID={postID}
-            userID={userID}
+            // userID={userID}
             mutate={mutate}
           />
           <button className="evaluate comment px-2 py-1 border-0 rounded-3 d-flex align-items-center bg-pure-white">
@@ -138,7 +142,7 @@ export default function ComponentsPostCard({
             active={btnSavedActive}
             count={btnSavedCount}
             postID={postID}
-            userID={userID}
+            // userID={userID}
             mutate={mutate}
           />
         </div>

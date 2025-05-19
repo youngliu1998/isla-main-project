@@ -3,32 +3,24 @@
 import ComponentsSearchBar from './_components/search-bar'
 import useSWR from 'swr'
 import { useState } from 'react'
-import EditPostModal from './_components/edit-post-modal'
+// import EditPostModal from './_components/edit-post-modal'
 import { useRouter, useSearchParams } from 'next/navigation'
 import ComponentsPostCard from './_components/post-card'
 import Componentstab from '../_components/tab'
 import ComponentsSearchButton from './_components/search-button'
+import { useAuth } from '../../hook/use-auth'
+import { useFilter } from './_context/filterContext'
+import EditPostModal from './_components/edit-post-modal'
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
 
 export default function ForumPage() {
   const router = useRouter()
-  // 取得userID
-  const userID = 6
+  const { user } = useAuth()
+  const userID = user.id
   const [tabParams, setTabParams] = useState(new URLSearchParams())
   const [asideParams, setAsideParams] = useState(new URLSearchParams())
-
-  // 分類篩選
-  const postCateItems = ['分享', '請益', '討論', '試色']
-  const productCateItems = [
-    '臉頰底妝',
-    '眼部彩妝',
-    '唇部彩妝',
-    '臉頰彩妝',
-    '眉部彩妝',
-    '睫毛彩妝',
-    '臉部保養',
-  ]
+  const { productCateItems, postCateItems } = useFilter()
 
   const handleTabChange = (newTab) => {
     const params = new URLSearchParams()
@@ -59,6 +51,7 @@ export default function ForumPage() {
       ...params.entries(),
     ])
     // console.log(`----http://localhost:3000/forum?${mergedParams.toString()}`)
+    mutate()
     router.push(`http://localhost:3000/forum?${mergedParams.toString()}`)
   }
 
@@ -76,7 +69,7 @@ export default function ForumPage() {
           <div className="posts d-flex flex-column gap-3 w-100">
             <div className="tabs d-flex">
               <Componentstab
-                items={['熱門', '最新']}
+                items={['熱門', '最新', '測試']}
                 height={'40'}
                 // setTab={setTab}
                 mutate={mutate}
@@ -164,16 +157,12 @@ export default function ForumPage() {
           </div>
         </main>
         <ComponentsSearchBar
-          // setKeyword={setKeyword}
-          // setTab={setTab}
-          // setProductCate={setProductCate}
-          // setPostCate={setPostCate}
           postCateItems={postCateItems}
           productCateItems={productCateItems}
           handleAsideSearchChange={handleAsideSearchChange}
         />
         <EditPostModal />
-        <ComponentsSearchBar />
+        {/* <ComponentsSearchBar /> */}
       </>
     )
   }
@@ -181,17 +170,16 @@ export default function ForumPage() {
   return (
     <>
       <main className="main posts-section col col-10 col-xl-8 d-flex flex-column align-items-center position-relative overflow-hidden no-scroll-bar">
-        <div className="tabs d-flex position-absolute w-100">
+        <div className="tabs d-flex position-absolute w-100 top-0">
           <Componentstab
-            items={['熱門', '最新']}
+            cates={['熱門', '最新']}
             height={'40'}
             // setTab={setTab}
-            mutate={mutate}
             handleTabChange={handleTabChange}
           />
           <ComponentsSearchButton />
         </div>
-        <div className="posts d-flex flex-column gap-3 pt-5 w-100 overflow-auto">
+        <div className="posts d-flex flex-column gap-3 pt-5 pb-5 mt-1 w-100 overflow-auto">
           {posts?.map((post) => {
             return (
               <ComponentsPostCard
@@ -228,7 +216,7 @@ export default function ForumPage() {
         productCateItems={productCateItems}
         handleAsideSearchChange={handleAsideSearchChange}
       />
-      <EditPostModal />
+      <EditPostModal postTitle="" postContent="" isUpdated={false} />
     </>
   )
 }

@@ -1,8 +1,8 @@
 'use client'
 
 import './post.css'
-import { useParams } from 'next/navigation'
-import React, { useState, useEffect } from 'react'
+import { useParams, useRouter } from 'next/navigation'
+import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import ComponentsAd from '../_components/ad'
@@ -13,23 +13,17 @@ import ComponentsBtnLikedSaved from '../_components/btn-liked-saved'
 import ComponentsMorePost from './more-post'
 import ComponentsAuthorInfo from '../_components/author-info'
 import { useAuth } from '../../../hook/use-auth'
-
-const fetcherReferer = (url) =>
-  fetch(url, {
-    method: 'GET',
-    referrerPolicy: 'no-referrer-when-downgrade',
-  }).then((res) => res.json())
+import DeleteConfirmModal from './deleteConfirmModal'
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
 
 export default function PostIDPage(props) {
+  const router = useRouter()
   const { user, isAuth } = useAuth() //NOTE
   const userID = user.id
   const userNick = user.nickname
   const postID = useParams().postID
-  console.log(postID)
 
-  // const postAPI = `http://localhost:3005/api/forum/post/${postID}`
   const postAPI = `http://localhost:3005/api/forum/posts/post-detail?postID=${postID}`
   const { data, isLoading, error, mutate } = useSWR(postAPI, fetcher)
   let posts = data?.data?.posts
@@ -122,18 +116,55 @@ export default function PostIDPage(props) {
           <div className="post d-flex flex-column gap-2 rounded-top-4 shadow-forum bg-pure-white px-4 py-4 card-border">
             <div className="post-header d-flex  align-items-start">
               <div className="post-title flex-grow-1 me-3 fs24 fw-medium">
-                {post.title}
-                <span className="post-tag d-inline align-middle px-2 py-1 ms-2 my-auto rounded-pill fs12 text-nowrap bg-light-hover main-color">
+                <span className="post-tag d-inline align-middle px-2 py-1 me-2 my-auto rounded-pill fs12 text-nowrap bg-light-hover main-color">
                   {post.cate_name}
                 </span>
+                {post.title}
               </div>
-              <button
-                className={`post-update button-clear main-text-color ${post.user_id === userID ? 'd-block' : 'd-none'}`}
-                data-bs-toggle="modal"
-                data-bs-target="#editPostModal"
-              >
-                <i className="bi bi-pencil fs24" />
-              </button>
+              <div className="btn-group">
+                <button
+                  className={`post-update button-clear main-text-color ${post.user_id === userID ? 'd-block' : 'd-none'}`}
+                  type="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <i className="bi bi-pencil fs24" />
+                </button>
+                <div
+                  className="dropdown-menu dropdown-menu-end dropdown-menu-small"
+                  style={{ width: '100px' }}
+                >
+                  <div className="dropdown-forum d-flex flex-column border-0 main-text-color">
+                    <button
+                      className="dropdown-item-forum px-0 py-2 button-clear"
+                      type="button"
+                      data-bs-toggle="modal"
+                      data-bs-target="#editPostModal"
+                    >
+                      編輯文章
+                    </button>
+                    <button
+                      className="dropdown-item-forum px-0 py-2 button-clear color-accent"
+                      type="button"
+                      // data-bs-toggle="modal"
+                      // data-bs-target="#confirmModal"
+                      onClick={async () => {
+                        const res = await fetch(
+                          `http://localhost:3005/api/forum/posts/soft-delete/${post.id}`,
+                          {
+                            method: 'PUT',
+                          }
+                        )
+                        if (!res.ok) throw new Error('未成功連線')
+                        // 已刪除提示 FIXME
+                        router.push('/forum')
+                      }}
+                    >
+                      刪除文章
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
             <div>
               <div className="author-info d-inline-flex align-items-center gap-2 mb-2">
@@ -353,7 +384,16 @@ export default function PostIDPage(props) {
           </div>
         </div>
       </main>
-      <EditPostModal />
+      <EditPostModal
+        postID={post.id}
+        productCate={post.product_cate_id}
+        postCate={post.cate_id}
+        postTitle={post.title}
+        postContent={post.content}
+        isUpdated={true}
+        mutate={mutate}
+      />
+      {/* <DeleteConfirmModal modalId={'#confirmModal'} /> FIXME */}
     </>
   )
 }

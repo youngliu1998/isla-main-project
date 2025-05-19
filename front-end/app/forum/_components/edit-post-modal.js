@@ -3,34 +3,38 @@
 import React, { useState, useEffect, useRef } from 'react'
 import ComponentsAuthorInfo from './author-info'
 import { useAuth } from '../../../hook/use-auth'
+import { useFilter } from '../_context/filterContext'
+import { mutate } from 'swr'
+import { useRouter } from 'next/navigation'
+// import '/bootstrap/dist/js/bootstrap.bundle.min.js' 無法直接引入
 
-export default function EditPostModal(props) {
+export default function EditPostModal({
+  postID = '',
+  productCate = '',
+  postCate = '',
+  postTitle = '',
+  postContent = '',
+  isUpdated = false,
+  mutate = () => {},
+}) {
   const modalRef = useRef()
+  const router = useRouter()
   const { user, isAuth } = useAuth() //NOTE
   const userID = user.id
   const userNick = user.nickname
-  // console.log(user, isAuth)
-  const [imagesList, setImagesList] = useState([])
+  // const [imagesList, setImagesList] = useState([])
+  const { productCateItems, postCateItems } = useFilter()
   useEffect(() => {
-    import('bootstrap/dist/js/bootstrap.bundle.min.js').then((bootstrap) => {
-      document
-        .querySelectorAll('[data-bs-toggle="tooltip"]')
-        .forEach((el) => new bootstrap.Tooltip(el))
-
-      const modalEl = modalRef.current
-      if (modalEl) {
-        const modal = new bootstrap.Modal(modalEl, {
-          backdrop: true,
-          keyboard: true,
-        })
-        // modal.show()
-      }
-    })
-  }, [])
-  //
+    titleRef.current.innerText = postTitle
+    contentRef.current.innerHTML = postContent
+    setTitleValid(true)
+    setContentValid(true)
+  }, [postTitle, postContent])
   // 新增貼文
   //FIXME 等待體驗 const [isLoading, setLoading] = useState()
   // FIXME 為輸入的警告提示體驗
+  const productCateRef = useRef()
+  const postCateRef = useRef()
   const titleRef = useRef()
   const contentRef = useRef()
 
@@ -106,25 +110,29 @@ export default function EditPostModal(props) {
     // }
     // 新增圖片
     const img = document.createElement('img')
-    img.setAttribute('class', 'd-block')
+    const br = document.createElement('br')
+    img.setAttribute('class', 'd-block w-50')
     // const br = document.createElement('br')
     // img.src = objectUrl
     img.src = filename
-    img.style.maxWidth = '60%'
     img.onload = () => {
       URL.revokeObjectURL(filename)
     }
     range.insertNode(img)
     range.setStartAfter(img)
+    range.insertNode(br)
     // range.insertNode(br)
     range.collapse(false)
     select.removeAllRanges()
     select.addRange(range)
     // img src: blob:...3000/970f494f-bc90-4bd7-8919-93a2af43af7f
   }
-
+  // 提交表單
   const handleSubmit = async (e) => {
     e.preventDefault()
+    const productCate = productCateRef.current.value
+    const postCate = postCateRef.current.value
+    console.log({ productCate, postCate })
     const title = titleRef.current.innerHTML.trim() //QU WHY trim
     const content = contentRef.current.innerHTML.trim()
     if (title === '' || title === '<br>') {
@@ -138,27 +146,56 @@ export default function EditPostModal(props) {
     }
 
     const fd = new FormData()
+    fd.append('postID', postID)
+    fd.append('productCate', productCate)
+    fd.append('postCate', postCate)
     fd.append('title', title) //fd長怎樣QU
     fd.append('content', content)
     fd.append('userID', userID)
-    console.log({ title, content, userID })
-    // imagesList.forEach((image) => fd.append('images', image))
-    // console.log('fd-----', imagesList)
-    fetch('http://localhost:3005/api/forum/posts', {
-      method: 'POST',
-      body: fd,
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error(`錯誤：${res.status}`)
-        return res.json()
+
+    // 建立還是更新
+    if (isUpdated) {
+      fetch('http://localhost:3005/api/forum/posts', {
+        method: 'PUT',
+        body: fd,
       })
-      .then((data) => {
-        console.log(data)
+        .then((res) => {
+          if (!res.ok) throw new Error(`錯誤: ${res.status}`)
+          mutate()
+          return res.json()
+        })
+        .then((data) => {
+          console.log(data)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    } else {
+      fetch('http://localhost:3005/api/forum/posts', {
+        method: 'POST',
+        body: fd,
       })
-      .catch((err) => {
-        console.log(err)
-        // FIXME 畫面顯示上傳錯誤提示
-      })
+        .then((res) => {
+          if (!res.ok) throw new Error(`錯誤：${res.status}`)
+          return res.json()
+        })
+        .then((data) => {
+          console.log(data)
+        })
+        .catch((err) => {
+          console.log(err)
+          // FIXME 畫面顯示上傳錯誤提示
+        })
+    }
+
+    // modalRef.current.classList.remove('show')
+    // const m = Modal.getOrCreateInstance(
+    //   document.querySelector('#editPostModal')
+    // )
+    // m.hide()
+    // console.log(m)
+    router.push('/forum?tab=2')
+    // mutate()
   }
   // 字數
   const [titleLength, setTitleLength] = useState(0)
@@ -193,7 +230,7 @@ export default function EditPostModal(props) {
                   aria-label="Close"
                 />
               </div>
-              <div className="modal-author px-4 pt-2">
+              <div className="modal-info px-4 pt-2 d-flex gap-3">
                 <ComponentsAuthorInfo
                   authorID={userID}
                   width="40"
@@ -203,6 +240,39 @@ export default function EditPostModal(props) {
                   color="var(--main-text-color)"
                   authorName={userNick}
                 />
+                <div className="selects d-flex w-auto gap-2 py-2">
+                  <select
+                    ref={productCateRef}
+                    className="form-select form-select-sm w-auto rounded-pill"
+                    aria-label="Small select example"
+                    defaultValue={isUpdated ? productCate : ''}
+                  >
+                    {/* FIXME 產品類型不可點選、警告 */}
+                    <option disabled>產品類型</option>
+                    {productCateItems.map((v, i) => {
+                      return (
+                        <option key={i} value={i + 1}>
+                          {v}
+                        </option>
+                      )
+                    })}
+                  </select>
+                  <select
+                    ref={postCateRef}
+                    className="form-select form-select-sm w-auto rounded-pill"
+                    aria-label="Small select example"
+                    defaultValue={isUpdated ? postCate : ''}
+                  >
+                    <option disabled>文章類型</option>
+                    {postCateItems.map((v, i) => {
+                      return (
+                        <option key={i} value={i + 1}>
+                          {v}
+                        </option>
+                      )
+                    })}
+                  </select>
+                </div>
               </div>
               <div className="modal-body w-100">
                 <div className="d-flex align-items-center px-4 py-2">
@@ -223,10 +293,12 @@ export default function EditPostModal(props) {
                     }}
                     onPaste={(e) => {
                       e.preventDefault()
-                      const text = e.clipboardData.getData('text/plain')
+                      const text = e.clipboardData.getData('text/plain') //防止複製貼上鬼東西
                       document.execCommand('insertText', false, text)
                     }}
-                  ></div>
+                  >
+                    {/* {isUpdated && postTitle} */}
+                  </div>
                 </div>
                 <div
                   className={`fs14 sub-text-color px-4 ${!isTitleValid && hasTitleTouched ? 'titleError' : ''} `}
@@ -255,7 +327,9 @@ export default function EditPostModal(props) {
                     const text = e.clipboardData.getData('text/plain')
                     document.execCommand('insertText', false, text)
                   }}
-                ></div>
+                >
+                  {/* {isUpdated && '123'} */}
+                </div>
               </div>
               <div className="modal-footer px-4 py-2">
                 {/* NOTE */}
@@ -287,6 +361,7 @@ export default function EditPostModal(props) {
                 </button>
                 <button
                   type="button-bounce"
+                  data-bs-dismiss="modal"
                   className={`px-4 py-2 rounded-3 border-0 bounce ${isTitleValid && isContentValid ? 'bg-main color-isla-white' : 'bg-hover-gray sub-text-color border-0'}`}
                   onClick={() => {
                     setHasTitleTouched(false)
