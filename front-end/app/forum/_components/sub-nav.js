@@ -4,7 +4,7 @@ import './forum.css'
 import Link from 'next/link'
 import { useParams, usePathname } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
-import EditPostModal from './edit-post-modal'
+// import EditPostModal from './edit-post-modal'
 import ComponentsAuthorInfo from './author-info'
 
 export default function ComponentsSubNav() {
