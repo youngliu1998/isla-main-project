@@ -1,6 +1,6 @@
 .sidebar-filter-filter {
   /*padding: 20px;*/
-  background-color: #ffffff;
+  /* background-color: #ffffff; */
   width: 325px;
   /*height: 100vh;*/
 }
@@ -30,8 +30,8 @@
   background: none;
 }
 .sidebar-filter-order-box {
-  margin: 10px 0 20px 0;
-  padding: 0 12px;
+  margin: 16px 0 6px 0;
+  padding: 0 8px;
   gap: 5px;
   display: flex;
   flex-direction: column;
@@ -46,9 +46,7 @@
   text-decoration: none;
   color: #8f8f8f;
 }
-.sidebar-filter-order-menu .sidebar-filter-order-btn-active {
-  color: #000000;
-}
+
 
 .sidebar-filter-order-label {
   font-size: 14px;
@@ -61,23 +59,58 @@
   justify-content: center;
   align-items: center;
   gap: 3px;
-  color: #000000;
+  color: #494949;
+  font-size: 16px;
+  transition: font-size 0.5s, font-weight 0.5s, color 0.5s;
 }
+.sidebar-filter-order-btn:hover {
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.sidebar-filter-order-menu .sidebar-filter-order-btn-active {
+  color: #ea7979;
+  font-weight: 700;
+}
+
+
 .sidebar-filter-order-order {
   width: 26px;
   height: 26px;
   background: linear-gradient(180deg, #fd7061 0%, #fa8e83 100%);
   aspect-ratio: 1/1;
   border-radius: 50px;
+  border: none;
 }
-.sidebar-filter-order-order i {
-  font-size: 14px;
+.sidebar-filter-order-order .OrderArrow {
+  font-size: 18px;
   color: #fff;
+  padding: 0 3px 3px 0;
 }
+
+.arrow-icon-flip-animate {
+  display: inline-block;
+  transition: transform 0.1s;
+}
+
+.arrow-icon-flip-animate.flipping {
+  animation: spin-briefly 0.6s;
+}
+
+@keyframes spin-briefly {
+  from {
+    transform: rotate(180deg);
+  }
+  to {
+    transform: rotate(0deg);
+  }
+}
+
+
 .sidebar-filter-main-filter-box {
   display: flex;
   flex-direction: column;
-  margin: 32px 24px 32px 24px;
+  margin: 18px 24px 32px 24px;
   gap: 16px;
 }
 .sidebar-filter-main-filter-box a {
@@ -153,6 +186,8 @@
 .sidebar-filter-search-input {
 }
 .sidebar-filter-link-box {
+  display: flex;
+  justify-content: center;
 }
 .sidebar-filter-filter-menu {
   /* background: #000; */
@@ -161,4 +196,26 @@
   gap: 18px;
 }
 .sidebar-filter-filter-btn-container {
+}
+
+.sale-only-switch-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  /* background: #e3dedd; */
+  border-radius: 18px;
+  padding: 6px 10px 8px 10px;
+  border: #f0e1de 1px solid;
+
+  .sidebar-filter-filter-label {
+    color: #e47e71;
+    /* background: #000; */
+    padding: 4px 0;
+    font-size: 16px;
+    font-weight: 200;
+  }
+
+  .form-check-input-sale-only {
+  }
 }

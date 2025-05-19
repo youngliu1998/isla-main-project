@@ -1,0 +1,33 @@
+.sidebarFilterBtnCheckBox {
+  display: flex;
+  height: 45px;
+  align-items: center;
+  gap: 10px;
+  margin-left: 6px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+  color: rgb(35, 35, 35);
+  padding-bottom: 30px;
+  width: 100%;
+}
+
+.sidebarFilterFilterBtn a {
+  text-decoration: none;
+  color: #858585;
+}
+
+.sidebarFilterFilterBtn .sidebarFilterInputLabel {
+  color: #858585;
+}
+
+.sidebarFilterFilterBtn input {
+  margin: 0 8px;
+}
+
+.sidebarFilterFilterBtn:hover {
+  color: #7d5c5c;
+}
+
+.sidebarFilterFilterBtnActive {
+  color: #fa8e83;
+}
