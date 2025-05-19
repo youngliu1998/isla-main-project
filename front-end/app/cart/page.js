@@ -1,6 +1,6 @@
 'use client'
-
 import styles from './_styles/cart-style.module.scss'
+//import component
 import StepProgress from './_component/step-progress/step-progress'
 import ProductCard from './_component/product-card/product-card'
 import CouponAccordion from './_component/coupon-accordion/coupon-accordion'
@@ -8,21 +8,64 @@ import CouponAccordionCourse from './_component/coupon-accordion/coupon-accordio
 import CouponSwiper from './_component/coupon-swiper/coupon-swiper'
 import OrderSummary from './_component/order-summary/order-summary'
 import MobileOrderBar from './_component/mobile-order-bar/mobile-order-bar'
-
+// coustom-hook
 import useIsMobile from './hook/useIsMobile'
-
+import { useAuth } from '@/hook/use-auth'
+// fetch data
+import cartApi from './utils/axios'
 import { useEffect, useState } from 'react'
 
-// import React, { useState, useEffect, Children } from 'react'
 export default function CartPage() {
+  const { user, isAuth } = useAuth()
+  const [cartItems, setCartItems] = useState([])
+
+  //init
+  useEffect(() => {
+    const cartItemsData = async () => {
+      try {
+        const res = await cartApi.get('/cart-items')
+        // console.log('後端資料抓到：', res.data)
+        const rawCartItems = res.data.data.cartItems
+
+        console.log('前端抓到的購物車資料：', rawCartItems)
+        const typedItems = rawCartItems.map((item) => {
+          let type = 'normal'
+
+          if (item.item_type === 'course' || item.item_type === 'experience') {
+            type = 'course'
+          } else if (item.color_options?.length > 1) {
+            type = 'colorDots'
+          }
+
+          return {
+            ...item,
+            type,
+          }
+        })
+
+        setCartItems(typedItems)
+        localStorage.setItem('cartItems', JSON.stringify(typedItems))
+      } catch (error) {
+        console.error('購物車資料抓取失敗:', error.message)
+      }
+    }
+    cartItemsData()
+  }, [isAuth])
+
+  // 判斷是否為手機裝置
   const isMobile = useIsMobile()
 
+  // 記錄元件是否 已Mounted完成
   const [hasMounted, setHasMounted] = useState(false)
   useEffect(() => {
     setHasMounted(true)
   }, [])
+  if (!hasMounted) return null // 預防報錯
 
-  if (!hasMounted) return null // 預防錯誤
+  const productItems = cartItems.filter(
+    (item) => item.type === 'normal' || item.type === 'colorDots'
+  )
+  const courseItems = cartItems.filter((item) => item.type === 'course')
 
   const couponDataProd = [
     {
@@ -70,6 +113,7 @@ export default function CartPage() {
       tag: '其他課程',
     },
   ]
+
   return (
     <>
       <section className="container text-center text-lg-start mt-2">
@@ -102,7 +146,7 @@ export default function CartPage() {
         </div>
 
         <div className="row gy-5">
-          <div className="col-lg-8 col-12">
+          <div className="col-lg-8 col-12 gy-5">
             <div className="card-style mb-4 p-4">
               <div className="form-check mb-3 ms-1">
                 <input
@@ -115,12 +159,27 @@ export default function CartPage() {
                   彩妝商品
                 </label>
               </div>
+              {productItems.map((item) => (
+                <ProductCard
+                  key={item.id}
+                  type={item.type}
+                  id={item.id}
+                  title={item.name}
+                  image={item.image_url}
+                  salePrice={item.sale_price ?? item.base_price}
+                  basePrice={item.base_price}
+                  quantity={item.quantity}
+                  color={item.color}
+                  colorOptions={item.color_options}
+                  category={item.category}
+                  onDelete={() => console.log('刪除', item.id)}
+                  onQuantityChange={(newQty) =>
+                    console.log('變更數量', item.id, newQty)
+                  }
+                />
+              ))}
 
-              {/* === Product Card group*/}
-              <ProductCard type="dropDown" />
-              <ProductCard type="colorDots" />
-
-              {/* === 加購商品卡片區塊 === */}
+              {/* add-on-divider */}
               <div
                 className="w-100 bg-subtext my-3"
                 style={{ height: '1px' }}
@@ -128,7 +187,6 @@ export default function CartPage() {
               <div className="text-elem">
                 <i className="bi bi-cart-check-fill me-2"></i>加購商品
               </div>
-              <ProductCard type="addon" />
             </div>
 
             <CouponAccordion>
@@ -149,7 +207,25 @@ export default function CartPage() {
                 </label>
               </div>
               {/* === Product Card Course === */}
-              <ProductCard type="course" />
+              {courseItems.map((item) => (
+                <ProductCard
+                  key={item.id}
+                  type={item.type}
+                  id={item.id}
+                  title={item.name}
+                  image={item.image_url}
+                  salePrice={item.sale_price ?? item.base_price}
+                  basePrice={item.base_price}
+                  quantity={item.quantity}
+                  color={item.color}
+                  colorOptions={item.color_options}
+                  category={item.category}
+                  onDelete={() => console.log('刪除', item.id)}
+                  onQuantityChange={(newQty) =>
+                    console.log('變更數量', item.id, newQty)
+                  }
+                />
+              ))}
             </div>
             <CouponAccordionCourse>
               {/* 載入課程優惠券元件 */}

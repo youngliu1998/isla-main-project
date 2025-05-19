@@ -45,7 +45,7 @@ export default function CouponCard({
   const isSoonExpired = state_id === 1 && validDay.diff(now, 'day') <= 3
 
   // 是否已領取
-  const isClaimed = get || state_id === 1
+  const isClaimed = get || state_id === 1 || state_id === 4
 
   const alreadyGet = async () => {
     if (get || loading) return
@@ -102,13 +102,17 @@ export default function CouponCard({
     area === 2 ? courseMap[course_categories_id] : brandMap[brand_id]
   const imageSrc = `/images/coupon/${imageKey}.png`
   const goUrl = area === 2 ? '/courses' : '/product'
+  const isUsed = state_id === 2
+  const isExpired = state_id === 3
 
   return (
     <div>
       <div
         className={`coupon mt-lg-4 mb-lg-3 d-flex flex-nowrap justify-content-between mx-auto position-relative ${
           isClaimed ? 'stamping' : ''
-        }`}
+        }
+           ${isUsed || isExpired ? 'used' : ''}
+          `}
       >
         {/* 圖片 */}
         <div className="d-flex align-items-center flex-shrink-1">
