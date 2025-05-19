@@ -220,3 +220,159 @@ export async function getFilteredProducts(filters) {
     throw error
   }
 }
+
+export async function getProductDetail(productId) {
+  const [productRows] = await db.query(
+    `
+    SELECT 
+    products.product_id, 
+    products.name, 
+    products.description, 
+    products.base_price, 
+    products.sale_price, 
+    products.status,
+    brands.brand_id, 
+    brands.name AS brand_name,
+    categories.category_id, 
+    categories.name AS category_name
+    FROM products
+    LEFT JOIN brands ON products.brand_id = brands.brand_id
+    LEFT JOIN categories ON products.category_id = categories.category_id
+    WHERE products.product_id = ?
+  `,
+    [productId]
+  )
+
+  if (productRows.length === 0) {
+    throw new Error('找不到商品')
+  }
+
+  const product = productRows[0]
+
+  // 顏色與庫存
+  const [colors] = await db.query(
+    `
+    SELECT product_color_stocks.color_id, product_color_stocks.stock_quantity,
+           colors.color_name, colors.color_code
+    FROM product_color_stocks
+    JOIN colors ON product_color_stocks.color_id = colors.color_id
+    WHERE product_color_stocks.product_id = ?
+  `,
+    [productId]
+  )
+
+  // 圖片
+  const [images] = await db.query(
+    `
+    SELECT image_id, image_url
+    FROM product_images
+    WHERE product_id = ?
+  `,
+    [productId]
+  )
+
+  // // 成分
+  // const [ingredients] = await db.query(
+  //   `
+  //   SELECT ingredients.ingredient_id, ingredients.name, ingredients.is_sensitive, ingredients.warning_message
+  //   FROM product_ingredients
+  //   JOIN ingredients ON product_ingredients.ingredient_id = ingredients.ingredient_id
+  //   WHERE product_ingredients.product_id = ?
+  // `,
+  //   [productId]
+  // )
+
+  // 平均評分
+  const [avgResult] = await db.query(
+    `
+    SELECT ROUND(AVG(rating), 1) AS average_rating
+    FROM product_reviews
+    WHERE product_id = ?
+  `,
+    [productId]
+  )
+
+  const average_rating = avgResult[0].average_rating || 0
+
+  // 組合回傳資料
+  return {
+    product_id: product.product_id,
+    name: product.name,
+    description: product.description,
+    price: product.price,
+    status: product.status,
+    brand: {
+      brand_id: product.brand_id,
+      name: product.brand_name,
+    },
+    category: {
+      category_id: product.category_id,
+      name: product.category_name,
+    },
+    colors,
+    images,
+    ingredients,
+    average_rating,
+  }
+}
+
+export async function getProductReviews(productId) {
+  // TODO: 需與user資料表JOIN，取得使用者名稱
+  const [reviews] = await db.query(
+    `SELECT review_id, user_id, rating, comment_text, is_anonymous, created_at, stock_id
+     FROM product_reviews
+     WHERE product_id = ? AND status = 'approved'
+     ORDER BY created_at DESC`,
+    [productId]
+  )
+
+  const reviewResults = await Promise.all(
+    reviews.map(async (review) => {
+      const { review_id, stock_id } = review
+      const [images] = await db.query(
+        `SELECT image_url FROM review_images WHERE review_id = ?`,
+        [review_id]
+      )
+
+      let color = null
+      if (stock_id) {
+        const [[stock]] = await db.query(
+          `SELECT color_id FROM product_color_stocks WHERE stock_id = ?`,
+          [stock_id]
+        )
+        if (stock?.color_id) {
+          const [[colorInfo]] = await db.query(
+            `SELECT color_id, color_name FROM colors WHERE color_id = ?`,
+            [stock.color_id]
+          )
+          if (colorInfo) {
+            color = colorInfo
+          }
+        }
+      }
+
+      return {
+        ...review,
+        images: images.map((img) => img.image_url),
+        color,
+      }
+    })
+  )
+
+  return reviewResults
+}
+
+export async function getProductIngredient(productId) {
+  // 成分
+  const [ingredients] = await db.query(
+    `
+    SELECT ingredients.ingredient_id, ingredients.name, ingredients.is_sensitive, ingredients.warning_message
+    FROM product_ingredients
+    JOIN ingredients ON product_ingredients.ingredient_id = ingredients.ingredient_id
+    WHERE product_ingredients.product_id = ?
+  `,
+    [productId]
+  )
+
+  return ingredients
+}
