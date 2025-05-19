@@ -10,7 +10,7 @@ import { cities } from './data/CityCountyData'
 
 export default function ProfilePage() {
   const router = useRouter()
-  const { isAuth } = useAuth()
+  const { isAuth, initAuth } = useAuth()
   const [text, setText] = useState({
     name: '',
     nickname: '',
@@ -59,15 +59,14 @@ export default function ProfilePage() {
       })
       const result = await response.json()
       alert('提交成功：' + JSON.stringify(result))
+      initAuth()
     } catch (error) {
       console.error('錯誤：', error)
     }
   }
 
   useEffect(() => {
-    const token = localStorage.getItem('jwtToken')
-      ? localStorage.getItem('jwtToken')
-      : null
+    const token = localStorage.getItem('jwtToken') || null
     if (!token) router.push('login')
     // if get auth, fetch profile data
     let profileData = {}

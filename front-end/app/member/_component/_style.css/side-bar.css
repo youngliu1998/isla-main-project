@@ -16,6 +16,9 @@
   a {
     color: var(--sub-text);
   }
+  a:hover {
+    color: var(--strong-color);
+  }
   @media (max-width: 992px) {
     background-color: transparent;
   }
@@ -84,9 +87,7 @@
 }
 .user-nav ul li:not(.title):hover {
   background: var(--sub-element);
-  a {
-    color: var(--white);
-  }
+  color: var(--white);
 }
 .user-nav ul .title {
   color: var(--sub-color);
@@ -96,5 +97,5 @@
 }
 /* RWD menu open */
 .open {
-  height: 480px;
+  height: 580px;
 }

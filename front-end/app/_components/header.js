@@ -1,11 +1,19 @@
 'use client'
 import Link from 'next/link'
+import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { BsHandbag } from 'react-icons/bs'
+import { useAuth } from '../../hook/use-auth'
+import HamMenu from './_component/ham-menu'
+import HamMeunNav from './_component/ham-meun-nav'
+import HeaderNav from './_component/header-nav'
 import './header.css'
 
 export default function Header() {
+  const [hamMenuOpen, setHamMenuOpen] = useState(false)
   const pathname = usePathname()
+  const { isAuth } = useAuth()
+  const loginUrl = isAuth ? 'profile' : 'login'
   if (
     pathname.includes('login') ||
     pathname.includes('register') ||
@@ -14,30 +22,20 @@ export default function Header() {
     return <></>
   return (
     <>
-      <header className="header-module">
-        <div className="header-body">
-          <div className="title">ISLA</div>
-          <nav className="d-lg-block d-none">
-            <ul>
-              <li>
-                <Link href="/product">所有產品</Link>
-              </li>
-              <li>
-                <Link href="">品牌總覽</Link>
-              </li>
-              <li>
-                <Link href="">優惠券專區</Link>
-              </li>
-              <li>
-                <Link href="/course">美妝教室</Link>
-              </li>
-              <li>
-                <Link href="/forum">美妝論壇</Link>
-              </li>
-            </ul>
-          </nav>
-          <div className="icons">
-            <button>
+      <header>
+        <div className="position-relative header-body">
+          {/* (START) for burger menu*/}
+          <HamMeunNav
+            hamMenuOpen={hamMenuOpen}
+            setHamMenuOpen={setHamMenuOpen}
+          />
+          <HamMenu hamMenuOpen={hamMenuOpen} setHamMenuOpen={setHamMenuOpen} />
+          {/* (END) for burger menu */}
+          <div className="order-lg-1 order-2 title">ISLA</div>
+          {/*  nav-bar */}
+          <HeaderNav />
+          <div className="order-3 icons">
+            <button className="d-lg-block d-none">
               <i className="bi bi-search" />
             </button>
             <Link href="/cart">
@@ -46,11 +44,11 @@ export default function Header() {
                 <div>2</div>
               </button>
             </Link>
-            <button>
-              <Link href="/member/login">
+            <Link href={'/member/' + loginUrl} className="d-lg-block d-none">
+              <button>
                 <i className="bi bi-person-circle" />
-              </Link>
-            </button>
+              </button>
+            </Link>
           </div>
         </div>
       </header>

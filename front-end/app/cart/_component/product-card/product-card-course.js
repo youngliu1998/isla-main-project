@@ -6,11 +6,13 @@ import styles from './Product-card.module.scss'
 import { useState } from 'react'
 
 export default function ProductCardCourse({
-  id = 'itemCheck-course01',
-  title = '臉部撥筋Ｘ耳穴按摩Ｘ芳療活絡｜現代人的 10 分鐘舒壓養顏術',
-  image = '/images/cart-test/course-img.png',
-  price = 1250,
-  onDelete = () => {},
+  id,
+  title,
+  image,
+  salePrice,
+  basePrice,
+  category,
+  onDelete,
 }) {
   return (
     <div className="card border-0">
@@ -39,8 +41,16 @@ export default function ProductCardCourse({
           <div className="card-body d-flex flex-column gap-1 gap-lg-2">
             {/* 商品名稱 + delete-icon */}
             <div className="d-flex justify-content-between align-items-start">
-              <div>
-                <h5 className="card-title fw-normal mb-1">{title}</h5>
+              <div className="d-flex align-items-center gap-2">
+                <h5
+                  className={`${styles.ellipsis} card-title fw-normal mb-1`}
+                  title={title}
+                >
+                  {title}
+                </h5>
+                {category && (
+                  <span className="badge bg-secondary ">{category}</span>
+                )}
               </div>
               <button
                 type="button"
@@ -55,9 +65,17 @@ export default function ProductCardCourse({
             <div>
               <div className="d-flex justify-content-between align-items-center mt-2">
                 <span className="text-muted small">數量：1</span>
-                <div>
-                  {/* <del className="me-2">NT${originalPrice}</del> */}
-                  <span className="h5 text-maintext">NT${price}</span>
+                <div className="fs-5">
+                  {salePrice !== basePrice ? (
+                    <>
+                      <del className="me-2 h6 text-subtext">NT${basePrice}</del>
+                      <strong className="h5 text-maintext">
+                        NT${salePrice}
+                      </strong>
+                    </>
+                  ) : (
+                    <strong className="h5 text-maintext">NT${basePrice}</strong>
+                  )}
                 </div>
               </div>
             </div>
