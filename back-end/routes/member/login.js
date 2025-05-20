@@ -56,7 +56,7 @@ router.post('/', async (req, res) => {
         email: user.email,
       },
       secretKey,
-      { expiresIn: '30m' }
+      { expiresIn: '12h' }
     )
     console.log('user', user)
     console.log('token', token)
