@@ -34,7 +34,8 @@ export default function CouponCard({
   valid_to = '',
   area = '',
   claimed_at = null,
-  state_id = 0,
+  state_id = '',
+  type_id = '',
   isLogin = () => {},
 }) {
   const [get, setGet] = useState(claimed_at ? true : false)
@@ -101,7 +102,7 @@ export default function CouponCard({
   const imageKey =
     area === 2 ? courseMap[course_categories_id] : brandMap[brand_id]
   const imageSrc = `/images/coupon/${imageKey}.png`
-  const goUrl = area === 2 ? '/courses' : '/product'
+  const goUrl = area === 2 ? '/course' : '/product'
   const isUsed = state_id === 2
   const isExpired = state_id === 3
 
@@ -162,8 +163,12 @@ export default function CouponCard({
         {/* 領取印章 */}
         <div className={`stamp-img-container ${isClaimed ? 'show' : ''}`}>
           <Image
-            src="/images/coupon/get-stamp.png"
-            alt="已領取"
+            src={
+              type_id === 5
+                ? '/images/coupon/Exclusive.png'
+                : '/images/coupon/get-stamp.png'
+            }
+            alt={type_id === 5 ? '專屬優惠券' : '已領取'}
             width={180}
             height={180}
             className="stamp-img"

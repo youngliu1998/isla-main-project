@@ -23,6 +23,7 @@ export default function CouponList({ coupons, getCouponStyle, isLogin }) {
           claimed_at={coupon.claimed}
           isLogin={isLogin}
           state_id={coupon.state_id}
+          type_id={coupon.type_id}
         />
       ))}
     </div>
