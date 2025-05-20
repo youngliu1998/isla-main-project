@@ -1,17 +1,66 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { MdOutlineCenterFocusStrong } from 'react-icons/md'
+import CourseCard from '../../../course/_components/course-card/course-card'
+import { courseUrl } from '../../../../_route/courseUrl'
 import Image from 'next/image'
 import '../../_components/course-list.css'
 import Link from 'next/link'
+import { useParams } from 'next/navigation'
+import LikeButton from '../../../course/_components/like-button/like-button'
+import ReviewModal from '../../../course/_components/review-modal/review-modal'
+import ReviewCard from '../../../course/_components/review-card/review-card'
 
 export default function CourseIDPage() {
-  const [loaded, setLoaded] = useState(false)
+  const params = useParams()
+  const id = params.courseID
+  const [courseCard, setCourseCard] = useState([]) // ✅ 用於「相關課程推薦」
+  const [isFavorited, setIsFavorited] = useState(false)
+  const [animate, setAnimate] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [reviewCard, setReviewCard] = useState([])
+
+  useEffect(() => {
+    async function getReviewCard() {
+      const res = await fetch(courseUrl + 'comments?' + 'course_id=1')
+      const json = await res.json()
+      setReviewCard(json.data || [])
+      if (!id) return
+    }
+
+    // 讀取是否收藏
+    const stored = localStorage.getItem(`favorite_detail_${id}`) === 'true'
+    setIsFavorited(stored)
+
+    // 取得所有課程資料（下方推薦區用）
+    async function getCourse() {
+      const res = await fetch(courseUrl + 'course')
+      const json = await res.json()
+      setCourseCard(json.data || [])
+    }
+    getCourse()
+    getReviewCard()
+  }, [id])
+
+  const toggleFavorite = () => {
+    const newState = !isFavorited
+    setIsFavorited(newState)
+    localStorage.setItem(`favorite_detail_${id}`, newState.toString())
+    setAnimate(true)
+    setTimeout(() => setAnimate(false), 400)
+  }
+  const openModal = () => {
+    setIsModalOpen(true)
+  }
+
+  const closeModal = () => {
+    setIsModalOpen(false)
+  }
+
   return (
     <>
       <section>
-        <div className="d-flex flex-column justify-content-center text-bg-dark overflow-hidden position-relative ">
+        <div className="d-flex flex-column justify-content-center  overflow-hidden position-relative ">
           <Image
             src="/images/course/bannerall/banner19.jpg"
             alt="課程圖片"
@@ -51,14 +100,23 @@ export default function CourseIDPage() {
                   打造你的五官漂亮戰隊 堯蘭達高級臉精緻彩妝術
                 </h1>
                 <div className="d-flex banner-ctabox my-xl-4 my-2 d-lg-flex d-none">
-                  <h3 className="text-white me-4 my-auto fs-4">NT$ 1,089</h3>
-                  <h5
+                  <button
                     type="button"
-                    className="btn btn-outline-light px-lg-5 px-4 py-2 me-4"
+                    className="btn btn-primary  px-lg-5 px-4 py-2 me-4 "
                   >
-                    立即購買
-                  </h5>
-                  <i className="bx bx-heart my-auto" />
+                    立即購買 NT$ 1,089
+                  </button>
+                  <p className=" text-white mb-0 text-decoration-line-through text-nowrap  me-4 align-content-center">
+                    NT$ 2,089
+                  </p>
+                  <button
+                    onClick={toggleFavorite}
+                    className="bg-transparent border-0 p-0 heart-icon"
+                  >
+                    <i
+                      className={`bx ${isFavorited ? 'bxs-heart active' : 'bx-heart'} ${animate ? 'animate-pop' : ''}`}
+                    />
+                  </button>
                 </div>
                 <div className="d-flex banner-ctabox my-xl-4 my-2 d-lg-none d-flex">
                   <i className="bx bx-play-circle fs-6 me-4 fw-bold">
@@ -216,7 +274,7 @@ export default function CourseIDPage() {
                       </div>
                     </div>
                     <hr />
-                    <p className="card-text box4-card-text">
+                    <p className="card-text box4-card-text mb-4">
                       明明只是想畫一個偷偷變美的高級妝容，卻變成回頭率 0
                       的粗糙大濃妝嗎？明明是想暈出漂亮漸層的大眼睛眼妝，卻變成奇怪熊貓妝嗎？其實，所有的高級妝容精華都在細節裡，很多看似簡單的妝效，實際上都有絕對的步驟還有美感！跟著Ｍ.A.C
                       前任後台彩妝師堯蘭達，你不只能夠學會日常淡跟著Ｍ.A.C
@@ -224,7 +282,7 @@ export default function CourseIDPage() {
                       前任後台彩妝師堯蘭達，你不只能夠學會日常淡
                     </p>
                     <div className="card-text text-end my-auto position-absolute bottom-0 end-0">
-                      <small className="More-teacher">
+                      <small className="More-teacher pe-3 pb-2">
                         前往講師頁面
                         <i className="bx bx-chevron-right" />
                       </small>
@@ -242,23 +300,28 @@ export default function CourseIDPage() {
             </div>
             <div className="d-flex row">
               <div className="col-lg-4 d-none d-lg-block">
-                <div className="d-flex justify-content-center align-items-center h-75">
+                <div className="d-flex justify-content-center align-items-baseline">
                   <div className="text-center box5-comment-h1 fw-bold me-2">
                     4.1
                   </div>
-                  <div className="text-center box5-comment-p">/ 5</div>
+                  <div className="text-center box5-comment-p pe-2">/ 5.0</div>
                 </div>
-                <div className="d-flex justify-content-center box5-comment-star fs-5">
+                <div className="d-flex justify-content-center box5-comment-star fs-5 pt-2">
                   <i className="bx bxs-star" />
                   <i className="bx bxs-star" />
                   <i className="bx bxs-star" />
                   <i className="bx bxs-star-half" />
                   <i className="bx bx-star" />
                 </div>
+                <div className="d-flex justify-content-center">
+                  <div className="card-people-course box5-comment-p pt-3">
+                    5則評價
+                  </div>
+                </div>
               </div>
               <div className="d-lg-none">
                 <div className="d-flex align-content-center mb-4">
-                  <div className="ms-3 me-4 card-score-course box5-comment-h1-1">
+                  <div className="ms-3 me-4 card-score-course box5-comment-p">
                     3.5
                     <i className="bx bxs-star" />
                     <i className="bx bxs-star" />
@@ -268,7 +331,7 @@ export default function CourseIDPage() {
                   </div>
                   <div className="d-flex">
                     <div className="card-people-course box5-comment-p">
-                      5則評論
+                      5則評價
                     </div>
                   </div>
                 </div>
@@ -379,8 +442,8 @@ export default function CourseIDPage() {
                       <div className="d-flex align-items-center">
                         <div className="me-3">
                           <Image
-                            src="/images/course/teacherall/image_74.jpg"
-                            alt="會員圖片"
+                            src="/images/course/teacherall/image_73.jpg"
+                            alt="講師圖片"
                             width={800}
                             height={450}
                             className="img-fluid box5-comment-author"
@@ -405,150 +468,47 @@ export default function CourseIDPage() {
                       技術每次輕按都能產生均勻的閃光，即使在旅途中也能快速輕鬆地打造眼部閃光。技術每次輕按都能產生均勻的閃光，即使在旅途中也能快速輕鬆地打造眼部閃光。
                     </p>
                     <div className="d-flex justify-content-between box5-comment-like">
-                      <div className="">
-                        2 <i className="bx bx-like" />
-                      </div>
-                      <div className="box5-comment-more">
+                      {/* 評論卡內的點讚按鈕範例 */}
+                      <LikeButton commentId={1} />
+                      <button className="btn btn-sm more-comment open-review-modal">
                         查看更多 <i className="bx bx-chevron-down" />
-                      </div>
+                      </button>
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="col">
-                <div className="card box5-comment-p">
-                  <div className="card-body">
-                    <div className="d-flex justify-content-between align-items-center">
-                      <div className="d-flex align-items-center">
-                        <div className="me-3">
-                          <Image
-                            src="/images/course/teacherall/image_75.jpg"
-                            alt="會員圖片"
-                            width={800}
-                            height={450}
-                            className="img-fluid box5-comment-author"
-                          />
-                        </div>
-                        <div className="">
-                          <h5 className="card-title">Customer2</h5>
-                          <div className="box5-comment-date">2024-10-17</div>
-                        </div>
-                      </div>
-                      <div className="d-flex justify-content-center box5-comment-star fs-5">
-                        <i className="bx bxs-star" />
-                        <i className="bx bxs-star" />
-                        <i className="bx bxs-star" />
-                        <i className="bx bxs-star-half" />
-                        <i className="bx bx-star" />
-                      </div>
-                    </div>
-                    <p className="card-text my-4 box5-card-text">
-                      這些富有彈性的眼影採用堆疊或三重啞光和/或微光顏料包裝，易於用指尖塗抹。
-                      Kaja 的 Glitter Arrangement
-                      技術每次輕按都能產生均勻的閃光，即使在旅途中也能快速輕鬆地打造眼部閃光。技術每次輕按都能產生均勻的閃光，即使在旅途中也能快速輕鬆地打造眼部閃光。
-                    </p>
-                    <div className="d-flex justify-content-between box5-comment-like">
-                      <div className="">
-                        2 <i className="bx bx-like" />
-                      </div>
-                      <div className="box5-comment-more">
-                        查看更多 <i className="bx bx-chevron-down" />
-                      </div>
-                    </div>
+              {reviewCard.map((v, i) => {
+                return (
+                  <div className="col" key={i}>
+                    <ReviewCard
+                      member_name={v.member_name}
+                      star={v.star}
+                      created={v.created}
+                      content={v.content}
+                      is_helpful={v.is_helpful}
+                      ava_url={v.ava_url}
+                      comment_id={v.comment_id}
+                    />
                   </div>
-                </div>
-              </div>
-              <div className="col">
-                <div className="card box5-comment-p">
-                  <div className="card-body">
-                    <div className="d-flex justify-content-between align-items-center">
-                      <div className="d-flex align-items-center">
-                        <div className="me-3">
-                          <Image
-                            src="/images/course/teacherall/image_76.jpg"
-                            alt="會員圖片"
-                            width={800}
-                            height={450}
-                            className="img-fluid box5-comment-author"
-                          />
-                        </div>
-                        <div className="">
-                          <h5 className="card-title">Customer2</h5>
-                          <div className="box5-comment-date">2024-10-17</div>
-                        </div>
-                      </div>
-                      <div className="d-flex justify-content-center box5-comment-star fs-5">
-                        <i className="bx bxs-star" />
-                        <i className="bx bxs-star" />
-                        <i className="bx bxs-star" />
-                        <i className="bx bxs-star-half" />
-                        <i className="bx bx-star" />
-                      </div>
-                    </div>
-                    <p className="card-text my-4 box5-card-text">
-                      這些富有彈性的眼影採用堆疊或三重啞光和/或微光顏料包裝，易於用指尖塗抹。
-                      Kaja 的 Glitter Arrangement
-                      技術每次輕按都能產生均勻的閃光，即使在旅途中也能快速輕鬆地打造眼部閃光。技術每次輕按都能產生均勻的閃光，即使在旅途中也能快速輕鬆地打造眼部閃光。
-                    </p>
-                    <div className="d-flex justify-content-between box5-comment-like">
-                      <div className="">
-                        2 <i className="bx bx-like" />
-                      </div>
-                      <div className="box5-comment-more">
-                        查看更多 <i className="bx bx-chevron-down" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="col">
-                <div className="card box5-comment-p">
-                  <div className="card-body">
-                    <div className="d-flex justify-content-between align-items-center">
-                      <div className="d-flex align-items-center">
-                        <div className="me-3">
-                          <Image
-                            src="/images/course/teacherall/image_77.jpg"
-                            alt="會員圖片"
-                            width={800}
-                            height={450}
-                            className="img-fluid box5-comment-author"
-                          />
-                        </div>
-                        <div className="">
-                          <h5 className="card-title">Customer2</h5>
-                          <div className="box5-comment-date">2024-10-17</div>
-                        </div>
-                      </div>
-                      <div className="d-flex justify-content-center box5-comment-star fs-5">
-                        <i className="bx bxs-star" />
-                        <i className="bx bxs-star" />
-                        <i className="bx bxs-star" />
-                        <i className="bx bxs-star-half" />
-                        <i className="bx bx-star" />
-                      </div>
-                    </div>
-                    <p className="card-text my-4 box5-card-text">
-                      這些富有彈性的眼影採用堆疊或三重啞光和/或微光顏料包裝，易於用指尖塗抹。
-                      Kaja 的 Glitter Arrangement
-                      技術每次輕按都能產生均勻的閃光，即使在旅途中也能快速輕鬆地打造眼部閃光。技術每次輕按都能產生均勻的閃光，即使在旅途中也能快速輕鬆地打造眼部閃光。
-                    </p>
-                    <div className="d-flex justify-content-between box5-comment-like">
-                      <div className="">
-                        2 <i className="bx bx-like" />
-                      </div>
-                      <div className="box5-comment-more">
-                        查看更多 <i className="bx bx-chevron-down" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                )
+              })}
             </div>
-            <div className="more-comment">
-              所有評論
-              <i className="bx bx-chevron-right" />
+            <div className="">
+              <button
+                onClick={openModal}
+                className="btn btn-sm more-comment open-review-modal"
+              >
+                查看所有評價 <i className="bx bx-chevron-right" />
+              </button>
+              {/* 背景遮罩 */}
+              <div id="modalBackdrop" className="modal-backdrop" />
             </div>
+            {/* Modal 彈跳視窗 */}
+            <ReviewModal
+              isOpen={isModalOpen}
+              onClose={closeModal}
+              courseId={1}
+            />
           </div>
           <div className="col-lg-3 d-none d-lg-block">
             <div className="px-0 scroll-card">
@@ -576,12 +536,15 @@ export default function CourseIDPage() {
                     >
                       <i className="bi bi-handbag text-center" />
                     </a>
-                    <a
-                      type="button"
+                    {/* ✅ 收藏按鈕要加 onClick */}
+                    <button
+                      onClick={toggleFavorite}
                       className="btn scroll-card-btn btn-lg px-xxl-5 px-lg-4 py-2"
                     >
-                      <i className="bx bx-heart text-center fs-4" />
-                    </a>
+                      <i
+                        className={`bx ${isFavorited ? 'bxs-heart active' : 'bx-heart'} text-center fs-4 ${animate ? 'animate-pop' : ''}`}
+                      />
+                    </button>
                   </div>
                   <h5 className="card-title fw-normal mt-5">關於課程</h5>
                   <hr />
@@ -646,182 +609,26 @@ export default function CourseIDPage() {
           </div>
         </div>
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-lg-4 g-4 p-0 m-0 my-4">
-          <div className="col mb-5">
-            <div
-              className="card h-100 card-hover-course"
-              data-course-id="course123"
-            >
-              <div className="card-img-container-course">
-                <Image
-                  src="/images/course/bannerall/banner1.jpg"
-                  width={800}
-                  height={450}
-                  className="card-img-top-course"
-                  alt="課程名稱"
+          {courseCard
+            .filter((v) => v.status != 0 && v.status != '0')
+            .slice(0, 4)
+            .map(function (v, i) {
+              return (
+                <CourseCard
+                  key={v.id}
+                  id={v.id}
+                  picture={'/images/course/bannerall/' + v.picture}
+                  tag={v.tag}
+                  title={v.title}
+                  teacher={v.teacher}
+                  student={v.student}
+                  price={v.price}
+                  discount={v.discount}
+                  avg_star={v.avg_star}
+                  comment_count={v.comment_count}
                 />
-                <div className="heart-icon-course">
-                  <i className="bx bx-heart" />
-                </div>
-              </div>
-              <div className="card-body">
-                <button className="btn card-btn-course mb-2">課程</button>
-                <h5 className="card-title mb-2">
-                  臉部撥筋Ｘ耳穴按摩Ｘ芳療活絡｜現代人的 10 分鐘舒壓養顏術
-                </h5>
-                <p className="card-teacher-course mb-2">李郁文</p>
-                <div className="d-flex align-content-center">
-                  <div className="mb-2 me-3 card-score-course">
-                    3.5
-                    <i className="bx bxs-star" />
-                    <i className="bx bxs-star" />
-                    <i className="bx bxs-star" />
-                    <i className="bx bxs-star-half" />
-                    <i className="bx bx-star" />
-                  </div>
-                  <div className="d-flex">
-                    <i className="bi bi-people me-2" />
-                    <div className="card-people-course">3,550</div>
-                  </div>
-                </div>
-                <div className="d-flex align-items-end text-end">
-                  <h5 className="card-text me-3">NT 5,808</h5>
-                  <p className="card-text-discount m-0">NT 7,808</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="col mb-5">
-            <div
-              className="card h-100 card-hover-course"
-              data-course-id="course123"
-            >
-              <div className="card-img-container-course">
-                <Image
-                  src="/images/course/bannerall/banner1.jpg"
-                  width={800}
-                  height={450}
-                  className="card-img-top-course"
-                  alt="課程名稱"
-                />
-                <div className="heart-icon-course">
-                  <i className="bx bx-heart" />
-                </div>
-              </div>
-              <div className="card-body">
-                <button className="btn card-btn-course mb-2">課程</button>
-                <h5 className="card-title mb-2">
-                  臉部撥筋Ｘ耳穴按摩Ｘ芳療活絡｜現代人的 10 分鐘舒壓養顏術
-                </h5>
-                <p className="card-teacher-course mb-2">李郁文</p>
-                <div className="d-flex align-content-center">
-                  <div className="mb-2 me-3 card-score-course">
-                    3.5
-                    <i className="bx bxs-star" />
-                    <i className="bx bxs-star" />
-                    <i className="bx bxs-star" />
-                    <i className="bx bxs-star-half" />
-                    <i className="bx bx-star" />
-                  </div>
-                  <div className="d-flex">
-                    <i className="bi bi-people me-2" />
-                    <div className="card-people-course">3,550</div>
-                  </div>
-                </div>
-                <div className="d-flex align-items-end text-end">
-                  <h5 className="card-text me-3">NT 5,808</h5>
-                  <p className="card-text-discount m-0">NT 7,808</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="col mb-5">
-            <div
-              className="card h-100 card-hover-course"
-              data-course-id="course123"
-            >
-              <div className="card-img-container-course">
-                <Image
-                  src="/images/course/bannerall/banner1.jpg"
-                  width={800}
-                  height={450}
-                  className="card-img-top-course"
-                  alt="課程名稱"
-                />
-                <div className="heart-icon-course">
-                  <i className="bx bx-heart" />
-                </div>
-              </div>
-              <div className="card-body">
-                <button className="btn card-btn-course mb-2">課程</button>
-                <h5 className="card-title mb-2">
-                  臉部撥筋Ｘ耳穴按摩Ｘ芳療活絡｜現代人的 10 分鐘舒壓養顏術
-                </h5>
-                <p className="card-teacher-course mb-2">李郁文</p>
-                <div className="d-flex align-content-center">
-                  <div className="mb-2 me-3 card-score-course">
-                    3.5
-                    <i className="bx bxs-star" />
-                    <i className="bx bxs-star" />
-                    <i className="bx bxs-star" />
-                    <i className="bx bxs-star-half" />
-                    <i className="bx bx-star" />
-                  </div>
-                  <div className="d-flex">
-                    <i className="bi bi-people me-2" />
-                    <div className="card-people-course">3,550</div>
-                  </div>
-                </div>
-                <div className="d-flex align-items-end text-end">
-                  <h5 className="card-text me-3">NT 5,808</h5>
-                  <p className="card-text-discount m-0">NT 7,808</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="col mb-5">
-            <div
-              className="card h-100 card-hover-course"
-              data-course-id="course123"
-            >
-              <div className="card-img-container-course">
-                <Image
-                  src="/images/course/bannerall/banner1.jpg"
-                  width={800}
-                  height={450}
-                  className="card-img-top-course"
-                  alt="課程名稱"
-                />
-                <div className="heart-icon-course">
-                  <i className="bx bx-heart" />
-                </div>
-              </div>
-              <div className="card-body">
-                <button className="btn card-btn-course mb-2">課程</button>
-                <h5 className="card-title mb-2">
-                  臉部撥筋Ｘ耳穴按摩Ｘ芳療活絡｜現代人的 10 分鐘舒壓養顏術
-                </h5>
-                <p className="card-teacher-course mb-2">李郁文</p>
-                <div className="d-flex align-content-center">
-                  <div className="mb-2 me-3 card-score-course">
-                    3.5
-                    <i className="bx bxs-star" />
-                    <i className="bx bxs-star" />
-                    <i className="bx bxs-star" />
-                    <i className="bx bxs-star-half" />
-                    <i className="bx bx-star" />
-                  </div>
-                  <div className="d-flex">
-                    <i className="bi bi-people me-2" />
-                    <div className="card-people-course">3,550</div>
-                  </div>
-                </div>
-                <div className="d-flex align-items-end text-end">
-                  <h5 className="card-text me-3">NT 5,808</h5>
-                  <p className="card-text-discount m-0">NT 7,808</p>
-                </div>
-              </div>
-            </div>
-          </div>
+              )
+            })}
         </div>
       </section>
     </>
