@@ -10,18 +10,15 @@ export default function ReviewCard({
   star = 0,
   created = '',
   content = '',
-  is_helpful = 0,
   ava_url = '',
   comment_id = 0,
+  likeData = {},
+  onToggleLike = () => {},
 }) {
   const image = ava_url
-    ? `http://localhost:3005/images/member/${ava_url}` // 用 backtick 模板字串
+    ? `http://localhost:3005/images/member/${ava_url}`
     : 'http://localhost:3005/images/member/default-avatar.jpg'
-  // 印出完整圖片路徑與原始值
-  console.log('avatar url 原始值:', ava_url)
-  console.log('組合後的 image 路徑:', image)
 
-  // 將星星渲染邏輯搬進來
   const renderStars = (score) => {
     const ratingNum = Number(score)
     const fullStars = Math.floor(ratingNum)
@@ -57,7 +54,7 @@ export default function ReviewCard({
             </div>
             <div>
               <h5 className="card-title">{member_name}</h5>
-              <div className="">{created.split(' ')[0]}</div>
+              <div>{created.split(' ')[0]}</div>
             </div>
           </div>
           <div className="d-flex justify-content-center box5-comment-star fs-5">
@@ -66,7 +63,12 @@ export default function ReviewCard({
         </div>
         <p className="card-text my-4">{content}</p>
         <div className="d-flex justify-content-between box5-comment-like">
-          <LikeButton commentId={comment_id} />
+          <LikeButton
+            commentId={comment_id}
+            liked={likeData.liked}
+            count={likeData.count}
+            onToggle={onToggleLike}
+          />
         </div>
       </div>
     </div>
