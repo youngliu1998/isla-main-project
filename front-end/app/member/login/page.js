@@ -2,11 +2,8 @@
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import { GoogleLogin } from '@react-oauth/google'
 import { useAuth } from '@/hook/use-auth'
-<<<<<<< HEAD
 import { useCartContext } from '../../cart/context/cart-context'
-=======
 // import { signIn, signOut, useSession } from 'next-auth/react'
->>>>>>> dev
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
