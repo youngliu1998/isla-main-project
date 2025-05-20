@@ -1,5 +1,6 @@
 'use client'
 import styles from './_styles/cart-style.module.scss'
+import { checkCouponStatus } from './utils/coupon-helper'
 import { toast } from 'react-toastify'
 //import component
 import StepProgress from './_component/step-progress/step-progress'
@@ -10,8 +11,9 @@ import CouponSwiper from './_component/coupon-swiper/coupon-swiper'
 import OrderSummary from './_component/order-summary/order-summary'
 import MobileOrderBar from './_component/mobile-order-bar/mobile-order-bar'
 // coustom-hook
-import useIsMobile from './hook/useIsMobile'
 import { useAuth } from '@/hook/use-auth'
+import useIsMobile from './hook/useIsMobile'
+import useProcesCoups from './hook/useProcesCoups'
 // fetch data
 import cartApi from './utils/axios'
 import { useEffect, useState } from 'react'
@@ -21,9 +23,11 @@ export default function CartPage() {
   const [cartItems, setCartItems] = useState([])
   const [selectAll, setSelectAll] = useState(false)
   const [checkedItems, setCheckedItems] = useState({}) // 以 id 為 key 儲存是否勾選
+  const [couponDataProd, setCouponDataProd] = useState([])
+  const [couponDataCour, setCouponDataCour] = useState([])
 
-  //fetch get-cart-items
   useEffect(() => {
+    // fetch get-cart-items
     const cartItemsData = async () => {
       try {
         const res = await cartApi.get('/cart-items')
@@ -51,7 +55,22 @@ export default function CartPage() {
         console.error('購物車資料抓取失敗:', error.message)
       }
     }
+    //fetch member-coupon
+    const memberCouponData = async () => {
+      try {
+        const res = await cartApi.get('/cart-items/member-coupon')
+        const rawCouponItems = res.data.data
+        console.log('會員已領取的優惠券', rawCouponItems)
+
+        localStorage.setItem('member-coupons', JSON.stringify(rawCouponItems))
+        setCouponDataProd(rawCouponItems.productCoupons)
+        setCouponDataCour(rawCouponItems.courseCoupons)
+      } catch (error) {
+        console.error('會員已領取的優惠券資料抓取失敗', error.message)
+      }
+    }
     cartItemsData()
+    memberCouponData()
   }, [isAuth])
 
   // fetch delete
@@ -78,6 +97,39 @@ export default function CartPage() {
     }
   }
 
+  const [selectedCoupon, setSelectedCoupon] = useState(null)
+
+  // 計算總金額（你也可以只算勾選的 cartItems）
+  const totalAmount = cartItems.reduce(
+    (sum, item) => sum + (item.sale_price ?? item.base_price) * item.quantity,
+    0
+  )
+
+  // 處理 商品-優惠券 是否可用
+  const processedCouponsProd = useProcesCoups(
+    couponDataProd,
+    cartItems,
+    checkedItems,
+    totalAmount
+  )
+
+  // 處理 課程-優惠券
+  const processedCouponsCourse = useProcesCoups(
+    couponDataCour,
+    cartItems,
+    checkedItems,
+    totalAmount
+  )
+
+  const onSelectCoupon = (coupon) => {
+    // 若點到的是已選的，就取消選擇（toggle）
+    if (selectedCoupon && selectedCoupon.id === coupon.id) {
+      setSelectedCoupon(null)
+    } else {
+      setSelectedCoupon(coupon)
+    }
+  }
+
   // 判斷是否為手機裝置
   const isMobile = useIsMobile()
   // 記錄元件是否 已Mounted完成
@@ -101,63 +153,14 @@ export default function CartPage() {
     })
     setCheckedItems(newChecked)
   }
-
   // 單個項目勾選改變
   const handleItemCheckChange = (id, checked) => {
     const updated = { ...checkedItems, [id]: checked }
     setCheckedItems(updated)
-
     // 若有任何一個沒被勾選，就取消全選
     const isAllChecked = cartItems.every((item) => updated[item.id])
     setSelectAll(isAllChecked)
   }
-
-  const couponDataProd = [
-    {
-      id: 1,
-      title: '全站折$150',
-      condition: '滿 $2000 可使用',
-      tag: '全站',
-    },
-    {
-      id: 2,
-      title: '全站折$150',
-      condition: '滿 $2000 可使用',
-      tag: '全站',
-    },
-    {
-      id: 3,
-      title: '眼部彩妝系列滿兩件85折',
-      condition: '滿 $2000 可使用',
-      tag: '眼部彩妝',
-    },
-    {
-      id: 4,
-      title: '唇部彩妝系列滿兩件88折',
-      condition: '滿 $1500 可使用',
-      tag: '唇部彩妝',
-    },
-  ]
-  const couponDataCourse = [
-    {
-      id: 1,
-      title: '全站折$150',
-      condition: '滿 $2000 可使用',
-      tag: '全站',
-    },
-    {
-      id: 2,
-      title: '全站折$150',
-      condition: '滿 $2000 可使用',
-      tag: '全站',
-    },
-    {
-      id: 3,
-      title: '其他課程系列滿兩件85折',
-      condition: '滿 $2000 可使用',
-      tag: '其他課程',
-    },
-  ]
 
   return (
     <>
@@ -237,20 +240,19 @@ export default function CartPage() {
 
             <CouponAccordion>
               {/* 載入商品優惠券元件 */}
-              <CouponSwiper coupons={couponDataProd} />
+              <CouponSwiper
+                coupons={processedCouponsProd}
+                selectedCoupon={selectedCoupon}
+                onSelectCoupon={onSelectCoupon}
+              />
             </CouponAccordion>
 
             <div className="card-style mb-3 p-4">
-              {/* 課程篩選 Checkbox */}
-              <div className="form-check mb-3">
-                <input
-                  className={`form-check-input me-2 ${styles.checkboxInput}`}
-                  type="checkbox"
-                  id="courseCheck"
-                />
-                <label htmlFor="courseCheck" className="text-primary">
-                  彩妝課程
-                </label>
+              <div className="mb-3">
+                <div className="mb-3 d-flex align-items-center text-primary">
+                  <i className="bi bi-film fs-6 mb-1 me-2"></i>
+                  <div>彩妝課程</div>
+                </div>
               </div>
               {/* === Product Card Course === */}
               {courseItems.map((item) => (
@@ -279,7 +281,11 @@ export default function CartPage() {
             </div>
             <CouponAccordionCourse>
               {/* 載入課程優惠券元件 */}
-              <CouponSwiper coupons={couponDataCourse} />
+              <CouponSwiper
+                coupons={processedCouponsCourse}
+                selectedCoupon={selectedCoupon}
+                onSelectCoupon={onSelectCoupon}
+              />
             </CouponAccordionCourse>
           </div>
           <div className="col-lg-4 col-12">{!isMobile && <OrderSummary />}</div>
