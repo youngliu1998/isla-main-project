@@ -1,11 +1,11 @@
 import express from 'express'
 const router = express.Router()
-
 // import verifyToken from '../../lib/verify-token.js'
-import { getFilteredProducts } from '../../services/product-controller.js'
+import { getFilteredProducts } from '../services/product-controller.js'
 
-// 支援分頁與多條件篩選
 router.get('/', async (req, res) => {
+  console.log('Front Send Query :', req.query)
+
   try {
     const {
       keyword,
@@ -19,29 +19,28 @@ router.get('/', async (req, res) => {
       onSaleOnly,
       offset = 0,
       limit = 20,
+      sortBy,
+      sortOrder,
     } = req.query
 
+    function parseIdArray(param) {
+      if (!param) return []
+      if (Array.isArray(param))
+        return param.map(Number).filter((n) => !isNaN(n))
+      return param
+        .split(',')
+        .map(Number)
+        .filter((n) => !isNaN(n))
+    }
+
     const filters = {
-      onSaleOnly: onSaleOnly === 'true',
+      sortBy: sortBy || 'products.product_id',
+      sortOrder: sortOrder || 'DESC',
+      onSaleOnly: String(onSaleOnly).toLowerCase() === 'true',
       keyword: keyword || '',
-      brandIds: brandIds
-        ? brandIds
-            .split(',')
-            .map(Number)
-            .filter((n) => !isNaN(n))
-        : [],
-      categoryIds: categoryIds
-        ? categoryIds
-            .split(',')
-            .map(Number)
-            .filter((n) => !isNaN(n))
-        : [],
-      tagIds: tagIds
-        ? tagIds
-            .split(',')
-            .map(Number)
-            .filter((n) => !isNaN(n))
-        : [],
+      brandIds: parseIdArray(brandIds),
+      categoryIds: parseIdArray(categoryIds),
+      tagIds: parseIdArray(tagIds),
       minPrice:
         minPrice !== undefined && minPrice !== '' ? parseFloat(minPrice) : null,
       maxPrice:

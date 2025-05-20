@@ -2,7 +2,7 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import './_style.css/product-card-s.css'
+import './_style/product-card-s.css'
 import RatingComponent from './product-rating.js'
 import BookmarkComponent from './product-bookmark.js'
 import Image from 'next/image'
@@ -20,7 +20,7 @@ function ProductCard({ product }) {
     originalPrice,
     rating = 0,
     reviews = 0,
-    imageUrl = `/images/product/test/test1.png`,
+    primary_image_url = `/images/product/test/test1.png`,
     isBookmarked: initialIsBookmarked = false,
   } = product
 
@@ -57,8 +57,11 @@ function ProductCard({ product }) {
 
   const isMobile = useIsMobile()
 
+  const IMAGE_PREFIX = 'https://isla-image.chris142852145.workers.dev/'
+  const fullImageUrl = `${IMAGE_PREFIX}${product.imageUrl}`
+
   return (
-    <div className="product-card-product_card">
+    <div key={product.product_id} className="product-card-product_card">
       <div className="product-card-product_card-head">
         <div className="product-card-head-top d-flex">
           <div className="product-card-rating product-card-rating-desktop">
@@ -75,7 +78,7 @@ function ProductCard({ product }) {
 
         <div className="product-card-product_card-img">
           <Image
-            src={imageUrl}
+            src={fullImageUrl}
             alt={name}
             className="card-img"
             width={0}
@@ -98,16 +101,16 @@ function ProductCard({ product }) {
       <div className="product-card-product_card-info">
         <div className="product-card-info">
           <div className="product-card-product_details">
-            <div className="product-card-brand">{brand}</div>
-            <div className="product-card-product_name">{name}</div>
+            <div className="product-card-brand">{product.brand}</div>
+            <div className="product-card-product_name">{product.name}</div>
           </div>
         </div>
 
         <div className="product-card-rating product-card-rating-mobile">
           <div className="product-card-star-box">
             <RatingComponent
-              rating={rating}
-              reviewCount={reviews}
+              rating={product.rating}
+              reviewCount={product.review_count}
               isMobile={true}
             />
           </div>
@@ -116,7 +119,8 @@ function ProductCard({ product }) {
         <div className="product-card-price">
           <div className="product-card-price-box d-flex gap-2">
             <div className="product-card-main-price">{price}</div>
-            {originalPrice && (
+
+            {originalPrice !== price && (
               <div className="product-card-basic-price">
                 <del>{originalPrice}</del>
               </div>
