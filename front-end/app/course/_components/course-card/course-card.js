@@ -2,6 +2,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
+import './course-card.css'
 
 export default function CourseCard({
   id = '',
@@ -15,6 +16,8 @@ export default function CourseCard({
   price = 0,
   discount = 0,
   status = 0,
+  categories_id = 0,
+  teacher_name = '',
 }) {
   const tagLabel =
     tag === 1 || tag === '1' ? '課程' : tag === 2 || tag === '2' ? '體驗' : tag
@@ -64,7 +67,10 @@ export default function CourseCard({
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
-      <Link href={`/course/course-list/${id}`} className="text-decoration-none">
+      <Link
+        href={`/course/course-list/${id}`}
+        className="text-decoration-none course-card-animate"
+      >
         <div className="card h-100 card-hover-course" data-course-id={id}>
           <div className="card-img-container-course position-relative">
             <Image
@@ -93,13 +99,13 @@ export default function CourseCard({
           <div className="card-body">
             <button className="btn card-btn-course mb-2">{tagLabel}</button>
             <h5 className="card-title mb-2">{title}</h5>
-            <p className="card-teacher-course mb-2">{teacher}</p>
+            <p className="card-teacher-course mb-2">{teacher_name}</p>
 
             <div className="d-flex align-content-center">
               <div className="mb-2 me-3 card-score-course">
                 {avg_star.toFixed(1)} {renderStars(avg_star)}
                 {/* <small className="text-muted ms-2">
-                  ({comment_count} 則留言)
+                  ({comment_count} 則評論)
                 </small> */}
               </div>
               <div className="d-flex">
@@ -111,11 +117,11 @@ export default function CourseCard({
             </div>
 
             <div className="d-flex align-items-end text-end">
-              <h5 className="card-text me-3">
-                NT {Number(price).toLocaleString()}
-              </h5>
-              <p className="card-text-discount m-0">
+              <h5 className=" me-3 fw-bold">
                 NT {Number(discount).toLocaleString()}
+              </h5>
+              <p className="card-text-price m-0">
+                NT {Number(price).toLocaleString()}
               </p>
             </div>
           </div>

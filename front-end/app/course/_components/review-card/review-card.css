@@ -1,0 +1,21 @@
+.review-card {
+  background-color: #f9f9f9;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.box5-comment-p {
+  color: var(--sub-text);
+}
+.box5-comment-author {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.box5-comment-star,
+.box5-comment-like {
+  color: var(--main-color);
+}
