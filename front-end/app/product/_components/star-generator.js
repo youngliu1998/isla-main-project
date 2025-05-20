@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { BsStarFill } from 'react-icons/bs'
-import './_style.css/star-generator.css'
+import './_style/star-generator.css'
 
 const StarRatingItem = ({ star, maxStars }) => {
   return (

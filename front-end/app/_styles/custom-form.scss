@@ -196,7 +196,7 @@ $form-radio-disabled-bg: #eee;
 }
 
 .accordion-header {
-  background: #DEDEDE;
+  background: #dedede;
   .accordion-button {
     background: transparent;
     font-weight: bold;
@@ -204,7 +204,9 @@ $form-radio-disabled-bg: #eee;
     padding: 16px 20px;
     border-radius: 5px;
     color: #373737;
-    transition: background 0.3s ease, color 0.3s ease;
+    transition:
+      background 0.3s ease,
+      color 0.3s ease;
 
     &::after {
       filter: invert(0.3);
@@ -233,7 +235,6 @@ $form-radio-disabled-bg: #eee;
   color: #373737;
   line-height: 32px;
 }
-
 
 //modal
 // 主要容器樣式
@@ -308,4 +309,65 @@ $form-radio-disabled-bg: #eee;
       }
     }
   }
+}
+
+/* 覆蓋 Bootstrap 5 的 switch 樣式 */
+.form-check.form-switch .form-check-input {
+  width: 3rem;
+  height: 1.5rem;
+  background-color: #ccc;
+  border-radius: 1.5rem;
+  border: none;
+  position: relative;
+  transition: background-color 0.3s ease-in-out;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+/* 滑塊（thumb） */
+.form-check.form-switch .form-check-input::before {
+  content: '';
+  position: absolute;
+  top: 0.15rem;
+  left: 0.15rem;
+  width: 1.2rem;
+  height: 1.2rem;
+  background-color: #d35b5b;
+  border-radius: 50%;
+  transition: transform 0.3s ease-in-out;
+  box-shadow: 0 0 0.2rem rgba(0, 0, 0, 0);
+}
+.form-check-input:focus {
+  background-color: #d35b5b;
+}
+.form-check-input:checked {
+  background-color: #d35b5b;
+}
+/* 當 switch 被打開（checked） */
+.form-check.form-switch .form-check-input:checked {
+  background-color: #ffffff; /* Bootstrap primary */
+}
+
+/* 滑塊移動位置 */
+.form-check.form-switch .form-check-input:checked::before {
+  transform: translateX(1.5rem);
+}
+
+/* focus 樣式 */
+.form-check.form-switch .form-check-input:focus {
+  box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.25);
+
+  outline: none;
+}
+
+/* disabled 狀態 */
+.form-check.form-switch .form-check-input:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* disabled + checked 狀態 */
+.form-check.form-switch .form-check-input:disabled:checked {
+  background-color: #6c757d; /* Bootstrap secondary */
 }

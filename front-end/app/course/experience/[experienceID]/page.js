@@ -1,12 +1,24 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import CourseCard from '../../../course/_components/course-card/course-card'
+import { courseUrl } from '../../../../_route/courseUrl'
 import { MdOutlineCenterFocusStrong } from 'react-icons/md'
 import Image from 'next/image'
 import '../../_components/experience-list.css'
 import Link from 'next/link'
 
 export default function ExperienceIDPage() {
+  const [courseCard, setCourseCard] = useState([])
+  const [loaded, setLoaded] = useState(false)
+  useEffect(() => {
+    async function getCourse() {
+      const res = await fetch(courseUrl + 'course')
+      const json = await res.json()
+      setCourseCard(json.data || [])
+    }
+    getCourse()
+  }, [])
   return (
     <>
       <section>
@@ -65,7 +77,7 @@ export default function ExperienceIDPage() {
         <div className="row">
           <div className="col-lg-9 col">
             {/* box1 */}
-            <section className="box1">
+            <section className="">
               <div className="container">
                 <div>
                   <div className="card my-3">
@@ -366,182 +378,26 @@ export default function ExperienceIDPage() {
           </div>
         </div>
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-lg-4 g-4 p-0 m-0 my-4">
-          <div className="col mb-5">
-            <div
-              className="card h-100 card-hover-course"
-              data-course-id="course123"
-            >
-              <div className="card-img-container-course">
-                <Image
-                  src="/images/course/bannerall/banner3.jpg"
-                  alt="課程圖片"
-                  width={800}
-                  height={450}
-                  className="card-img-top-course"
+          {courseCard
+            .filter((v) => v.status != 0 && v.status != '0')
+            .slice(0, 4)
+            .map(function (v, i) {
+              return (
+                <CourseCard
+                  key={v.id}
+                  id={v.id}
+                  picture={'/images/course/bannerall/' + v.picture}
+                  tag={v.tag}
+                  title={v.title}
+                  teacher={v.teacher}
+                  student={v.student}
+                  price={v.price}
+                  discount={v.discount}
+                  avg_star={v.avg_star}
+                  comment_count={v.comment_count}
                 />
-                <div className="heart-icon-course">
-                  <i className="bx bx-heart" />
-                </div>
-              </div>
-              <div className="card-body">
-                <button className="btn card-btn-course mb-2">課程</button>
-                <h5 className="card-title mb-2">
-                  臉部撥筋Ｘ耳穴按摩Ｘ芳療活絡｜現代人的 10 分鐘舒壓養顏術
-                </h5>
-                <p className="card-teacher-course mb-2">李郁文</p>
-                <div className="d-flex align-content-center">
-                  <div className="mb-2 me-3 card-score-course">
-                    3.5
-                    <i className="bx bxs-star" />
-                    <i className="bx bxs-star" />
-                    <i className="bx bxs-star" />
-                    <i className="bx bxs-star-half" />
-                    <i className="bx bx-star" />
-                  </div>
-                  <div className="d-flex">
-                    <i className="bi bi-people me-2" />
-                    <div className="card-people-course">3,550</div>
-                  </div>
-                </div>
-                <div className="d-flex align-items-end text-end">
-                  <h5 className="card-text me-3">NT 5,808</h5>
-                  <p className="card-text-discount m-0">NT 7,808</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="col mb-5">
-            <div
-              className="card h-100 card-hover-course"
-              data-course-id="course123"
-            >
-              <div className="card-img-container-course">
-                <Image
-                  src="/images/course/bannerall/banner31.jpg"
-                  alt="課程圖片"
-                  width={800}
-                  height={450}
-                  className="card-img-top-course"
-                />
-                <div className="heart-icon-course">
-                  <i className="bx bx-heart" />
-                </div>
-              </div>
-              <div className="card-body">
-                <button className="btn card-btn-course mb-2">課程</button>
-                <h5 className="card-title mb-2">
-                  臉部撥筋Ｘ耳穴按摩Ｘ芳療活絡｜現代人的 10 分鐘舒壓養顏術
-                </h5>
-                <p className="card-teacher-course mb-2">李郁文</p>
-                <div className="d-flex align-content-center">
-                  <div className="mb-2 me-3 card-score-course">
-                    3.5
-                    <i className="bx bxs-star" />
-                    <i className="bx bxs-star" />
-                    <i className="bx bxs-star" />
-                    <i className="bx bxs-star-half" />
-                    <i className="bx bx-star" />
-                  </div>
-                  <div className="d-flex">
-                    <i className="bi bi-people me-2" />
-                    <div className="card-people-course">3,550</div>
-                  </div>
-                </div>
-                <div className="d-flex align-items-end text-end">
-                  <h5 className="card-text me-3">NT 5,808</h5>
-                  <p className="card-text-discount m-0">NT 7,808</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="col mb-5">
-            <div
-              className="card h-100 card-hover-course"
-              data-course-id="course123"
-            >
-              <div className="card-img-container-course">
-                <Image
-                  src="/images/course/bannerall/banner31.jpg"
-                  alt="課程圖片"
-                  width={800}
-                  height={450}
-                  className="card-img-top-course"
-                />
-                <div className="heart-icon-course">
-                  <i className="bx bx-heart" />
-                </div>
-              </div>
-              <div className="card-body">
-                <button className="btn card-btn-course mb-2">課程</button>
-                <h5 className="card-title mb-2">
-                  臉部撥筋Ｘ耳穴按摩Ｘ芳療活絡｜現代人的 10 分鐘舒壓養顏術
-                </h5>
-                <p className="card-teacher-course mb-2">李郁文</p>
-                <div className="d-flex align-content-center">
-                  <div className="mb-2 me-3 card-score-course">
-                    3.5
-                    <i className="bx bxs-star" />
-                    <i className="bx bxs-star" />
-                    <i className="bx bxs-star" />
-                    <i className="bx bxs-star-half" />
-                    <i className="bx bx-star" />
-                  </div>
-                  <div className="d-flex">
-                    <i className="bi bi-people me-2" />
-                    <div className="card-people-course">3,550</div>
-                  </div>
-                </div>
-                <div className="d-flex align-items-end text-end">
-                  <h5 className="card-text me-3">NT 5,808</h5>
-                  <p className="card-text-discount m-0">NT 7,808</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="col mb-5">
-            <div
-              className="card h-100 card-hover-course"
-              data-course-id="course123"
-            >
-              <div className="card-img-container-course">
-                <Image
-                  src="/images/course/bannerall/banner31.jpg"
-                  alt="課程圖片"
-                  width={800}
-                  height={450}
-                  className="card-img-top-course"
-                />
-                <div className="heart-icon-course">
-                  <i className="bx bx-heart" />
-                </div>
-              </div>
-              <div className="card-body">
-                <button className="btn card-btn-course mb-2">課程</button>
-                <h5 className="card-title mb-2">
-                  臉部撥筋Ｘ耳穴按摩Ｘ芳療活絡｜現代人的 10 分鐘舒壓養顏術
-                </h5>
-                <p className="card-teacher-course mb-2">李郁文</p>
-                <div className="d-flex align-content-center">
-                  <div className="mb-2 me-3 card-score-course">
-                    3.5
-                    <i className="bx bxs-star" />
-                    <i className="bx bxs-star" />
-                    <i className="bx bxs-star" />
-                    <i className="bx bxs-star-half" />
-                    <i className="bx bx-star" />
-                  </div>
-                  <div className="d-flex">
-                    <i className="bi bi-people me-2" />
-                    <div className="card-people-course">3,550</div>
-                  </div>
-                </div>
-                <div className="d-flex align-items-end text-end">
-                  <h5 className="card-text me-3">NT 5,808</h5>
-                  <p className="card-text-discount m-0">NT 7,808</p>
-                </div>
-              </div>
-            </div>
-          </div>
+              )
+            })}
         </div>
       </section>
     </>

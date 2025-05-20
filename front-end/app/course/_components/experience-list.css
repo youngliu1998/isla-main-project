@@ -250,7 +250,7 @@
 } */
 .scroll-card {
   position: sticky;
-  top: 50px;
+  top: 100px;
   z-index: 10; /* 保險做法 */
 }
 .price-sticky-bar {
@@ -328,6 +328,10 @@
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.3s ease;
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
 }
 
 .heart-icon-course i {

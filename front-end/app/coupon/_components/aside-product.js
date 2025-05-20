@@ -4,7 +4,14 @@ export default function AsideProduct({
   productCategory = '',
   setProductCategory = '',
 }) {
-  const brands = ['Unleashia', 'Cosnori', 'Muzigae Mansion', 'Kaja', 'rom&nd']
+  const brands = [
+    'Unleashia',
+    'Cosnori',
+    'Muzigae Mansion',
+    'Kaja',
+    'rom&nd',
+    "A'Pieu",
+  ]
   const categories = ['眼部彩妝', '唇部彩妝', '臉頰彩妝', '眉部彩妝', '底妝']
 
   return (
