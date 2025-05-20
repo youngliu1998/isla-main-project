@@ -2,61 +2,95 @@
 
 import ComponentsSearchBar from './_components/search-bar'
 import useSWR from 'swr'
-import { useEffect, useState, useRef } from 'react'
-import EditPostModal from './_components/edit-post-modal'
-import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+// import EditPostModal from './_components/edit-post-modal'
+import { useRouter, useSearchParams } from 'next/navigation'
 import ComponentsPostCard from './_components/post-card'
 import Componentstab from '../_components/tab'
+import ComponentsSearchButton from './_components/search-button'
+import { useAuth } from '../../hook/use-auth'
+import { useFilter } from './_context/filterContext'
+import EditPostModal from './_components/edit-post-modal'
 
-const fetcher = (url) =>
-  fetch(url, {
-    // method: 'GET',
-    // referrerPolicy: 'no-referrer-when-downgrade',
-  }).then((res) => res.json())
+const fetcher = (url) => fetch(url).then((res) => res.json())
 
-export default function ForumPage(props) {
-  // 導向
+export default function ForumPage() {
   const router = useRouter()
+  const { user } = useAuth()
+  const userID = user.id
+  const [tabParams, setTabParams] = useState(new URLSearchParams())
+  const [asideParams, setAsideParams] = useState(new URLSearchParams())
+  const { productCateItems, postCateItems } = useFilter()
 
-  // 取得userID
-  const userID = 1
-  const [tab, setTab] = useState('')
-  const [keyword, setKeyword] = useState('')
-  const [productCate, setProductCate] = useState('')
-  const [postCate, setPostCate] = useState('')
+  const handleTabChange = (newTab) => {
+    const params = new URLSearchParams()
+    params.append('tab', newTab)
+    setTabParams(params)
+    const mergedParams = new URLSearchParams([
+      ...asideParams.entries(),
+      ...params.entries(),
+    ])
+    router.push(`http://localhost:3000/forum?${mergedParams.toString()}`)
+  }
 
-  // 分類篩選
-  const postCateItems = ['分享', '請益', '討論', '試色']
-  const productCateItems = ['唇膏', '底妝']
+  const handleAsideSearchChange = (keyword, productCate, postCate) => {
+    // NOTE 本來拆開在button事件中，使用button點擊事件作為跳轉判端依據，需要寫重複兩次程式，每次也會是新params因此product和post無法相互繼承
+    const params = new URLSearchParams()
+    if (keyword.length) {
+      params.append('keyword', keyword)
+    }
+    if (productCate.length) {
+      params.append('productCate', productCate.join(','))
+    }
+    if (postCate.length) {
+      params.append('postCate', postCate.join(','))
+    }
+    setAsideParams(params)
+    const mergedParams = new URLSearchParams([
+      ...tabParams.entries(),
+      ...params.entries(),
+    ])
+    // console.log(`----http://localhost:3000/forum?${mergedParams.toString()}`)
+    mutate()
+    router.push(`http://localhost:3000/forum?${mergedParams.toString()}`)
+  }
 
-  let tabParam = tab === 0 ? 'popular' : tab === 1 ? 'new' : ''
-  let keywordParam = keyword ?? ''
-  let productParam = productCate ?? ''
-  let postParam = postCate ?? ''
-  // const allParam = tabParam
-  //   console.log(
-  //     `http://localhost:3005/api/forum/posts/home?${tabParam}${keywordParam}${productParam}${postParam}`
-  //   )
-  // }
-  //
-  const params = new URLSearchParams()
-  params.append('keyword', keywordParam)
-  params.append('tab', tabParam)
-  params.append('product', productParam)
-  params.append('post', postParam)
-  const paramsString = params.toString()
-
-  // fetch每篇文章的資料
-  const postsAPI = `http://localhost:3005/api/forum/posts/home`
-  console.log(postsAPI)
+  const params = useSearchParams()
+  const postsAPI = params
+    ? `http://localhost:3005/api/forum/posts/home?${params}`
+    : `http://localhost:3005/api/forum/posts/home`
   const { data, isLoading, error, mutate } = useSWR(postsAPI, fetcher)
 
   if (error) {
     console.log(error)
     return (
-      <main className="main col col-10 d-flex flex-column align-items-center">
-        連線錯誤
-      </main>
+      <>
+        <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center">
+          <div className="posts d-flex flex-column gap-3 w-100">
+            <div className="tabs d-flex">
+              <Componentstab
+                items={['熱門', '最新', '測試']}
+                height={'40'}
+                // setTab={setTab}
+                mutate={mutate}
+                handleTabChange={handleTabChange}
+              />
+              <ComponentsSearchButton />
+            </div>
+            連線錯誤
+          </div>
+        </main>
+        <ComponentsSearchBar
+          // setKeyword={setKeyword}
+          // setTab={setTab}
+          // setProductCate={setProductCate}
+          // setPostCate={setPostCate}
+          postCateItems={postCateItems}
+          productCateItems={productCateItems}
+          handleAsideSearchChange={handleAsideSearchChange}
+        />
+        <EditPostModal />
+      </>
     )
   }
   let posts = data?.data
@@ -73,96 +107,79 @@ export default function ForumPage(props) {
       }
     })
   }
-
   if (isLoading) {
     return (
       <>
         <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center">
-          isLoading
+          <div className="posts d-flex flex-column gap-3 w-100">
+            <div className="tabs d-flex">
+              <Componentstab
+                items={['熱門', '最新']}
+                height={'40'}
+                // setTab={setTab}
+                mutate={mutate}
+                handleTabChange={handleTabChange}
+              />
+              <ComponentsSearchButton />
+            </div>
+            loading
+          </div>
         </main>
-        <ComponentsSearchBar />
+        <ComponentsSearchBar
+          // setKeyword={setKeyword}
+          // setTab={setTab}
+          // setProductCate={setProductCate}
+          // setPostCate={setPostCate}
+          postCateItems={postCateItems}
+          productCateItems={productCateItems}
+          handleAsideSearchChange={handleAsideSearchChange}
+        />
+        <EditPostModal />
       </>
     )
   }
   if (posts?.length === 0) {
     return (
       <>
-        <main className="main col col-10 d-flex flex-column align-items-center">
-          無文章資料
+        <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center">
+          <div className="posts d-flex flex-column gap-3 w-100">
+            <div className="tabs d-flex">
+              <Componentstab
+                items={['熱門', '最新']}
+                height={'40'}
+                // setTab={setTab}
+                mutate={mutate}
+                handleTabChange={handleTabChange}
+              />
+              <ComponentsSearchButton />
+            </div>
+            查無文章，請稍後再試
+          </div>
         </main>
-        <ComponentsSearchBar />
+        <ComponentsSearchBar
+          postCateItems={postCateItems}
+          productCateItems={productCateItems}
+          handleAsideSearchChange={handleAsideSearchChange}
+        />
+        <EditPostModal />
+        {/* <ComponentsSearchBar /> */}
       </>
     )
   }
-  console.log(posts)
-
-  // FIXME 這邊要重新fetch資料庫做更新比較好，還是在前端假
-  // // https://localhost:3000/forum?keyword=粉刺&tab=0&pdCate=唇膏&poCate=討論
-  // let tabParam
-  // let pdCate
-  // let poCate
-  // console.log(cate)
-  // if (cate.length !== 0) {
-  //   posts = posts.filter((post) => post.cate_name === cate)
-  //   if (cate === 1) {
-  //     posts = posts.sort(
-  //       (a, b) => new Date(b.updated_at) - new Date(a.updated_at)
-  //     )
-  //     tabParam = 'tab=1'
-  //   }
-  //   router.replace({})
-  // }
 
   return (
     <>
-      <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center">
-        <div className="posts d-flex flex-column gap-3 w-100">
-          <div className="tabs d-flex">
-            <Componentstab
-              items={['熱門', '最新']}
-              height={'40'}
-              setCate={setTab}
-              mutate={mutate}
-            />
-
-            <button
-              className="switcher button-clear dropdown-toggle d-flex d-xl-none justify-content-center align-items-center gap-1 text-decoration-none sub-text-color"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              分類
-            </button>
-            <div className="dropdown-menu px-3 py-2 shadow-lg border-0">
-              <div>
-                <div className="dropdown-label py-1 fs12 sub-text-color">
-                  商品類型
-                </div>
-                <button className="dropdown-item-forum px-2 py-1 rounded-3">
-                  唇膏
-                </button>
-                <button className="dropdown-item-forum rounded-3">唇膏</button>
-                <button className="dropdown-item-forum rounded-3">唇膏</button>
-              </div>
-              <div>
-                <div className="dropdown-label py-1 fs12 sub-text-color">
-                  文章類型
-                </div>
-                <button className="dropdown-item-forum px-2 py-1 rounded-3 button-clear">
-                  唇膏
-                </button>
-                <button className="dropdown-item-forum rounded-3 button-clear">
-                  唇膏
-                </button>
-                <button className="dropdown-item-forum rounded-3 button-clear">
-                  唇膏
-                </button>
-                <button className="dropdown-item-forum rounded-3 button-clear">
-                  唇膏
-                </button>
-              </div>
-            </div>
-          </div>
+      <main className="main posts-section col col-10 col-xl-8 d-flex flex-column align-items-center position-relative overflow-hidden no-scroll-bar">
+        <div className="tabs d-flex position-absolute w-100 top-0">
+          <Componentstab
+            cates={['熱門', '最新']}
+            height={'40'}
+            // setTab={setTab}
+            handleTabChange={handleTabChange}
+          />
+          <ComponentsSearchButton />
+        </div>
+        <div className="posts d-flex flex-column gap-3 pt-5 pb-5 mt-1 w-100 overflow-auto">
           {posts?.map((post) => {
             return (
               <ComponentsPostCard
@@ -191,14 +208,15 @@ export default function ForumPage(props) {
         </div>
       </main>
       <ComponentsSearchBar
-        setKeyword={setKeyword}
-        setTab={setTab}
-        setProductCate={setProductCate}
-        setPostCate={setPostCate}
+        // setKeyword={setKeyword}
+        // setTab={setTab}
+        // setProductCate={setProductCate}
+        // setPostCate={setPostCate}
         postCateItems={postCateItems}
         productCateItems={productCateItems}
+        handleAsideSearchChange={handleAsideSearchChange}
       />
-      <EditPostModal />
+      <EditPostModal postTitle="" postContent="" isUpdated={false} />
     </>
   )
 }

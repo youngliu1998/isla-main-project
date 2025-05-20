@@ -8,18 +8,17 @@ import '@/app/forum/_components/forum.css'
 import Link from 'next/link'
 import ComponentsBtnLikedSaved from '@/app/forum/_components/btn-liked-saved'
 import ComponentsPostCard from '@/app/forum/_components/post-card'
+import { useAuth } from '../../../../hook/use-auth'
 
-const fetcher = (url) =>
-  fetch(url, {
-    method: 'GET',
-    referrerPolicy: 'no-referrer-when-downgrade',
-  }).then((res) => res.json())
+const fetcher = (url) => fetch(url).then((res) => res.json())
 
 export default function MyPostPage(props) {
   const router = useRouter()
-  const userID = 1
+  const { user, isAuth } = useAuth() //NOTE
+  const userID = user.id
+  const userNick = user.nickname
 
-  const postsAPI = `http://localhost:3005/api/forum/posts/my-post`
+  const postsAPI = `http://localhost:3005/api/forum/posts/my-post?userID=${userID}`
   const { data, isLoading, error, mutate } = useSWR(postsAPI, fetcher)
   let posts = data?.data
   console.log(posts)

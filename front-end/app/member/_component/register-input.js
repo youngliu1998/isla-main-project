@@ -9,6 +9,7 @@ export default function RegisterInput({
   setText = (f) => {
     f
   },
+  disabled = '',
 }) {
   const isStar = name == 'email' || name == 'birthday' ? '*' : ''
   return (
@@ -20,6 +21,7 @@ export default function RegisterInput({
         </label>
         <input
           className="form-control"
+          disabled={disabled}
           type={type}
           name={name}
           value={value}
