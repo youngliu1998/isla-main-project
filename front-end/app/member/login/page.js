@@ -59,6 +59,26 @@ export default function LoginPage() {
         <h1 className="text-center login-title">
           <span className="title">ISLA</span> 會員登入
         </h1>
+        {/* === for test === */}
+        <div className="position-absolute top-50 left-0">
+          <div className="d-flex gap-4">
+            <div>admin:</div>
+            <div> admin@isla.com</div>
+          </div>
+          <div className="d-flex gap-4">
+            <div>teacher1:</div>
+            <div> hankjohnson@gmail.com</div>
+          </div>
+          <div className="d-flex gap-4">
+            <div>teacher2:</div>
+            <div> hankmartinez@gmail.com</div>
+          </div>
+          <div className="d-flex gap-4">
+            <div>teacher3:</div>
+            <div> frankmiller@gmail.com</div>
+          </div>
+        </div>
+        {/* === END for test === */}
         <div className="card-glass-linear login-panel">
           {/* login form */}
           <form
