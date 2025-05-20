@@ -1,4 +1,5 @@
 'use client'
+
 import useSWR from 'swr'
 import '../_components/coupon.css'
 import CouponLoading from '../_components/coupon-loading'
@@ -56,11 +57,12 @@ export default function CreatePage() {
   const [currentStep, setCurrentStep] = useState(0)
   const [answers, setAnswers] = useState(Array(questions.length).fill(''))
   const [fadeState, setFadeState] = useState('fade-in')
-  // monster
   const [isLoading, setIsLoading] = useState(false)
+  // 顯示成功創建優惠券
   const [showModal, setShowModal] = useState(false)
-  // 回傳專屬優惠券
   const [newCoupon, setNewCoupon] = useState(null)
+  // loading end show modal
+  const [isReadyToShowModal, setIsReadyToShowModal] = useState(false)
 
   const handleOptionClick = (value) => {
     const newAnswers = [...answers]
@@ -74,18 +76,6 @@ export default function CreatePage() {
       setCurrentStep(nextStep)
       setFadeState('fade-in')
     }, 300)
-  }
-
-  const handleNext = () => {
-    if (currentStep < questions.length - 1) {
-      goToStep(currentStep + 1)
-    }
-  }
-
-  const handlePrev = () => {
-    if (currentStep > 0) {
-      goToStep(currentStep - 1)
-    }
   }
 
   const handleSubmit = async () => {
@@ -111,6 +101,7 @@ export default function CreatePage() {
     }[product]
 
     try {
+      console.log('開始 loading')
       setIsLoading(true)
 
       const res = await fetch(
@@ -126,20 +117,20 @@ export default function CreatePage() {
           }),
         }
       )
+
       const result = await res.json()
-      // 儲存專屬優惠券資料
       if (result.status === 'success') {
         setNewCoupon(result.data)
+        setIsReadyToShowModal(true) // 等動畫完成後再顯示 modal
       } else {
         alert(result.message)
       }
     } catch (error) {
-      setIsLoading(false)
       console.error('送出錯誤:', error)
       alert('系統錯誤')
     }
   }
-
+  // 進度條
   const currentQuestion = questions[currentStep]
   const progress = ((currentStep + 1) / questions.length) * 100
 
@@ -148,15 +139,21 @@ export default function CreatePage() {
       <CouponLoading
         visible={isLoading}
         onComplete={() => {
+          console.log('動畫完成')
           setIsLoading(false)
-          setShowModal(true)
+          if (isReadyToShowModal) {
+            console.log('顯示 modal')
+            setShowModal(true)
+            setIsReadyToShowModal(false)
+          }
         }}
       />
-      {/* 專屬優惠券的modal */}
+
+      {/* 創建成功 modal */}
       {showModal && newCoupon && (
         <>
-          <div className="modal-overlay"></div>
-          <div className="coupon-modal text-center p-4 rounded shadow">
+          <div className="modal-overlay-blur"></div>
+          <div className="coupon-modal animate-fade-in d-flex flex-column">
             <CouponCard
               title={newCoupon.title}
               description={newCoupon.description}
@@ -172,12 +169,18 @@ export default function CreatePage() {
               valid_to={newCoupon.valid_to}
               isLogin={() => {}}
             />
-            <button
-              className="btn btn-warning mt-3"
-              onClick={() => setShowModal(false)}
-            >
-              查看我的優惠券
-            </button>
+            <div className="mt-4 d-flex flex-column gap-3">
+              <Link href="/" className="text-center">
+                <button className="btn btn-primary w-50 text-center">
+                  首頁
+                </button>
+              </Link>
+              <Link href="/products" className="text-center">
+                <button className="btn btn-primary w-50 text-center">
+                  立即逛逛
+                </button>
+              </Link>
+            </div>
           </div>
         </>
       )}
@@ -217,7 +220,9 @@ export default function CreatePage() {
               <div key={i} className="col-6 col-sm-4 col-md-3 col-lg-2">
                 <button
                   type="button"
-                  className={`image-option w-100 ${answers[currentStep] === opt.label ? 'selected' : ''}`}
+                  className={`image-option w-100 ${
+                    answers[currentStep] === opt.label ? 'selected' : ''
+                  }`}
                   onClick={() => handleOptionClick(opt.label)}
                 >
                   <Image
@@ -237,7 +242,7 @@ export default function CreatePage() {
             {currentStep > 0 && (
               <button
                 className="next-color btn-prev px-5 py-2"
-                onClick={handlePrev}
+                onClick={() => goToStep(currentStep - 1)}
               >
                 上一題
               </button>
@@ -245,7 +250,7 @@ export default function CreatePage() {
             {currentStep < questions.length - 1 ? (
               <button
                 className="next-color btn-next px-5 py-2"
-                onClick={handleNext}
+                onClick={() => goToStep(currentStep + 1)}
               >
                 下一題
               </button>
