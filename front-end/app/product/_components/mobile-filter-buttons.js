@@ -1,15 +1,9 @@
-'use client'
 import React from 'react'
 import PropTypes from 'prop-types'
 import clsx from 'clsx'
-import styles from './_style/desktop-filter-buttons.module.css'
+import styles from './_style/mobile-filter-buttons.module.css'
 
-const DesktopFilterButtons = ({
-  options,
-  selected,
-  onToggle,
-  renderOption,
-}) => {
+const MobileFilterButtons = ({ options, selected, onToggle, renderOption }) => {
   return (
     <div className={styles['sidebar-filter-filter-btn-container']}>
       {options.map((option, index) => {
@@ -32,14 +26,19 @@ const DesktopFilterButtons = ({
             <div className={styles['sidebar-filter-btn-check-box']}>
               <input
                 type="checkbox"
-                className="form-check-input"
+                className={clsx(
+                    'form-check-input',
+                    styles['form-check-input']
+                )}
                 checked={isSelected}
                 readOnly
               />
               {renderOption ? (
                 renderOption(option, index)
               ) : (
-                <span>{optionLabel}</span>
+                <span className={styles['Mobile-checkbox-Label']}>
+                  {optionLabel}
+                </span>
               )}
             </div>
           </div>
@@ -49,11 +48,11 @@ const DesktopFilterButtons = ({
   )
 }
 
-DesktopFilterButtons.propTypes = {
+MobileFilterButtons.propTypes = {
   options: PropTypes.array.isRequired,
   selected: PropTypes.array.isRequired,
   onToggle: PropTypes.func.isRequired,
   renderOption: PropTypes.func,
 }
 
-export default DesktopFilterButtons
+export default MobileFilterButtons
