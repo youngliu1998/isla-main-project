@@ -1,6 +1,10 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import Componentstab from './_components/tab'
+// ==== section component ====
+import CourseSection from './_components/_component-main-page/course/course-section'
+import ForumSection from './_components/_component-main-page/forum/forum-section'
+// ==== END section component ====
 import SubForum from './_components/_component-main-page/forum/sub-forum'
 import MainForum from './_components/_component-main-page/forum/main-forum'
 import './_styles/main-page.css'
@@ -45,35 +49,16 @@ export default function Home() {
             <div />
             <button className="btn btn-primary">查看更多</button>
           </section>
-          {/* ---- END course ---- */}
-          {/* ---- START coupons ---- */}
+          {/* ==== END course ==== */}
+          <CourseSection />
+          {/* ==== START coupons ==== */}
           <section></section>
-          {/* ---- END coupons ---- */}
-          {/* ---- START forum ---- */}
+          {/* ==== END coupons ==== */}
+          {/* ==== START forum ==== */}
           <section className="subsectoin-main-page">
             <h3>Top 文章</h3>
             <Componentstab items={['熱門', '最新']} height={52} />
-            <div className="row row-cols-lg-2 row-cols-1 gx-5 w-100">
-              <MainForum
-                number={1}
-                forumTitle="新手也好用的遮瑕&遮瑕刷"
-                forumContent="身為彩妝新手，還在努力學習階段，碰上好產品還是要分享的啦，本來就認為遮瑕是化妝"
-              />
-              <div className="col">
-                {Array(4)
-                  .fill(1)
-                  .map((v, i) => {
-                    return (
-                      <SubForum
-                        key={i}
-                        number={i + 2}
-                        forumTitle="新手也好用的遮瑕&遮瑕刷"
-                        forumContent="身為彩妝新手，還在努力學習階段，碰上好產品還是要分享的啦，本來就認為遮瑕是化妝"
-                      />
-                    )
-                  })}
-              </div>
-            </div>
+            <ForumSection />
             <button className="btn btn-primary">查看更多</button>
           </section>
           {/* ---- END forum ---- */}
