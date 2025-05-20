@@ -1,6 +1,8 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import { useAuth } from '../../../hook/use-auth'
+import { ClimbingBoxLoader } from 'react-spinners'
 
 // FIXME 讚數是否前端修改即可？
 
@@ -9,10 +11,12 @@ export default function ComponentsBtnLikedSaved({
   active = Boolean,
   count = '',
   postID = '',
-  userID = '',
+  // userID = '',
   mutate = () => {},
   color = '',
 }) {
+  const { user } = useAuth()
+  const userID = user.id
   const iconClass =
     type === 'liked'
       ? active
@@ -45,6 +49,7 @@ export default function ComponentsBtnLikedSaved({
           if (json.status === 'success') {
             mutate()
           }
+          console.log(userID)
         }}
       >
         <i className={`bi ${iconClass}  me-1`} />

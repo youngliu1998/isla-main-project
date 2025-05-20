@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import ComponentsAuthorInfo from './author-info'
 import ComponentsBtnLikedSaved from './btn-liked-saved'
 import { useRouter } from 'next/navigation'
@@ -22,19 +22,59 @@ export default function ComponentsPostCard({
   btnSavedActive = Boolean,
   btnLikedCount = '',
   btnSavedCount = '',
-  userID = '',
+  // userID = '',
   mutate = () => {},
 }) {
   const router = useRouter()
-  const date = new Date(updatedAt.replace(' ', 'T'))
-  const month = date.getMonth()
+
+  // 日期格式
+  const date = new Date(updatedAt)
+  const time = date.getTime()
+  const month = date.getMonth() + 1
   const day = date.getDate()
-  const dateFormat = `${month}月${day}日`
+  const oneDay = 24 * 60 * 60 * 1000
+  const todayNow = new Date()
+  const todayMidTime = new Date(
+    todayNow.getFullYear(),
+    todayNow.getMonth(),
+    todayNow.getDate()
+  ).getTime()
+
+  let dateFormat
+  if (Date.now() - time <= 120000) {
+    dateFormat = '剛剛'
+  } else if (time >= todayMidTime) {
+    dateFormat = date.toLocaleTimeString('zh-TW', {
+      hour: 'numeric',
+      minute: 'numeric',
+    })
+  } else if (time >= todayMidTime - oneDay) {
+    const time = date.toLocaleTimeString('zh-TW', {
+      hour: 'numeric',
+      minute: 'numeric',
+    })
+    dateFormat = `昨日 ${time}`
+  } else {
+    dateFormat = `${month}月${day}日`
+  }
+
+  // 整理卡片顯示
+  const contentText = postContent
+    // .replace('<br>', '')
+    .replace(/<img\b[^>]*>/g, '')
+    .replace(/<br>/g, '')
+  // .replace(/<div>[<br>]*<\/div>/, '')
+  // .replace('<div></div>', '')
+  const contentImg = postContent.match(/<img\b[^>]*>/g) || []
+  const contentImgSm = contentImg.map((v) =>
+    v.replace('w-50', 'w-100 h-100 object-fit-cover rounded-3')
+  )
+
   return (
     <>
       {/* FIXME cursor pointer */}
       <div
-        className="post-home d-flex flex-column gap-1 px-4 py-3 rounded-3 shadow-forum bg-pure-white card-border"
+        className="post-home d-flex flex-column gap-1 py-3 rounded-3 shadow-forum bg-pure-white card-border"
         key={postID}
         onClick={(e) => {
           e.preventDefault()
@@ -48,7 +88,7 @@ export default function ComponentsPostCard({
         tabIndex={0} //可被tab鍵聚焦
         style={{ cursor: 'pointer' }}
       >
-        <div className="d-flex align-items-center">
+        <div className="d-flex align-items-center px-4">
           <ComponentsAuthorInfo
             authorID={authorID}
             width={width}
@@ -62,33 +102,36 @@ export default function ComponentsPostCard({
             {dateFormat}
           </div>
         </div>
-        <div className="post-header d-flex">
-          <div className="post-title me-2 fw-medium text-truncate main-text-color">
-            {postTitle}
-          </div>
-          <div className="post-tag px-2 py-1 rounded-pill fs12 text-nowrap bg-light-hover main-color">
+        <div className="post-header d-flex px-4">
+          <div className="post-tag px-2 py-1 me-2 rounded-pill fs12 text-nowrap bg-light-hover main-color">
             {postCateName}
+          </div>
+          <div className="post-title fw-medium text-truncate main-text-color">
+            {postTitle}
           </div>
         </div>
         <div
-          className="post-content text-truncate fs14 sub-text-color"
+          className="post-content text-truncate fs14 sub-text-color px-4"
           dangerouslySetInnerHTML={{
-            __html: postContent.replace('<br/>', ' ').slice(0, 50),
+            __html: contentText.replace('<br/>', ' ').slice(0, 80),
           }}
         />
-        <div className="imgs d-flex gap-3 overflow-auto">
-          <div className="img flex-shrink-0 rounded-3" />
-          <div className="img flex-shrink-0 rounded-3" />
-          <div className="img flex-shrink-0 rounded-3" />
-          <div className="img flex-shrink-0 rounded-3" />
+        <div className="imgs d-flex gap-3 overflow-auto ps-4">
+          {contentImgSm.map((v, i) => (
+            <div
+              key={i}
+              className="img flex-shrink-0 rounded-3"
+              dangerouslySetInnerHTML={{ __html: v }}
+            />
+          ))}
         </div>
-        <div className="evaluates d-flex fs14 ms-n4">
+        <div className="evaluates d-flex fs14 ms-n4 px-4">
           <ComponentsBtnLikedSaved
             type={'liked'}
             active={btnLikedActive}
             count={btnLikedCount}
             postID={postID}
-            userID={userID}
+            // userID={userID}
             mutate={mutate}
           />
           <button className="evaluate comment px-2 py-1 border-0 rounded-3 d-flex align-items-center bg-pure-white">
@@ -99,7 +142,7 @@ export default function ComponentsPostCard({
             active={btnSavedActive}
             count={btnSavedCount}
             postID={postID}
-            userID={userID}
+            // userID={userID}
             mutate={mutate}
           />
         </div>
