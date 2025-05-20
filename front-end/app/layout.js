@@ -1,6 +1,8 @@
 // import { Geist, Geist_Mono } from 'next/font/google'
 import '@fontsource/plaster'
 import '@fontsource/noto-sans-tc'
+import 'react-toastify/dist/ReactToastify.css'
+import { ToastContainer } from 'react-toastify'
 import Header from './_components/header'
 import Footer from './_components/footer'
 import '@/app/_styles/globals.scss'
@@ -30,6 +32,7 @@ export default function RootLayout({ children }) {
           <Header />
           <div style={{ marginTop: '80px' }}>{children}</div>
           <Footer />
+          <ToastContainer />
         </body>
       </Provider>
     </html>
