@@ -5,8 +5,14 @@ import { Navigation } from 'swiper/modules'
 import 'swiper/css'
 import 'swiper/css/navigation'
 import styles from './coupon-swiper.module.scss'
+import CouponCardCart from '../coupon-card-cart/coupon-card-cart'
 
-const CouponSwiper = ({ coupons, swiperRef }) => {
+const CouponSwiper = ({
+  coupons = [],
+  swiperRef,
+  selectedCoupon,
+  onSelectCoupon,
+}) => {
   return (
     <div className={styles.couponWrapper}>
       <Swiper
@@ -15,19 +21,16 @@ const CouponSwiper = ({ coupons, swiperRef }) => {
         }}
         modules={[Navigation]}
         navigation
-        spaceBetween={20}
-        slidesPerView={2} // 每次顯示兩張卡片
+        spaceBetween={6}
+        slidesPerView={2.5} // 每次顯示兩張卡片
       >
         {coupons.map((coupon) => (
           <SwiperSlide key={coupon.id}>
-            <div className={styles.couponCard}>
-              <div className={styles.couponTitle}>{coupon.title}</div>
-              <div className={styles.couponCondition}>{coupon.condition}</div>
-              <div className={styles.couponFooter}>
-                <span className={styles.couponTag}>{coupon.tag}</span>
-                <button className={styles.couponButton}>套用</button>
-              </div>
-            </div>
+            <CouponCardCart
+              coupon={coupon}
+              selected={coupon.id === selectedCoupon?.id}
+              onSelect={onSelectCoupon}
+            />
           </SwiperSlide>
         ))}
       </Swiper>

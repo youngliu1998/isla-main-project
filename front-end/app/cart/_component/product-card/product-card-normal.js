@@ -16,6 +16,8 @@ export default function ProductCardNormal({
   category,
   onDelete,
   onQuantityChange,
+  isChecked = false,
+  onCheckChange = () => {},
 }) {
   return (
     <div className="card border-0 mb-5">
@@ -26,6 +28,8 @@ export default function ProductCardNormal({
               className={`${styles.checkboxInput} form-check-input`}
               type="checkbox"
               id={id}
+              checked={isChecked}
+              onChange={(e) => onCheckChange(e.target.checked)}
             />
             <label htmlFor={id}>
               <Image
@@ -49,7 +53,7 @@ export default function ProductCardNormal({
                   {title}
                 </h5>
                 {category && (
-                  <span className="badge bg-secondary ">{category}</span>
+                  <span className="badge bg-secondary mb-1">{category}</span>
                 )}
               </div>
               <button
@@ -57,13 +61,14 @@ export default function ProductCardNormal({
                 className="btn border-0 p-0"
                 onClick={onDelete}
               >
-                <BsTrash className="text-subtext fs-5" />
+                <BsTrash className="text-subtext fs-5 mb-1" />
               </button>
             </div>
 
             {/* 數量與價格 */}
             <div className="d-flex justify-content-between align-items-center">
               <QuantityControler
+                id={id}
                 value={quantity}
                 onChange={(newQty) => onQuantityChange(newQty)}
               />
