@@ -2,6 +2,10 @@ import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import qs from 'qs'
 
+//這是取得所有商品資料的函式
+//範例： const { products, productsLoading, productsError, brands, categories, tags } = useProducts(filters)
+//可參考商品列表的使用來參考
+
 export const useProducts = (filters) => {
   const filtersQuery = useQuery({
     queryKey: ['filters'],
@@ -53,4 +57,49 @@ export const useProducts = (filters) => {
     productsLoading: productsQuery.isLoading,
     productsError: productsQuery.error,
   }
+}
+
+export const UseProductDetail = (id) => {
+  return useQuery({
+    queryKey: ['product', id],
+    queryFn: async () => {
+      const res = await axios.get(`http://localhost:3000/api/product/${id}`)
+      if (res.status !== 200 || res.data.success !== true) {
+        throw new Error('Failed to fetch product reviews')
+      }
+      return res.data.data
+    },
+    enabled: !!id, // 確保 id 存在才執行
+    staleTime: 1000 * 60 * 10, // 10 分鐘快取
+  })
+}
+
+export const UseProductReviews = (id) => {
+  return useQuery({
+    queryKey: ['product-reviews', id],
+    queryFn: async () => {
+      const res = await axios.get(`http://localhost:3000/api/product-reviews/${id}`)
+      if (res.status !== 200 || res.data.success !== true) {
+        throw new Error('Failed to fetch product reviews')
+      }
+      return res.data.data
+    },
+    enabled: !!id, // 確保 id 存在才執行
+    staleTime: 1000 * 60 * 600, // 10 分鐘快取
+  })
+}
+
+export const UseProductIngredient = (id) => {
+  return useQuery({
+    queryKey: ['product-ingredient', id],
+    queryFn: async () => {
+      const res = await axios.get(`http://localhost:3000/api/product-ingredient/${id}`)
+      if (res.status !== 200 || res.data.success !== true) {
+        throw new Error('Failed to fetch product reviews')
+      }
+      return res.data.data
+    },
+    enabled: !!id, // 確保 id 存在才執行
+    staleTime: 1000 * 60 * 10, // 10 分鐘快取
+  })
 }

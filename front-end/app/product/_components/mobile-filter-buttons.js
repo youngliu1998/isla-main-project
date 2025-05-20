@@ -1,16 +1,11 @@
-'use client'
 import React from 'react'
 import PropTypes from 'prop-types'
-import './_style.css/desktop-filter-buttons.css'
+import clsx from 'clsx'
+import styles from './_style/mobile-filter-buttons.module.css'
 
-const DesktopFilterButtons = ({
-  options,
-  selected,
-  onToggle,
-  renderOption,
-}) => {
+const MobileFilterButtons = ({ options, selected, onToggle, renderOption }) => {
   return (
-    <div className="sidebar-filter-filter-btn-container">
+    <div className={styles['sidebar-filter-filter-btn-container']}>
       {options.map((option, index) => {
         const isObject = typeof option === 'object' && option !== null
         const optionValue = isObject
@@ -21,23 +16,29 @@ const DesktopFilterButtons = ({
 
         return (
           <div
-            key={optionValue || index} // 添加索引作為備用 key
-            className={`sidebar-filter-filter-btn ${
-              isSelected ? 'sidebar-filter-filter-btn-active' : ''
-            }`}
+            key={optionValue || index}
+            className={clsx(
+              styles['sidebar-filter-filter-btn'],
+              isSelected && styles['sidebar-filter-filter-btn-active']
+            )}
             onClick={() => onToggle(optionValue)}
           >
-            <div className="sidebar-filter-btn-check-box">
+            <div className={styles['sidebar-filter-btn-check-box']}>
               <input
                 type="checkbox"
-                className="form-check-input"
+                className={clsx(
+                    'form-check-input',
+                    styles['form-check-input']
+                )}
                 checked={isSelected}
                 readOnly
               />
               {renderOption ? (
                 renderOption(option, index)
               ) : (
-                <span>{optionLabel}</span>
+                <span className={styles['Mobile-checkbox-Label']}>
+                  {optionLabel}
+                </span>
               )}
             </div>
           </div>
@@ -47,11 +48,11 @@ const DesktopFilterButtons = ({
   )
 }
 
-DesktopFilterButtons.propTypes = {
+MobileFilterButtons.propTypes = {
   options: PropTypes.array.isRequired,
   selected: PropTypes.array.isRequired,
   onToggle: PropTypes.func.isRequired,
   renderOption: PropTypes.func,
 }
 
-export default DesktopFilterButtons
+export default MobileFilterButtons

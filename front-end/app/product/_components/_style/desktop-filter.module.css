@@ -1,7 +1,7 @@
 .sidebar-filter-filter {
   /*padding: 20px;*/
   /* background-color: #ffffff; */
-  width: 325px;
+  width: 280px;
   /*height: 100vh;*/
 }
 .Mobile-filter-btn-box {
@@ -40,7 +40,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 0 12px;
+  /*padding: 0 6px;*/
 }
 .sidebar-filter-order-menu a {
   text-decoration: none;
@@ -82,7 +82,7 @@
   border-radius: 50px;
   border: none;
 }
-.sidebar-filter-order-order .OrderArrow {
+.sidebar-filter-order-order .order-arrow {
   font-size: 18px;
   color: #fff;
   padding: 0 3px 3px 0;
@@ -215,7 +215,22 @@
     font-size: 16px;
     font-weight: 200;
   }
-
-  .form-check-input-sale-only {
+}
+.sidebar-filter-filter-menu-sale {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  /* background: #e3dedd; */
+  border-radius: 18px;
+  padding: 6px 16px 8px 16px;
+  border: #f0e1de 1px solid;
+  .sidebar-filter-filter-label {
+    color: #e47e71;
+    /* background: #000; */
+    padding: 4px 0;
+    font-size: 16px;
+    font-weight: 200;
   }
 }
+

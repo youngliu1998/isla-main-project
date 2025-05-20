@@ -311,7 +311,6 @@ export async function getProductDetail(productId) {
     },
     colors,
     images,
-    ingredients,
     average_rating,
   }
 }

@@ -2,7 +2,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { BsStarFill, BsStar } from 'react-icons/bs'
-import './_style.css/product-rating.css'
+import './_style/product-rating.css'
 
 const RatingComponent = ({
   rating,

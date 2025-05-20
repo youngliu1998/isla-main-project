@@ -11,7 +11,7 @@
   overflow-x: auto;
   -webkit-overflow-scrolling: touch; /* 提升 iOS 滑動體驗 */
   scrollbar-width: none; /* Firefox 隱藏 scrollbar */
-  gap: 0.5rem; /* 可選的按鈕間距 */
+  gap: 0.5rem;
   padding: 0.5rem;
 }
 .sidebar-filter-filter-btn {

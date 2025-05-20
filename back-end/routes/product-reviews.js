@@ -8,14 +8,11 @@ router.get('/:id', async (req, res) => {
     const productId = parseInt(req.params.id)
     if (isNaN(productId)) return res.status(400).json({ error: 'ID格式錯誤' })
 
-    const [product, reviews] = await Promise.all([getProductReviews(productId)])
+    const [reviews] = await Promise.all([getProductReviews(productId)])
 
-    res.json({
+    res.status(200).json({
       success: true,
-      data: {
-        ...product,
-        reviews,
-      },
+      data: Object.values(reviews), // 將 Object 轉為 Array
     })
   } catch (error) {
     res.status(404).json({ success: false, message: error.message })

@@ -16,6 +16,7 @@
   padding-bottom: 48px;
   padding-right: 16px;
   padding-left: 16px;
+
   box-shadow: 0 2px 15px rgba(5, 5, 5, 0.15);
 }
 
@@ -92,12 +93,15 @@
 }
 .sidebar-filter-search-x-icon {
   font-size: 36px;
+  background: none;
+  padding: 0 0 12px 0;
 }
 .sidebar-filter-search {
   height: 100%;
   width: 100%;
   border: none;
   background: none;
+
 }
 
 .sidebar-filter-order-menu a {
@@ -110,6 +114,7 @@
   font-size: 14px;
   font-weight: 700;
   color: #858585;
+  padding: 18px 0 6px 0;
 }
 .sidebar-filter-order-btn {
   display: flex;
@@ -140,7 +145,7 @@
   border-radius: 50px;
   border: none;
 }
-.sidebar-filter-order-order .OrderArrow {
+.OrderArrow {
   font-size: 18px;
   color: #fff;
   padding: 0 1px 4px 0;
@@ -181,6 +186,7 @@
   align-items: center;
   gap: 10px;
   align-self: stretch;
+
 }
 .sidebar-filter-filter-btn a {
   text-decoration: none;
@@ -267,8 +273,13 @@
   gap: 0;
 }
 .sidebar-filter-filter-btn-container {
+  display: flex;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch; /* 提升 iOS 滑動體驗 */
+  scrollbar-width: none; /* Firefox 隱藏 scrollbar */
+  gap: 0.5rem;
+  padding: 0.5rem;
 }
-
 .sale-only-switch-container {
   display: flex;
   align-items: center;
@@ -278,17 +289,13 @@
   border-radius: 18px;
   padding: 6px 10px 8px 10px;
   border: #f0e1de 1px solid;
-
-  .sidebar-filter-filter-label {
-    color: #e47e71;
-    /* background: #000; */
-    padding: 4px 0;
-    font-size: 16px;
-    font-weight: 200;
-  }
-
-  .form-check-input-sale-only {
-  }
+}
+.sidebar-filter-filter-label-sale-only {
+  color: #e47e71;
+  /* background: #000; */
+  padding: 4px ;
+  font-size: 16px;
+  font-weight: 200;
 }
 
 .sidebar-filter-input-label {
@@ -299,4 +306,42 @@
   border: none;
   border-radius: 9999px;
   white-space: nowrap; /* 按鈕內容不要自動換行 */
+}
+
+.form-check-input {
+  width: 20px;
+  height: 20px;
+  border: none;
+  background-color: transparent;
+  transition: all 0.2s ease-in-out;
+  position: relative;
+  appearance: none;
+  cursor: pointer;
+  margin: 0;
+  padding: 0;
+
+  &:hover {
+    border-radius: none;
+    border: none;
+    background: none;
+    /*border-color: #505050;*/
+    /*background-color: rgba(227, 128, 128, 0.05);*/
+  }
+
+  &:checked {
+    border-radius: 100px;
+    background-color: #e56c6c;
+    border: none;
+    /*background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M13.485 1.929a.75.75 0 0 1 0 1.06L6.56 9.915 3.03 6.384a.75.75 0 1 1 1.06-1.06l2.47 2.47 6.364-6.364a.75.75 0 0 1 1.06 0z'/%3E%3C/svg%3E");*/
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 90%;
+  }
+
+  &:focus {
+    border-radius: 50px;
+    border: none;
+    outline: none;
+    box-shadow: none;
+  }
 }

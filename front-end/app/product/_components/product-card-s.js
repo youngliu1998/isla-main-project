@@ -2,7 +2,7 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import './_style.css/product-card-s.css'
+import './_style/product-card-s.css'
 import RatingComponent from './product-rating.js'
 import BookmarkComponent from './product-bookmark.js'
 import Image from 'next/image'
@@ -119,7 +119,8 @@ function ProductCard({ product }) {
         <div className="product-card-price">
           <div className="product-card-price-box d-flex gap-2">
             <div className="product-card-main-price">{price}</div>
-            {originalPrice && (
+
+            {originalPrice !== price && (
               <div className="product-card-basic-price">
                 <del>{originalPrice}</del>
               </div>

@@ -1,0 +1,38 @@
+.comment-cat {
+    margin-bottom: 1rem;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.cat-card {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.cat-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.user-img img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.username-cat {
+    font-weight: bold;
+    font-size: 1rem;
+}
+
+.star-box {
+    display: flex;
+}
+
+.cat-body {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: #333;
+}
