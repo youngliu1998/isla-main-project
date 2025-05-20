@@ -1,53 +1,31 @@
 'use client'
-
 import './coupon.css'
 
-export default function PcNav({
-  currentType = '',
-  setCurrentType = '',
-  showClaimed,
-  setShowClaimed,
-  isMemberCenter = false,
-  couponPageType = 'product', // 'product' 或 'course'
+export default function CouponFilterNav({
+  options = [], // li選項
+  currentValue, // 當前選擇的值加上active
+  onChange, // 切換選項時的處理函式
+  showSwitch = false, // 顯示已領取
+  isChecked = false, // 開關是否打開
+  onToggleSwitch = () => {}, // 點擊開關時
 }) {
-  // 定義所有優惠券類型
-  const allCouponTypes = [
-    { label: '全部', value: ' ' },
-    { label: '滿額券', value: 1 },
-    { label: '折扣券', value: 2 },
-    { label: '免運券', value: 3 },
-  ]
-
-  // 如果是課程頁，移除免運券
-  const couponTypes =
-    couponPageType === 'course'
-      ? allCouponTypes.filter((item) => item.value !== 3)
-      : allCouponTypes
-
-  const couponStates = [
-    { label: '已領取', value: 1 },
-    { label: '即將過期', value: 4 },
-    { label: '已使用', value: 2 },
-    { label: '已過期', value: 3 },
-  ]
-
-  const navList = isMemberCenter ? couponStates : couponTypes
-
   return (
-    <ul className="sub-text nav d-none d-md-flex justify-content-center justify-content-md-start mt-3">
-      {navList.map((item) => (
+    <ul
+      className={`sub-text nav d-none d-md-flex justify-content-center justify-content-md-start mt-3`}
+    >
+      {options.map((item) => (
         <li
-          className="hover-underline nav-item col-3 col-sm-auto"
           key={item.value}
+          className="hover-underline nav-item col-3 col-sm-auto"
         >
           <a
-            className={`nav-link sub-text px-0 px-md-2 px-lg-3 text-center ${
-              currentType === item.value ? 'active' : ''
-            }`}
             href="#"
+            className={`nav-link sub-text px-0 px-md-2 px-lg-3 text-center ${
+              currentValue === item.value ? 'active' : ''
+            }`}
             onClick={(e) => {
               e.preventDefault()
-              setCurrentType(item.value)
+              onChange(item.value)
             }}
           >
             {item.label}
@@ -55,15 +33,14 @@ export default function PcNav({
         </li>
       ))}
 
-      {!isMemberCenter && (
+      {showSwitch && (
         <div className="form-check form-switch d-flex align-items-center ms-4">
           <input
             className="form-check-input switch me-2"
             type="checkbox"
-            role="switch"
             id="switchCheckDefault"
-            checked={showClaimed}
-            onChange={() => setShowClaimed((prev) => !prev)}
+            checked={isChecked}
+            onChange={onToggleSwitch}
           />
           <label
             className="form-check-label sub-text"

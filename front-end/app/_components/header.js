@@ -1,56 +1,71 @@
 'use client'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
+import useCartCount from '@/app/cart/hook/useCartCount'
+import { useState } from 'react'
 import { BsHandbag } from 'react-icons/bs'
+import { useAuth } from '../../hook/use-auth'
+import HamMenu from './_component/ham-menu'
+import HamMeunNav from './_component/ham-meun-nav'
+import HeaderNav from './_component/header-nav'
 import './header.css'
 
 export default function Header() {
+  const cartIconNum = useCartCount()
   const pathname = usePathname()
+  const router = useRouter()
+
+  const handleCartClick = () => {
+    const token = localStorage.getItem('jwtToken')
+    if (!token) {
+      router.push('/member/login')
+    } else {
+      router.push('/cart')
+    }
+  }
+  const [hamMenuOpen, setHamMenuOpen] = useState(false)
+  // const pathname = usePathname()
+  const { isAuth } = useAuth()
+  const loginUrl = isAuth ? 'profile' : 'login'
   if (
     pathname.includes('login') ||
     pathname.includes('register') ||
     pathname.includes('forget-password')
-  )
+  ) {
     return <></>
+  }
+
   return (
     <>
-      <header className="header-module">
-        <div className="header-body">
-          <div className="title">ISLA</div>
-          <nav className="d-lg-block d-none">
-            <ul>
-              <li>
-                <Link href="/product">所有產品</Link>
-              </li>
-              <li>
-                <Link href="">品牌總覽</Link>
-              </li>
-              <li>
-                <Link href="">優惠券專區</Link>
-              </li>
-              <li>
-                <Link href="/course">美妝教室</Link>
-              </li>
-              <li>
-                <Link href="/forum">美妝社群</Link>
-              </li>
-            </ul>
-          </nav>
-          <div className="icons">
-            <button>
+      <header>
+        <div className="position-relative header-body">
+          {/* (START) for burger menu*/}
+          <HamMeunNav
+            hamMenuOpen={hamMenuOpen}
+            setHamMenuOpen={setHamMenuOpen}
+          />
+          <HamMenu hamMenuOpen={hamMenuOpen} setHamMenuOpen={setHamMenuOpen} />
+          {/* (END) for burger menu */}
+          <div className="order-lg-1 order-2 title">ISLA</div>
+          {/*  nav-bar */}
+          <HeaderNav />
+          <div className="order-3 icons">
+            <button className="d-lg-block d-none">
               <i className="bi bi-search" />
             </button>
-            <Link href="/cart">
-              <button className="cart-icon">
-                <BsHandbag style={{ color: 'white', fontSize: '30px' }} />
-                <div>2</div>
+
+            <button className="cart-icon" onClick={handleCartClick}>
+              <BsHandbag style={{ color: 'white', fontSize: '30px' }} />
+              {/* <div>2</div> */}
+              {cartIconNum > 0 && <div>{cartIconNum}</div>}
+            </button>
+            <Link href={'/member/' + loginUrl} className="d-lg-block d-none">
+              <button>
+                <i className="bi bi-person-circle" />
               </button>
             </Link>
-            <button>
-              <Link href="/member/login">
-                <i className="bi bi-person-circle" />
-              </Link>
-            </button>
+            {/* </Link> */}
+            {/* </button> */}
           </div>
         </div>
       </header>

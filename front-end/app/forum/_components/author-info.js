@@ -9,7 +9,6 @@ export default function ComponentsAuthorInfo({
   authorID = '',
   width = '',
   src = '',
-  alt = '',
   fontSize = '',
   color = '',
   authorName = '',
@@ -19,23 +18,23 @@ export default function ComponentsAuthorInfo({
     e.stopPropagation() //卡片從Link換成div role=link後，要用這個才能止住事件冒泡
     e.preventDefault()
     router.push(`/forum/profile/${authorID}`)
-    console.log(authorID)
   }
 
   return (
     <>
-      {/* <div> */}
       <button
         className="author-info d-inline-flex align-items-center gap-2 px-0 button-clear me-auto"
         onClick={handleNavigate}
       >
-        <ComponentsAvatar classWidth={width} src={src} alt={alt} />
-        {/* author-name fs14 sub-text-color */}
+        <ComponentsAvatar
+          classWidth={width}
+          src={`http://localhost:3005/images/member/${src}`}
+          alt={authorName}
+        />
         <span style={{ fontSize: fontSize + 'px', color: color }}>
           {authorName}
         </span>
       </button>
-      {/* </div> */}
     </>
   )
 }

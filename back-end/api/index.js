@@ -32,7 +32,7 @@ const whiteList = frontendUrl.split(',')
 app.use(
   cors({
     origin: whiteList,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     credentials: true,
   })
 )
@@ -121,7 +121,14 @@ for (const filename of filenames) {
   if (stats.isFile()) {
     const item = await import(pathToFileURL(path.join(routePath, filename)))
     const slug = filename.split('.')[0]
-    app.use(`${apiPath}/${slug === 'index' ? '' : slug}`, item.default)
+    if (item?.default && typeof item.default === 'function') {
+      app.use(`${apiPath}/${slug === 'index' ? '' : slug}`, item.default)
+    } else {
+      console.warn(
+        `無法載入路由檔案: ${filename}，請確認有 export default router`
+      )
+    }
+    // app.use(`${apiPath}/${slug === 'index' ? '' : slug}`, item.default)
   }
 
   // 如果是資料夾，則再讀取資料夾內的檔案
@@ -139,10 +146,20 @@ for (const filename of filenames) {
           pathToFileURL(path.join(routePath, filename, subFilename))
         )
         const slug = subFilename.split('.')[0]
-        app.use(
-          `${apiPath}/${filename}/${slug === 'index' ? '' : slug}`,
-          item.default
-        )
+        if (item?.default && typeof item.default === 'function') {
+          app.use(
+            `${apiPath}/${filename}/${slug === 'index' ? '' : slug}`,
+            item.default
+          )
+        } else {
+          console.warn(
+            `無法載入路由檔案: ${filename}/${subFilename}，請確認有 export default router`
+          )
+        }
+        // app.use(
+        //   `${apiPath}/${filename}/${slug === 'index' ? '' : slug}`,
+        //   item.default
+        // )
       }
     }
   }

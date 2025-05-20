@@ -1,4 +1,5 @@
-export default function CouponHeader({ type = ' ' }) {
+import Link from 'next/link'
+export default function CouponHeader({ type = ' ', hasMemberCoupon = false }) {
   const titleMap = {
     product: '優惠券專區 - 商品',
     course: '優惠券專區 - 課程',
@@ -10,10 +11,13 @@ export default function CouponHeader({ type = ' ' }) {
       {/* 電腦版標題 */}
       <div className="d-none d-md-flex align-items-center ps-3">
         <h2 className="me-3 mb-0">{titleMap[type]}</h2>
-        {type === 'member' && (
-          <a href="#" className="personal-coupon-tab text-decoration-none">
+        {type === 'member' && !hasMemberCoupon && (
+          <Link
+            href="/coupon/create"
+            className="personal-coupon-tab text-decoration-none"
+          >
             🎁 專屬優惠券
-          </a>
+          </Link>
         )}
       </div>
 

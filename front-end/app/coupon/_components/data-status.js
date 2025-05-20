@@ -5,6 +5,7 @@ export default function DataStatus({
   message = '',
   errorMessage = '',
 }) {
+  // 載入中
   if (isLoading) {
     return (
       <div className="text-center py-5 sub-text fs-5">
