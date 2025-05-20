@@ -5,14 +5,15 @@ import db from '../../config/mysql.js'
 import verifyToken from '../../lib/verify-token.js' // token verification
 
 // api settings
+let newFileName = ''
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, '/images/member')
+    cb(null, 'public/images/member')
   },
   filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-    cb(null, file.fieldname + '-' + uniqueSuffix)
-  }
+    newFileName = file.fieldname + '-' + Date.now() + '.jpg'
+    cb(null, file.fieldname + '-' + Date.now() + '.jpg')
+  },
 })
 
 const upload = multer({ storage: storage })
@@ -33,7 +34,7 @@ router.post('/', verifyToken, upload.single('image'), async (req, res) => {
   try {
     const query = `UPDATE users SET ava_url=? WHERE id=?`
     const user = await db
-      .execute(query, [id])
+      .execute(query, [newFileName, id])
       .then((data) => data[0][0])
       .catch((err) => {
         error = err

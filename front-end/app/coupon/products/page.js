@@ -1,5 +1,6 @@
 'use client'
 import useSWR from 'swr'
+import dayjs from 'dayjs'
 import '../_components/coupon.css'
 import AsideProduct from '../_components/aside-product'
 import MobileNav from '../_components/mobile-nav'
@@ -51,6 +52,7 @@ export default function CouponPage() {
     3: 'Muzigae Mansion',
     4: 'Kaja',
     5: 'rom&nd',
+    6: "A'Pieu",
   }
   const nameToId = Object.fromEntries(
     Object.entries(brandMap).map(([id, name]) => [name, Number(id)])
@@ -80,6 +82,9 @@ export default function CouponPage() {
   const coupons = Array.isArray(data?.data?.coupons) ? data.data.coupons : []
 
   // console.log('coupons from API:', coupons)
+  // 以過期的不顯示
+  const now = dayjs()
+  const shouldExcludeExpired = !showClaimed
 
   // 篩選 + 排序
   const filteredCoupons = coupons
@@ -92,8 +97,16 @@ export default function CouponPage() {
       const categoryMatch =
         !productCategory || coupon.category_name === productCategory
 
+      const validTo = dayjs(coupon.valid_to)
+      const isExpired = validTo.isBefore(now.startOf('day'))
+
       return (
-        isProduct && typeMatch && claimedMatch && brandMatch && categoryMatch
+        isProduct &&
+        typeMatch &&
+        claimedMatch &&
+        brandMatch &&
+        categoryMatch &&
+        (shouldExcludeExpired ? !isExpired : true) // 排除過期
       )
     })
     .sort((a, b) => {

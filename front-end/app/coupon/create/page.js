@@ -1,29 +1,66 @@
 'use client'
-import { useState } from 'react'
+import useSWR from 'swr'
 import '../_components/coupon.css'
+import CouponLoading from '../_components/coupon-loading'
+import CouponCard from '../_components/coupon-card'
 import Link from 'next/link'
+import Image from 'next/image'
+import { useState } from 'react'
+import { useAuth } from '@/hook/use-auth'
+
+const fetcher = (...args) => fetch(...args).then((res) => res.json())
 
 const questions = [
   {
     title: '您的膚質？',
     type: 'single',
-    options: ['油性肌膚', '乾性肌膚', '敏感肌膚', '混合肌膚'],
+    options: [
+      { label: '油性肌膚', image: '/images/coupon/oil-skin.jpeg' },
+      { label: '乾性肌膚', image: '/images/coupon/dry-skin.webp' },
+      { label: '敏感肌膚', image: '/images/coupon/sensitive-skin.jpg' },
+      { label: '混合肌膚', image: '/images/coupon/combination-skin.webp' },
+    ],
   },
   {
     title: '您喜愛的品牌？',
     type: 'single',
-    options: ['kaja', 'rom&nd', 'unleashia', 'COSNORI', "A'pieu", 'MUZIGAE'],
+    options: [
+      { label: 'kaja', image: '/images/coupon/kaja.png' },
+      { label: 'rom&nd', image: '/images/coupon/rom&nd.png' },
+      { label: 'unleashia', image: '/images/coupon/unleashia.png' },
+      { label: 'COSNORI', image: '/images/coupon/cosnori.png' },
+      { label: "A'pieu", image: '/images/coupon/apieu.png' },
+      { label: 'MUZIGAE', image: '/images/coupon/muzigae.png' },
+    ],
   },
   {
     title: '近日想購買的產品？',
     type: 'single',
-    options: ['眼影', '口紅', '唇蜜', '粉底', '氣墊粉餅'],
+    options: [
+      { label: '眼部彩妝', image: '/images/eye.jpg' },
+      { label: '唇部彩妝', image: '/images/lipstick.jpg' },
+      { label: '臉頰彩妝', image: '/images/gloss.jpg' },
+      { label: '眉部彩妝', image: '/images/foundation.jpg' },
+      { label: '底妝', image: '/images/cushion.jpg' },
+    ],
   },
 ]
 
 export default function CreatePage() {
+  const { user } = useAuth()
+  const url = user
+    ? `http://localhost:3005/api/coupon/products/member?user_id=${user.id}`
+    : null
+  const { data, error } = useSWR(url, fetcher)
+
   const [currentStep, setCurrentStep] = useState(0)
   const [answers, setAnswers] = useState(Array(questions.length).fill(''))
+  const [fadeState, setFadeState] = useState('fade-in')
+  // monster
+  const [isLoading, setIsLoading] = useState(false)
+  const [showModal, setShowModal] = useState(false)
+  // 回傳專屬優惠券
+  const [newCoupon, setNewCoupon] = useState(null)
 
   const handleOptionClick = (value) => {
     const newAnswers = [...answers]
@@ -31,28 +68,32 @@ export default function CreatePage() {
     setAnswers(newAnswers)
   }
 
+  const goToStep = (nextStep) => {
+    setFadeState('fade-out')
+    setTimeout(() => {
+      setCurrentStep(nextStep)
+      setFadeState('fade-in')
+    }, 300)
+  }
+
   const handleNext = () => {
     if (currentStep < questions.length - 1) {
-      setCurrentStep((prev) => prev + 1)
+      goToStep(currentStep + 1)
     }
   }
 
   const handlePrev = () => {
     if (currentStep > 0) {
-      setCurrentStep((prev) => prev - 1)
+      goToStep(currentStep - 1)
     }
   }
 
   const handleSubmit = async () => {
     const [skin, brand, product] = answers
-
-    const skinTypeId = {
-      油性肌膚: 1,
-      乾性肌膚: 2,
-      敏感肌膚: 3,
-      混合肌膚: 4,
-    }[skin]
-
+    const user_id = user?.id
+    const skinTypeId = { 油性肌膚: 1, 乾性肌膚: 2, 敏感肌膚: 3, 混合肌膚: 4 }[
+      skin
+    ]
     const brandId = {
       kaja: 5,
       'rom&nd': 6,
@@ -61,18 +102,17 @@ export default function CreatePage() {
       "A'pieu": 2,
       MUZIGAE: 4,
     }[brand]
-
     const categoryId = {
-      眼影: 1,
-      口紅: 2,
-      唇蜜: 3,
-      粉底: 4,
-      氣墊粉餅: 5,
+      眼部彩妝: 1,
+      唇部彩妝: 2,
+      臉頰彩妝: 3,
+      眉部彩妝: 4,
+      底妝: 5,
     }[product]
 
-    const user_id = 1 // 測試用，實際應該從登入狀態取得
-
     try {
+      setIsLoading(true)
+
       const res = await fetch(
         'http://localhost:3005/api/coupon/products/member',
         {
@@ -86,14 +126,15 @@ export default function CreatePage() {
           }),
         }
       )
-
       const result = await res.json()
+      // 儲存專屬優惠券資料
       if (result.status === 'success') {
-        alert('已成功建立您的專屬優惠券')
+        setNewCoupon(result.data)
       } else {
-        alert('建立失敗，請稍後再試')
+        alert(result.message)
       }
     } catch (error) {
+      setIsLoading(false)
       console.error('送出錯誤:', error)
       alert('系統錯誤')
     }
@@ -104,7 +145,43 @@ export default function CreatePage() {
 
   return (
     <>
-      {/* Progress */}
+      <CouponLoading
+        visible={isLoading}
+        onComplete={() => {
+          setIsLoading(false)
+          setShowModal(true)
+        }}
+      />
+      {/* 專屬優惠券的modal */}
+      {showModal && newCoupon && (
+        <>
+          <div className="modal-overlay"></div>
+          <div className="coupon-modal text-center p-4 rounded shadow">
+            <CouponCard
+              title={newCoupon.title}
+              description={newCoupon.description}
+              brand_id={newCoupon.brand_id}
+              coupon_id={newCoupon.id}
+              user_id={user?.id}
+              course_categories_id={newCoupon.course_categories_id || 0}
+              type_id={5}
+              state_id={1}
+              claimed_at={null}
+              area={1}
+              couponstyle="button-purple"
+              valid_to={newCoupon.valid_to}
+              isLogin={() => {}}
+            />
+            <button
+              className="btn btn-warning mt-3"
+              onClick={() => setShowModal(false)}
+            >
+              查看我的優惠券
+            </button>
+          </div>
+        </>
+      )}
+
       <div className="progress mb-4" style={{ height: 10 }}>
         <div
           className="progress-bar bg-warning"
@@ -114,7 +191,6 @@ export default function CreatePage() {
       </div>
 
       <div className="container">
-        {/* 略過連結 */}
         <div className="text-center mb-3">
           <small className="text-muted">
             第 {currentStep + 1} / 共 {questions.length} 題
@@ -126,7 +202,6 @@ export default function CreatePage() {
           </div>
         </div>
 
-        {/* Title */}
         <div className="text-center mb-5 pt-4">
           <h3 className="main-color mb-0">歡迎加入 ISLA 🥳</h3>
           <h3 className="main-color mb-5">創造出屬於您的優惠券</h3>
@@ -135,24 +210,29 @@ export default function CreatePage() {
           </h6>
         </div>
 
-        {/* Question */}
-        <section className="py-4 text-center">
+        <section className={`py-4 text-center ${fadeState}`} key={currentStep}>
           <h4 className="brown-text fw-bold mb-5">{currentQuestion.title}</h4>
           <div className="row justify-content-center g-3 mb-5">
             {currentQuestion.options.map((opt, i) => (
               <div key={i} className="col-6 col-sm-4 col-md-3 col-lg-2">
                 <button
                   type="button"
-                  className={`brand-card w-100 ${answers[currentStep] === opt ? 'active' : ''}`}
-                  onClick={() => handleOptionClick(opt)}
+                  className={`image-option w-100 ${answers[currentStep] === opt.label ? 'selected' : ''}`}
+                  onClick={() => handleOptionClick(opt.label)}
                 >
-                  {opt}
+                  <Image
+                    src={opt.image}
+                    alt={opt.label}
+                    width={300}
+                    height={150}
+                    className="img-fluid rounded shadow-sm mb-2"
+                  />
+                  <div className="hover-text">{opt.label}</div>
                 </button>
               </div>
             ))}
           </div>
 
-          {/* Buttons */}
           <div className="d-flex justify-content-center gap-3">
             {currentStep > 0 && (
               <button

@@ -35,12 +35,13 @@ export default function CouponPage() {
     // 轉成dayjs格式
     const validTo = dayjs(coupon.valid_to)
     // 剩幾天到期
-    const daysToExpire = validTo.diff(now, 'day')
+    const daysToExpire = validTo.startOf('day').diff(now.startOf('day'), 'day')
     // 過期我先設0-3天內
-    const isSoonExpired =
-      daysToExpire >= 0 && daysToExpire <= 3 && coupon.state_id === 1
 
-    const isExpired = validTo.isBefore(now.startOf('day')) // 僅昨天以前才算過期
+    const isClaimedState = coupon.state_id === 1 || coupon.state_id === 4
+    const isSoonExpired =
+      daysToExpire >= 0 && daysToExpire <= 3 && isClaimedState
+    const isExpired = validTo.startOf('day').isBefore(now.startOf('day'))
 
     let time = false
     switch (currentType) {
@@ -60,9 +61,48 @@ export default function CouponPage() {
     }
     return time
   })
+  // 專屬優惠券 排最前面
+  const prioritizedCoupons = [...filteredCoupons]
+    .sort((a, b) => {
+      const aIsMember = a.type_id === 5
+      const bIsMember = b.type_id === 5
+
+      if (aIsMember && !bIsMember) return -1
+      if (!aIsMember && bIsMember) return 1
+
+      const stylePriority = {
+        'button-orange': 1,
+        'button-purple': 2,
+        'button-blue': 3,
+      }
+
+      const aStyle = getCouponStyle(a.type_id)
+      const bStyle = getCouponStyle(b.type_id)
+
+      const aPriority = stylePriority[aStyle] ?? 99
+      const bPriority = stylePriority[bStyle] ?? 99
+
+      return aPriority - bPriority
+    })
+    .sort((a, b) => {
+      const stylePriority = {
+        'button-all': '',
+        'button-orange': 1,
+        'button-purple': 2,
+        'button-blue': 3,
+      }
+
+      const aStyle = getCouponStyle(a.type_id)
+      const bStyle = getCouponStyle(b.type_id)
+
+      const aPriority = stylePriority[aStyle] ?? 99
+      const bPriority = stylePriority[bStyle] ?? 99
+
+      return aPriority - bPriority
+    })
 
   const [couponCount, setCouponCount] = useState(10)
-  const displayCoupon = filteredCoupons.slice(0, couponCount)
+  const displayCoupon = prioritizedCoupons.slice(0, couponCount)
   const moreBtn = couponCount < filteredCoupons.length
   const couponStates = [
     { label: '已領取', value: 1 },
@@ -70,10 +110,12 @@ export default function CouponPage() {
     { label: '已使用', value: 2 },
     { label: '已過期', value: 3 },
   ]
+  // 是否有專屬優惠券
+  const hasMemberCoupon = coupons.some((c) => c.type_id === 5)
 
   return (
     <>
-      <CouponHeader type="member" />
+      <CouponHeader type="member" hasMemberCoupon={hasMemberCoupon} />
       <PcNav
         options={couponStates}
         currentValue={currentType}

@@ -1,15 +1,22 @@
 'use client'
 
-import { useState } from 'react'
-import { useRef } from 'react'
+import { useState, useRef } from 'react'
+import { useFilter } from '../_context/filterContext'
 
 export default function ComponentsSearchBar({
-  setKeyword = () => {},
-  setProductCate = () => {},
-  setPostCate = () => {},
   postCateItems = [],
   productCateItems = [],
+  handleAsideSearchChange = () => {},
 }) {
+  // const router = useRouter()
+  const {
+    setKeyword,
+    keyword,
+    setProductCate,
+    productCate,
+    setPostCate,
+    postCate,
+  } = useFilter()
   const searchParamsRef = useRef()
   const [isSearchEmpty, setSearchEmpty] = useState(true)
 
@@ -29,14 +36,18 @@ export default function ComponentsSearchBar({
                     setSearchEmpty(false)
                   }}
                   onKeyDown={(e) => {
-                    const keyword = searchParamsRef.current.value.trim()
+                    const inputKeyword = searchParamsRef.current.value.trim()
                     if (
                       e.key === 'Enter' &&
-                      keyword.length !== 0 &&
+                      inputKeyword.length !== 0 &&
                       !isSearchEmpty
                     ) {
-                      // e.preventDefault()
-                      setKeyword(keyword)
+                      setKeyword(inputKeyword)
+                      handleAsideSearchChange(
+                        inputKeyword,
+                        productCate,
+                        postCate
+                      )
                       searchParamsRef.current.value = ''
                       setSearchEmpty(false)
                     }
@@ -60,8 +71,11 @@ export default function ComponentsSearchBar({
                 className="d-inline-block button-clear sub-text-color"
                 onClick={(e) => {
                   e.preventDefault()
+                  const inputKeyword = searchParamsRef.current.value
                   if (!isSearchEmpty) {
-                    setKeyword(searchParamsRef.current.value)
+                    setKeyword(inputKeyword)
+                    handleAsideSearchChange(inputKeyword, productCate, postCate)
+                    searchParamsRef.current.value = ''
                     setSearchEmpty(true)
                   }
                 }}
@@ -78,9 +92,18 @@ export default function ComponentsSearchBar({
               {productCateItems.map((item, i) => (
                 <button
                   key={i}
-                  className={`button-clear cate-item px-4 py-3 rounded-2 fs16 main-text-color text-start rounded-pill`}
-                  onClick={() => {
-                    setProductCate(item)
+                  className={`button-clear cate-item px-3 py-2 m-1 rounded-2 fs16 main-text-color text-start rounded-pill ${productCate.includes(i + 1) ? 'active' : ''}`}
+                  onClick={(e) => {
+                    let newProductCate
+                    if (productCate.includes(i + 1)) {
+                      newProductCate = productCate.filter((c) => c !== i + 1)
+                      setProductCate(newProductCate)
+                    } else {
+                      newProductCate = [...productCate, i + 1]
+                      setProductCate(newProductCate)
+                    }
+                    handleAsideSearchChange(keyword, newProductCate, postCate)
+                    e.target.blur()
                   }}
                 >
                   {item}
@@ -96,9 +119,18 @@ export default function ComponentsSearchBar({
               {postCateItems.map((item, i) => (
                 <button
                   key={i}
-                  className={`button-clear cate-item px-4 py-3 rounded-2 fs16 main-text-color text-start rounded-pill`}
-                  onClick={() => {
-                    setPostCate(item)
+                  className={`button-clear cate-item px-3 py-2 m-1 rounded-2 fs16 main-text-color text-start rounded-pill ${postCate.includes(i + 1) ? 'active' : ''}`}
+                  onClick={(e) => {
+                    let newPostCate
+                    if (postCate.includes(i + 1)) {
+                      newPostCate = postCate.filter((c) => c !== i + 1)
+                      setPostCate(newPostCate)
+                    } else {
+                      newPostCate = [...postCate, i + 1]
+                      setPostCate(newPostCate)
+                    }
+                    handleAsideSearchChange(keyword, productCate, newPostCate)
+                    e.target.blur()
                   }}
                 >
                   {item}

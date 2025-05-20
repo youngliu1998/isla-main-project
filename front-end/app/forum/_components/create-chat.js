@@ -4,21 +4,21 @@ import React, { useState, useEffect, useRef } from 'react'
 
 export default function EditPostModal(props) {
   const modalRef = useRef()
-  useEffect(() => {
-    import('bootstrap/dist/js/bootstrap.bundle.min.js').then((bootstrap) => {
-      document
-        .querySelectorAll('[data-bs-toggle="tooltip"]')
-        .forEach((el) => new bootstrap.Tooltip(el))
+  // useEffect(() => {
+  //   import('bootstrap/dist/js/bootstrap.bundle.min.js').then((bootstrap) => {
+  //     document
+  //       .querySelectorAll('[data-bs-toggle="tooltip"]')
+  //       .forEach((el) => new bootstrap.Tooltip(el))
 
-      const modalEl = modalRef.current
-      if (modalEl) {
-        new bootstrap.Modal(modalEl, {
-          backdrop: true,
-          keyboard: true,
-        })
-      }
-    })
-  }, [])
+  //     const modalEl = modalRef.current
+  //     if (modalEl) {
+  //       new bootstrap.Modal(modalEl, {
+  //         backdrop: true,
+  //         keyboard: true,
+  //       })
+  //     }
+  //   })
+  // }, [])
   return (
     <>
       <form action="">

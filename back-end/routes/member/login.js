@@ -14,7 +14,7 @@ router.get('/', verifyToken, async (req, res) => {
   let error
   const id = req?.user?.id || 0
   try {
-    const query = `SELECT id,name,nickname,email,point,level,tel,address,mem_cpon FROM users WHERE id=?`
+    const query = `SELECT id,name,nickname,email,birthday,point,level,tel,address,ava_url,mem_cpon FROM users WHERE id=?`
     const user = await db
       .execute(query, [id])
       .then((data) => data[0][0])
@@ -56,7 +56,7 @@ router.post('/', async (req, res) => {
         email: user.email,
       },
       secretKey,
-      { expiresIn: '30m' }
+      { expiresIn: '30d' }
     )
     console.log('user', user)
     console.log('token', token)
