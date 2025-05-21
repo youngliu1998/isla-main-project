@@ -4,8 +4,9 @@ import verifyToken from '../../lib/verify-token.js'
 
 const router = express.Router()
 
-// http://localhost:3005/api/cart-items/read
+// http://localhost:3005/api/cart-items
 router.get('/', verifyToken, async (req, res) => {
+  // const user_id = req.query.user_id 不使用token
   const user_id = req.user.id
   console.log('req.user:', req.user)
 
@@ -19,6 +20,7 @@ router.get('/', verifyToken, async (req, res) => {
       [user_id]
     )
 
+    //檢查是否為空陣列
     if (cartItems.length === 0) {
       return res.json({
         status: 'success',
@@ -27,6 +29,7 @@ router.get('/', verifyToken, async (req, res) => {
       })
     }
 
+    // 分類 ID
     const productIds = cartItems
       .filter((i) => i.product_id)
       .map((i) => i.product_id)
@@ -37,37 +40,29 @@ router.get('/', verifyToken, async (req, res) => {
       .filter((i) => i.course_experience_id)
       .map((i) => i.course_experience_id)
 
-    let products = []
-    if (productIds.length > 0) {
-      const placeholders = productIds.map(() => '?').join(',')
-      const [productRows] = await db.execute(
-        `
-        SELECT p.product_id, p.name, p.base_price, p.sale_price, p.category_id, cat.name AS category_name,
-        pi.image_url
-        FROM products p
-        LEFT JOIN categories cat ON p.category_id = cat.category_id
-        LEFT JOIN product_images pi ON pi.product_id = p.product_id AND pi.is_primary = 1
-        WHERE p.product_id IN (${placeholders})
-        `,
-        productIds
-      )
-      products = productRows
-    }
+    // 撈商品
+    const [products] = await db.execute(
+      `
+      SELECT p.product_id, p.name, p.base_price, p.sale_price, p.category_id, cat.name AS category_name,
+      pi.image_url
+      FROM products p
+      LEFT JOIN categories cat ON p.category_id = cat.category_id
+      LEFT JOIN product_images pi ON pi.product_id = p.product_id AND pi.is_primary = 1
+      WHERE p.product_id IN (?)
+      `,
+      [productIds]
+    )
+    console.log('productIds:', productIds)
 
-    let colorRows = []
-    if (productIds.length > 0) {
-      const placeholders = productIds.map(() => '?').join(',')
-      const [rows] = await db.execute(
-        `
-        SELECT pcs.product_id, pcs.color_id, c.color_name, c.color_code
-        FROM product_color_stocks pcs
-        JOIN colors c ON pcs.color_id = c.color_id
-        WHERE pcs.product_id IN (${placeholders})
-        `,
-        productIds
-      )
-      colorRows = rows
-    }
+    const [colorRows] = await db.execute(
+      `
+      SELECT pcs.product_id, pcs.color_id, c.color_name, c.color_code
+      FROM product_color_stocks pcs
+      JOIN colors c ON pcs.color_id = c.color_id
+      WHERE pcs.product_id IN (?)
+      `,
+      [productIds]
+    )
 
     const colorOptionsMap = {}
     colorRows.forEach((row) => {
@@ -79,36 +74,29 @@ router.get('/', verifyToken, async (req, res) => {
       })
     })
 
-    let courses = []
-    if (courseIds.length > 0) {
-      const placeholders = courseIds.map(() => '?').join(',')
-      const [courseRows] = await db.execute(
-        `
-        SELECT c.id, c.title, c.price, c.discount, c.picture, cat.name AS category_name
-        FROM courses c
-        LEFT JOIN courses_categories cat ON c.categories_id = cat.id
-        WHERE c.id IN (${placeholders})
-        `,
-        courseIds
-      )
-      courses = courseRows
-    }
+    // 撈課程
+    const [courses] = await db.execute(
+      `
+      SELECT c.id, c.title, c.price, c.discount, c.picture, cat.name AS category_name
+      FROM courses c
+      LEFT JOIN courses_categories cat ON c.categories_id = cat.id
+      WHERE c.id IN (?)
+      `,
+      [courseIds]
+    )
 
-    let experiences = []
-    if (expIds.length > 0) {
-      const placeholders = expIds.map(() => '?').join(',')
-      const [expRows] = await db.execute(
-        `
-        SELECT e.id, e.title, e.price, e.discount, cat.name AS category_name, e.images
-        FROM courses_experience e
-        LEFT JOIN courses_categories cat ON e.categories_id = cat.id
-        WHERE e.id IN (${placeholders})
-        `,
-        expIds
-      )
-      experiences = expRows
-    }
+    // 撈體驗課程
+    const [experiences] = await db.execute(
+      `
+      SELECT e.id, e.title, e.price, e.discount, cat.name AS category_name, e.images
+      FROM courses_experience e
+      LEFT JOIN courses_categories cat ON e.categories_id = cat.id
+      WHERE e.id IN (?)
+      `,
+      [expIds]
+    )
 
+    // 組回傳給前端的資料格式
     const formattedItems = cartItems
       .map((item) => {
         if (item.product_id) {
@@ -166,6 +154,7 @@ router.get('/', verifyToken, async (req, res) => {
       })
       .filter(Boolean)
 
+    //
     res.json({
       status: 'success',
       message: '成功取得購物車商品資料',
