@@ -42,11 +42,11 @@ export default function CourseIDPage() {
 
     async function getReviewCard() {
       const res = await fetch(`${courseUrl}comments?course_id=${id}`)
-      const json = await res.json()
-      setReviewCard(json.data || [])
+      const data = await res.json()
+      setReviewCard(data.data || [])
 
       const newLikes = {}
-      json.data.forEach((v) => {
+      data.data.forEach((v) => {
         const liked = localStorage.getItem(`like_${v.comment_id}`) === 'true'
         const count =
           parseInt(localStorage.getItem(`likeCount_${v.comment_id}`)) ||
@@ -59,8 +59,8 @@ export default function CourseIDPage() {
 
     async function getCourse() {
       const res = await fetch(courseUrl + 'course')
-      const json = await res.json()
-      setCourseCard(json.data || [])
+      const data = await res.json()
+      setCourseCard(data.data || [])
     }
 
     const stored = localStorage.getItem(`favorite_detail_${id}`) === 'true'

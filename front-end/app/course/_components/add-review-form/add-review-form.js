@@ -3,7 +3,8 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { useAuth } from '@/hook/use-auth'
-import {USER_AVA_URL} from '@/_route/img-url'
+import { USER_AVA_URL } from '@/_route/img-url'
+import './add-review-form'
 
 export default function AddReviewForm({ courseID, onReviewAdded }) {
   const { user } = useAuth()
@@ -17,14 +18,16 @@ export default function AddReviewForm({ courseID, onReviewAdded }) {
     if (!user) return alert('請先登入')
 
     setSubmitting(true)
+    const token = localStorage.getItem('jwtToken')
     try {
       const res = await fetch(`http://localhost:3005/api/course/comments`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', Authorization: token },
         body: JSON.stringify({
           course_id: courseID,
-          star,
-          content,
+          star: star,
+          content: content,
+          member_id: user.id,
         }),
       })
 
@@ -48,7 +51,7 @@ export default function AddReviewForm({ courseID, onReviewAdded }) {
             src={
               user?.ava_url
                 ? USER_AVA_URL + user.ava_url
-                : '/images/users/default-avatar.jpg'
+                : USER_AVA_URL + 'default-avatar.jpg'
             }
             alt="學員圖片"
             width={40}
