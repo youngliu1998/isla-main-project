@@ -1,7 +1,13 @@
 import CouponCard from './coupon-card'
 import { useAuth } from '@/hook/use-auth'
+import { useState } from 'react'
 
-export default function CouponList({ coupons, getCouponStyle, isLogin }) {
+export default function CouponList({
+  coupons,
+  getCouponStyle,
+  isLogin,
+  handleRefresh = () => {},
+}) {
   const { user } = useAuth()
 
   // console.log('CouponList-user', user)
@@ -25,6 +31,7 @@ export default function CouponList({ coupons, getCouponStyle, isLogin }) {
           isLogin={isLogin}
           state_id={coupon.state_id}
           type_id={coupon.type_id}
+          handleRefresh={handleRefresh}
         />
       ))}
     </div>
