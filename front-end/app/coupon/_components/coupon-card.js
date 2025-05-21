@@ -5,6 +5,7 @@ import confetti from 'canvas-confetti'
 import Image from 'next/image'
 import CouponButton from './coupon-button'
 import dayjs from 'dayjs'
+import { ClientPageRoot } from 'next/dist/client/components/client-page'
 
 const brandMap = {
   0: 'isla',
@@ -38,6 +39,7 @@ export default function CouponCard({
   state_id = '',
   type_id = '',
   isLogin = () => {},
+  handleRefresh = () => {},
 }) {
   const [get, setGet] = useState(claimed_at ? true : false)
   const [loading, setLoading] = useState(false)
@@ -50,6 +52,7 @@ export default function CouponCard({
   const isClaimed = get || state_id === 1 || state_id === 4
 
   const alreadyGet = async () => {
+    console.log('alredyGet!!')
     if (get || loading) return
     if (!user_id) {
       isLogin()
@@ -157,13 +160,15 @@ export default function CouponCard({
         ) : (
           <button
             className={`d-flex align-items-center flex-shrink-0 ${couponstyle}`}
-            onClick={alreadyGet}
+            onClick={async () => {
+              await alreadyGet()
+              handleRefresh()
+            }}
             disabled={loading || isDisabled}
           >
             <CouponButton text={buttonText} />
           </button>
         )}
-
         {/* 領取印章 */}
         <div className={`stamp-img-container ${isClaimed ? 'show' : ''}`}>
           <Image
