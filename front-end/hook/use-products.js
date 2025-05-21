@@ -78,7 +78,9 @@ export const UseProductReviews = (id) => {
   return useQuery({
     queryKey: ['product-reviews', id],
     queryFn: async () => {
-      const res = await axios.get(`http://localhost:3005/api/product-reviews/${id}`)
+      const res = await axios.get(
+        `http://localhost:3005/api/product-reviews/${id}`
+      )
       if (res.status !== 200 || res.data.success !== true) {
         throw new Error('Failed to fetch product reviews')
       }
@@ -93,7 +95,9 @@ export const UseProductIngredient = (id) => {
   return useQuery({
     queryKey: ['product-ingredient', id],
     queryFn: async () => {
-      const res = await axios.get(`http://localhost:3005/api/product-ingredient/${id}`)
+      const res = await axios.get(
+        `http://localhost:3005/api/product-ingredient/${id}`
+      )
       if (res.status !== 200 || res.data.success !== true) {
         throw new Error('Failed to fetch product reviews')
       }

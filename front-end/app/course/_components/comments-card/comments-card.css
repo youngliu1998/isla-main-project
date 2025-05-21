@@ -1,0 +1,24 @@
+/* 統一卡片高度 */
+.comments-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* 限制文字最多顯示 3 行，超出省略 */
+.box5-card-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-height: 4.5em; /* 約三行文字的高度 */
+}
+
+/* 保證整體卡片高度一致 */
+.card.box5-comment-p {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}

@@ -18,29 +18,38 @@
   box-shadow: none;
 }
 
-// color-dots style
 .colorDot {
-  all: unset;
-  width: 14px;
-  height: 14px;
-  display: block;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
+  border: 2px solid transparent;
   cursor: pointer;
-  border: 1px solid #ccc;
+  position: relative;
+  transition: 0.2s;
 
-  //選中的顏色
   &.active {
-    border: 2px solid var(--main-text);
+    border: 1px solid white;
+
+    &::after {
+      content: '✔';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+    }
   }
 }
 
-.ellipsis {
-  width: 12em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  cursor: pointer;
-}
+// .ellipsis {
+//   width: 12em;
+//   white-space: nowrap;
+//   overflow: hidden;
+//   text-overflow: ellipsis;
+//   cursor: pointer;
+// }
 
 ////
 
