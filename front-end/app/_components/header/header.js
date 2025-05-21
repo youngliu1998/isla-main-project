@@ -8,13 +8,13 @@ import HamMeunNav from './_component/ham-meun-nav'
 import HeaderNav from './_component/header-nav'
 import './header.css'
 // hook
-import { useAuth } from '../../hook/use-auth'
 import useCartCount from '@/app/cart/hook/useCartCount'
 import { usePathname, useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 export default function Header() {
   const cartIconNum = useCartCount()
+  const pathname = usePathname()
   const router = useRouter()
 
   const handleCartClick = () => {
