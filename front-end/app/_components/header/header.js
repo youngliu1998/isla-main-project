@@ -26,7 +26,6 @@ export default function Header() {
     }
   }
   const [hamMenuOpen, setHamMenuOpen] = useState(false)
-  const pathname = usePathname()
   const { isAuth } = useAuth()
   const loginUrl = isAuth ? 'profile' : 'login'
   if (

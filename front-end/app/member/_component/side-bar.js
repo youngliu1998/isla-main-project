@@ -34,7 +34,7 @@ export default function SideBar() {
         return
       }
     }
-  }, [isAuth])
+  }, [])
   // return <></> in login, register, ......
   if (
     pathname.includes('login') ||
