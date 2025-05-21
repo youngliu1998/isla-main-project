@@ -1,6 +1,7 @@
 import express from 'express'
 const router = express.Router()
 import db from '../../config/mysql.js'
+import verifyToken from '../../lib/verify-token.js'
 
 // GET：取得課程評論（支援排序）
 router.get('/', async (req, res) => {
@@ -54,6 +55,52 @@ router.get('/', async (req, res) => {
   } catch (err) {
     console.error('留言撈取錯誤:', err)
     res.status(500).json({ status: 'false', message: '留言撈取失敗' })
+  }
+})
+
+//POST:新增評論
+router.post('/', async (req, res) => {
+  const { course_id, star, content, member_id } = req.body
+
+  // 基本欄位檢查
+  if (!course_id || !star || !content || !member_id) {
+    return res.status(400).json({ status: 'false', message: '缺少必要欄位' })
+  }
+
+  try {
+    // 新增評論
+    const [insertResult] = await db.query(
+      `
+      INSERT INTO courses_comments (courses_id, member_id, star, content, created)
+      VALUES (?, ?, ?, ?, NOW())
+    `,
+      [course_id, member_id, star, content]
+    )
+
+    const comment_id = insertResult.insertId
+
+    // 撈出新增成功的資料
+    const [newComment] = await db.query(
+      `
+      SELECT
+        cc.id AS comment_id,
+        u.name AS member_name,
+        u.ava_url,
+        cc.star,
+        cc.created,
+        cc.content,
+        cc.is_helpful
+      FROM courses_comments cc
+      LEFT JOIN users u ON cc.member_id = u.id
+      WHERE cc.id = ?
+    `,
+      [comment_id]
+    )
+
+    res.json({ status: 'success', data: newComment[0] })
+  } catch (err) {
+    console.error('新增留言錯誤:', err)
+    res.status(500).json({ status: 'false', message: '新增留言失敗: '+ err})
   }
 })
 
