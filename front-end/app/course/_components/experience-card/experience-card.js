@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
+import './experience-card.css'
 
 export default function ExperienceCard({
   id = '',
@@ -33,15 +34,18 @@ export default function ExperienceCard({
     setAnimate(true)
     setTimeout(() => setAnimate(false), 400)
   }
-  // if (status === 0 || status === '0') return null
+  
 
   return (
     <div
-      className="col-md-4 col-sm-6 mb-5"
+      className="col mb-5"
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
-      <Link href={`/course/experience/${id}`} className="text-decoration-none">
+      <Link
+        href={`/course/experience/${id}`}
+        className="text-decoration-none course-card-animate"
+      >
         <div className="card h-100 card-hover-course" data-course-id={id}>
           <div className="card-img-container-course position-relative">
             <Image
@@ -76,11 +80,9 @@ export default function ExperienceCard({
             </p>
             <p className="card-teacher-course mb-2">{activity_data}</p>
             <div className="d-flex align-items-end text-end">
-              <h5 className="card-text me-3">
+              <h5 className=" me-3">NT {Number(discount).toLocaleString()}</h5>
+              <p className="card-text-price m-0">
                 NT {Number(price).toLocaleString()}
-              </h5>
-              <p className="card-text-discount m-0">
-                NT {Number(discount).toLocaleString()}
               </p>
             </div>
           </div>

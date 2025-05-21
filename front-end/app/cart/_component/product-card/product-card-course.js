@@ -31,7 +31,8 @@ export default function ProductCardCourse({
                 className="img-fluid"
                 width={130}
                 height={130}
-                alt="商品圖"
+                style={{ height: 'auto' }}
+                alt="課程圖"
               />
             </label>
           </div>

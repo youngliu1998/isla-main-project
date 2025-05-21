@@ -2,6 +2,7 @@
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import { GoogleLogin } from '@react-oauth/google'
 import { useAuth } from '@/hook/use-auth'
+import { useCartContext } from '../../cart/context/cart-context'
 // import { signIn, signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -53,6 +54,7 @@ export default function LoginPage() {
     console.log('login-page-user: ', user)
     console.log('login-page-isAuth: ', isAuth)
   }, [isAuth])
+
   return (
     <>
       <div className="d-flex flex-column justify-content-centers gap-5 py-2 postion-middle">

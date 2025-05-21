@@ -6,6 +6,7 @@ import './_style/product-card-s.css'
 import RatingComponent from './product-rating.js'
 import BookmarkComponent from './product-bookmark.js'
 import Image from 'next/image'
+import Link from 'next/link'
 
 function ProductCard({ product }) {
   if (!product) {
@@ -60,75 +61,79 @@ function ProductCard({ product }) {
   const IMAGE_PREFIX = 'https://isla-image.chris142852145.workers.dev/'
   const fullImageUrl = `${IMAGE_PREFIX}${product.imageUrl}`
 
+  const toProduct_Prefix = 'http://localhost:3001/product/'
+
   return (
-    <div key={product.product_id} className="product-card-product_card">
-      <div className="product-card-product_card-head">
-        <div className="product-card-head-top d-flex">
-          <div className="product-card-rating product-card-rating-desktop">
-            <div className="product-card-star-box">
-              <RatingComponent rating={rating} reviewCount={reviews} />
+    <Link href={`${toProduct_Prefix}${product.id}`} passHref>
+      <div key={product.product_id} className="product-card-product_card">
+        <div className="product-card-product_card-head">
+          <div className="product-card-head-top d-flex">
+            <div className="product-card-rating product-card-rating-desktop">
+              <div className="product-card-star-box">
+                <RatingComponent rating={rating} reviewCount={reviews} />
+              </div>
             </div>
-          </div>
-          <BookmarkComponent
-            isbookmarked={bookmarked}
-            isMobile={isMobile}
-            onToggle={toggleBookmark}
-          />
-        </div>
-
-        <div className="product-card-product_card-img">
-          <Image
-            src={fullImageUrl}
-            alt={name}
-            className="card-img"
-            width={0}
-            height={0}
-            style={{ width: '100%', height: 'auto' }}
-          />
-        </div>
-
-        <div className="product-card-hover-add-cart">
-          <a
-            href="#"
-            onClick={handleAddToCart}
-            className="product-card-add-cart-btn"
-          >
-            加入購物車
-          </a>
-        </div>
-      </div>
-
-      <div className="product-card-product_card-info">
-        <div className="product-card-info">
-          <div className="product-card-product_details">
-            <div className="product-card-brand">{product.brand}</div>
-            <div className="product-card-product_name">{product.name}</div>
-          </div>
-        </div>
-
-        <div className="product-card-rating product-card-rating-mobile">
-          <div className="product-card-star-box">
-            <RatingComponent
-              rating={product.rating}
-              reviewCount={product.review_count}
-              isMobile={true}
+            <BookmarkComponent
+              isbookmarked={bookmarked}
+              isMobile={isMobile}
+              onToggle={toggleBookmark}
             />
           </div>
+
+          <div className="product-card-product_card-img">
+            <Image
+              src={fullImageUrl}
+              alt={name}
+              className="card-img"
+              width={0}
+              height={0}
+              style={{ width: '100%', height: 'auto' }}
+            />
+          </div>
+
+          <div className="product-card-hover-add-cart">
+            <a
+              href="#"
+              onClick={handleAddToCart}
+              className="product-card-add-cart-btn"
+            >
+              加入購物車
+            </a>
+          </div>
         </div>
 
-        <div className="product-card-price">
-          <div className="product-card-price-box d-flex gap-2">
-            <div className="product-card-main-price">{price}</div>
+        <div className="product-card-product_card-info">
+          <div className="product-card-info">
+            <div className="product-card-product_details">
+              <div className="product-card-brand">{product.brand}</div>
+              <div className="product-card-product_name">{product.name}</div>
+            </div>
+          </div>
 
-            {originalPrice !== price && (
-              <div className="product-card-basic-price">
-                <del>{originalPrice}</del>
-              </div>
-            )}
+          <div className="product-card-rating product-card-rating-mobile">
+            <div className="product-card-star-box">
+              <RatingComponent
+                rating={product.rating}
+                reviewCount={product.review_count}
+                isMobile={true}
+              />
+            </div>
+          </div>
+
+          <div className="product-card-price">
+            <div className="product-card-price-box d-flex gap-2">
+              <div className="product-card-main-price">{price}</div>
+
+              {originalPrice !== price && (
+                <div className="product-card-basic-price">
+                  <del>{originalPrice}</del>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </Link>
   )
 }
 

@@ -8,7 +8,7 @@ import Link from 'next/link'
 
 export default function TeacherPage() {
   return (
-    <section className="box1 container my-5">
+    <section className=" container my-5">
       <div className="row d-lg-flex d-none">
         <p className="bread-crumbs mb-5">首頁 / 美妝學院 / 李郁文</p>
       </div>

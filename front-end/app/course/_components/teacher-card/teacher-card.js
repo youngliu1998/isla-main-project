@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import './teacher-card.css'
 
 export default function TeacherCard({
   id = '',
@@ -7,12 +8,19 @@ export default function TeacherCard({
   image = '',
   about = '',
 }) {
+  const imagePath = image
+    ? `/images/course/teacherall/${image}` // ✅ 用 backtick 模板字串
+    : '/images/course/teacherall/default-avatar.jpg'
+
   return (
-    <Link href={`course/teacher/${id}`} className="text-decoration-none">
+    <Link
+      href={`/course/teacher/${id}`}
+      className="text-decoration-none course-card-animate"
+    >
       <div className="card card-hover-teacher">
         <div className="card-img-wrapper-teacher">
           <Image
-            src={image}
+            src={imagePath}
             className="card-img-teacher"
             alt={name}
             width={300}
