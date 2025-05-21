@@ -19,6 +19,10 @@ export default function ProductCardNormal({
   isChecked = false,
   onCheckChange = () => {},
 }) {
+  // 動態修改金額
+  const unitPrice = Number(salePrice ?? basePrice)
+  const baseTotal = Number(basePrice) * quantity
+  const saleTotal = Number(unitPrice) * quantity
   return (
     <div className="card border-0 mb-5">
       <div className="row g-3">
@@ -73,13 +77,20 @@ export default function ProductCardNormal({
                 onChange={(newQty) => onQuantityChange(newQty)}
               />
               <div className="fs-5">
-                {salePrice !== basePrice ? (
+                {Number(salePrice) &&
+                Number(salePrice) !== Number(basePrice) ? (
                   <>
-                    <del className="me-2 h6 text-subtext">NT${basePrice}</del>
-                    <strong className="h5 text-maintext">NT${salePrice}</strong>
+                    <del className="me-2 h6 text-subtext">
+                      NT${baseTotal.toLocaleString()}
+                    </del>
+                    <strong className="h5 text-maintext">
+                      NT${saleTotal.toLocaleString()}
+                    </strong>
                   </>
                 ) : (
-                  <strong className="h5 text-maintext">NT${basePrice}</strong>
+                  <strong className="h5 text-maintext">
+                    NT${baseTotal.toLocaleString()}
+                  </strong>
                 )}
               </div>
             </div>
