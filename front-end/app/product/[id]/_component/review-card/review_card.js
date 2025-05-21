@@ -3,28 +3,8 @@ import PropTypes from 'prop-types'
 import clsx from 'clsx'
 import styles from './review_card.module.css'
 import StarRatingItem from '../../../_components/star-generator.js'
-import Image from "next/image";
-
-// Modal Component
-const Modal = ({ children, onClose }) => {
-  useEffect(() => {
-    document.body.style.overflow = 'hidden'
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [])
-
-  return (
-    <div className={styles.modalOverlay}>
-      <div className={styles.modalContent}>
-        <button className={styles.modalClose} onClick={onClose}>
-          ✕
-        </button>
-        {children}
-      </div>
-    </div>
-  )
-}
+import Image from 'next/image'
+import Modal from 'react-bootstrap/Modal'
 
 const MAX_LENGTH = 120
 
@@ -36,6 +16,7 @@ const ReviewCard = ({ review }) => {
     images = [],
     comment_text,
     color_name,
+    color_code,
     created_at,
   } = review
 
@@ -48,7 +29,6 @@ const ReviewCard = ({ review }) => {
 
   const openModal = () => setShowModal(true)
   const closeModal = () => setShowModal(false)
-
   return (
     <>
       <div className={styles['comment-card']}>
@@ -56,11 +36,13 @@ const ReviewCard = ({ review }) => {
           <div className={styles['comment-card-head-right']}>
             <div className={styles['card-user-img']}>
               <Image
-                className="img-fluid"
-                src={userAvatarSrc}
-                alt="User Picture"
-                width={userAvatarSrc.width}
-                height={userAvatarSrc.height}
+                className="user-img"
+                src={
+                  'https://i.ibb.co/M5VCPJvM/Screenshot-2025-04-15-at-9-30-59-am.png'
+                }
+                alt="UserPicture"
+                width={1}
+                height={1}
               />
             </div>
             <div className={styles['card-head-user']}>
@@ -68,18 +50,20 @@ const ReviewCard = ({ review }) => {
               <div className={styles['user-rating']}>
                 <StarRatingItem star={rating} maxStars={5} />
               </div>
-              <div className={styles['post-date']}>
-                {new Date(created_at).toLocaleDateString('zh-TW', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-              </div>
-              {color_name && (
-                <div className={styles['color-name-card']}>
-                  評論規格：{color_name}
+              <div className={styles['post-and-color-box']}>
+                <div className={styles['post-date']}>
+                  {new Date(created_at).toLocaleDateString('zh-TW', {
+                    year: 'numeric',
+                    month: 'numeric',
+                    day: 'numeric',
+                  })}
                 </div>
-              )}
+                {color_name && (
+                  <div className={styles['color-name-card']}>
+                    顏色：{color_name}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
           {images.length > 0 && (
@@ -91,8 +75,8 @@ const ReviewCard = ({ review }) => {
                       className="img-fluid"
                       src={imgSrc}
                       alt={`Comment Picture`}
-                      width={imgSrc.width}
-                      height={imgSrc.height}
+                      width={10}
+                      height={10}
                     />
                   </div>
                 ))}
@@ -110,7 +94,7 @@ const ReviewCard = ({ review }) => {
             <button
               className={styles['card_show_more']}
               type="button"
-              onClick={openModal}
+              onClick={() => setShowModal(true)}
             >
               查看完整留言
             </button>
@@ -118,11 +102,33 @@ const ReviewCard = ({ review }) => {
         )}
       </div>
 
-      {showModal && (
-        <Modal onClose={closeModal}>
-          <div className={styles['full-comment']}>{comment_text}</div>
-        </Modal>
-      )}
+      {/*{showModal && (*/}
+      {/*  <Modal onClose={closeModal}>*/}
+      {/*    <div className={styles['full-comment']}>{comment_text}</div>*/}
+      {/*  </Modal>*/}
+      {/*)}*/}
+
+      <Modal
+        show={showModal}
+        onHide={() => setShowModal(false)}
+        centered
+        size="lg"
+        aria-labelledby={`reviewModal-${userId}`}
+        dialogClassName={styles['custom-modal-dialog']}
+        contentClassName={styles['custom-modal-content']}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title
+            className={styles['custom-modal-title']}
+            id={`reviewModal-${userId}`}
+          >
+            {userId} 的留言內容
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body className={styles['custom-modal-context']}>
+          {comment_text}
+        </Modal.Body>
+      </Modal>
     </>
   )
 }

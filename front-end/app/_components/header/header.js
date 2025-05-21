@@ -1,18 +1,20 @@
 'use client'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
-import useCartCount from '@/app/cart/hook/useCartCount'
-import { useState } from 'react'
+//styles
 import { BsHandbag } from 'react-icons/bs'
 import { useAuth } from '@/hook/use-auth'
 import HamMenu from './_component/ham-menu'
 import HamMeunNav from './_component/ham-meun-nav'
 import HeaderNav from './_component/header-nav'
 import './header.css'
+// hook
+import { useAuth } from '../../hook/use-auth'
+import useCartCount from '@/app/cart/hook/useCartCount'
+import { usePathname, useRouter } from 'next/navigation'
+import { useState } from 'react'
 
 export default function Header() {
   const cartIconNum = useCartCount()
-  const pathname = usePathname()
   const router = useRouter()
 
   const handleCartClick = () => {
@@ -57,9 +59,12 @@ export default function Header() {
               <i className="bi bi-search" />
             </button>
 
-            <button className="cart-icon" onClick={handleCartClick}>
+            <button
+              className="cart-icon"
+              type="button"
+              onClick={handleCartClick}
+            >
               <BsHandbag style={{ color: 'white', fontSize: '30px' }} />
-              {/* <div>2</div> */}
               {cartIconNum > 0 && <div>{cartIconNum}</div>}
             </button>
             <Link href={'/member/' + loginUrl} className="d-lg-block d-none">

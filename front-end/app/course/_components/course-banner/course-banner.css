@@ -81,10 +81,10 @@
 
 .box1-dot {
   width: 10px;
-  height: 10px;
+  height: 12px;
   border-radius: 50%;
   background: #bbb;
-  margin: 0 4px;
+  margin: 0 5px;
   transition: background 0.3s;
   border: none;
   z-index: 5;
