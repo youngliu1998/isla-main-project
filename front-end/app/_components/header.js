@@ -25,15 +25,17 @@ export default function Header() {
     }
   }
   const [hamMenuOpen, setHamMenuOpen] = useState(false)
-  const pathname = usePathname()
+  // const pathname = usePathname()
   const { isAuth } = useAuth()
   const loginUrl = isAuth ? 'profile' : 'login'
   if (
     pathname.includes('login') ||
     pathname.includes('register') ||
     pathname.includes('forget-password')
-  )
+  ) {
     return <></>
+  }
+
   return (
     <>
       <header>
@@ -61,12 +63,13 @@ export default function Header() {
               <BsHandbag style={{ color: 'white', fontSize: '30px' }} />
               {cartIconNum > 0 && <div>{cartIconNum}</div>}
             </button>
-
             <Link href={'/member/' + loginUrl} className="d-lg-block d-none">
-              <button type="button">
+              <button>
                 <i className="bi bi-person-circle" />
               </button>
             </Link>
+            {/* </Link> */}
+            {/* </button> */}
           </div>
         </div>
       </header>
