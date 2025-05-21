@@ -37,14 +37,14 @@ router.post('/', async (req, res) => {
   let error
   const { email, password } = req.body
   try {
-    const query = `SELECT id,email, password FROM users WHERE email=?`
+    const query = `SELECT id,email,password FROM users WHERE email=?`
     const user = await db
       .execute(query, [email])
       .then((data) => data[0][0])
       .catch((err) => {
         error = err
       })
-    // if there is no user
+    // if the user doesn't exist
     if (!user) return res.json({ status: 'error', message: '查無此會員' })
     // if the password is false
     if (!(await bcrypt.compare(password, user.password)))
@@ -68,7 +68,7 @@ router.post('/', async (req, res) => {
       message: '登入成功',
     })
   } catch (err) {
-    res.json({ status: 'error', message: error, flag: 'sys err' })
+    res.json({ status: 'error', message: '會員資料讀取失敗: '+error})
   }
 })
 

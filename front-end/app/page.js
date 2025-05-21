@@ -5,8 +5,6 @@ import Componentstab from './_components/tab'
 import CourseSection from './_components/_component-main-page/course/course-section'
 import ForumSection from './_components/_component-main-page/forum/forum-section'
 // ==== END section component ====
-import SubForum from './_components/_component-main-page/forum/sub-forum'
-import MainForum from './_components/_component-main-page/forum/main-forum'
 import './_styles/main-page.css'
 
 export default function Home() {
@@ -44,13 +42,9 @@ export default function Home() {
           {/* ---- END main coupon ---- */}
           {/* ---- START course ---- */}
           <section className="subsectoin-main-page">
-            <h3>美妝課程</h3>
-            <Componentstab items={brands} height={52} />
-            <div />
-            <button className="btn btn-primary">查看更多</button>
+            <CourseSection />
           </section>
           {/* ==== END course ==== */}
-          <CourseSection />
           {/* ==== START coupons ==== */}
           <section></section>
           {/* ==== END coupons ==== */}

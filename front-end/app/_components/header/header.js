@@ -2,18 +2,19 @@
 import Link from 'next/link'
 //styles
 import { BsHandbag } from 'react-icons/bs'
+import { useAuth } from '@/hook/use-auth'
 import HamMenu from './_component/ham-menu'
 import HamMeunNav from './_component/ham-meun-nav'
 import HeaderNav from './_component/header-nav'
 import './header.css'
 // hook
-import { useAuth } from '../../hook/use-auth'
 import useCartCount from '@/app/cart/hook/useCartCount'
 import { usePathname, useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 export default function Header() {
   const cartIconNum = useCartCount()
+  const pathname = usePathname()
   const router = useRouter()
 
   const handleCartClick = () => {
@@ -31,7 +32,8 @@ export default function Header() {
   if (
     pathname.includes('login') ||
     pathname.includes('register') ||
-    pathname.includes('forget-password')
+    pathname.includes('forget-password') ||
+    pathname.includes('dashboard')
   ) {
     return <></>
   }
@@ -47,7 +49,9 @@ export default function Header() {
           />
           <HamMenu hamMenuOpen={hamMenuOpen} setHamMenuOpen={setHamMenuOpen} />
           {/* (END) for burger menu */}
-          <div className="order-lg-1 order-2 title">ISLA</div>
+          <Link href="/">
+            <div className="order-lg-1 order-2 title">ISLA</div>
+          </Link>
           {/*  nav-bar */}
           <HeaderNav />
           <div className="order-3 icons">
