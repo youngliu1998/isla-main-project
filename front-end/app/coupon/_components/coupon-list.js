@@ -14,6 +14,7 @@ export default function CouponList({ coupons, getCouponStyle, isLogin }) {
           user_id={user?.id}
           coupon_id={coupon.id}
           brand_id={coupon.brand_id}
+          categories={coupon.category_id}
           course_categories_id={coupon.course_categories_id}
           title={coupon.title}
           description={coupon.description}
