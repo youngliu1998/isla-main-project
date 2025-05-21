@@ -1,9 +1,8 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import InputPass from '../_component/input-pass'
 import '../_component/_style.css/form.css'
-import { useAuth } from '@/hook/use-auth'
 
 export default function PasswordPage() {
   const [password, setPassword] = useState({
@@ -12,9 +11,11 @@ export default function PasswordPage() {
     againPass: '',
   })
   console.log(password)
+  // ==== 修改密碼(設定) ====
   async function changePass() {
     try {
       const token = localStorage?.getItem('jwtToken') || null
+      if (!token) return
       const response = await fetch(
         'http://localhost:3005/api/member/password',
         {
@@ -32,10 +33,13 @@ export default function PasswordPage() {
       console.log(err)
     }
   }
+  // ==== END 修改密碼(設定) ====
+  // ==== 提交表單(設定)
   const handleSubmit = (e) => {
     e.preventDefault()
     changePass()
   }
+  // ==== END 提交表單(設定)
   return (
     <>
       <form onSubmit={handleSubmit}>

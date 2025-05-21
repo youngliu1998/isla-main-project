@@ -6,6 +6,7 @@ export default function InputText({
   name = '',
   value = '',
   setText = () => {},
+  disabled = '',
 }) {
   return (
     <>
@@ -19,6 +20,7 @@ export default function InputText({
             setText({ ...text, [name]: e.target.value })
           }}
           className="form-control"
+          disabled={disabled}
         />
       </div>
     </>

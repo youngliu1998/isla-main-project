@@ -4,24 +4,23 @@ import db from '../../config/mysql.js'
 import jwt from 'jsonwebtoken'
 const secretKey = process.env.JWT_SECRET_KEY
 
-// get: Send data if Auth is ok
 router.post('/', async (req, res) => {
   let error = ''
   let message = '' // too much steps, need to check all steps are down
   const { token } = req.body
 
   try {
-    // 向 Google 驗證 Token
+    // ==== 向 Google 驗證 Token ====
     const googleResponse = await fetch(
       `https://oauth2.googleapis.com/tokeninfo?id_token=${token}`
     )
     const userData = await googleResponse.json()
 
     if (userData.error) {
-      return res.status(400).json({ error: 'Invalid token' })
+      return res.status(400).json({ error: 'Invalid Google token' })
     }
-
-    // 整合原有ISLA的登入系統
+    // ==== END 向 Google 驗證 Token ====
+    // ==== 整合原有ISLA的登入系統 ====
     try {
       const query = `SELECT id,email, password FROM users WHERE email=?`
       let user = await db
@@ -30,9 +29,8 @@ router.post('/', async (req, res) => {
         .catch((err) => {
           error = err
         })
-      // ----- START of create -----
-      // if user doesn't exist, create an account
       if (!user) {
+        // ==== 如果使用者沒ISLA帳號，建立一個 ====
         try {
           const query = `INSERT INTO users (email) VALUES (?)`
           await db
@@ -49,9 +47,10 @@ router.post('/', async (req, res) => {
             })
           }
           message += '--新增成功--,'
-          // search user's email, id to create token
+          // ==== END 建立帳號 ====
+          // ==== 建立 ISAL 的 token ====
           try {
-            const query = `SELECT id,email, password FROM users WHERE email=?`
+            const query = `SELECT id,email,password FROM users WHERE email=?`
             user = await db
               .execute(query, [userData['email']])
               .then((data) => data[0][0])
