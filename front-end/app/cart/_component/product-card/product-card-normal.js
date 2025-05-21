@@ -16,7 +16,13 @@ export default function ProductCardNormal({
   category,
   onDelete,
   onQuantityChange,
+  isChecked = false,
+  onCheckChange = () => {},
 }) {
+  // 動態修改金額
+  const unitPrice = Number(salePrice ?? basePrice)
+  const baseTotal = Number(basePrice) * quantity
+  const saleTotal = Number(unitPrice) * quantity
   return (
     <div className="card border-0 mb-5">
       <div className="row g-3">
@@ -26,6 +32,8 @@ export default function ProductCardNormal({
               className={`${styles.checkboxInput} form-check-input`}
               type="checkbox"
               id={id}
+              checked={isChecked}
+              onChange={(e) => onCheckChange(e.target.checked)}
             />
             <label htmlFor={id}>
               <Image
@@ -49,7 +57,7 @@ export default function ProductCardNormal({
                   {title}
                 </h5>
                 {category && (
-                  <span className="badge bg-secondary ">{category}</span>
+                  <span className="badge bg-secondary mb-1">{category}</span>
                 )}
               </div>
               <button
@@ -57,24 +65,32 @@ export default function ProductCardNormal({
                 className="btn border-0 p-0"
                 onClick={onDelete}
               >
-                <BsTrash className="text-subtext fs-5" />
+                <BsTrash className="text-subtext fs-5 mb-1" />
               </button>
             </div>
 
             {/* 數量與價格 */}
             <div className="d-flex justify-content-between align-items-center">
               <QuantityControler
+                id={id}
                 value={quantity}
                 onChange={(newQty) => onQuantityChange(newQty)}
               />
               <div className="fs-5">
-                {salePrice !== basePrice ? (
+                {Number(salePrice) &&
+                Number(salePrice) !== Number(basePrice) ? (
                   <>
-                    <del className="me-2 h6 text-subtext">NT${basePrice}</del>
-                    <strong className="h5 text-maintext">NT${salePrice}</strong>
+                    <del className="me-2 h6 text-subtext">
+                      NT${baseTotal.toLocaleString()}
+                    </del>
+                    <strong className="h5 text-maintext">
+                      NT${saleTotal.toLocaleString()}
+                    </strong>
                   </>
                 ) : (
-                  <strong className="h5 text-maintext">NT${basePrice}</strong>
+                  <strong className="h5 text-maintext">
+                    NT${baseTotal.toLocaleString()}
+                  </strong>
                 )}
               </div>
             </div>

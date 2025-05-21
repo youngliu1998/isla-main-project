@@ -1,15 +1,18 @@
 import express from 'express'
 const router = express.Router()
 import db from '../../config/mysql.js'
+import verifyToken from '../../lib/verify-token.js'
 
-// DELETE /api/cart/delete/:id
-router.delete('/:id', async (req, res) => {
+// DELETE /api/cart-items/delete/:id
+router.delete('/:id', verifyToken, async (req, res) => {
+  const user_id = req.user.id
   const cartItemId = req.params.id
 
   try {
-    const [result] = await db.execute(`DELETE FROM cart_items WHERE id = ?`, [
-      cartItemId,
-    ])
+    const [result] = await db.execute(
+      `DELETE FROM cart_items WHERE id = ? AND user_id = ?`,
+      [cartItemId, user_id]
+    )
 
     if (result.affectedRows === 0) {
       return res

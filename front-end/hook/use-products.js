@@ -86,8 +86,8 @@ export const UseProductReviews = (id) => {
       }
       return res.data.data
     },
-    enabled: !!id, // 確保 id 存在才執行
-    staleTime: 1000 * 60 * 600, // 10 分鐘快取
+    enabled: !!id,
+    staleTime: 1000 * 60 * 600,
   })
 }
 
