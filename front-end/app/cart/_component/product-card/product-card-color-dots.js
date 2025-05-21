@@ -30,7 +30,7 @@ export default function ProductCardColorDots({
     setActiveColor(colorName)
     onColorChange(colorName)
 
-    // 👉 更新 localStorage 裡對應這個 item 的 color
+    // 更新 localStorage 裡對應這個 item 的 color
     const cartItems = JSON.parse(localStorage.getItem('cartItems') || '[]')
     const updated = cartItems.map((item) =>
       item.id === id
@@ -48,8 +48,11 @@ export default function ProductCardColorDots({
         : item
     )
     localStorage.setItem('cartItems', JSON.stringify(updated))
+    //動態修改金額
   }
-
+  const unitPrice = Number(salePrice ?? basePrice)
+  const baseTotal = Number(basePrice) * quantity
+  const saleTotal = Number(unitPrice) * quantity
   return (
     <div className="card border-0">
       <div className="row g-3">
@@ -116,17 +119,25 @@ export default function ProductCardColorDots({
             {/* 數量與價格 */}
             <div className="d-flex justify-content-between align-items-center">
               <QuantityControler
+                id={id}
                 value={quantity}
                 onChange={(newQty) => onQuantityChange(newQty)}
               />
               <div className="fs-5">
-                {salePrice ? (
+                {Number(salePrice) &&
+                Number(salePrice) !== Number(basePrice) ? (
                   <>
-                    <del className="me-2 h6 text-subtext">NT${basePrice}</del>
-                    <strong className="h5 text-maintext">NT${salePrice}</strong>
+                    <del className="me-2 h6 text-subtext">
+                      NT${baseTotal.toLocaleString()}
+                    </del>
+                    <strong className="h5 text-maintext">
+                      NT${saleTotal.toLocaleString()}
+                    </strong>
                   </>
                 ) : (
-                  <strong className="h5 text-maintext">NT${basePrice}</strong>
+                  <strong className="h5 text-maintext">
+                    NT${baseTotal.toLocaleString()}
+                  </strong>
                 )}
               </div>
             </div>
