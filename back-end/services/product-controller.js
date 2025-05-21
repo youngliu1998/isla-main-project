@@ -341,7 +341,7 @@ export async function getProductReviews(productId) {
         )
         if (stock?.color_id) {
           const [[colorInfo]] = await db.query(
-            `SELECT color_id, color_name FROM colors WHERE color_id = ?`,
+            `SELECT color_id, color_name, color_code FROM colors WHERE color_id = ?`,
             [stock.color_id]
           )
           if (colorInfo) {
