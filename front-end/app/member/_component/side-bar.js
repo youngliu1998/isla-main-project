@@ -16,7 +16,7 @@ export default function SideBar() {
   const router = useRouter()
   const [OpenMenu, setOpenMenu] = useState(false) // open nav bar in RWD
   const [openAvatar, setOpenAvatar] = useState(false)
-  const { user, isAuth, logout } = useAuth()
+  const { user, isAuth, logout, initAuth } = useAuth()
 
   // ==== 確認是否登入 ====
   useEffect(() => {
@@ -28,7 +28,7 @@ export default function SideBar() {
         pathname.includes('forget-password')
       )
     ) {
-      if (!isAuth) {
+      if (!initAuth()) {
         alert('請先登入')
         router.push('/member/login')
         return

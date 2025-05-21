@@ -1,6 +1,9 @@
 body {
   background-color: var(--bg-gray);
 }
+.container-user {
+  padding-top: 3.5rem;
+}
 .user-content {
   display: flex;
   flex-direction: column;

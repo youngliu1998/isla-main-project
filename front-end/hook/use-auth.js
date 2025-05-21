@@ -23,10 +23,14 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(defaultUser)
   let isAuth = Boolean(user?.id)
   // ==== 取得使用者資料(驗證後才可使用) ====
+  // initAuth 同時作為有無登入的認證，沒有登入會回應 null
   const initAuth = async () => {
     // ==== 確認是否滿足讀取條件 (ERROR FIRST) ====
     const token = localStorage.getItem('jwtToken')
-    if (!token) return console.log('useAuth: 沒有token')
+    if (!token) {
+      console.log('useAuth: 沒有token')
+      return null
+    }
     // ==== END 確認是否滿足讀取條件 ====
     // ==== 連接資料庫 ====
     try {
@@ -44,11 +48,13 @@ export function AuthProvider({ children }) {
         console.warn('驗證失敗，清除 token')
         localStorage.removeItem('jwtToken')
         localStorage.removeItem('googleToken')
+        return null
       }
     } catch (err) {
       console.error('使用者驗證錯誤:', err)
       localStorage.removeItem('jwtToken')
       localStorage.removeItem('googleToken')
+      return null
     }
   }
   // ==== END 取得使用者資料(驗證後才可使用) ====
