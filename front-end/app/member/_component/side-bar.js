@@ -20,6 +20,13 @@ export default function SideBar() {
 
   // ==== 確認是否登入 ====
   useEffect(() => {
+    const isLogin = async () => {
+      if (!(await initAuth())) {
+        alert('請先登入')
+        router.push('/member/login')
+        return
+      }
+    }
     // 不包含以下網址才執行
     if (
       !(
@@ -28,11 +35,7 @@ export default function SideBar() {
         pathname.includes('forget-password')
       )
     ) {
-      if (!initAuth()) {
-        alert('請先登入')
-        router.push('/member/login')
-        return
-      }
+      isLogin()
     }
   }, [])
   // return <></> in login, register, ......
