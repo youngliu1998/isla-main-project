@@ -22,9 +22,9 @@ export default function CouponHeader({ type = ' ', hasMemberCoupon = false }) {
       </div>
 
       {/* 手機版標題 */}
-      <div className="d-flex d-md-none py-3 px-5 bg-white justify-content-center">
+      {/* <div className="d-flex d-md-none py-3 px-5 bg-white justify-content-center">
         <h4 className="sub-color">菜單</h4>
-      </div>
+      </div> */}
     </>
   )
 }

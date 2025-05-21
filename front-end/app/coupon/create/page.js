@@ -158,6 +158,7 @@ export default function CreatePage() {
               title={newCoupon.title}
               description={newCoupon.description}
               brand_id={newCoupon.brand_id}
+              categories={newCoupon.category_id}
               coupon_id={newCoupon.id}
               user_id={user?.id}
               course_categories_id={newCoupon.course_categories_id || 0}
@@ -175,7 +176,10 @@ export default function CreatePage() {
                   首頁
                 </button>
               </Link>
-              <Link href="/products" className="text-center">
+              <Link
+                href={`/product/list?brand_id=${newCoupon.brand_id}&categories=${newCoupon.category_id}`}
+                className="text-center"
+              >
                 <button className="btn btn-primary w-50 text-center">
                   立即逛逛
                 </button>
@@ -193,13 +197,16 @@ export default function CreatePage() {
         />
       </div>
 
-      <div className="container">
+      <div className="container position-relative">
         <div className="text-center mb-3">
           <small className="text-muted">
             第 {currentStep + 1} / 共 {questions.length} 題
           </small>
           <div>
-            <Link href="/" className="sub-text text-decoration-none fs-5">
+            <Link
+              href="/"
+              className="position-absolute end-0 top-0 sub-text text-decoration-none fs-5"
+            >
               略過
             </Link>
           </div>
@@ -241,7 +248,7 @@ export default function CreatePage() {
           <div className="d-flex justify-content-center gap-3">
             {currentStep > 0 && (
               <button
-                className="next-color btn-prev px-5 py-2"
+                className="btn btn-primary btn-prev px-5 py-2"
                 onClick={() => goToStep(currentStep - 1)}
               >
                 上一題
@@ -249,14 +256,16 @@ export default function CreatePage() {
             )}
             {currentStep < questions.length - 1 ? (
               <button
-                className="next-color btn-next px-5 py-2"
-                onClick={() => goToStep(currentStep + 1)}
+                className="btn btn-primary btn-next px-5 py-2"
+                onClick={() =>
+                  answers[currentStep] && goToStep(currentStep + 1)
+                }
               >
                 下一題
               </button>
             ) : (
               <button
-                className="next-color btn-next btn-submit px-5 py-2"
+                className="btn btn-primary btn-next btn-submit px-5 py-2"
                 onClick={handleSubmit}
               >
                 生成專屬優惠券
