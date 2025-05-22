@@ -1,5 +1,3 @@
-import Image from 'next/image'
-import Link from 'next/link'
 import Componentstab from './_components/tab'
 // ==== section component ====
 import CourseSection from '@/app/_components/_component-main-page/course/course-section'

@@ -8,9 +8,9 @@ export default function Select({
   text = {},
   setText = () => {},
 }) {
-  console.log('text', text)
-  console.log('selectKey', selectKey)
-  console.log('text.selectKey', text[`${selectKey}`])
+  // console.log('text', text)
+  // console.log('selectKey', selectKey)
+  // console.log('text.selectKey', text[`${selectKey}`])
   return (
     <>
       <div className="user-form-input">
