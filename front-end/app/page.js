@@ -47,7 +47,7 @@ export default function Home() {
           </section>
           {/* ==== END course ==== */}
           {/* ==== START coupons ==== */}
-          <section className="subsection-main-page">
+          <section className="subsectoin-main-page bg-primary">
             <CouponSection />
           </section>
           {/* ==== END coupons ==== */}
