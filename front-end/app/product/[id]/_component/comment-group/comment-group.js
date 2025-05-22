@@ -8,6 +8,7 @@ import {
   UseSaveOrUpdateReview,
   UseUserReview,
 } from '../../../../../hook/use-products.js'
+import PictureShowAll from '../show-all-picture/picture-show-all.js'
 
 export function CommentGroup({
   reviews,
@@ -122,27 +123,27 @@ export function CommentGroup({
             )
           })}
         </div>
+<PictureShowAll reviewImages={reviewImages} />
+      {/*  <div className="comment-sidebar-photos-box">*/}
+      {/*    <div className="comment-sidebar-photos-title">所有圖片</div>*/}
+      {/*    <div className="comment-sidebar-photos">*/}
+      {/*      {(reviewImages || []).slice(0, 6).map(({ imageUrl }, i) => (*/}
+      {/*        <button key={i} className="comment-img" type="button">*/}
+      {/*          <Image*/}
+      {/*            className="img-fluid"*/}
+      {/*            src={imageUrl}*/}
+      {/*            alt={`評論圖片 ${i + 1}`}*/}
+      {/*            width={0}*/}
+      {/*            height={0}*/}
+      {/*          />*/}
+      {/*        </button>*/}
+      {/*      ))}*/}
+      {/*    </div>*/}
 
-        <div className="comment-sidebar-photos-box">
-          <div className="comment-sidebar-photos-title">所有圖片</div>
-          <div className="comment-sidebar-photos">
-            {(reviewImages || []).slice(0, 6).map(({ imageUrl }, i) => (
-              <button key={i} className="comment-img" type="button">
-                <Image
-                  className="img-fluid"
-                  src={imageUrl}
-                  alt={`評論圖片 ${i + 1}`}
-                  width={0}
-                  height={0}
-                />
-              </button>
-            ))}
-          </div>
-
-          <button className="comment-sidebar-photos-show-more" type="button">
-            查看全部
-          </button>
-        </div>
+      {/*    <button className="comment-sidebar-photos-show-more" type="button">*/}
+      {/*      查看全部*/}
+      {/*    </button>*/}
+      {/*  </div>*/}
       </div>
 
       <div className="comment-box">
@@ -183,6 +184,7 @@ export function CommentGroup({
             />
           </div>
         </div>
+        <ReviewsSection reviews={filteredReviews} />
       </div>
     </div>
   )

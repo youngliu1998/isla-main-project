@@ -225,21 +225,25 @@ export async function getFilteredProducts(filters) {
 export async function getProductDetail(productId) {
   const [productRows] = await db.query(
     `
-    SELECT 
-    products.product_id, 
-    products.name, 
-    products.description, 
-    products.base_price, 
-    products.sale_price, 
-    products.status,
-    brands.brand_id, 
-    brands.name AS brand_name,
-    categories.category_id, 
-    categories.name AS category_name
-    FROM products
-    LEFT JOIN brands ON products.brand_id = brands.brand_id
-    LEFT JOIN categories ON products.category_id = categories.category_id
-    WHERE products.product_id = ?
+      SELECT 
+        products.product_id, 
+        products.name, 
+        products.description, 
+        products.base_price, 
+        products.sale_price, 
+        products.status,
+        brands.brand_id, 
+        brands.name AS brand_name,
+        categories.category_id, 
+        categories.name AS category_name,
+        product_tag_relations.tag_id,
+        product_tags.name AS tag_name
+      FROM products
+      LEFT JOIN brands ON products.brand_id = brands.brand_id
+      LEFT JOIN product_tag_relations ON products.product_id = product_tag_relations.product_id
+      LEFT JOIN product_tags ON product_tag_relations.tag_id = product_tags.tag_id
+      LEFT JOIN categories ON products.category_id = categories.category_id
+      WHERE products.product_id = ?
   `,
     [productId]
   )
@@ -293,6 +297,13 @@ export async function getProductDetail(productId) {
     [productId]
   )
 
+  const tags = productRows
+    .filter((row) => row.tag_id && row.tag_name)
+    .map((row) => ({
+      tag_id: row.tag_id,
+      name: row.tag_name,
+    }))
+
   const average_rating = avgResult[0].average_rating || 0
 
   // 組合回傳資料
@@ -310,6 +321,7 @@ export async function getProductDetail(productId) {
       category_id: product.category_id,
       name: product.category_name,
     },
+    tags,
     colors,
     images,
     average_rating,

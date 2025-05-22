@@ -1,34 +1,53 @@
 import Accordion from 'react-bootstrap/Accordion'
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import Tooltip from 'react-bootstrap/Tooltip'
 
-function ProductInfoAccrodion() {
+function ProductInfoAccordion({ ingredients }) {
   return (
     <Accordion defaultActiveKey="0">
       <Accordion.Item eventKey="0">
         <Accordion.Header>產品成分</Accordion.Header>
-        <Accordion.Body>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.
+        <Accordion.Body className="text-wrap">
+          {ingredients.map((ing, idx) => {
+            const isLast = idx === ingredients.length - 1
+            const displayText = ing.name + (isLast ? '' : ', ')
+
+            if (ing.is_sensitive) {
+              return (
+                <OverlayTrigger
+                  key={ing.ingredient_id}
+                  placement="top"
+                  overlay={
+                    <Tooltip>
+                      ⚠ {ing.warning_message || '本成分可能引起敏感反應'}
+                    </Tooltip>
+                  }
+                >
+                  <span
+                    className="text-danger fw-semibold"
+                    style={{ cursor: 'help' }}
+                  >
+                    {displayText}
+                  </span>
+                </OverlayTrigger>
+              )
+            }
+
+            return (
+              <span key={ing.ingredient_id} className="text-body">
+                {displayText}
+              </span>
+            )
+          })}
         </Accordion.Body>
       </Accordion.Item>
+
       <Accordion.Item eventKey="1">
         <Accordion.Header>使用方式</Accordion.Header>
-        <Accordion.Body>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.
-        </Accordion.Body>
+        <Accordion.Body>請依照包裝或醫師指示使用本產品。</Accordion.Body>
       </Accordion.Item>
     </Accordion>
   )
 }
 
-export default ProductInfoAccrodion
+export default ProductInfoAccordion

@@ -4,7 +4,7 @@ import style from './review-editor.module.css'
 import { Modal, Button, Form } from 'react-bootstrap'
 import clsx from 'clsx'
 import { toast } from 'react-toastify'
-import { UseChrisR2ImageUrlDuo } from '../../../../../hook/use-chris-r2image-url.js'
+import { useChrisR2ImageUrlDuo } from '@/hook/use-chris-r2image-url.js'
 
 export default function ReviewEditor({
   product_Id,
@@ -13,7 +13,7 @@ export default function ReviewEditor({
   editImages = [],
   onSubmit,
 }) {
-  console.log('review-editor')
+  // console.log('review-editor')
   const [showModal, setShowModal] = useState(false)
   const [reviewID, setReviewId] = useState(null)
   const [reviewText, setReviewText] = useState('')
@@ -141,9 +141,6 @@ export default function ReviewEditor({
         'imageToDelete',
         JSON.stringify(Array.from(imageToDelete))
       )
-        for (const [key, value] of formData.entries()) {
-            console.log(key, value)
-        }
 
       try {
         await onSubmit(formData)
@@ -171,7 +168,7 @@ export default function ReviewEditor({
     () => existingImages.map((img) => img.url),
     [existingImages]
   )
-  const existingImages_images_withFullUrl = UseChrisR2ImageUrlDuo(
+  const existingImages_images_withFullUrl = useChrisR2ImageUrlDuo(
     existingImages_images
   )
 
@@ -181,7 +178,7 @@ export default function ReviewEditor({
         {edit ? '編輯評論' : '撰寫評論'}
       </Button>
 
-      <Modal show={showModal} onHide={handleClose} size="lg">
+      <Modal show={showModal} onHide={handleClose} size="lg" centered>
         <Modal.Header closeButton>
           <Modal.Title>{edit ? '編輯評論' : '撰寫評論'}</Modal.Title>
         </Modal.Header>
@@ -276,7 +273,7 @@ export default function ReviewEditor({
 
             <Form.Group className="mb-3">
               <Form.Label>
-                上傳圖片（最多 3 張，包含已上傳且未刪除的）
+                新增圖片 每位會員最多三張圖片
               </Form.Label>
               <Form.Control
                 type="file"

@@ -65,7 +65,7 @@ export const UseProductDetail = (id) => {
     queryFn: async () => {
       const res = await axios.get(`http://localhost:3005/api/product/${id}`)
       if (res.status !== 200 || res.data.success !== true) {
-        throw new Error('Failed to fetch product reviews')
+        throw new Error('資料庫查無商品資料')
       }
       return res.data.data
     },
@@ -130,8 +130,7 @@ export function UseSaveOrUpdateReview() {
       return res.data
     },
     onSuccess: (data) => {
-      // 自動更新本地快取，例如重新查詢使用者評論
-      queryClient.invalidateQueries(['product-reviews', data.review.user_id])
+      queryClient.invalidateQueries(['product-reviews', data.user_id])
     },
     onError: (error) => {
       console.error('送出失敗:', error.response?.data?.message || error.message)
