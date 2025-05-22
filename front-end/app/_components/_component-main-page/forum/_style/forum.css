@@ -1,0 +1,30 @@
+/* forum */
+.subsectoin-main-page .forum {
+  border-radius: 15px;
+  .forum-title {
+    font-size: 1rem;
+    color: var(--main-text);
+  }
+  .forum-content {
+    max-height: 3rem;
+    font-size: 0.9rem;
+    color: var(--sub-text);
+    overflow: hidden;
+  }
+  &:hover {
+    background: #f7f4f4;
+  }
+}
+.subsectoin-main-page .main-forum {
+  border-radius: 15px;
+  background: #f7f4f4;
+  overflow: hidden;
+  .forum-title {
+    line-height: 3.2rem;
+  }
+  .forum-content {
+    max-height: 9rem;
+    line-height: 2.2rem;
+    overflow: hidden;
+  }
+}
