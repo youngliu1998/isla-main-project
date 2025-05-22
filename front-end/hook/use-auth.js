@@ -60,8 +60,9 @@ export function AuthProvider({ children }) {
       const data = await response.json()
 
       if (response.ok) {
-        if (!data['data']['token']) {
-          return console.log('沒有取得token，登入失敗')
+        if (!data || !data.data || !data.data.token) {
+          console.log('沒有取得token，登入失敗', data);
+          return;
         }
         // set token to localStorage
         localStorage.setItem('jwtToken', data['data']['token'])

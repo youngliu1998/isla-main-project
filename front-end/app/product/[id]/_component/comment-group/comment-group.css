@@ -284,6 +284,11 @@
     text-decoration: underline; /* 添加下劃線 */
 }
 
+.tool-box {
+    display: flex;
+    gap: 16px;
+}
+
 @media (max-width: 768px) {
     .comment-component {
         flex-direction: column; /* 在小屏幕上垂直排列 */

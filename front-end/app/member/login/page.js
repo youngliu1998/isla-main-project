@@ -8,7 +8,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import InputText from '../_component/input-text'
-import InputPass from '../_component/input-pass'
+import InputPass from '../_component/input-Pass'
 import '../_styles/login.css'
 
 export default function LoginPage() {
@@ -33,8 +33,9 @@ export default function LoginPage() {
     })
       .then((response) => response.json())
       .catch((error) => console.error('Error:', error))
-    if (!data['data']['token']) {
-      return console.log('沒有取得token，登入失敗')
+    if (!data || !data.data || !data.data.token) {
+      console.log('沒有取得token，登入失敗', data);
+      return;
     }
     // set token to localStorage
     localStorage.setItem('jwtToken', data['data']['token'])

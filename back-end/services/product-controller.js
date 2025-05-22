@@ -1,4 +1,5 @@
 import db from '../config/mysql.js'
+import { uploadImageAndGetUrl } from './product-picture-upload-service.js'
 
 export async function getFilteredProducts(filters) {
   const {
@@ -200,7 +201,7 @@ export async function getFilteredProducts(filters) {
   try {
     // DEBUG
     // console.log('==== SQL ====')
-    console.log(sql)
+    // console.log(sql)
     // console.log('==== Params ====')
     // console.log(params)
     // console.log(
@@ -374,4 +375,93 @@ export async function getProductIngredient(productId) {
   )
 
   return ingredients
+}
+
+//http://localhost:3005/api/product-reviews/user/check?product_id=133812&user_id=52
+export async function getUserReviewForProduct(userId, productId) {
+  const [reviewRows] = await db.query(
+    `SELECT review_id, product_id, user_id, rating, comment_text, created_at
+     FROM product_reviews
+     WHERE user_id = ? AND product_id = ? AND status = 'approved'`,
+    [userId, productId]
+  )
+  if (reviewRows.length === 0) return null
+  const review = reviewRows[0]
+  const [imageRows] = await db.query(
+    `SELECT review_image_id, image_url FROM review_images WHERE review_id = ?`,
+    [review.review_id]
+  )
+  const images = imageRows.map((img) => ({
+    id: img.review_image_id,
+    url: img.image_url,
+  }))
+  return {
+    review,
+    images,
+  }
+}
+
+export async function saveOrUpdateReview({
+  product_id,
+  user_id,
+  rating,
+  context,
+  review_id,
+  imageToDelete,
+  images,
+}) {
+  //GPT建議：使用SQL交易機制，若失敗可以撤消所有操作，保護資料表
+  //GPT建議：使用村民交易機制，若失敗可以毆打村民
+  const conn = await db.getConnection()
+  try {
+    await conn.beginTransaction()
+    let newReviewId = review_id
+    if (!review_id) {
+      // 新增評論
+      const [insertRes] = await conn.execute(
+        `INSERT INTO product_reviews (product_id, user_id, rating, comment_text)
+         VALUES (?, ?, ?, ?)`,
+        [product_id, user_id, rating, context]
+      )
+      newReviewId = insertRes.insertId
+    } else {
+      // 更新評論
+      await conn.execute(
+        `UPDATE product_reviews
+         SET rating = ?, comment_text = ?
+         WHERE review_id = ? AND user_id = ?`,
+        [rating, context, review_id, user_id]
+      )
+    }
+
+    if (Array.isArray(imageToDelete) && imageToDelete.length > 0) {
+      const target = imageToDelete.map(() => '?').join(',')
+      await conn.execute(
+        `DELETE FROM review_images
+         WHERE review_image_id IN (${target}) AND review_id = ?`,
+        [...imageToDelete, newReviewId]
+      )
+    }
+
+    const imageUrls = await Promise.all(
+      images.map((file) => uploadImageAndGetUrl(file.buffer, file.originalname))
+    )
+
+    for (const imgurl of imageUrls) {
+      await conn.execute(
+        `INSERT INTO review_images (review_id, image_url) VALUES (?, ?)`,
+        [newReviewId, imgurl]
+      )
+    }
+
+    //跟村民交易（請準備綠寶石
+    await conn.commit()
+  } catch (error) {
+    //失敗回滾所有操作
+    console.error('saveOrUpdateReview error:', error)
+    await conn.rollback()
+    throw error
+  } finally {
+    conn.release()
+  }
 }

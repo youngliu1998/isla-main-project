@@ -9,12 +9,15 @@ import {
 import CommentGroup from './_component/comment-group/comment-group.js'
 import React, {useState} from 'react'
 import { useAuth } from '@/hook/use-auth.js'
+import ProductInfoAccrodion from './_component/product-info-accordion/product-info-accordion.js'
 
 export default function page({ params }) {
   // i don't know what is this shit, but it's warning
   const unwrappedParams = React.use(params)
   const id = unwrappedParams.id
-  const { token } = useAuth()
+  const { user } = useAuth();
+  const userId = user.id;
+  console.log(userId);
 
   const [colorId, setColorId] = useState(null)
   const [quantity, setQuantity] = useState(1)
@@ -203,11 +206,16 @@ export default function page({ params }) {
               </button>
             </div>
           </div>
+          <div className="product-info">
+            <ProductInfoAccrodion />
+          </div>
           <CommentGroup
             reviews={reviews}
             averageRating={product.average_rating}
             ratingCounts={getRatingCounts(reviews)}
             reviewImages={reviewImages}
+            productId={product.product_id}
+            userId={userId}
           />
         </div>
       </section>
