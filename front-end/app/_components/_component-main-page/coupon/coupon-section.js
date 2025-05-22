@@ -1,6 +1,5 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
 import useSWR from 'swr'
 import Link from 'next/link'
 import CouponCard from '@/app/coupon/_components/coupon-card'
@@ -9,7 +8,7 @@ import { useAuth } from '@/hook/use-auth'
 
 const fetcher = (...args) => fetch(...args).then((res) => res.json())
 
-export default function CouponSection(props) {
+export default function CouponSection() {
   const { user } = useAuth()
   // ==== use coupon api ====
   const url = `http://localhost:3005/api/coupon/products`
@@ -21,14 +20,14 @@ export default function CouponSection(props) {
   // ==== 取出所有COUPON_TYPE的第一張，整理成ARRAY ====
   let couponType = [1, 2, 3]
   const coupons =
-    data?.data?.coupons.filter((v, _) => {
+    data?.data?.coupons.filter((v) => {
       // console.log('========')
       // console.log('couponType', couponType)
       for (let type of couponType) {
         // console.log('type', type)
         // console.log('v.type_id', v.type_id)
         if (parseInt(v.type_id) === parseInt(type)) {
-          couponType = couponType.filter((v, _) => v != type)
+          couponType = couponType.filter((v) => v != type)
           return true
         }
       }
