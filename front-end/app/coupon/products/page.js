@@ -31,7 +31,11 @@ export default function CouponPage() {
   const url = user
     ? `http://localhost:3005/api/coupon/products?user_id=${user.id}`
     : null
-  const { data, error } = useSWR(user ? url : null, fetcher)
+  const { data, mutate, error } = useSWR(url, fetcher)
+
+  const handleRefresh = () => {
+    mutate() // 重新 fetch
+  }
 
   // 使用hook管理篩選狀態
   const { currentType, setCurrentType } = useCouponFilter(' ')
@@ -181,6 +185,7 @@ export default function CouponPage() {
                 coupons={displayCoupon}
                 getCouponStyle={getCouponStyle}
                 isLogin={() => setShowLoginModal(true)}
+                handleRefresh={handleRefresh}
               />
               <LoadMoreButton visible={moreBtn} onClick={handleLoadMore} />
             </>
