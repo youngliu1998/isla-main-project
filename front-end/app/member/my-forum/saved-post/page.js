@@ -63,7 +63,7 @@ export default function MyPostPage(props) {
                 postContent={post.content}
                 authorID={post.user_id}
                 width="21"
-                src={`/images/forum/320.webp`} //FIXME
+                src={post.user_img}
                 alt={post.user_name}
                 fontSize="14"
                 color="var(--sub-text)"

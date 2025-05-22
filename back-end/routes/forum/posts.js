@@ -15,6 +15,7 @@ router.get('/:pageName', async function (req, res) {
         pc.id AS cate_id,
         pc.name AS cate_name,
         u.nickname AS user_nick,
+        u.ava_url AS user_img,
         IFNULL (liked.user_ids, '') AS liked_user_ids,
         IFNULL( liked.likes, 0) AS likes,
         IFNULL (saved.user_ids, '') AS saved_user_ids
@@ -65,11 +66,11 @@ router.get('/:pageName', async function (req, res) {
       const keyword = req.query.keyword
       const productCate = req.query.productCate?.split(',')
       const postCate = req.query.postCate?.split(',')
-      // console.log({ keyword, productCate, postCate })
+      console.log({ keyword, productCate, postCate })
 
       // WHERE p.title LIKE ? OR p.content LIKE ? AND p.cate_id = ? AND p.product_cate_id = ?
       // 冷靜的找到篩選問題是括號，我好棒！
-      if (tab) {
+      if (tab || keyword || productCate || postCate) {
         const tabValue = tab !== '1' ? 'updated_at' : 'likes'
         // console.log(tab, tabValue)
         postsResult = await db.query(`${postsQuery} ORDER BY ${tabValue} DESC`)
