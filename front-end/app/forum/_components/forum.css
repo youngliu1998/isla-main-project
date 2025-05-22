@@ -12,7 +12,7 @@
   /* box-sizing: border-box; */
   /* outline: 1px solid #2a8aff; */
   font-family: 'Noto Sans TC', 'Montserrat';
-  letter-spacing: 0.1;
+  letter-spacing: 0.2;
 
   --main-color: #fd7061;
   --accent-color: #fd4f3c;
@@ -90,6 +90,9 @@
 .bg-hover {
   background-color: var(--hover-gray);
 }
+.bg-hovering-gray:hover {
+  background-color: var(--hover-light-gray);
+}
 .bg-light-hover {
   background-color: var(--hover-light-gray);
 }
@@ -126,6 +129,9 @@
 }
 
 /* font */
+.fs56 {
+  font-size: 56px;
+}
 .fs32 {
   font-size: 28px;
   line-height: 40px;
@@ -218,7 +224,7 @@
       }
     }
     .edit-area {
-      height: 90%;
+      /* height: 90%; */
       &:empty::before {
         content: attr(data-placeholder);
         color: var(--sub-text);

@@ -15,7 +15,7 @@ export default function LoginPage() {
   const router = useRouter()
 
   const [memAuth, setMemAuth] = useState({
-    email: 'johnwilliams@test.com',
+    email: 'johnsmith@gmail.com',
     password: '12345',
   })
   const { user, isAuth, login } = useAuth() // Context

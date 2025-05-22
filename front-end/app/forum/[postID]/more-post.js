@@ -14,6 +14,7 @@ export default function ComponentsMorePost({
   userID = '',
   authorID = '',
   authorNick = '',
+  authorUrl = '',
   mutate = () => {},
 }) {
   return (
@@ -55,7 +56,7 @@ export default function ComponentsMorePost({
                 <ComponentsAuthorInfo
                   authorID={authorID}
                   width="20"
-                  src={`/images/forum/320.webp`}
+                  src={authorUrl}
                   alt={authorNick}
                   fontSize={14}
                   color={'var(--main-text-color)'}

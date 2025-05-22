@@ -190,7 +190,7 @@ export default function ForumPage() {
                 postContent={post.content}
                 authorID={post.user_id}
                 width="21"
-                src={`/images/forum/320.webp`}
+                src={post.user_img}
                 alt={post.user_name}
                 fontSize="14"
                 color="var(--sub-text)"
@@ -216,7 +216,7 @@ export default function ForumPage() {
         productCateItems={productCateItems}
         handleAsideSearchChange={handleAsideSearchChange}
       />
-      <EditPostModal postTitle="" postContent="" isUpdated={false} />
+      {/* <EditPostModal postTitle="" postContent="" isUpdated={false} /> */}
     </>
   )
 }

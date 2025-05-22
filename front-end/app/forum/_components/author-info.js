@@ -26,11 +26,7 @@ export default function ComponentsAuthorInfo({
         className="author-info d-inline-flex align-items-center gap-2 px-0 button-clear me-auto"
         onClick={handleNavigate}
       >
-        <ComponentsAvatar
-          classWidth={width}
-          src={`http://localhost:3005/images/member/${src}`}
-          alt={authorName}
-        />
+        <ComponentsAvatar classWidth={width} src={src} alt={authorName} />
         <span style={{ fontSize: fontSize + 'px', color: color }}>
           {authorName}
         </span>

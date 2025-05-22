@@ -15,6 +15,7 @@ router.get('/:pageName', async function (req, res) {
         pc.id AS cate_id,
         pc.name AS cate_name,
         u.nickname AS user_nick,
+        u.ava_url AS user_img,
         IFNULL (liked.user_ids, '') AS liked_user_ids,
         IFNULL( liked.likes, 0) AS likes,
         IFNULL (saved.user_ids, '') AS saved_user_ids
