@@ -1,3 +1,5 @@
+'use client'
+
 import Image from 'next/image'
 import Link from 'next/link'
 import Componentstab from './_components/tab'
@@ -7,8 +9,10 @@ import ForumSection from '@/app/_components/_component-main-page/forum/forum-sec
 import CouponSection from '@/app/_components/_component-main-page/coupon/coupon-section'
 // ==== END section component ====
 import './_styles/main-page.css'
+import { useRouter } from 'next/navigation'
 
 export default function Home() {
+  const router = useRouter()
   const brands = [
     'Unleashia',
     'COSLORI',
@@ -17,6 +21,7 @@ export default function Home() {
     'Kaja',
     "A'Piuw",
   ]
+  const handleForumTab = () => {}
   return (
     <>
       <div>
@@ -54,9 +59,20 @@ export default function Home() {
           {/* ==== START forum ==== */}
           <section className="container subsectoin-main-page">
             <h3>Top 文章</h3>
-            <Componentstab items={['熱門', '最新']} height={52} />
+            <Componentstab
+              cates={['熱門', '最新']}
+              height={52}
+              // handleTabChange={handleForumTab} FIXME
+            />
             <ForumSection />
-            <button className="btn btn-primary">查看更多</button>
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                router.push('/forum')
+              }}
+            >
+              查看更多
+            </button>
           </section>
           {/* ---- END forum ---- */}
         </section>

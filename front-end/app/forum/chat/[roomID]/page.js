@@ -1,8 +1,7 @@
 'use client'
 
 import { useParams, useRouter } from 'next/navigation'
-import React, { useState, useEffect, useRef, use } from 'react'
-import ComponentsAuthorInfo from '../../_components/author-info'
+import React, { useState, useEffect, useRef } from 'react'
 import { useAuth } from '../../../../hook/use-auth'
 import ReconnectingWebSocket from 'reconnecting-websocket'
 import useSWR from 'swr'
@@ -20,23 +19,24 @@ export default function ChatRoom() {
   const [messages, setMessages] = useState([])
   const messagesRef = useRef()
 
-  useEffect(() => {
-    if (userID === 0) {
-      alert('請先登入')
-      router.push('/member/login')
-    }
-  }, [userID, router])
+  // useEffect(() => {
+  //   if (userID === 0) {
+  //     confirm('請先登入')
+  //     router.push('/member/login')
+  //     return null
+  //   }
+  // }, [userID, router])
 
   const { data, isLoading, error } = useSWR(
     `http://localhost:3005/api/forum/chat?userID=${userID}&roomID=${roomID}`,
     fetcher
   )
-  let roomDetail
-  if (data) roomDetail = data.data[0] //FIXME 需要更好的方法處理聊天室名稱
-
+  let roomDetail = data?.data?.[0] || {}
+  //FIXME 需要更好的方法處理聊天室名稱
+  // roomDetail.map((detail)=>(...detail, ))
   useEffect(() => {
     if (data) {
-      setMessages(JSON.parse(data.data[0].msg))
+      setMessages(JSON.parse(data?.data?.[0].msg))
     } //QU 沒if data的話會無限迴圈
   }, [data])
 
@@ -54,11 +54,12 @@ export default function ChatRoom() {
     return () => ws.removeEventListener('message', handleMessage)
   }, [ws])
 
-  if (userID === 0) return null
+  // console.log(messages) //sender_id, content, nick, ava_url
+
   if (error) {
     return <>連線失敗，請再試一次</>
   }
-  if (isLoading) {
+  if (isLoading || !roomDetail) {
     return <>載入中</>
   }
 
@@ -79,25 +80,26 @@ export default function ChatRoom() {
   }
   return (
     <>
-      {/* <div className="chat-room col col-11 col-md-7 p-0 d-none d-md-block"> */}
       <div className="chat-main d-flex flex-column h-100 bg-pure-white rounded-3 ms-md-3 shadow-forum">
         <div className="chat-main-header bg-pure-white d-flex gap-2 px-3 py-2 align-items-center shadow-sm fs20 fw-bold rounded-top-3">
           <button
             className="chat-main-return d-block d-md-none rounded-circle border-0 p-2"
-            onClick={(e) => {
+            onClick={() => {
               router.push('/forum/chat')
             }}
           >
             <i className="bi bi-arrow-left d-flex"></i>
           </button>
-          <ComponentsAuthorInfo
-            authorID="1"
-            width={36}
-            src="image_9.jpg" //TODO 多人群組頭貼
-            fontSize="20"
-            color="main-text-color"
-            authorName={roomDetail.nicks}
-          />
+          <div className="d-flex">
+            {roomDetail.avaUrls?.split(',').map((ava, i) => {
+              return (
+                <div className="chat-avas" key={i}>
+                  <ComponentsAvatar src={ava} alt={'成員'} classWidth="36" />
+                </div>
+              )
+            })}
+          </div>
+          <div className="ms-2">{roomDetail.nicks}</div>
         </div>
         <div className="messages-block overflow-hidden pt-3 h-100">
           <div

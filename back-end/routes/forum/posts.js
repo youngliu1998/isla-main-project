@@ -66,11 +66,11 @@ router.get('/:pageName', async function (req, res) {
       const keyword = req.query.keyword
       const productCate = req.query.productCate?.split(',')
       const postCate = req.query.postCate?.split(',')
-      // console.log({ keyword, productCate, postCate })
+      console.log({ keyword, productCate, postCate })
 
       // WHERE p.title LIKE ? OR p.content LIKE ? AND p.cate_id = ? AND p.product_cate_id = ?
       // 冷靜的找到篩選問題是括號，我好棒！
-      if (tab) {
+      if (tab || keyword || productCate || postCate) {
         const tabValue = tab !== '1' ? 'updated_at' : 'likes'
         // console.log(tab, tabValue)
         postsResult = await db.query(`${postsQuery} ORDER BY ${tabValue} DESC`)

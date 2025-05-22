@@ -15,7 +15,7 @@ const fetcher = (url) => fetch(url).then((res) => res.json())
 export default function ChatList() {
   const router = useRouter()
   const { user } = useAuth()
-  const userID = 1
+  const userID = user.id
   const url = `http://localhost:3005/api/forum/chat?userID=${userID}` //QU 在這邊放userID好嗎？
   const { data, isLoading, error } = useSWR(url, fetcher)
   if (error) {
@@ -30,6 +30,7 @@ export default function ChatList() {
     ...room,
     msg: JSON.parse(room.msg),
   }))
+  console.log(rooms)
 
   return (
     <>

@@ -314,6 +314,7 @@
   }
   .cate .active {
     background-color: var(--hover-gray);
+    color: var(--main-text);
   }
 }
 .search-bar {
@@ -474,4 +475,9 @@
 }
 .saved-post-header {
   max-width: 800px;
+}
+
+/* chat */
+.chat-avas {
+  margin-inline: -7px;
 }

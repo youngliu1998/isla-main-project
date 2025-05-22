@@ -12,18 +12,18 @@ import EditPostModal from '../_components/edit-post-modal'
 export default function ChatLayout({ children }) {
   const router = useRouter()
   const userID = useAuth().user.id
-  useEffect(() => {
-    if (userID === 0) {
-      alert('請先登入')
-      router.push('/member/login')
-    }
-  }, [userID, router])
+  // useEffect(() => {
+  //   if (userID === 0) {
+  //     confirm('請先登入')
+  //     router.push('/member/login')
+  //   }
+  // }, [userID, router])
 
   console.log(useParams().roomID)
   const isInRoom = !!useParams().roomID
   return (
     <>
-      <main className="main col col-10 col-xl-10 d-flex flex-column align-items-center">
+      <main className="main col col-10 col-xl-10 d-flex flex-column align-items-center mx-0">
         <div className="chat-container row w-100 pb-3 h-100">
           <div
             className={`chat-list col col-12 col-md-5 bg-pure-white rounded-3 p-0 shadow-forum overflow-hidden position-relative main-text-color ${isInRoom ? 'd-none d-md-block' : 'd-block'}`}
@@ -40,7 +40,7 @@ export default function ChatLayout({ children }) {
               </button>
             </div>
             <div className="chat-list-items-block position-absolute overflow-auto px-2 py-2">
-              <ChatList />
+              {userID !== 0 && <ChatList />}
             </div>
           </div>
           <div

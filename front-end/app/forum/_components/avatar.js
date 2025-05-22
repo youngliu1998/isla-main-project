@@ -11,7 +11,7 @@ export default function ComponentsAvatar({
   return (
     <>
       <div
-        className="position-relative rounded-circle"
+        className="position-relative rounded-circle card-border"
         style={{ width: classWidth + 'px', height: classWidth + 'px' }}
       >
         <Image

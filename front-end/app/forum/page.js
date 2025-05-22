@@ -60,6 +60,7 @@ export default function ForumPage() {
     ? `http://localhost:3005/api/forum/posts/home?${params}`
     : `http://localhost:3005/api/forum/posts/home`
   const { data, isLoading, error, mutate } = useSWR(postsAPI, fetcher)
+  console.log(`http://localhost:3005/api/forum/posts/home?${params}`)
 
   if (error) {
     console.log(error)
@@ -132,7 +133,7 @@ export default function ForumPage() {
           // setPostCate={setPostCate}
           postCateItems={postCateItems}
           productCateItems={productCateItems}
-          handleAsideSearchChange={handleAsideSearchChange}
+          // handleAsideSearchChange={handleAsideSearchChange}
         />
         <EditPostModal />
       </>
@@ -159,7 +160,7 @@ export default function ForumPage() {
         <ComponentsSearchBar
           postCateItems={postCateItems}
           productCateItems={productCateItems}
-          handleAsideSearchChange={handleAsideSearchChange}
+          // handleAsideSearchChange={handleAsideSearchChange}
         />
         <EditPostModal />
         {/* <ComponentsSearchBar /> */}
@@ -169,7 +170,7 @@ export default function ForumPage() {
 
   return (
     <>
-      <main className="main posts-section col col-10 col-xl-8 d-flex flex-column align-items-center position-relative overflow-hidden no-scroll-bar">
+      <main className="main posts-section col col-10 col-xl-8 d-flex flex-column align-items-center mx-0 position-relative overflow-hidden no-scroll-bar">
         <div className="tabs d-flex position-absolute w-100 top-0">
           <Componentstab
             cates={['熱門', '最新']}

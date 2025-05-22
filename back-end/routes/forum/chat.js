@@ -13,14 +13,14 @@ router.get('/', async (req, res) => {
     WHERE user_id = ${userID}
     GROUP BY user_id`
   )
+  console.log(room)
   if (!room) {
-    console.log(room)
     return res.json({ status: 'success', data: null })
   }
   // console.log(room)
   const rooms = room[0]?.room_id?.split(',').map(Number).join(',')
   if (!rooms) {
-    return res.json({ status: 'error', error: '未取得聊天室列表' })
+    return res.json({ status: 'error', data: null })
   }
   console.log({ userID: userID, rooms: rooms })
   // console.log(rooms) //string 1,2,3,4,5,6,7,8
@@ -55,6 +55,8 @@ router.get('/', async (req, res) => {
         DISTINCT sender_id) AS users,
       GROUP_CONCAT(
         DISTINCT nickname) AS nicks,
+      GROUP_CONCAT(
+        DISTINCT ava_url) AS avaUrls,
       CONCAT(
         '[',
         GROUP_CONCAT(
