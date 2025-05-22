@@ -2,8 +2,9 @@ import Image from 'next/image'
 import Link from 'next/link'
 import Componentstab from './_components/tab'
 // ==== section component ====
-import CourseSection from './_components/_component-main-page/course/course-section'
-import ForumSection from './_components/_component-main-page/forum/forum-section'
+import CourseSection from '@/app/_components/_component-main-page/course/course-section'
+import ForumSection from '@/app/_components/_component-main-page/forum/forum-section'
+import CouponSection from '@/app/_components/_component-main-page/coupon/coupon-section'
 // ==== END section component ====
 import './_styles/main-page.css'
 
@@ -22,7 +23,7 @@ export default function Home() {
         {/* banner */}
         <div className="banner-main-page" />
         {/* main page */}
-        <section className="container section-main-page">
+        <section className="section-main-page">
           {/* ---- START product ---- */}
           <section className="subsectoin-main-page">
             <h3>品牌暢銷商品</h3>
@@ -41,15 +42,17 @@ export default function Home() {
           <section></section>
           {/* ---- END main coupon ---- */}
           {/* ---- START course ---- */}
-          <section className="subsectoin-main-page">
+          <section className="container subsectoin-main-page">
             <CourseSection />
           </section>
           {/* ==== END course ==== */}
           {/* ==== START coupons ==== */}
-          <section></section>
+          <section className="subsection-main-page">
+            <CouponSection />
+          </section>
           {/* ==== END coupons ==== */}
           {/* ==== START forum ==== */}
-          <section className="subsectoin-main-page">
+          <section className="container subsectoin-main-page">
             <h3>Top 文章</h3>
             <Componentstab items={['熱門', '最新']} height={52} />
             <ForumSection />
