@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import './_style/forum.css'
 import MainForum from './main-forum'
 import SubForum from './sub-forum'
 

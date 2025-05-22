@@ -1,9 +1,9 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+// import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useAuth } from '../../../hook/use-auth'
+import { useAuth } from '@/hook/use-auth'
 
 export default function HamMeunNav({
   hamMenuOpen = false,
@@ -62,18 +62,26 @@ export default function HamMeunNav({
             avaNone
           }
         >
-          {/* avatar, nickname, .... (member info) */}
-          <div className="avartar overflow-hidden">
-            <Image
-              src={'http://localhost:3005/images/member/' + user.ava_url}
-              alt="Picture of the member"
-              width={100}
-              height={100}
-            />
-          </div>
+          {/* ==== avatar ==== */}
+          <Link
+            href={isAuth ? '/member/profile' : '/member/login'}
+            onClick={() => {
+              setHamMenuOpen(false)
+            }}
+          >
+            <div className="avartar overflow-hidden">
+              <Image
+                src={'http://localhost:3005/images/member/' + user.ava_url}
+                alt="Picture of the member"
+                width={100}
+                height={100}
+              />
+            </div>
+          </Link>
+          {/* ==== nickname, .... (member info) ==== */}
           <div className="d-flex flex-column align-items-center gap-3 w-50">
             <h4 className="user-title">{user?.nickname || 'Rookie'}</h4>
-            {/* <p>{user?.email || 'illegal@nomail.com'}</p> */}
+            {/* ==== login and logout button ==== */}
             <button className="login-btn">
               <Link
                 onClick={() => {

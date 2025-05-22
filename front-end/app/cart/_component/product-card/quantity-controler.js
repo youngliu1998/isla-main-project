@@ -26,6 +26,7 @@ export default function QuantityControler({
   const updateDb = async (newQty) => {
     try {
       await cartApi.patch(`/cart-items/update/${id}`, { quantity: newQty })
+      console.log('更新商品 ID:', id)
     } catch (error) {
       console.log('更新資料失敗', error)
     }

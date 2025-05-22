@@ -1,6 +1,9 @@
 // cart/_component/coupon-card-cart.js
 import Image from 'next/image'
+import { FaCheck } from 'react-icons/fa'
 import styles from './coupon-card-cart.module.scss'
+
+import { useState } from 'react'
 
 export default function CouponCardCart({ coupon, onSelect, selected }) {
   const {
@@ -34,10 +37,29 @@ export default function CouponCardCart({ coupon, onSelect, selected }) {
     area === 2 ? courseMap[course_categories_id] : brandMap[brand_id]
   const imageSrc = `/images/coupon/${imageKey}.png`
 
+  const [isAnimating, setIsAnimating] = useState(false)
+
+  const handleClick = () => {
+    // if (is_applicable) {
+    //   setIsAnimating(true)
+    //   onSelect(coupon)
+    //   setTimeout(() => setIsAnimating(false), 500) // 結束動畫
+    // }
+    if (!is_applicable) return
+
+    if (!selected) {
+      setIsAnimating(true)
+      setTimeout(() => setIsAnimating(false), 500)
+    }
+
+    onSelect(coupon)
+  }
+
   const cardClass = [
     styles.couponCart,
     selected && styles.selected,
     !is_applicable && styles.disabled,
+    isAnimating && styles.tearAnimation,
   ]
     .filter(Boolean)
     .join(' ')
@@ -57,14 +79,13 @@ export default function CouponCardCart({ coupon, onSelect, selected }) {
         <p className="mb-0">{condition}</p>
       </div>
 
-      {/* 套用按鈕 */}
       <div>
         <button
-          className={`${styles.applyBtn}`}
+          className={`${styles.circleBtn} ${selected ? styles.active : ''}`}
           disabled={!is_applicable}
-          onClick={() => onSelect(coupon)}
+          onClick={handleClick}
         >
-          使用優惠
+          {selected && <FaCheck className={styles.checkIcon} />}
         </button>
       </div>
     </div>

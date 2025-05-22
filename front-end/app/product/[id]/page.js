@@ -7,12 +7,25 @@ import {
   UseProductReviews,
 } from '../../../hook/use-products'
 import CommentGroup from './_component/comment-group/comment-group.js'
-import React from 'react';
+import React, {useState} from 'react'
+import { useAuth } from '@/hook/use-auth.js'
 
 export default function page({ params }) {
   // i don't know what is this shit, but it's warning
-  const unwrappedParams = React.use(params);
-  const id = unwrappedParams.id;
+  const unwrappedParams = React.use(params)
+  const id = unwrappedParams.id
+  const { token } = useAuth()
+
+  const [colorId, setColorId] = useState(null)
+  const [quantity, setQuantity] = useState(1)
+
+  const handleAddToCart = () => {
+    if (!colorId) return alert('請先選擇顏色')
+
+    // 呼叫 useMutation 或 API 傳送 colorId + quantity
+    console.log('加入購物車', { colorId, quantity })
+  }
+
 
   if (!id) return <div>Loading...</div>
   const {
@@ -21,7 +34,7 @@ export default function page({ params }) {
     error: errorProduct,
   } = UseProductDetail(id)
   const {
-    data: reviews,
+    data: reviews = [],
     isLoading: isLoadingReviews,
     error: errorReviews,
   } = UseProductReviews(id)
@@ -30,6 +43,32 @@ export default function page({ params }) {
     isLoading: isLoadingIngredients,
     error: errorIngredients,
   } = UseProductIngredient(id)
+
+  const getRatingCounts = (reviews) => {
+    const counts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
+    reviews.forEach(({ rating }) => {
+      counts[rating]++
+    })
+    return counts
+  }
+
+  // const productImages = (product.images || []).map((img) => ({
+  //   imageUrl: `https://isla-image.chris142852145.workers.dev/${img}`,
+  //   image_id: img.image_id,
+  // }))
+  //
+  // const mainImage = productImages[0]?.imageUrl
+
+  // productImages.forEach((img) => {
+  //   console.log(img.imageUrl);
+  // });
+
+  const reviewImages = reviews.flatMap((reviews) =>
+    (reviews.images || []).map((img) => ({
+      imageUrl: `https://isla-image.chris142852145.workers.dev/${img}`,
+      reviewId: reviews.review_id,
+    }))
+  )
 
   if (isLoadingProduct || isLoadingReviews || isLoadingIngredients)
     return <div>載入中...</div>
@@ -44,16 +83,6 @@ export default function page({ params }) {
     )
   return (
     <>
-      {/*<ul>*/}
-      {/*  {reviews.map((r) => (*/}
-      {/*    <li key={r.reviews_id}>{r.comment_context}</li>*/}
-      {/*  ))}*/}
-      {/*</ul>*/}
-      {/*<ul>*/}
-      {/*  {ingredients.map((ing) => (*/}
-      {/*    <li key={ing.ingredient_id}>{ing.name}</li>*/}
-      {/*  ))}*/}
-      {/*</ul>*/}
       <section className="product-main">
         <div className="product-main-container container d-flex justify-content-center align-items-center">
           <div className="product d-flex align-items-center justify-content-center">
@@ -75,17 +104,13 @@ export default function page({ params }) {
               />
             </div>
             <div className="pic-show">
-              <img
-                className="pic-show-item"
-                src="./imgs/1.jpg"
-                alt="主要產品圖片"
-              />
+              <img className="pic-show-item" src={''} alt="主要產品圖片" />
             </div>
             <div className="product-index d-flex flex-column justify-content-between">
               <div className="index-top">
                 <div className="top-main">
-                  <div className="brand">{product.brand_name}</div>{' '}
-                  <div className="name">{product.name}</div>{' '}
+                  <div className="brand">{product.brand.name}</div>
+                  <div className="name">{product.name}</div>
                 </div>
                 <div className="description">{product.description}</div>
               </div>
@@ -157,7 +182,7 @@ export default function page({ params }) {
         </div>
       </section>
       <section className="product-info">
-        <div className="container">
+        <div className="container product-info-container">
           <div className="product-indo-title w-100 d-flex justify-content-center align-items-center">
             產品資訊
           </div>
@@ -178,128 +203,12 @@ export default function page({ params }) {
               </button>
             </div>
           </div>
-          {/*<CommentGroup   reviews={reviews}*/}
-          {/*averageRating={product.averageRating}*/}
-          {/*ratingCounts={'1'}*/}
-          {/*reviewImages, />*/}
-          {/*<div className="comment-component d-flex">*/}
-          {/*  <div className="comment-sidebar">*/}
-          {/*    <div className="comment-sidebar-rating d-flex align-items-center gap-3">*/}
-          {/*      <div className="rating-num">4.1</div>{' '}*/}
-          {/*      <div className="rating-starbox d-flex flex-column">*/}
-          {/*        <div className="star-box">*/}
-          {/*          <i className="bx bxs-star star star-active" />*/}
-          {/*          <i className="bx bxs-star star star-active" />*/}
-          {/*          <i className="bx bxs-star star star-active" />*/}
-          {/*          <i className="bx bxs-star star " />*/}
-          {/*          <i className="bx bxs-star star " />*/}
-          {/*        </div>*/}
-          {/*        <div className="rating-starbox-status">*/}
-          {/*          基於 <span className="rating-status">200</span> 個評分{' '}*/}
-          {/*        </div>*/}
-          {/*      </div>*/}
-          {/*    </div>*/}
-          {/*    <div className="comment-sidebar-rating-bars flex-column-reverse">*/}
-          {/*      <div className="rating-bar-box d-flex align-items-center">*/}
-          {/*        <div className="rating-bar-label">1 星</div>*/}
-          {/*        <div className="rating-bar overflow-hidden">*/}
-          {/*          <div className="rating-bar-1" />{' '}*/}
-          {/*        </div>*/}
-          {/*      </div>*/}
-          {/*      <div className="rating-bar-box d-flex align-items-center">*/}
-          {/*        <div className="rating-bar-label">2 星</div>*/}
-          {/*        <div className="rating-bar overflow-hidden">*/}
-          {/*          <div className="rating-bar-2" />{' '}*/}
-          {/*        </div>*/}
-          {/*      </div>*/}
-          {/*      <div className="rating-bar-box d-flex align-items-center">*/}
-          {/*        <div className="rating-bar-label">3 星</div>*/}
-          {/*        <div className="rating-bar overflow-hidden">*/}
-          {/*          <div className="rating-bar-3" />{' '}*/}
-          {/*        </div>*/}
-          {/*      </div>*/}
-          {/*      <div className="rating-bar-box d-flex align-items-center">*/}
-          {/*        <div className="rating-bar-label">4 星</div>*/}
-          {/*        <div className="rating-bar overflow-hidden">*/}
-          {/*          <div className="rating-bar-4" />{' '}*/}
-          {/*        </div>*/}
-          {/*      </div>*/}
-          {/*      <div className="rating-bar-box d-flex align-items-center">*/}
-          {/*        <div className="rating-bar-label">5 星</div>*/}
-          {/*        <div className="rating-bar overflow-hidden">*/}
-          {/*          <div className="rating-bar-5" />{' '}*/}
-          {/*        </div>*/}
-          {/*      </div>*/}
-          {/*    </div>*/}
-          {/*    <div className="comment-sidebar-photos-box">*/}
-          {/*      <div className="comment-sidebar-photos-title">所有圖片</div>*/}
-          {/*      <div className="comment-sidebar-photos">*/}
-          {/*        <button className="comment-img" type="button">*/}
-          {/*          <img*/}
-          {/*            className="img-fluid"*/}
-          {/*            src="./imgs/3.jpg"*/}
-          {/*            alt="評論圖片 1"*/}
-          {/*          />*/}
-          {/*        </button>*/}
-          {/*        <button className="comment-img" type="button">*/}
-          {/*          <img*/}
-          {/*            className="img-fluid"*/}
-          {/*            src="./imgs/3.jpg"*/}
-          {/*            alt="評論圖片 2"*/}
-          {/*          />*/}
-          {/*        </button>*/}
-          {/*        <button className="comment-img" type="button">*/}
-          {/*          <img*/}
-          {/*            className="img-fluid"*/}
-          {/*            src="./imgs/3.jpg"*/}
-          {/*            alt="評論圖片 3"*/}
-          {/*          />*/}
-          {/*        </button>*/}
-          {/*        <button className="comment-img" type="button">*/}
-          {/*          <img*/}
-          {/*            className="img-fluid"*/}
-          {/*            src="./imgs/3.jpg"*/}
-          {/*            alt="評論圖片 4"*/}
-          {/*          />*/}
-          {/*        </button>*/}
-          {/*        <button className="comment-img" type="button">*/}
-          {/*          <img*/}
-          {/*            className="img-fluid"*/}
-          {/*            src="./imgs/3.jpg"*/}
-          {/*            alt="評論圖片 5"*/}
-          {/*          />*/}
-          {/*        </button>*/}
-          {/*        <button className="comment-img" type="button">*/}
-          {/*          <img*/}
-          {/*            className="img-fluid"*/}
-          {/*            src="./imgs/3.jpg"*/}
-          {/*            alt="評論圖片 6"*/}
-          {/*          />*/}
-          {/*        </button>*/}
-          {/*      </div>*/}
-          {/*      <button*/}
-          {/*        className="comment-sidebar-photos-show-more"*/}
-          {/*        type="button"*/}
-          {/*      >*/}
-          {/*        查看全部*/}
-          {/*      </button>*/}
-          {/*    </div>*/}
-          {/*  </div>*/}
-          {/*  <div className="comment-box">*/}
-          {/*    <div className="tools d-flex align-items-center">*/}
-          {/*      <button*/}
-          {/*        className="sort-by-date sort-btn sort-btn-active"*/}
-          {/*        type="button"*/}
-          {/*      >*/}
-          {/*        最新*/}
-          {/*      </button>{' '}*/}
-          {/*      <button className="sort-by-rating sort-btn" type="button">*/}
-          {/*        依照星級*/}
-          {/*      </button>{' '}*/}
-          {/*    </div>*/}
-
-          {/*  </div>*/}
-          {/*</div>*/}
+          <CommentGroup
+            reviews={reviews}
+            averageRating={product.average_rating}
+            ratingCounts={getRatingCounts(reviews)}
+            reviewImages={reviewImages}
+          />
         </div>
       </section>
       <section className="relative-products">
