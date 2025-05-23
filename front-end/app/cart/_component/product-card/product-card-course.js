@@ -13,6 +13,8 @@ export default function ProductCardCourse({
   basePrice,
   category,
   onDelete,
+  isChecked = false,
+  onCheckChange = () => {},
 }) {
   return (
     <div className="card border-0">
@@ -23,7 +25,8 @@ export default function ProductCardCourse({
               className={`${styles.checkboxInput} form-check-input me-3`}
               type="checkbox"
               id={id}
-              defaultChecked
+              checked={isChecked}
+              onChange={(e) => onCheckChange?.(e.target.checked)}
             />
             <label htmlFor={id}>
               <Image
