@@ -1,21 +1,21 @@
 // 根據勾選商品，回傳這張券能不能用，以及不能用的理由
 
 export function checkCouponStatus(coupon, selectedItems, totalAmount) {
-  // 只 debug brand_id=5 的優惠券
-  if (String(coupon.brand_id) === '5') {
-    // const kajaItems = selectedItems.filter((i) => String(i.brand_id) === '5')
-    // const kajaTotal = kajaItems.reduce(
-    //   (sum, item) => sum + (item.sale_price ?? item.base_price) * item.quantity,
-    //   0
-    // )
-    // console.log('[Kaja券判斷] 勾選商品：', kajaItems)
-    // console.log(
-    //   '[Kaja券判斷] 勾選商品總金額：',
-    //   kajaTotal,
-    //   '券條件需滿：',
-    //   coupon.min_amount
-    // )
-  }
+  // debug brand_id=5 的優惠券
+  // if (String(coupon.brand_id) === '5') {
+  //   const kajaItems = selectedItems.filter((i) => String(i.brand_id) === '5')
+  //   const kajaTotal = kajaItems.reduce(
+  //     (sum, item) => sum + (item.sale_price ?? item.base_price) * item.quantity,
+  //     0
+  //   )
+  //   console.log('[Kaja券判斷] 勾選商品：', kajaItems)
+  //   console.log(
+  //     '[Kaja券判斷] 勾選商品總金額：',
+  //     kajaTotal,
+  //     '券條件需滿：',
+  //     coupon.min_amount
+  //   )
+  // }
 
   // 篩選出與 這張優惠券 條件符合的商品
   const relatedItems = selectedItems.filter((item) => {

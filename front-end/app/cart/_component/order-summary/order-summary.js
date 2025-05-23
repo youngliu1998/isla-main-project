@@ -175,7 +175,11 @@ export default function OrderSummary({
                 <p className={`${styles.ellipsis}`} title={item.name}>
                   {item.name}
                 </p>
-                <p>NT${item.sale_price ?? item.base_price}</p>
+                <p>
+                  NT$
+                  {toLocaleString(item.sale_price) ??
+                    item.sale_price(item.base_price)}
+                </p>
               </div>
             ))
           ) : (
@@ -187,7 +191,7 @@ export default function OrderSummary({
       {courseCoupon && (
         <div className="d-flex justify-content-between text-secondary mb-2">
           <p className={`${styles.ellipsis}`}>{courseCoupon.description}</p>
-          <p>-NT${courseDiscount}</p>
+          <p>-NT${toLocaleString(courseDiscount)}</p>
         </div>
       )}
 
@@ -241,7 +245,7 @@ export default function OrderSummary({
       {selecGloCoup && (
         <div className="d-flex justify-content-between text-secondary mb-2">
           <p>{globalCouponTitle}</p>
-          <p>-NT${globalDiscount}</p>
+          <p>-NT${courseDiscount(globalDiscount)}</p>
         </div>
       )}
 
@@ -251,7 +255,9 @@ export default function OrderSummary({
       <div className="d-flex justify-content-between mb-3">
         <h4>總計：</h4>
         <h4>
-          <strong>NT${finalTotal >= 0 ? finalTotal : 0}</strong>
+          <strong>
+            NT${toLocaleString(finalTotal) >= 0 ? finalTotal(finalTotal) : 0}
+          </strong>
         </h4>
       </div>
 
