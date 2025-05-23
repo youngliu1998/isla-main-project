@@ -125,7 +125,9 @@ router.get('/:pageName', async function (req, res) {
       break
     }
     case 'my-following': {
-      // postsResult = await db.query(`${}`)
+      postsResult = await db.query(
+        `SELECT id, nickname, ava_url FROM users LIMIT 10`
+      )
       // FIXME
       break
     }
