@@ -42,7 +42,11 @@ router.get('/', verifyToken, async (req, res) => {
       const placeholders = productIds.map(() => '?').join(',')
       const [productRows] = await db.execute(
         `
+<<<<<<< HEAD
         SELECT p.product_id, p.name, p.base_price, p.sale_price, p.category_id, cat.name AS category_name,
+=======
+        SELECT p.product_id, p.name, p.base_price, p.sale_price, p.category_id, p.brand_id, cat.name AS category_name,
+>>>>>>> eb1a1b5b282b50dc9f9526c9aa1add0ce7762ff5
         pi.image_url
         FROM products p
         LEFT JOIN categories cat ON p.category_id = cat.category_id
@@ -121,6 +125,8 @@ router.get('/', verifyToken, async (req, res) => {
             base_price: prod?.base_price,
             sale_price: prod?.sale_price,
             category: prod?.category_name,
+            brand_id: prod?.brand_id,
+            category_id: prod?.category_id,
             quantity: item.quantity,
             image_url: `https://isla-image.chris142852145.workers.dev/${prod?.image_url}`,
             color: item.color_name
@@ -141,7 +147,7 @@ router.get('/', verifyToken, async (req, res) => {
             sale_price: course?.discount,
             category: course?.category_name,
             quantity: item.quantity,
-            image_url: `images/bannerall/${course?.picture}`,
+            image_url: `images/course/bannerall/${course?.picture}`,
           }
         }
 

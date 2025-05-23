@@ -4,6 +4,7 @@ import { useAuth } from '@/hook/use-auth'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { usePathname } from 'next/navigation'
 import MemberNav from './_side-bar-component/member-nav'
 import OpneNav from './_side-bar-component/open-nav'
@@ -12,29 +13,34 @@ import './_style.css/side-bar.css'
 
 export default function SideBar() {
   const pathname = usePathname()
+  const router = useRouter()
   const [OpenMenu, setOpenMenu] = useState(false) // open nav bar in RWD
   const [openAvatar, setOpenAvatar] = useState(false)
-  const { user, logout } = useAuth()
+  const { user, logout, initAuth } = useAuth()
 
-  // useEffect(() => {
-  //   const token = localStorage.getItem('jwtToken')
-  //   async function getSideInfo() {
-  //     const response = await fetch(
-  //       'http://localhost:3005/api/member/side-bar',
-  //       {
-  //         method: 'GET',
-  //         headers: { Authorization: `Bearer ${token}` },
-  //       }
-  //     )
-  //     const data = await response.json()
-  //     console.log("data['data']", data)
-  //     if (!data['data']) return 'no login'
-  //     const { nickname, ava_url, email } = data['data']
-  //     setuser({ nickname, ava_url, email })
-  //     console.log('user', nickname, ava_url)
-  //   }
-  //   getSideInfo()
-  // }, [user])
+  // ==== 確認是否登入 ====
+  useEffect(() => {
+    const isLogin = async () => {
+      await initAuth()
+      const isAuthLocal = localStorage.getItem('jwtToken') || false
+      // console.log(`isAuth`, isAuth)
+      if (!isAuthLocal) {
+        alert('請先登入')
+        router.push('/member/login')
+        return
+      }
+    }
+    // 不包含以下網址才執行
+    if (
+      !(
+        pathname.includes('login') ||
+        pathname.includes('register') ||
+        pathname.includes('forget-password')
+      )
+    ) {
+      isLogin()
+    }
+  }, [])
   // return <></> in login, register, ......
   if (
     pathname.includes('login') ||

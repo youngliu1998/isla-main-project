@@ -171,7 +171,7 @@ export default function PostIDPage(props) {
                 <ComponentsAuthorInfo
                   authorID={post.user_id}
                   width="24"
-                  src={`/images/forum/320.webp`}
+                  src={post.user_img}
                   alt={post.user_nick}
                   fontSize={14}
                   color={'var(--main-text-color)'}
@@ -226,6 +226,7 @@ export default function PostIDPage(props) {
                           userID={userID} //登入使用者
                           authorID={morePost.user_id}
                           authorNick={morePost.user_nick}
+                          authorUrl={morePost.user_img}
                           mutate={mutate}
                         />
                       </div>

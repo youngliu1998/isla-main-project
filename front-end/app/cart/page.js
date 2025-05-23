@@ -1,6 +1,5 @@
 'use client'
 import styles from './_styles/cart-style.module.scss'
-import { checkCouponStatus } from './utils/coupon-helper'
 import { toast } from 'react-toastify'
 //import component
 import StepProgress from './_component/step-progress/step-progress'
@@ -28,7 +27,11 @@ export default function CartPage() {
   const [couponDataProd, setCouponDataProd] = useState([])
   const [couponDataCour, setCouponDataCour] = useState([])
   const [isLoading, setIsLoading] = useState(true)
+  const [selecProdCoup, setSelecProdCoup] = useState(null)
+  const [selecCourCoup, setSelecCourCoup] = useState(null)
+  const [selecGloCoup, setSelecGloCoup] = useState(null)
 
+  //init-get cart-items & member-coupon
   useEffect(() => {
     // fetch get-cart-items
     const cartItemsData = async () => {
@@ -70,8 +73,8 @@ export default function CartPage() {
 
         localStorage.setItem('member-coupons', JSON.stringify(rawCouponItems))
         console.log('會員已領取的優惠券存到token')
-        setCouponDataProd(rawCouponItems.productCoupons)
-        setCouponDataCour(rawCouponItems.courseCoupons)
+        setCouponDataProd(rawCouponItems.productCoupons || [])
+        setCouponDataCour(rawCouponItems.courseCoupons || [])
       } catch (error) {
         console.error('會員已領取的優惠券資料抓取失敗', error.message)
       }
@@ -105,7 +108,19 @@ export default function CartPage() {
     }
   }
 
-  const [selectedCoupon, setSelectedCoupon] = useState(null)
+  useEffect(() => {
+    // 判斷目前已勾選商品是否為 0
+    const checkedCount = Object.values(checkedItems).filter(Boolean).length
+    if (checkedCount === 0) {
+      setSelecProdCoup(null)
+      setSelecCourCoup(null)
+      setSelecGloCoup(null)
+    }
+    // checkedItems 變動就清空
+    setSelecProdCoup(null)
+    setSelecCourCoup(null)
+    setSelecGloCoup(null)
+  }, [checkedItems])
 
   // 計算總金額（你也可以只算勾選的 cartItems）
   const totalAmount = cartItems.reduce(
@@ -127,13 +142,20 @@ export default function CartPage() {
     checkedItems,
     totalAmount
   )
-
-  const onSelectCoupon = (coupon) => {
-    // 若點到的是已選的，就取消選擇（toggle）
-    if (selectedCoupon && selectedCoupon.id === coupon.id) {
-      setSelectedCoupon(null)
+  // 商品優惠券選擇toggle
+  const onSelectProdCoup = (coupon) => {
+    if (selecProdCoup && selecProdCoup.id === coupon.id) {
+      setSelecProdCoup(null)
     } else {
-      setSelectedCoupon(coupon)
+      setSelecProdCoup(coupon)
+    }
+  }
+  // 課程優惠券選擇toggle
+  const onSelectCourCoup = (coupon) => {
+    if (selecCourCoup && selecCourCoup.id === coupon.id) {
+      setSelecCourCoup(null)
+    } else {
+      setSelecCourCoup(coupon)
     }
   }
 
@@ -169,6 +191,7 @@ export default function CartPage() {
   }, [])
   if (!hasMounted) return null // 預防報錯
 
+  // 購物車頁面沒有加載完成 就跑loading動畫
   if (!hasMounted) return null
   if (isLoading) {
     return (
@@ -177,6 +200,18 @@ export default function CartPage() {
       </section>
     )
   }
+  // 過濾 area=1 商品券
+  const filterProdCoups = processedCouponsProd.filter(
+    (coupon) => coupon.area === 1
+  )
+  // 過濾 area=2 課程券
+  const filterCourCoups = processedCouponsCourse.filter(
+    (coupon) => coupon.area === 2
+  )
+  // 過濾 area=0 全站券
+  const filterGloCoups = processedCouponsProd.filter(
+    (coupon) => coupon.area === 0
+  )
 
   return (
     <>
@@ -271,9 +306,9 @@ export default function CartPage() {
 
                 <CouponAccordion>
                   <CouponSwiper
-                    coupons={processedCouponsProd}
-                    selectedCoupon={selectedCoupon}
-                    onSelectCoupon={onSelectCoupon}
+                    coupons={filterProdCoups}
+                    selectedCoupon={selecProdCoup}
+                    onSelectCoupon={setSelecProdCoup}
                   />
                 </CouponAccordion>
 
@@ -294,8 +329,6 @@ export default function CartPage() {
                       salePrice={item.sale_price ?? item.base_price}
                       basePrice={item.base_price}
                       quantity={item.quantity}
-                      color={item.color}
-                      colorOptions={item.color_options}
                       category={item.category}
                       onDelete={() => handleDeleteItem(item.id)}
                       onQuantityChange={(newQty) => {
@@ -318,14 +351,25 @@ export default function CartPage() {
 
                 <CouponAccordionCourse>
                   <CouponSwiper
-                    coupons={processedCouponsCourse}
-                    selectedCoupon={selectedCoupon}
-                    onSelectCoupon={onSelectCoupon}
+                    coupons={filterCourCoups}
+                    selectedCoupon={selecCourCoup}
+                    onSelectCoupon={setSelecCourCoup}
                   />
                 </CouponAccordionCourse>
               </div>
               <div className="col-lg-4 col-12">
-                {!isMobile && <OrderSummary />}
+                {!isMobile && (
+                  <OrderSummary
+                    cartItems={cartItems.filter((i) => checkedItems[i.id])}
+                    selecProdCoup={selecProdCoup}
+                    selecCourCoup={selecCourCoup}
+                    selecGloCoup={selecGloCoup}
+                    setSelecGloCoup={setSelecGloCoup}
+                    filterGloCoups={filterGloCoups}
+                    filterCourCoups={filterProdCoups}
+                    filterProdCoups={filterProdCoups}
+                  />
+                )}
               </div>
               {isMobile && <MobileOrderBar />}
             </div>

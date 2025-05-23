@@ -48,7 +48,8 @@ export default function ComponentsSearchBar({
                         productCate,
                         postCate
                       )
-                      searchParamsRef.current.value = ''
+                      // FIXME 重複enter搜尋詞不要消失
+                      // searchParamsRef.current.value = ''
                       setSearchEmpty(false)
                     }
                   }}
@@ -75,7 +76,7 @@ export default function ComponentsSearchBar({
                   if (!isSearchEmpty) {
                     setKeyword(inputKeyword)
                     handleAsideSearchChange(inputKeyword, productCate, postCate)
-                    searchParamsRef.current.value = ''
+                    // searchParamsRef.current.value = ''
                     setSearchEmpty(true)
                   }
                 }}
