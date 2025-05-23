@@ -5,7 +5,6 @@ import confetti from 'canvas-confetti'
 import Image from 'next/image'
 import CouponButton from './coupon-button'
 import dayjs from 'dayjs'
-import { ClientPageRoot } from 'next/dist/client/components/client-page'
 
 const brandMap = {
   0: 'isla',
