@@ -2,14 +2,14 @@
 
 import '../_component/_style.css/form.css'
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+// import { useRouter } from 'next/navigation'
 import InputText from '../_component/input-text'
 import Select from '../_component/select'
 import { useAuth } from '@/hook/use-auth'
 import { cities } from './data/CityCountyData'
 
 export default function ProfilePage() {
-  const router = useRouter()
+  // const router = useRouter()
   const { initAuth } = useAuth()
   const [text, setText] = useState({
     name: '',
@@ -27,9 +27,9 @@ export default function ProfilePage() {
 
   // ==== 處理地址 ====
   const areas = cities.filter((v) => v.CityName == text.CityName)[0]?.AreaList
-  const postCodes = cities
-    .filter((v) => v.CityName == text.CityName)[0]
-    ?.AreaList.filter((v) => v.AreaName == text.AreaName)
+  // const postCodes = cities
+  //   .filter((v) => v.CityName == text.CityName)[0]
+  //   ?.AreaList.filter((v) => v.AreaName == text.AreaName)
   // ==== END 處理地址 ====
   // form submit fucntion
   const handleSubmit = async (event) => {
@@ -208,10 +208,8 @@ export default function ProfilePage() {
             <InputText
               title="郵遞區號"
               name="postcode"
-              arr={postCodes}
               selectKey="ZipCode"
-              text={text}
-              setText={setText}
+              value={text.ZipCode}
               disabled="disabled"
             />
           </div>

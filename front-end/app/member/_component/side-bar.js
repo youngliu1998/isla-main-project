@@ -22,7 +22,7 @@ export default function SideBar() {
   useEffect(() => {
     const isLogin = async () => {
       await initAuth()
-      const isAuthLocal = localStorage.getItem('isAuth') || false
+      const isAuthLocal = localStorage.getItem('jwtToken') || false
       // console.log(`isAuth`, isAuth)
       if (!isAuthLocal) {
         alert('請先登入')
