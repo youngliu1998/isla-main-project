@@ -19,6 +19,7 @@ import {
 } from '../../../utils/renderStars'
 import StarFilterBar from '../../../course/_components/review-star-filter-bar/review-star-filter-bar'
 import AddReviewForm from '../../../course/_components/add-review-form/add-review-form'
+import { toast } from 'react-toastify'
 
 export default function CourseIDPage() {
   const params = useParams()
@@ -37,9 +38,66 @@ export default function CourseIDPage() {
     setSelectedStar(level === selectedStar ? null : level)
   }
 
+  const handleDeleteComment = async (commentId) => {
+    const token = localStorage.getItem('jwtToken')
+    if (!window.confirm('你確定要刪除這則留言嗎？')) return
+
+    try {
+      const res = await fetch(
+        `http://localhost:3005/api/course/comments/${commentId}`, // ✅ 改成對應路徑
+        {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+
+      const result = await res.json()
+      if (result.status === 'success') {
+        setReviewCard((prev) => prev.filter((v) => v.comment_id !== commentId))
+        toast.success('留言已成功刪除！', {
+          position: 'top-right',
+          autoClose: 2000,
+          hideProgressBar: false,
+        })
+      } else {
+        toast.error(result.message || '刪除失敗')
+      }
+    } catch (err) {
+      toast.error('刪除過程中發生錯誤')
+    }
+  }
+
+  const [data, setData] = useState([])
+  useEffect(() => {
+    async function getCourseList() {
+      const token = localStorage.getItem('jwtToken')
+
+      try {
+        const res = await fetch(
+          `http://localhost:3005/api/course/course-list/${id}`,
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        const result = await res.json()
+        console.log(result)
+        if (result.status === 'success') {
+          setData(result.data)
+        }
+      } catch (err) {
+        alert(err.message)
+      }
+    }
+
+    getCourseList()
+  }, [])
+
   useEffect(() => {
     const token = localStorage.getItem('member_token')
-
     async function getReviewCard() {
       const res = await fetch(`${courseUrl}comments?course_id=${id}`)
       const data = await res.json()
@@ -106,75 +164,83 @@ export default function CourseIDPage() {
   return (
     <>
       <section>
-        <div className="d-flex flex-column justify-content-center  overflow-hidden position-relative ">
-          <Image
-            src="/images/course/bannerall/banner19.jpg"
-            alt="課程圖片"
-            width={800}
-            height={200}
-            className="card-img-top-course"
-          />
-          <div className="card-img-overlay banner-img-mask-course">
-            <div className="row d-lg-flex d-none">
-              <p className="bread-crumbs mt-3 ms-5">
-                首頁 / 美妝學院 / 打造你的五官漂亮戰隊－堯蘭達高級臉精緻彩妝術
-              </p>
-            </div>
-            <div className="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-end p-xl-4 p-lg-3 p-md-2 p-sm-1 p-0">
-              <div className="row position-absolute top-50 end-0 translate-middle-y d-flex align-items-center gap-2 me-4 d-lg-flex d-none">
-                <div className="banner-play-icon">
-                  <i className="bx bx-play-circle" />
-                </div>
-                <div>
-                  <p className="banner-play-text">觀看介紹影片</p>
-                </div>
-              </div>
-              <div className="container">
-                <Link href="course/teacher/1">
-                  <div className="banner-author d-flex justify-content-center align-content-center my-xl-4 my-2">
-                    <Image
-                      src="/images/course/teacherall/image_73.jpg"
-                      alt="講師圖片"
-                      width={800}
-                      height={450}
-                      className="banner-author-img my-auto me-md-3 me-1"
-                    />
-                    <p className="banner-author-name my-auto">李郁文</p>
-                  </div>
-                </Link>
-                <h1 className="text-white banner-h1 my-xl-4 my-2 fw-bold">
-                  打造你的五官漂亮戰隊 堯蘭達高級臉精緻彩妝術
-                </h1>
-                <div className="d-flex banner-ctabox my-xl-4 my-2 d-lg-flex d-none">
-                  <button
-                    type="button"
-                    className="btn btn-primary  px-lg-5 px-4 py-2 me-4 "
-                  >
-                    立即購買 NT$ 1,089
-                  </button>
-                  <p className=" text-white mb-0 text-decoration-line-through text-nowrap  me-4 align-content-center">
-                    NT$ 2,089
+        {data.length > 0 &&
+          data.map((v) => (
+            <div
+              key={v.course_id}
+              className="d-flex flex-column justify-content-center  overflow-hidden position-relative "
+            >
+              <Image
+                src={`/images/course/bannerall/${v.banner_video}`}
+                alt={v.title}
+                width={800}
+                height={200}
+                className="card-img-top-course"
+              />
+              <div className="card-img-overlay banner-img-mask-course">
+                <div className="row d-lg-flex d-none">
+                  <p className="bread-crumbs mt-3 ms-5">
+                    首頁 / 美妝學院 / {v.title}
                   </p>
-                  <button
-                    onClick={toggleFavorite}
-                    className="bg-transparent border-0 p-0 heart-icon"
-                  >
-                    <i
-                      className={`bx ${isFavorited ? 'bxs-heart active' : 'bx-heart'} ${animate ? 'animate-pop' : ''}`}
-                    />
-                  </button>
                 </div>
-                <div className="d-flex banner-ctabox my-xl-4 my-2 d-lg-none d-flex">
-                  <i className="bx bx-play-circle fs-6 me-4 fw-bold">
-                    {' '}
-                    介紹影片
-                  </i>
-                  <i className="bx bx-heart my-auto fs-6 fw-bold"> 收藏</i>
+                <div className="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-end p-xl-4 p-lg-3 p-md-2 p-sm-1 p-0">
+                  <div className="row position-absolute top-50 end-0 translate-middle-y d-flex align-items-center gap-2 me-4 d-lg-flex d-none">
+                    <div className="banner-play-icon">
+                      <i className="bx bx-play-circle" />
+                    </div>
+                    <div>
+                      <p className="banner-play-text">觀看介紹影片</p>
+                    </div>
+                  </div>
+                  <div className="container">
+                    <Link href="course/teacher/1">
+                      <div className="banner-author d-flex justify-content-center align-content-center my-xl-4 my-2">
+                        <Image
+                          src="/images/course/teacherall/image_73.jpg"
+                          alt="講師圖片"
+                          width={800}
+                          height={450}
+                          className="banner-author-img my-auto me-md-3 me-1"
+                        />
+                        <p className="banner-author-name my-auto">
+                          {v.teacher_name}
+                        </p>
+                      </div>
+                    </Link>
+                    <h1 className="text-white banner-h1 my-xl-4 my-2 fw-bold">
+                      {v.title}
+                    </h1>
+                    <div className="d-flex banner-ctabox my-xl-4 my-2 d-lg-flex d-none">
+                      <button
+                        type="button"
+                        className="btn btn-primary  px-lg-5 px-4 py-2 me-4 "
+                      >
+                        立即購買 NT$ {v.discount}
+                      </button>
+                      <p className=" text-white mb-0 text-decoration-line-through text-nowrap  me-4 align-content-center">
+                        NT$ {v.price}
+                      </p>
+                      <button
+                        onClick={toggleFavorite}
+                        className="bg-transparent border-0 p-0 heart-icon"
+                      >
+                        <i
+                          className={`bx ${isFavorited ? 'bxs-heart active' : 'bx-heart'} ${animate ? 'animate-pop' : ''}`}
+                        />
+                      </button>
+                    </div>
+                    <div className="d-flex banner-ctabox my-xl-4 my-2 d-lg-none d-flex">
+                      <i className="bx bx-play-circle fs-6 me-4 fw-bold">
+                        {' '}
+                        介紹影片
+                      </i>
+                      <i className="bx bx-heart my-auto fs-6 fw-bold"> 收藏</i>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+          ))}
       </section>
       {/* box1 */}
       <div className="box1">
@@ -348,7 +414,7 @@ export default function CourseIDPage() {
               <div className="col-lg-4 d-none d-lg-block">
                 <div className="d-flex justify-content-center align-items-baseline">
                   <div className="text-center box5-comment-h1 fw-bold me-2 my-2">
-                    {avgStar}
+                    {Number(avgStar).toFixed(1)}
                   </div>
                   <div className="text-center box5-comment-p pe-2">/ 5.0</div>
                 </div>
@@ -433,11 +499,14 @@ export default function CourseIDPage() {
                     content={v.content}
                     ava_url={v.ava_url}
                     comment_id={v.comment_id}
+                    member_id={v.member_id} // ✅ 加上這個
                     likeData={
                       likesMap[v.comment_id] || { liked: false, count: 0 }
                     }
                     onToggleLike={toggleLike}
                     onOpenModal={() => setIsModalOpen(true)}
+                    onEdit={(id) => console.log('編輯:', id)} // ✅ 你之後可換成開 modal 編輯
+                    onDelete={handleDeleteComment}
                   />
                 ))}
             </div>
