@@ -1,5 +1,9 @@
 'use client'
 import Link from 'next/link'
+<<<<<<< HEAD:front-end/app/_components/header.js
+=======
+import Image from 'next/image'
+>>>>>>> aa3fa89 (0523/fixed conflic):front-end/app/_components/header/header.js
 //styles
 import { BsHandbag } from 'react-icons/bs'
 import HamMenu from './_component/ham-menu'
@@ -7,10 +11,19 @@ import HamMeunNav from './_component/ham-meun-nav'
 import HeaderNav from './_component/header-nav'
 import './header.css'
 // hook
+<<<<<<< HEAD:front-end/app/_components/header.js
 import { useAuth } from '../../hook/use-auth'
 import useCartCount from '@/app/cart/hook/useCartCount'
 import { usePathname, useRouter } from 'next/navigation'
 import { useState } from 'react'
+=======
+import { useAuth } from '../../../hook/use-auth'
+import useCartCount from '@/app/cart/hook/useCartCount'
+import { usePathname, useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+// route
+import { USER_AVA_URL } from '@/_route/img-url'
+>>>>>>> aa3fa89 (0523/fixed conflic):front-end/app/_components/header/header.js
 
 export default function Header() {
   const cartIconNum = useCartCount()
@@ -64,9 +77,13 @@ export default function Header() {
               {cartIconNum > 0 && <div>{cartIconNum}</div>}
             </button>
             <Link href={'/member/' + loginUrl} className="d-lg-block d-none">
+<<<<<<< HEAD:front-end/app/_components/header.js
               <button>
                 <i className="bi bi-person-circle" />
               </button>
+=======
+              <button>{loginAva}</button>
+>>>>>>> aa3fa89 (0523/fixed conflic):front-end/app/_components/header/header.js
             </Link>
             {/* </Link> */}
             {/* </button> */}
