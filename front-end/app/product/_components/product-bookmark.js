@@ -3,7 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { BiSolidHeart, BiHeart } from 'react-icons/bi'
 import './_style/product-bookmark.css'
-import { Link } from 'react-router-dom'
+import Link from 'next/link'
 
 const BookmarkComponent = ({
   isbookmarked = false,
