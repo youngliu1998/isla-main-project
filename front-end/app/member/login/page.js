@@ -15,7 +15,7 @@ export default function LoginPage() {
   const router = useRouter()
   const { login } = useAuth() // Context
   const [memAuth, setMemAuth] = useState({
-    email: 'johnwilliams@test.com',
+    email: 'johnsmith@gmail.com',
     password: '12345',
   })
   // ==== handle login form ====
@@ -44,8 +44,9 @@ export default function LoginPage() {
     })
       .then((response) => response.json())
       .catch((error) => console.error('Error:', error))
-    if (!data['data']['token']) {
-      return console.log('沒有取得token，登入失敗')
+    if (!data || !data.data || !data.data.token) {
+      console.log('沒有取得token，登入失敗', data);
+      return;
     }
     // set token to localStorage
     localStorage.setItem('jwtToken', data['data']['token'])

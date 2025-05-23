@@ -6,6 +6,7 @@ export default function Select({
   arr = [],
   selectKey = '',
   text = {},
+  postCode = '',
   setText = () => {},
 }) {
   // console.log('text', text)

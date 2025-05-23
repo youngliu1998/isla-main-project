@@ -12,6 +12,7 @@ import { createClient } from 'redis'
 // 使用檔案的session store，預設是存在sessions資料夾
 import sessionFileStore from 'session-file-store'
 import { serverConfig } from '../config/server.config.js'
+import WebSocket, { WebSocketServer } from 'ws'
 
 // 修正 ESM 中的 __dirname 與 windows os 中的 ESM dynamic import
 import { pathToFileURL } from 'url'
@@ -20,6 +21,7 @@ import { pathToFileURL } from 'url'
 // const __dirname = path.dirname(__filename)
 
 import 'dotenv/config.js'
+import { request } from 'http'
 
 // 建立 Express 應用程式
 const app = express()
@@ -51,6 +53,25 @@ app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 // 在 public 的目錄，提供影像、CSS 等靜態檔案
 app.use(express.static(path.join(process.cwd(), 'public')))
+
+// <<<<<<<<<<<<<<<<WebSocket<<<<<<<<<<<<<<<<<
+const wss = new WebSocketServer({ port: 8080 })
+wss.on('connection', (connection) => {
+  // console.log('使用者已連線')
+  connection.on('message', (message) => {
+    // NOTE toString(): buffer to JSON, parse(): JSON to Object
+    // console.log('收到訊息', JSON.parse(message.toString()))
+    // console.log('收到訊息', message.toString())
+    const json = message
+    wss.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(json)
+      }
+    })
+  })
+  connection.on('close', () => {})
+})
+// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 let sessionStore = null
 

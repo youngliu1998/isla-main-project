@@ -76,11 +76,36 @@ router.get('/', verifyToken, async (req, res) => {
 
       //三元巢狀應用
       const isApplicable = !coup.min_quantity || quantity >= coup.min_quantity
+      // const discountNum = Number(coup.discount_rate) * 10
+      // const title = isApplicable
+      //   ? coup.free === 1
+      //     ? '免運'
+      //     : coup.discount_rate && coup.discount_rate < 1
+      //     ? discountNum % 1 === 0
+      //       ? `${discountNum}折`
+      //       : `${discountNum.toFixed(1)}折`
+      //     : `折$${Number(coup.amount).toFixed(0)}`
+      //   : `需滿 ${coup.min_quantity} 件使用`
+
+      function getDiscountTitle(discount_rate) {
+        // 只處理小於 1 的情況
+        if (discount_rate < 1) {
+          // 轉成字串再去掉小數點前面的 0
+          // 0.95 → "95折"、0.88 → "88折"、0.9 → "9折"
+          let str = String(discount_rate).replace('0.', '')
+          // 0.9 要變成 9 折不是 90 折
+          if (discount_rate === 0.9) return '9折'
+          return `${str}折`
+        }
+        return ''
+      }
+
+      // 使用方式：
       const title = isApplicable
         ? coup.free === 1
           ? '免運'
           : coup.discount_rate && coup.discount_rate < 1
-          ? `${(Number(coup.discount_rate) * 10).toFixed(0)}折`
+          ? getDiscountTitle(Number(coup.discount_rate))
           : `折$${Number(coup.amount).toFixed(0)}`
         : `需滿 ${coup.min_quantity} 件使用`
 
@@ -103,6 +128,9 @@ router.get('/', verifyToken, async (req, res) => {
         block_reason: isApplicable
           ? null
           : `指定品牌選購滿 ${coup.min_quantity} 件即可使用`,
+        min_amount: coup.min_amount,
+        min_quantity: coup.min_quantity,
+        description: coup.description,
       }
 
       // area = 1商品, 2課程, 0全站

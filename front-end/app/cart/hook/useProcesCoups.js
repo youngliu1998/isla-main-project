@@ -9,16 +9,50 @@ export default function useProcesCoups(
   checkedItems = {},
   totalAmount = 0
 ) {
-  const [processedCoupons, setProcessedCoupons] = useState([])
+  const [procesCoups, setProcesCoups] = useState([])
 
   useEffect(() => {
     const selectedItems = cartItems.filter((item) => checkedItems[item.id])
+
+    // console.log('checkedItems:', checkedItems)
+    // console.log('selectedItems:', selectedItems)
+
+    // 只看 Kaja 品牌 (brand_id = 5) 的商品
+    // const kajaItems = selectedItems.filter((i) => String(i.brand_id) === '5')
+    // const kajaTotal = kajaItems.reduce(
+    //   (sum, item) => sum + (item.sale_price ?? item.base_price) * item.quantity,
+    //   0
+    // )
+    // console.log('[Kaja 品牌] 勾選商品：', kajaItems)
+    // console.log('[Kaja 品牌] 勾選商品總金額：', kajaTotal)
+
+    const selectedTotalAmount = selectedItems.reduce(
+      (sum, item) => sum + (item.sale_price ?? item.base_price) * item.quantity,
+      0
+    )
     const updated = coupons.map((coupon) => {
-      const status = checkCouponStatus(coupon, selectedItems, totalAmount)
+      // console.log('當前coupon:', coupon)
+      const status = checkCouponStatus(
+        coupon,
+        selectedItems,
+        selectedTotalAmount
+      )
+      // console.log('優惠券：', coupon.title)
+      // console.log('判斷結果：', status)
+      // console.log('🚛 勾選的商品:', selectedItems)
+      // console.log(
+      //   '🔎 coupon',
+      //   coupon.title,
+      //   'selectedItems:',
+      //   selectedItems,
+      //   'status:',
+      //   status
+      // )
       return { ...coupon, ...status }
     })
-    setProcessedCoupons(updated)
+
+    setProcesCoups(updated)
   }, [coupons, cartItems, checkedItems, totalAmount])
 
-  return processedCoupons
+  return procesCoups
 }

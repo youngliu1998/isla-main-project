@@ -100,12 +100,13 @@ background-color: #ffffff;
 
 /* 圖片側邊欄 */
 .pic-bar {
-  height: 568px; /* 固定高度可能需要調整響應式 */
+  /*height: 568px; !* 固定高度可能需要調整響應式 *!*/
   border-right: 1px solid #d3d3d3;
   width: fit-content;
   padding: 10px;
   display: flex;
   flex-direction: column;
+  flex-wrap: wrap;
   justify-content: flex-start;
   align-items: center;
   gap: 10px; /* 圖片之間的間距 */
@@ -121,6 +122,10 @@ background-color: #ffffff;
   transition: border-color 0.3s ease; /* 添加過渡效果 */
 }
 
+[data-yarl__container] {
+  z-index: 9999 !important;
+}
+
 .pic-bar-item:hover {
   border-color: var(--MainColor, #fd7061); /* hover 時改變邊框顏色 */
 }
@@ -128,7 +133,8 @@ background-color: #ffffff;
 /* 圖片展示區 */
 .pic-show {
   height: 650px; /* 固定高度可能需要調整響應式 */
-  width: 400px; /* 固定寬度可能需要調整響應式 */
+  max-width: 400px; /* 固定寬度可能需要調整響應式 */
+  flex-wrap: wrap;
   padding: 64px 24px;
   margin: 0 12px;
   display: flex; /* 添加 flex 確保圖片居中 */
@@ -142,6 +148,15 @@ background-color: #ffffff;
   height: 100%;
   width: 100%;
   object-fit: cover;
+}
+@media (max-width: 768px) {
+  [data-rmiz-ghost] {
+    width: 90vw !important;
+    height: auto !important;
+    left: 5vw !important;
+    top: auto !important;
+    transform: none !important;
+  }
 }
 
 /* 產品索引/信息區塊 */
@@ -244,39 +259,7 @@ background-color: #ffffff;
   background: var(--MainColor, #fd7061); /* hover 時改變背景顏色 */
 }
 
-/* 數量選擇器 */
-.number－select {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 18px;
-}
 
-/* 數量選擇按鈕 */
-.number－select-btn {
-  font-size: 28px;
-  cursor: pointer; /* 添加鼠標指針效果 */
-  transition: color 0.3s ease; /* 添加過渡效果 */
-}
-
-/* 數量選擇按鈕內的 icon */
-.number－select-btn i {
-  color: #858585;
-}
-
-.number－select-btn:hover i {
-  color: var(--MainColor, #fd7061); /* hover 時改變顏色 */
-}
-
-/* 數量顯示 */
-.number－select-num {
-  color: var(--MainText, #373737);
-  text-align: center;
-  font-size: 32px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-}
 
 /* 顏色選擇容器 */
 .color-select-box {
@@ -344,10 +327,10 @@ background-color: #ffffff;
 /* 書籤 icon */
 .bookmark i {
   font-size: 32px;
-  color: rgba(255, 255, 255, 0); /* 默認紅色 */
-  -webkit-text-stroke-width: 2px;
-  -webkit-text-stroke-color: #fd7061;
-  transition: color 0.3s ease; /* 添加過渡效果 */
+  color: rgb(232, 106, 106); /* 默認紅色 */
+  /*-webkit-text-stroke-width: 2px;*/
+  /*-webkit-text-stroke-color: #fd7061;*/
+  /*transition: color 0.3s ease; !* 添加過渡效果 *!*/
 }
 
 .bookmark:hover i {
