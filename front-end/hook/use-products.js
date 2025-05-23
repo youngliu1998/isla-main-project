@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
 import qs from 'qs'
 
@@ -65,7 +65,7 @@ export const UseProductDetail = (id) => {
     queryFn: async () => {
       const res = await axios.get(`http://localhost:3005/api/product/${id}`)
       if (res.status !== 200 || res.data.success !== true) {
-        throw new Error('Failed to fetch product reviews')
+        throw new Error('資料庫查無商品資料')
       }
       return res.data.data
     },
@@ -88,6 +88,53 @@ export const UseProductReviews = (id) => {
     },
     enabled: !!id,
     staleTime: 1000 * 60 * 600,
+  })
+}
+
+//userID
+export const UseUserReview = (product_id, user_id) => {
+  return useQuery({
+    queryKey: ['product-reviews', product_id, user_id],
+    queryFn: async () => {
+      try {
+        const res = await axios.get(
+            `http://localhost:3005/api/product-reviews/user/check?product_id=${product_id}&user_id=${user_id}`
+        )
+        if (res.data.success !== true) {
+          console.error('API 錯誤回傳:', res.data);
+          throw new Error('Failed to fetch product reviews')
+        }
+        console.log('取得村民的評論資料:', res.data);
+        return res.data.data
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    enabled: !!user_id && !!product_id,
+    staleTime: 1000 * 60 * 600,
+  })
+}
+
+export function UseSaveOrUpdateReview() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (formData) => {
+      const res = await axios.post(
+        'http://localhost:3005/api/product-reviews/save',
+        formData,
+        {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        }
+      )
+      return res.data
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(['product-reviews', data.user_id])
+    },
+    onError: (error) => {
+      console.error('送出失敗:', error.response?.data?.message || error.message)
+    },
   })
 }
 

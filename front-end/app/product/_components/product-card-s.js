@@ -61,7 +61,7 @@ function ProductCard({ product }) {
   const IMAGE_PREFIX = 'https://isla-image.chris142852145.workers.dev/'
   const fullImageUrl = `${IMAGE_PREFIX}${product.imageUrl}`
 
-  const toProduct_Prefix = 'http://localhost:3001/product/'
+  const toProduct_Prefix = 'http://localhost:3000/product/'
 
   return (
     <Link href={`${toProduct_Prefix}${product.id}`} passHref>

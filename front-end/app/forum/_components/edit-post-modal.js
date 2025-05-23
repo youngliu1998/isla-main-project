@@ -20,7 +20,9 @@ export default function EditPostModal({
   const modalRef = useRef()
   const router = useRouter()
   const { user, isAuth } = useAuth() //NOTE
+  console.log(user)
   const userID = user.id
+  const userUrl = user.ava_url
   const userNick = user.nickname
   // const [imagesList, setImagesList] = useState([])
   const { productCateItems, postCateItems } = useFilter()
@@ -234,7 +236,7 @@ export default function EditPostModal({
                 <ComponentsAuthorInfo
                   authorID={userID}
                   width="40"
-                  src="/images/forum/320.webp"
+                  src={userUrl}
                   alt={userNick}
                   fontSize="15"
                   color="var(--main-text-color)"
@@ -274,7 +276,7 @@ export default function EditPostModal({
                   </select>
                 </div>
               </div>
-              <div className="modal-body w-100">
+              <div className="modal-body d-flex flex-column w-100">
                 <div className="d-flex align-items-center px-4 py-2">
                   <div
                     // QU 避免標題換行、第一行沒有div包裹
@@ -312,7 +314,7 @@ export default function EditPostModal({
                 >{`(${titleLength}/50)`}</div>
                 <div
                   ref={contentRef}
-                  className="edit-area px-4 py-2 main-text-color"
+                  className="edit-area px-4 py-2 flex-grow-1 main-text-color"
                   contentEditable
                   data-placeholder="分享你的美妝新發現✨"
                   onInput={(e) => {

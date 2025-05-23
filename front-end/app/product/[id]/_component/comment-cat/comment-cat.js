@@ -25,18 +25,18 @@ const CommentCat = ({ reviews }) => {
       <div className={styles['cat-card']}>
         <div className={styles['cat-head']}>
           <div className={styles['user-img']}>
-            <img src={currentReview.userAvatarSrc} alt="用戶頭像" />
+            <img src={currentReview.userAvatarSrc} alt="" />
           </div>
           <div className={styles['cat-head-user']}>
             <div className={styles['username-cat']}>
-              {currentReview.username}
+              {currentReview.user_id}
             </div>
           </div>
           <div className={styles['star-box']}>
             <StarRatingItem star={currentReview.rating} maxStars={5} />
           </div>
         </div>
-        <div className={styles['cat-body']}>{currentReview.commentText}</div>
+        <div className={styles['cat-body']}>{currentReview.comment_text}</div>
       </div>
     </div>
   )

@@ -1,19 +1,31 @@
 import ReviewsSection from '../review-section/review-section.js'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import clsx from 'clsx'
 import './comment-group.css'
+import ReviewEditor from '../review-editor/review-editor.js'
+import {
+  UseSaveOrUpdateReview,
+  UseUserReview,
+} from '../../../../../hook/use-products.js'
+import PictureShowAll from '../show-all-picture/picture-show-all.js'
 
 export function CommentGroup({
   reviews,
   averageRating,
   ratingCounts,
   reviewImages,
+  productId,
+  userId,
 }) {
   console.log('Reviews', reviews)
 
   const [sortBy, setSortBy] = useState('date')
   const [fillterRating, setFillterRating] = useState(null)
+
+  const [editReview, setEditReview] = useState(null)
+  const [editImages, setEditImages] = useState([])
+  const [isLoaded, setIsLoaded] = useState(false)
 
   const filteredReviews = reviews
     .filter((review) => {
@@ -27,6 +39,43 @@ export function CommentGroup({
         return b.rating - a.rating
       }
     })
+
+  const { data, isSuccess, isError, isLoading } = UseUserReview(
+    productId,
+    userId
+  )
+  useEffect(() => {
+    if (isSuccess) {
+      if (data) {
+        setEditReview(data.review)
+        setEditImages(data.images || [])
+      } else {
+        setEditReview(null)
+        setEditImages([])
+      }
+      setIsLoaded(true)
+    } else if (isError) {
+      console.error('請求發生錯誤')
+      setEditReview(null)
+      setEditImages([])
+      setIsLoaded(true)
+    }
+  }, [isSuccess, isError, data])
+
+  //Hook不能寫在事件處理函式內
+  const submitService = UseSaveOrUpdateReview({
+    onSuccess: (data) => {
+      setEditReview(data.review)
+      setEditImages(data.images)
+    },
+    onError: (error) => {
+      alert(error.response?.data?.message || '送出失敗')
+    },
+  })
+
+  const handleSubmit = async (formData) => {
+    submitService.mutate(formData)
+  }
 
   return (
     <div className="comment-component d-flex">
@@ -55,8 +104,13 @@ export function CommentGroup({
             return (
               <button
                 key={i}
-                className={clsx('rating-bar-box d-flex align-items-center', fillterRating === i && 'rating-bar-active')}
-                onClick={() => {setFillterRating(fillterRating === i ? null : i)}}
+                className={clsx(
+                  'rating-bar-box d-flex align-items-center',
+                  fillterRating === i && 'rating-bar-active'
+                )}
+                onClick={() => {
+                  setFillterRating(fillterRating === i ? null : i)
+                }}
               >
                 <div className="rating-bar-label">{i} 星</div>
                 <div className="rating-bar overflow-hidden">
@@ -69,52 +123,66 @@ export function CommentGroup({
             )
           })}
         </div>
+<PictureShowAll reviewImages={reviewImages} />
+      {/*  <div className="comment-sidebar-photos-box">*/}
+      {/*    <div className="comment-sidebar-photos-title">所有圖片</div>*/}
+      {/*    <div className="comment-sidebar-photos">*/}
+      {/*      {(reviewImages || []).slice(0, 6).map(({ imageUrl }, i) => (*/}
+      {/*        <button key={i} className="comment-img" type="button">*/}
+      {/*          <Image*/}
+      {/*            className="img-fluid"*/}
+      {/*            src={imageUrl}*/}
+      {/*            alt={`評論圖片 ${i + 1}`}*/}
+      {/*            width={0}*/}
+      {/*            height={0}*/}
+      {/*          />*/}
+      {/*        </button>*/}
+      {/*      ))}*/}
+      {/*    </div>*/}
 
-        <div className="comment-sidebar-photos-box">
-          <div className="comment-sidebar-photos-title">所有圖片</div>
-          <div className="comment-sidebar-photos">
-            {(reviewImages || []).slice(0, 6).map(({ imageUrl }, i) => (
-              <button key={i} className="comment-img" type="button">
-                <Image
-                  className="img-fluid"
-                  src={imageUrl}
-                  alt={`評論圖片 ${i + 1}`}
-                  width={0}
-                  height={0}
-                />
-              </button>
-            ))}
-          </div>
-
-          <button className="comment-sidebar-photos-show-more" type="button">
-            查看全部
-          </button>
-        </div>
+      {/*    <button className="comment-sidebar-photos-show-more" type="button">*/}
+      {/*      查看全部*/}
+      {/*    </button>*/}
+      {/*  </div>*/}
       </div>
 
       <div className="comment-box">
         <div className="tools d-flex align-items-center">
-          <button
-            className={clsx('sort-btn', sortBy === 'date' ? 'sort-btn-active' : '')}
-            type="button"
-            onClick={() => {setSortBy('date')}}
-          >
-            最新
-          </button>
-          <button
-              className={clsx('sort-btn', sortBy === 'rating' ? 'sort-btn-active' : '')}
+          <div className="tool-box">
+            <button
+              className={clsx(
+                'sort-btn',
+                sortBy === 'date' ? 'sort-btn-active' : ''
+              )}
               type="button"
-          onClick={() => {setSortBy('rating')}}
-          >
-
-            依照星級
-          </button>
-          <button
-              className={clsx()}
+              onClick={() => {
+                setSortBy('date')
+              }}
+            >
+              最新
+            </button>
+            <button
+              className={clsx(
+                'sort-btn',
+                sortBy === 'rating' ? 'sort-btn-active' : ''
+              )}
               type="button"
-          >
-            新增評論
-          </button>
+              onClick={() => {
+                setSortBy('rating')
+              }}
+            >
+              依照星級
+            </button>
+          </div>
+          <div className="tool-box">
+            <ReviewEditor
+              product_Id={productId}
+              user_id={userId}
+              edit={editReview}
+              editImages={editImages}
+              onSubmit={handleSubmit}
+            />
+          </div>
         </div>
         <ReviewsSection reviews={filteredReviews} />
       </div>

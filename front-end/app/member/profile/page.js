@@ -2,15 +2,15 @@
 
 import '../_component/_style.css/form.css'
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+// import { useRouter } from 'next/navigation'
 import InputText from '../_component/input-text'
 import Select from '../_component/select'
 import { useAuth } from '@/hook/use-auth'
 import { cities } from './data/CityCountyData'
 
 export default function ProfilePage() {
-  const router = useRouter()
-  const { isAuth, initAuth } = useAuth()
+  // const router = useRouter()
+  const { initAuth } = useAuth()
   const [text, setText] = useState({
     name: '',
     nickname: '',
@@ -23,13 +23,13 @@ export default function ProfilePage() {
     ZipCode: '',
     address: '',
   })
-  console.log('text', text)
+  // console.log('text', text)
 
   // ==== 處理地址 ====
   const areas = cities.filter((v) => v.CityName == text.CityName)[0]?.AreaList
-  const postCodes = cities
-    .filter((v) => v.CityName == text.CityName)[0]
-    ?.AreaList.filter((v) => v.AreaName == text.AreaName)
+  // const postCodes = cities
+  //   .filter((v) => v.CityName == text.CityName)[0]
+  //   ?.AreaList.filter((v) => v.AreaName == text.AreaName)
   // ==== END 處理地址 ====
   // form submit fucntion
   const handleSubmit = async (event) => {
@@ -81,22 +81,24 @@ export default function ProfilePage() {
             headers: { Authorization: `Bearer ${token}` },
           }
         )
-
         const data = await response.json()
-        profileData = await data['data']
-        console.log('profileData: ', profileData)
-        setText({
-          name: profileData?.name || '',
-          nickname: profileData?.nickname || '',
-          birthday: profileData?.birthday || '',
-          gender: profileData?.gender || '',
-          tel: profileData?.tel || '',
-          skinType: profileData?.skin_type || '',
-          CityName: profileData?.city || '',
-          AreaName: profileData?.area || '',
-          ZipCode: profileData?.postcode || '',
-          address: profileData?.address || '',
-        })
+
+        if (response.ok && data?.data) {
+          profileData = await data['data']
+          // console.log('profileData: ', profileData)
+          setText({
+            name: profileData?.name || '',
+            nickname: profileData?.nickname || '',
+            birthday: profileData?.birthday || '',
+            gender: profileData?.gender || '',
+            tel: profileData?.tel || '',
+            skinType: profileData?.skin_type || '',
+            CityName: profileData?.city || '',
+            AreaName: profileData?.area || '',
+            ZipCode: profileData?.postcode || '',
+            address: profileData?.address || '',
+          })
+        }
       } catch (err) {
         console.log(err)
       }
@@ -206,10 +208,8 @@ export default function ProfilePage() {
             <InputText
               title="郵遞區號"
               name="postcode"
-              arr={postCodes}
               selectKey="ZipCode"
-              text={text}
-              setText={setText}
+              value={text.ZipCode}
               disabled="disabled"
             />
           </div>
