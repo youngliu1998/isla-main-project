@@ -14,10 +14,6 @@ export default function OrderSummary({
   filterGloCoups,
   filterCourCoups,
   filterProdCoups,
-
-  // globalCoupons = [],
-  // prodCoupons = [],
-  // courCoupons = [],
 }) {
   const [openProdList, setOpenProdList] = useState(false)
   const [openCourList, setOpenCourList] = useState(false)
@@ -54,18 +50,41 @@ export default function OrderSummary({
   //商品優惠券
   const makeupCoupon = selecProdCoup
   const courseCoupon = selecCourCoup
+  // const getDiscount = (coupon, base) => {
+  //   if (!coupon) return 0
+  //   if (coupon.type === 'percent')
+  //     return Math.round(base * (coupon.value / 100))
+  //   return coupon.value
+  // }
   const getDiscount = (coupon, base) => {
     if (!coupon) return 0
-    if (coupon.type === 'percent')
-      return Math.round(base * (coupon.value / 100))
-    return coupon.value
+
+    // 百分比券：discount_rate < 1
+    if (coupon.discount_rate && Number(coupon.discount_rate) < 1) {
+      // 例：0.85 -> 15% off
+      return Math.round(base * (1 - Number(coupon.discount_rate)))
+    }
+    // 金額折抵券
+    if (coupon.amount && Number(coupon.amount) > 0) {
+      return Number(coupon.amount)
+    }
+    return 0
   }
+
+  console.log('makeupCoupon:', makeupCoupon)
+  console.log('courseCoupon:', courseCoupon)
 
   const makeupDiscount = getDiscount(makeupCoupon, makeupTotal)
   const courseDiscount = getDiscount(courseCoupon, courseTotal)
   const totalDiscount = makeupDiscount + courseDiscount
   const subtotal = makeupTotal + courseTotal + addOnTotal + shippingBase
   const finalTotal = subtotal - totalDiscount - globalDiscount
+  console.log(
+    `finalTotal：${finalTotal}`,
+    `subtotal：${subtotal}`,
+    `totalDiscount：${totalDiscount}`,
+    `globalDiscount：${globalDiscount}`
+  )
 
   return (
     <div className={`${styles.orderSummary} card-style mb-3`}>
@@ -122,7 +141,7 @@ export default function OrderSummary({
 
       {makeupCoupon && (
         <div className="d-flex justify-content-between text-secondary mb-2">
-          <p>{makeupCoupon.title}</p>
+          <p>{makeupCoupon.description}</p>
           <p>-NT${makeupDiscount}</p>
         </div>
       )}
@@ -167,7 +186,7 @@ export default function OrderSummary({
 
       {courseCoupon && (
         <div className="d-flex justify-content-between text-secondary mb-2">
-          <p>{courseCoupon.title}</p>
+          <p className={`${styles.ellipsis}`}>{courseCoupon.description}</p>
           <p>-NT${courseDiscount}</p>
         </div>
       )}

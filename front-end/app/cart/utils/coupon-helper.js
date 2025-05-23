@@ -8,13 +8,13 @@ export function checkCouponStatus(coupon, selectedItems, totalAmount) {
       (sum, item) => sum + (item.sale_price ?? item.base_price) * item.quantity,
       0
     )
-    console.log('[Kaja券判斷] 勾選商品：', kajaItems)
-    console.log(
-      '[Kaja券判斷] 勾選商品總金額：',
-      kajaTotal,
-      '券條件需滿：',
-      coupon.min_amount
-    )
+    // console.log('[Kaja券判斷] 勾選商品：', kajaItems)
+    // console.log(
+    //   '[Kaja券判斷] 勾選商品總金額：',
+    //   kajaTotal,
+    //   '券條件需滿：',
+    //   coupon.min_amount
+    // )
   }
 
   // 篩選出與 這張優惠券 條件符合的商品
@@ -55,11 +55,11 @@ export function checkCouponStatus(coupon, selectedItems, totalAmount) {
     }
   }
   // 金額不足
-  console.log('[金額判斷]', {
-    relatedTotalAmount,
-    min_amount: coupon.min_amount,
-    min_amount_type: typeof coupon.min_amount,
-  })
+  // console.log('[金額判斷]', {
+  //   relatedTotalAmount,
+  //   min_amount: coupon.min_amount,
+  //   min_amount_type: typeof coupon.min_amount,
+  // })
   if (coupon.min_amount && relatedTotalAmount < Number(coupon.min_amount)) {
     return {
       is_applicable: false,

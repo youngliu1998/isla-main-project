@@ -31,7 +31,7 @@ export default function useProcesCoups(
       0
     )
     const updated = coupons.map((coupon) => {
-      console.log('當前coupon:', coupon)
+      // console.log('當前coupon:', coupon)
       const status = checkCouponStatus(
         coupon,
         selectedItems,

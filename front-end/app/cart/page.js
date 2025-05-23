@@ -1,6 +1,5 @@
 'use client'
 import styles from './_styles/cart-style.module.scss'
-import { checkCouponStatus } from './utils/coupon-helper'
 import { toast } from 'react-toastify'
 //import component
 import StepProgress from './_component/step-progress/step-progress'
@@ -32,6 +31,7 @@ export default function CartPage() {
   const [selecCourCoup, setSelecCourCoup] = useState(null)
   const [selecGloCoup, setSelecGloCoup] = useState(null)
 
+  //init-get cart-items & member-coupon
   useEffect(() => {
     // fetch get-cart-items
     const cartItemsData = async () => {
@@ -108,7 +108,19 @@ export default function CartPage() {
     }
   }
 
-  // const [selectedCoupon, setSelectedCoupon] = useState(null)
+  useEffect(() => {
+    // 判斷目前已勾選商品是否為 0
+    const checkedCount = Object.values(checkedItems).filter(Boolean).length
+    if (checkedCount === 0) {
+      setSelecProdCoup(null)
+      setSelecCourCoup(null)
+      setSelecGloCoup(null)
+    }
+    // checkedItems 變動就清空
+    setSelecProdCoup(null)
+    setSelecCourCoup(null)
+    setSelecGloCoup(null)
+  }, [checkedItems])
 
   // 計算總金額（你也可以只算勾選的 cartItems）
   const totalAmount = cartItems.reduce(
