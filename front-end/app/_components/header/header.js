@@ -3,19 +3,12 @@ import Link from 'next/link'
 import Image from 'next/image'
 //styles
 import { BsHandbag } from 'react-icons/bs'
-<<<<<<< HEAD
-=======
 import { useAuth } from '@/hook/use-auth'
->>>>>>> 49eecbb69061f27257f9b4a0873e36bc3c1d5231
 import HamMenu from './_component/ham-menu'
 import HamMeunNav from './_component/ham-meun-nav'
 import HeaderNav from './_component/header-nav'
 import './header.css'
 // hook
-<<<<<<< HEAD
-import { useAuth } from '../../../hook/use-auth'
-=======
->>>>>>> 49eecbb69061f27257f9b4a0873e36bc3c1d5231
 import useCartCount from '@/app/cart/hook/useCartCount'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
