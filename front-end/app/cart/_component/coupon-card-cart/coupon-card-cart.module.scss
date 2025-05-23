@@ -28,12 +28,8 @@
     opacity: 0.1;
   }
 }
-<<<<<<< HEAD
-// 撕裂動畫
-=======
 
 // 截角動畫
->>>>>>> eb1a1b5b282b50dc9f9526c9aa1add0ce7762ff5
 @keyframes tearEffect {
   0% {
     clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
@@ -42,17 +38,10 @@
     clip-path: polygon(0 0, 90% 0, 85% 20%, 100% 40%, 100% 100%, 0 100%);
   }
 }
-<<<<<<< HEAD
 
 .tearAnimation {
   animation: tearEffect 0.5s ease-in-out forwards;
 }
-
-=======
-.tearAnimation {
-  animation: tearEffect 0.5s ease-in-out forwards;
-}
->>>>>>> eb1a1b5b282b50dc9f9526c9aa1add0ce7762ff5
 .selected {
   clip-path: polygon(0 0, 90% 0, 85% 20%, 100% 40%, 100% 100%, 0 100%);
   opacity: 1;
@@ -82,28 +71,6 @@
   }
 }
 
-<<<<<<< HEAD
-.circleBtn {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background-color: #343232;
-  border: none;
-  position: relative;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-
-  &:disabled {
-    background-color: #999;
-    cursor: not-allowed;
-  }
-}
-
-=======
->>>>>>> eb1a1b5b282b50dc9f9526c9aa1add0ce7762ff5
 .active {
   background-color: #000;
 

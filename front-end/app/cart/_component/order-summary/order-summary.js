@@ -6,14 +6,14 @@ import { Collapse } from 'react-bootstrap'
 import { useState } from 'react'
 
 export default function OrderSummary({
-  cartItems,
+  cartItems = [],
   selecProdCoup,
   selecCourCoup,
   selecGloCoup,
   setSelecGloCoup,
-  filterGloCoups,
-  filterCourCoups,
-  filterProdCoups,
+  filterGloCoups = [],
+  filterCourCoups = [],
+  filterProdCoups = [],
 }) {
   const [openProdList, setOpenProdList] = useState(false)
   const [openCourList, setOpenCourList] = useState(false)

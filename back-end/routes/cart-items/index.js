@@ -42,11 +42,7 @@ router.get('/', verifyToken, async (req, res) => {
       const placeholders = productIds.map(() => '?').join(',')
       const [productRows] = await db.execute(
         `
-<<<<<<< HEAD
-        SELECT p.product_id, p.name, p.base_price, p.sale_price, p.category_id, cat.name AS category_name,
-=======
         SELECT p.product_id, p.name, p.base_price, p.sale_price, p.category_id, p.brand_id, cat.name AS category_name,
->>>>>>> eb1a1b5b282b50dc9f9526c9aa1add0ce7762ff5
         pi.image_url
         FROM products p
         LEFT JOIN categories cat ON p.category_id = cat.category_id
