@@ -45,7 +45,7 @@ export default function MyPostPage(props) {
   return (
     <>
       <div className="body">
-        <div className="saved-post-header d-flex align-items-center px-4 pt-4 pb-3">
+        <div className="saved-post-header d-flex align-items-center px-4 py-3">
           <div className="me-auto fs32 fw-bold">收藏文章</div>
           <Link className="text-main px-3 py-2 rounded-pill" href={'/forum'}>
             <i className="bi bi-box-arrow-left me-2"></i>
