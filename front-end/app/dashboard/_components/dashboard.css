@@ -1,3 +1,10 @@
+body {
+  background-color: #f6f3f1;
+}
+aside {
+  background-color: #f8f4f2;
+  box-shadow: 0px 0px 20px rgba(1, 41, 112, 0.1);
+}
 /* header */
 .header-container {
   background: linear-gradient(to right, #fff, #fef6f5);

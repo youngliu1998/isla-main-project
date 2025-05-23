@@ -9,7 +9,7 @@ export default function DashboardLayout({ children }) {
 
       <div className="container-fluid">
         <div className="row">
-          <aside className="d-none d-lg-block col-lg-2 bg-white border-end px-3 py-4">
+          <aside className="d-none d-lg-block col-lg-2 border-end px-3 py-4">
             <PcSidebar />
           </aside>
 
