@@ -130,6 +130,7 @@ router.get('/', verifyToken, async (req, res) => {
           : `指定品牌選購滿 ${coup.min_quantity} 件即可使用`,
         min_amount: coup.min_amount,
         min_quantity: coup.min_quantity,
+        description: coup.description,
       }
 
       // area = 1商品, 2課程, 0全站
