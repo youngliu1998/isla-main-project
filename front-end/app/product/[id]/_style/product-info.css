@@ -327,10 +327,10 @@ background-color: #ffffff;
 /* 書籤 icon */
 .bookmark i {
   font-size: 32px;
-  color: rgba(255, 255, 255, 0); /* 默認紅色 */
-  -webkit-text-stroke-width: 2px;
-  -webkit-text-stroke-color: #fd7061;
-  transition: color 0.3s ease; /* 添加過渡效果 */
+  color: rgb(232, 106, 106); /* 默認紅色 */
+  /*-webkit-text-stroke-width: 2px;*/
+  /*-webkit-text-stroke-color: #fd7061;*/
+  /*transition: color 0.3s ease; !* 添加過渡效果 *!*/
 }
 
 .bookmark:hover i {

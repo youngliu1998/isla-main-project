@@ -14,7 +14,7 @@ import CommentCat from './_component/comment-cat/comment-cat.js'
 import ColorSelect from './_component/colour-select/colour-select.js'
 import WishButton from '../../_components/wish-toggle.js'
 import QuantitySelector from './_component/product-quantity-selector/product-quantity-selector.js'
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { useState, useMemo, useEffect, useCallback } from 'react'
 import Zoom from 'react-medium-image-zoom'
 import 'react-medium-image-zoom/dist/styles.css'
 import { useAuth } from '@/hook/use-auth.js'
@@ -30,6 +30,7 @@ export default function page({ params }) {
   const unwrappedParams = React.use(params)
   const id = unwrappedParams?.id
 
+  // 早期返回檢查
   if (!id) return null
 
   const { mutate: addToCart } = useAddCart(token)
@@ -61,8 +62,11 @@ export default function page({ params }) {
   const [selectedIndex, setSelectedIndex] = useState(0)
 
   // 判斷是否為標準色（無色碼）
-  const isStandardOnly =
-    product?.colors?.length === 1 && product.colors[0].color_code === null
+  const isStandardOnly = useMemo(() => {
+    return (
+      product?.colors?.length === 1 && product.colors[0].color_code === null
+    )
+  }, [product])
 
   // 初始化選擇顏色（非標準色）
   useEffect(() => {
@@ -83,11 +87,18 @@ export default function page({ params }) {
   const productImagesUrls = useChrisR2ImageUrlDuo(filenames)
 
   // 加入購物車
-  const handleAddToCart = () => {
-    const colorId = selectedColorId ?? product.colors[0]?.color_id
+  const handleAddToCart = useCallback(() => {
+    // 檢查是否有產品數據
+    if (!product) {
+      alert('產品資料載入中，請稍候')
+      return
+    }
+
+    const colorId = selectedColorId ?? product.colors?.[0]?.color_id
 
     if (!colorId && !isStandardOnly) {
-      return alert('請先選擇顏色')
+      alert('請先選擇顏色')
+      return
     }
 
     addToCart(
@@ -99,40 +110,75 @@ export default function page({ params }) {
       {
         onSuccess: (data) => {
           console.log('加入成功：', data)
+          // 可以添加成功提示 UI
         },
         onError: (err) => {
           console.error('加入購物車失敗：', err)
+          // 可以添加錯誤提示 UI
+          alert('加入購物車失敗，請稍後再試')
         },
       }
     )
-  }
+  }, [product, selectedColorId, isStandardOnly, addToCart, quantity])
 
   // 評分統計
-  const getRatingCounts = (reviews) => {
+  const getRatingCounts = useCallback((reviews) => {
+    if (!Array.isArray(reviews)) return { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
+
     return reviews.reduce(
-      (acc, { rating }) => {
-        acc[rating] = (acc[rating] || 0) + 1
+      (acc, review) => {
+        const rating = review?.rating
+        if (rating >= 1 && rating <= 5) {
+          acc[rating] = (acc[rating] || 0) + 1
+        }
         return acc
       },
       { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
     )
-  }
+  }, [])
 
   // 評論圖片
-  const reviewImages = reviews.flatMap((review) =>
-    (review.images || []).map((img) => ({
-      imageUrl: `https://isla-image.chris142852145.workers.dev/${img}`,
-      reviewId: review.review_id,
-    }))
-  )
+  const reviewImages = useMemo(() => {
+    if (!Array.isArray(reviews)) return []
+
+    return reviews.flatMap((review) =>
+      (review.images || []).map((img) => ({
+        imageUrl: `https://isla-image.chris142852145.workers.dev/${img}`,
+        reviewId: review.review_id,
+      }))
+    )
+  }, [reviews])
+
+  // 錯誤處理
+  if (errorProduct || errorReviews || errorIngredients) {
+    return (
+      <div className="error-container">
+        <h2>載入失敗</h2>
+        <p>資料載入時發生錯誤，請重新整理頁面或稍後再試。</p>
+        {errorProduct && <p>產品資料錯誤: {errorProduct.message}</p>}
+        {errorReviews && <p>評論資料錯誤: {errorReviews.message}</p>}
+        {errorIngredients && <p>成分資料錯誤: {errorIngredients.message}</p>}
+      </div>
+    )
+  }
 
   // 資料尚未載入完成
-  if (isLoadingProduct || isLoadingReviews || isLoadingIngredients)
-    return null
+  if (
+    isLoadingProduct ||
+    isLoadingReviews ||
+    isLoadingIngredients ||
+    isAuthLoading
+  ) {
+    return (
+      <div className="loading-container">
+        <div>載入中...</div>
+      </div>
+    )
+  }
 
-  // 等待 token 載入完成
+  // 等待 token 載入完成（這個邏輯可能需要根據 useClientToken 的實際行為調整）
   if (token === null) {
-    return <div>載入中...</div> // 或 return null
+    return <div>載入中...</div>
   }
 
   // 未登入的處理
@@ -140,9 +186,20 @@ export default function page({ params }) {
     return <div>請先登入以使用此功能</div>
   }
 
+  // 產品不存在
+  if (!product) {
+    return (
+      <div className="not-found-container">
+        <h2>產品不存在</h2>
+        <p>找不到指定的產品，請檢查網址是否正確。</p>
+      </div>
+    )
+  }
 
-  console.log(product.usage_instructions)
-
+  // Debug log - 建議在開發完成後移除
+  if (process.env.NODE_ENV === 'development') {
+    console.log('Product usage instructions:', product.usage_instructions)
+  }
   return (
     <>
       <section className="product-main">
@@ -207,7 +264,11 @@ export default function page({ params }) {
                   {/*    <i className="bx bxs-heart" />*/}
                   {/*  </a>{' '}*/}
                   {/*</div>*/}
-                  <WishButton token={token} type="product" id={product.product_id} />
+                  <WishButton
+                    token={token}
+                    type="product"
+                    id={product.product_id}
+                  />
                 </div>
                 <div className="price-box d-flex align-items-center ">
                   <div className="price">$425</div>{' '}
