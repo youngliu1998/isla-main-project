@@ -40,6 +40,7 @@ const ReviewCard = ({ review }) => {
     setCurrentIndex(index)
     setLightboxOpen(true)
   }
+  console.log(color_code)
   return (
     <>
       <div className={styles['comment-card']}>
@@ -69,8 +70,15 @@ const ReviewCard = ({ review }) => {
                     day: 'numeric',
                   })}
                 </div>
-                {color_name && (
-                  <div className={styles['color-name-card']}>
+                {color_name !== '標準色' && (
+                  <div
+                    className={`${styles['color-name-card']} ${color_code ? styles['color-name-card-has-color'] : ''}`}
+                    style={
+                      color_code
+                        ? { backgroundColor: color_code, color: '#ffffff'}
+                        : { backgroundColor: '#FBFBFB' }
+                    }
+                  >
                     顏色：{color_name}
                   </div>
                 )}

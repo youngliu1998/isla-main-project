@@ -13,7 +13,8 @@ export default function ProductPictureShow({ images }) {
   return (
     <div className={clsx(style['main'])}>
       <div className="pic-bar d-flex align-items-center gap-3">
-        {images.map((imgUrl, idx) => (
+          {/*沒時間修爆版，強制只顯示五個圖片*/}
+        {images.slice(0, 5).map((imgUrl, idx) => (
           <Image
             key={idx}
             className="pic-bar-item"

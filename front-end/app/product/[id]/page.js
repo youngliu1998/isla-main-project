@@ -1,15 +1,20 @@
 'use client'
 
 import './_style/product-info.css'
+import { useClientToken } from '@/hook/use-client-token.js'
 import {
   UseProductDetail,
   UseProductIngredient,
   UseProductReviews,
 } from '../../../hook/use-products'
 import { useChrisR2ImageUrlDuo } from '@/hook/use-chris-r2image-url.js'
+import { useAddCart } from '@/hook/use-add-cart.js'
 import CommentGroup from './_component/comment-group/comment-group.js'
 import CommentCat from './_component/comment-cat/comment-cat.js'
-import React, { useState, useMemo } from 'react'
+import ColorSelect from './_component/colour-select/colour-select.js'
+import WishButton from '../../_components/wish-toggle.js'
+import QuantitySelector from './_component/product-quantity-selector/product-quantity-selector.js'
+import React, { useState, useMemo, useEffect } from 'react'
 import Zoom from 'react-medium-image-zoom'
 import 'react-medium-image-zoom/dist/styles.css'
 import { useAuth } from '@/hook/use-auth.js'
@@ -18,71 +23,133 @@ import Image from 'next/image.js'
 import Link from 'next/link'
 export default function page({ params }) {
   // i don't know what is this shit, but it's warning
+  const { user, isLoading: isAuthLoading } = useAuth()
+  const token = useClientToken()
+  const userId = user?.id
+
   const unwrappedParams = React.use(params)
-  const id = unwrappedParams.id
-  const { user } = useAuth()
-  const userId = user.id
-  console.log(userId)
+  const id = unwrappedParams?.id
 
-  const [colorId, setColorId] = useState(null)
-  const [quantity, setQuantity] = useState(1)
-  const [selectedIndex, setSelectedIndex] = useState(0)
+  if (!id) return null
 
-  const handleAddToCart = () => {
-    if (!colorId) return alert('請先選擇顏色')
+  const { mutate: addToCart } = useAddCart(token)
 
-    // 呼叫 useMutation 或 API 傳送 colorId + quantity
-    console.log('加入購物車', { colorId, quantity })
-  }
-
-  if (!id) return <div>Loading...</div>
+  // Fetch product detail
   const {
     data: product,
     isLoading: isLoadingProduct,
-    success: productSuccess,
     error: errorProduct,
   } = UseProductDetail(id)
+
+  // Reviews
   const {
     data: reviews = [],
     isLoading: isLoadingReviews,
     error: errorReviews,
   } = UseProductReviews(id)
+
+  // Ingredients
   const {
     data: ingredients,
     isLoading: isLoadingIngredients,
     error: errorIngredients,
   } = UseProductIngredient(id)
-  // const productImagesUrls = product?.images?.map(img => useChrisR2ImageUrlDuo(img.image_url)) ?? [];
+
+  // === State ===
+  const [selectedColorId, setSelectedColorId] = useState(null)
+  const [quantity, setQuantity] = useState(1)
+  const [selectedIndex, setSelectedIndex] = useState(0)
+
+  // 判斷是否為標準色（無色碼）
+  const isStandardOnly =
+    product?.colors?.length === 1 && product.colors[0].color_code === null
+
+  // 初始化選擇顏色（非標準色）
+  useEffect(() => {
+    if (
+      product?.colors?.length > 0 &&
+      !isStandardOnly &&
+      selectedColorId === null
+    ) {
+      setSelectedColorId(product.colors[0].color_id)
+    }
+  }, [product, selectedColorId, isStandardOnly])
+
+  // 處理圖片
   const filenames = useMemo(() => {
     return product?.images?.map((img) => img.image_url) ?? []
-  }, [product?.images])
+  }, [product])
+
   const productImagesUrls = useChrisR2ImageUrlDuo(filenames)
 
-  const getRatingCounts = (reviews) => {
-    const counts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
-    reviews.forEach(({ rating }) => {
-      counts[rating]++
-    })
-    return counts
+  // 加入購物車
+  const handleAddToCart = () => {
+    const colorId = selectedColorId ?? product.colors[0]?.color_id
+
+    if (!colorId && !isStandardOnly) {
+      return alert('請先選擇顏色')
+    }
+
+    addToCart(
+      {
+        product_id: product.product_id,
+        quantity,
+        color_id: colorId,
+      },
+      {
+        onSuccess: (data) => {
+          console.log('加入成功：', data)
+        },
+        onError: (err) => {
+          console.error('加入購物車失敗：', err)
+        },
+      }
+    )
   }
 
-  const reviewImages = reviews.flatMap((reviews) =>
-    (reviews.images || []).map((img) => ({
+  // 評分統計
+  const getRatingCounts = (reviews) => {
+    return reviews.reduce(
+      (acc, { rating }) => {
+        acc[rating] = (acc[rating] || 0) + 1
+        return acc
+      },
+      { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
+    )
+  }
+
+  // 評論圖片
+  const reviewImages = reviews.flatMap((review) =>
+    (review.images || []).map((img) => ({
       imageUrl: `https://isla-image.chris142852145.workers.dev/${img}`,
-      reviewId: reviews.review_id,
+      reviewId: review.review_id,
     }))
   )
 
+  // 資料尚未載入完成
   if (isLoadingProduct || isLoadingReviews || isLoadingIngredients)
-    return <div>載入中...</div>
+    return null
+
+  // 等待 token 載入完成
+  if (token === null) {
+    return <div>載入中...</div> // 或 return null
+  }
+
+  // 未登入的處理
+  if (!token) {
+    return <div>請先登入以使用此功能</div>
+  }
+
+
+  console.log(product.usage_instructions)
+
   return (
     <>
       <section className="product-main">
         <div className="product-main-container container d-flex justify-content-center align-items-center">
           <div className="product d-flex align-items-center justify-content-center">
-            {/*<ProductPictureShow images={productImagesUrls} />*/}
             <div className="pic-bar d-flex align-items-center gap-3">
-              {productImagesUrls.map((imgUrl, idx) => (
+              {productImagesUrls.slice(0, 5).map((imgUrl, idx) => (
                 <Image
                   key={idx}
                   className="pic-bar-item"
@@ -122,39 +189,33 @@ export default function page({ params }) {
               </div>
               <div className="index-bottom d-flex flex-column">
                 <div className="color-select-box d-flex align-items-center">
-                  <label>顏色</label>
-                  <div className="color-select">
-                    <div className="color-circle" />{' '}
-                    <div className="color-name">豆沙棕色</div>{' '}
-                  </div>
+                  {!isStandardOnly && (
+                    <ColorSelect
+                      colors={product.colors}
+                      selectedColorId={selectedColorId}
+                      onChange={setSelectedColorId}
+                    />
+                  )}
                 </div>
                 <div className="number-select-bookmark-box d-flex align-items-center w-100 justify-content-between">
-                  <div className="number－select d-flex align-items-center">
-                    <button
-                      className="number－select-reduce number－select-btn"
-                      type="button"
-                    >
-                      {' '}
-                      <i className="bx bx-minus" />{' '}
-                    </button>
-                    <div className="number－select-num">1</div>{' '}
-                    <button
-                      className="number－select-increase number－select-btn"
-                      type="button"
-                    >
-                      {' '}
-                      <i className="bx bx-plus" />{' '}
-                    </button>
-                  </div>
-                  <div className="bookmark">
-                    <a href="#">
-                      <i className="bx bxs-heart" />
-                    </a>{' '}
-                  </div>
+                  <QuantitySelector
+                    quantity={quantity}
+                    setQuantity={setQuantity}
+                  />
+                  {/*<div className="bookmark">*/}
+                  {/*  <a href="#">*/}
+                  {/*    <i className="bx bxs-heart" />*/}
+                  {/*  </a>{' '}*/}
+                  {/*</div>*/}
+                  <WishButton token={token} type="product" id={product.product_id} />
                 </div>
                 <div className="price-box d-flex align-items-center ">
                   <div className="price">$425</div>{' '}
-                  <button className="add-cart" type="button">
+                  <button
+                    className="add-cart"
+                    type="button"
+                    onClick={handleAddToCart}
+                  >
                     加入購物袋
                   </button>{' '}
                 </div>
@@ -182,7 +243,10 @@ export default function page({ params }) {
             </div>
           </div>
           <div className="product-info">
-            <ProductInfoAccrodion ingredients={ingredients} />
+            <ProductInfoAccrodion
+              ingredients={ingredients}
+              usage={product.usage_instructions}
+            />
           </div>
           <CommentGroup
             reviews={reviews}

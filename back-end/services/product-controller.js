@@ -229,6 +229,7 @@ export async function getProductDetail(productId) {
         products.product_id, 
         products.name, 
         products.description, 
+        products.usage_instructions,
         products.base_price, 
         products.sale_price, 
         products.status,
@@ -311,6 +312,7 @@ export async function getProductDetail(productId) {
     product_id: product.product_id,
     name: product.name,
     description: product.description,
+    usage_instructions: product.usage_instructions,
     price: product.price,
     status: product.status,
     brand: {
