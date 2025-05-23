@@ -2,19 +2,16 @@
 
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { MdOutlineCenterFocusStrong } from 'react-icons/md'
-import './course.css'
+import './course-banner.css'
 
 export default function CourseBanner() {
   const [imgFirst, setImgFirst] = useState(1)
   const [imgMid, setImgMid] = useState(2)
   const [imgLast, setImgLast] = useState(3)
 
-  const currentImgs = [
-    `banner${imgFirst}.jpg`,
-    `banner${imgMid}.jpg`,
-    `banner${imgLast}.jpg`,
-  ]
+  const currentImgs = [{ id: imgFirst }, { id: imgMid }, { id: imgLast }]
 
   // 自動輪播
   useEffect(() => {
@@ -22,7 +19,7 @@ export default function CourseBanner() {
       setImgFirst((prev) => (prev % 35) + 1)
       setImgMid((prev) => (prev % 35) + 1)
       setImgLast((prev) => (prev % 35) + 1)
-    }, 4000)
+    }, 3000)
     return () => clearInterval(intervalId)
   }, [])
 
@@ -56,15 +53,20 @@ export default function CourseBanner() {
         精選課程
       </p>
 
-      <div className="d-flex align-content-center justify-content-center py-sm-5">
+      <div className="banner-image-wrapper py-sm-5">
         {currentImgs.map((img, i) => (
           <div className={i === 1 ? 'box1-img1' : 'box1-img'} key={i}>
+            <span className="" />
             <Image
-              src={`/images/course/bannerall/${img}`}
-              alt="Course banner"
+              src={`/images/course/bannerall/banner${img.id}.jpg`}
+              alt={`Course banner ${img.id}`}
               width={100}
               height={100}
               className="responsive-img"
+            />
+            <Link
+              href={`/course/course-list/${img.id}`}
+              className="img-overlay-link"
             />
           </div>
         ))}
