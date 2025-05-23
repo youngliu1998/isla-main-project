@@ -204,16 +204,11 @@ export default function ProfilePage() {
               selectKey="AreaName"
               text={text}
               setText={setText}
-              postCode={postCode}
             />
             <InputText
               title="郵遞區號"
               name="postcode"
-<<<<<<< HEAD
               selectKey="ZipCode"
-=======
-              text={text}
->>>>>>> dev
               value={text.ZipCode}
               disabled="disabled"
             />

@@ -78,6 +78,7 @@ export default function MyPostPage(props) {
               return (
                 <>
                   <FollowingCard
+                    key={i}
                     cardHref={`/forum/profile/${f.id}`}
                     imgSrc={f.ava_url}
                     imgAlt={f.nick}
