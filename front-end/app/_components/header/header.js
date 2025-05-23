@@ -21,6 +21,7 @@ export default function Header() {
   const router = useRouter()
   const [hamMenuOpen, setHamMenuOpen] = useState(false)
   const { user, isAuth } = useAuth()
+  console.log('header: user: ', user)
   // ==== 購物車按鈕路徑定義 ====
   const handleCartClick = () => {
     const token = localStorage.getItem('jwtToken')

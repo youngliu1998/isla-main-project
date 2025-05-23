@@ -27,9 +27,10 @@ router.post('/', async (req, res) => {
   }
   if (newMember['birthday']) {
     newMember['birthday'] = dayjs(newMember['birthday']).format(
-      'YYYY-MM-DDTHH:mm:ssZ[Z]'
+      'YYYY-MM-DDTHH:mm:ss'
     )
   }
+  // 'YYYY-MM-DDTHH:mm:ssZ[Z]'
   // console.log('isoBirthday: ', isoBirthday)
   console.log(`newMember`, newMember)
   // rearrange object to array (for mysql2 execute)
@@ -77,7 +78,7 @@ router.post('/google', async (req, res) => {
   }
   if (newMember['birthday']) {
     newMember['birthday'] = dayjs(newMember['birthday']).format(
-      'YYYY-MM-DDTHH:mm:ssZ[Z]'
+      'YYYY-MM-DDTHH:mm:ss'
     )
   }
   // ==== format for mysql2 array ====
