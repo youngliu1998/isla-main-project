@@ -3,20 +3,20 @@ import Link from 'next/link'
 import Image from 'next/image'
 //styles
 import { BsHandbag } from 'react-icons/bs'
+import { useAuth } from '@/hook/use-auth'
+import { useCartContext } from '../../cart/context/cart-context'
 import HamMenu from './_component/ham-menu'
 import HamMeunNav from './_component/ham-meun-nav'
 import HeaderNav from './_component/header-nav'
 import './header.css'
 // hook
-import { useAuth } from '../../../hook/use-auth'
-import useCartCount from '@/app/cart/hook/useCartCount'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 // route
 import { USER_AVA_URL } from '@/_route/img-url'
 
 export default function Header() {
-  const cartIconNum = useCartCount()
+  const { totalCount } = useCartContext()
   const pathname = usePathname()
   const router = useRouter()
   const [hamMenuOpen, setHamMenuOpen] = useState(false)
@@ -30,12 +30,6 @@ export default function Header() {
       router.push('/cart')
     }
   }
-<<<<<<< HEAD:front-end/app/_components/header.js
-  const [hamMenuOpen, setHamMenuOpen] = useState(false)
-  const pathname = usePathname()
-  const { isAuth } = useAuth()
-  const loginUrl = isAuth ? 'profile' : 'login'
-=======
   // ==== END 購物車按鈕路徑定義 ====
   // ==== 使用者按鈕路徑、圖像定義 ====
   let loginUrl = isAuth ? 'profile' : 'login'
@@ -55,7 +49,6 @@ export default function Header() {
     <i className="bi bi-person-circle" />
   )
   // ==== END 使用者按鈕路徑、圖像定義 ====
->>>>>>> dev:front-end/app/_components/header/header.js
   if (
     pathname.includes('login') ||
     pathname.includes('register') ||
@@ -93,7 +86,7 @@ export default function Header() {
               onClick={handleCartClick}
             >
               <BsHandbag style={{ color: 'white', fontSize: '30px' }} />
-              {cartIconNum > 0 && <div>{cartIconNum}</div>}
+              <div>{totalCount}</div>
             </button>
 
             <Link href={'/member/' + loginUrl} className="d-lg-block d-none">

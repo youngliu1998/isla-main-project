@@ -1,10 +1,13 @@
 'use client'
 import { AuthProvider } from '@/hook/use-auth'
+import { CartProvider } from './cart/context/cart-context'
 
 export default function Provider({ children }) {
   return (
     <>
-      <AuthProvider>{children}</AuthProvider>
+      <AuthProvider>
+        <CartProvider>{children}</CartProvider>
+      </AuthProvider>
     </>
   )
 }

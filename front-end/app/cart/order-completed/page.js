@@ -5,6 +5,11 @@ import OrderComplete from '../_component/order-complete/order-complete'
 import React, { useState, useEffect } from 'react'
 
 export default function OrderCompletedPage() {
+  useEffect(() => {
+    localStorage.removeItem('orderSummary')
+    // 順便清掉購物車的資料
+    localStorage.removeItem('cartItems')
+  }, [])
   const orderData = {
     orderId: '1743478951522',
     orderDate: '2025/04/17 13:38',

@@ -8,9 +8,19 @@ import ShippingForm from '../_component/shipping-form/shipping-form'
 
 import useIsMobile from '../hook/useIsMobile'
 import { useEffect, useState } from 'react'
+import { useCartContext } from '../context/cart-context'
 
 export default function PaymentPage() {
   const isMobile = useIsMobile()
+  const { orderData, setOrderData } = useCartContext()
+  useEffect(() => {
+    if (!orderData) {
+      const saved = localStorage.getItem('orderSummary')
+      if (saved) {
+        setOrderData(JSON.parse(saved))
+      }
+    }
+  }, [orderData, setOrderData])
   return (
     <>
       <section className="container text-center text-lg-start mt-2">
@@ -69,7 +79,20 @@ export default function PaymentPage() {
             </div>
           </div>
           {/* Right*/}
-          <div className="col-lg-5 col-12">{!isMobile && <OrderSummary />}</div>
+          <div className="col-lg-5 col-12">
+            {!isMobile && (
+              <OrderSummary
+                cartItems={orderData?.cartItems || []}
+                selecProdCoup={orderData?.selecProdCoup}
+                selecCourCoup={orderData?.selecCourCoup}
+                selecGloCoup={orderData?.selecGloCoup}
+                setSelecGloCoup={() => {}}
+                filterGloCoups={orderData?.filterGloCoups || []}
+                filterCourCoups={orderData?.filterCourCoups || []}
+                filterProdCoups={orderData?.filterProdCoups || []}
+              />
+            )}
+          </div>
           {isMobile && <MobileOrderBar />}
         </div>
       </section>

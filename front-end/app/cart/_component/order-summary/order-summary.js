@@ -3,7 +3,15 @@
 import styles from './order-summary.module.scss'
 import Link from 'next/link'
 import { Collapse } from 'react-bootstrap'
+// import { useCartContext } from '../../context/cart-context'
 import { useState } from 'react'
+
+//數字轉千分位，防止 null/undefined
+function formatCurrency(num) {
+  const n = Number(num)
+  if (isNaN(n)) return '0'
+  return n.toLocaleString('zh-Hant-TW')
+}
 
 export default function OrderSummary({
   cartItems = [],
@@ -12,8 +20,9 @@ export default function OrderSummary({
   selecGloCoup,
   setSelecGloCoup,
   filterGloCoups = [],
-  filterCourCoups = [],
-  filterProdCoups = [],
+  onCheckout,
+  // filterCourCoups = [],
+  // filterProdCoups = [],
 }) {
   const [openProdList, setOpenProdList] = useState(false)
   const [openCourList, setOpenCourList] = useState(false)
@@ -103,7 +112,7 @@ export default function OrderSummary({
           </button>
         </div>
         <p>
-          <strong>NT${makeupTotal}</strong>
+          <strong>NT${formatCurrency(makeupTotal)}</strong>
         </p>
       </div>
       <Collapse in={openProdList}>
@@ -127,7 +136,10 @@ export default function OrderSummary({
                 >
                   {/* <p className="me-2">數量：{item.quantity}</p> */}
                   <p>
-                    NT${item.quantity * (item.sale_price ?? item.base_price)}
+                    NT$
+                    {formatCurrency(
+                      item.quantity * (item.sale_price ?? item.base_price)
+                    )}
                   </p>
                 </div>
               </div>
@@ -141,7 +153,7 @@ export default function OrderSummary({
       {makeupCoupon && (
         <div className="d-flex justify-content-between text-secondary mb-2">
           <p>{makeupCoupon.description}</p>
-          <p>-NT${makeupDiscount}</p>
+          <p>-NT${formatCurrency(makeupDiscount)}</p>
         </div>
       )}
 
@@ -159,7 +171,7 @@ export default function OrderSummary({
           </button>
         </div>
         <p>
-          <strong>NT${courseTotal}</strong>
+          <strong>NT${formatCurrency(courseTotal)}</strong>
         </p>
       </div>
       <Collapse in={openCourList}>
@@ -174,11 +186,7 @@ export default function OrderSummary({
                 <p className={`${styles.ellipsis}`} title={item.name}>
                   {item.name}
                 </p>
-                <p>
-                  NT$
-                  {toLocaleString(item.sale_price) ??
-                    item.sale_price(item.base_price)}
-                </p>
+                <p>NT${formatCurrency(item.sale_price ?? item.base_price)}</p>
               </div>
             ))
           ) : (
@@ -190,7 +198,7 @@ export default function OrderSummary({
       {courseCoupon && (
         <div className="d-flex justify-content-between text-secondary mb-2">
           <p className={`${styles.ellipsis}`}>{courseCoupon.description}</p>
-          <p>-NT${toLocaleString(courseDiscount)}</p>
+          <p>-NT${formatCurrency(courseDiscount)}</p>
         </div>
       )}
 
@@ -244,7 +252,7 @@ export default function OrderSummary({
       {selecGloCoup && (
         <div className="d-flex justify-content-between text-secondary mb-2">
           <p>{globalCouponTitle}</p>
-          <p>-NT${courseDiscount(globalDiscount)}</p>
+          <p>-NT${formatCurrency(globalDiscount)}</p>
         </div>
       )}
 
@@ -254,15 +262,15 @@ export default function OrderSummary({
       <div className="d-flex justify-content-between mb-3">
         <h4>總計：</h4>
         <h4>
-          <strong>
-            NT${toLocaleString(finalTotal) >= 0 ? finalTotal(finalTotal) : 0}
-          </strong>
+          <strong>NT${formatCurrency(finalTotal >= 0 ? finalTotal : 0)}</strong>
         </h4>
       </div>
 
       <div className="w-100 d-flex justify-content-end">
         <Link href="/cart/payment">
-          <button className="btn btn-primary text-white">結帳</button>
+          <button className="btn btn-primary text-white" onClick={onCheckout}>
+            結帳
+          </button>
         </Link>
       </div>
     </div>

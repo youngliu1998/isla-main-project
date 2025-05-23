@@ -72,13 +72,17 @@ export default function ProductCardCourse({
                 <div className="fs-5">
                   {salePrice !== basePrice ? (
                     <>
-                      <del className="me-2 h6 text-subtext">NT${basePrice}</del>
+                      <del className="me-2 h6 text-subtext">
+                        NT${basePrice.toLocaleString()}
+                      </del>
                       <strong className="h5 text-maintext">
-                        NT${salePrice}
+                        NT${salePrice.toLocaleString()}
                       </strong>
                     </>
                   ) : (
-                    <strong className="h5 text-maintext">NT${basePrice}</strong>
+                    <strong className="h5 text-maintext">
+                      NT${basePrice.toLocaleString()}
+                    </strong>
                   )}
                 </div>
               </div>
