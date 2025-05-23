@@ -1,10 +1,12 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, act } from 'react'
 import { useAuth } from '../../../hook/use-auth'
 import { ClimbingBoxLoader } from 'react-spinners'
+import { useParams, useRouter } from 'next/navigation'
 
 // FIXME 讚數是否前端修改即可？
+// FIXME 點擊後被告知確認，但取消後仍然加上資料
 
 export default function ComponentsBtnLikedSaved({
   type = '',
@@ -15,6 +17,7 @@ export default function ComponentsBtnLikedSaved({
   mutate = () => {},
   color = '',
 }) {
+  const router = useRouter()
   const { user } = useAuth()
   const userID = user.id
   const iconClass =
@@ -25,7 +28,6 @@ export default function ComponentsBtnLikedSaved({
       : active
         ? 'bi-bookmark-fill badge-color'
         : 'bi-bookmark'
-
   return (
     <>
       <button
@@ -33,23 +35,27 @@ export default function ComponentsBtnLikedSaved({
         onClick={async (e) => {
           e.preventDefault()
           e.stopPropagation()
-          const method = active ? 'DELETE' : 'POST'
-          const res = await fetch(
-            `http://localhost:3005/api/forum/liked-saved/${type}`,
-            {
-              method: method,
-              headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ userID, postID }),
+          if (userID === 0) {
+            if (confirm('請先登入會員')) router.push('/member/login')
+          } else {
+            const method = active ? 'DELETE' : 'POST'
+            const res = await fetch(
+              `http://localhost:3005/api/forum/liked-saved/${type}`,
+              {
+                method: method,
+                headers: {
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ userID, postID }),
+              }
+            )
+            const json = await res.json()
+            if (json.status === 'success') {
+              mutate()
             }
-          )
-          const json = await res.json()
-          if (json.status === 'success') {
-            mutate()
+            console.log(userID)
           }
-          console.log(userID)
         }}
       >
         <i className={`bi ${iconClass}  me-1`} />

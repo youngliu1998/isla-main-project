@@ -7,6 +7,8 @@
   background:
     radial-gradient(circle at 100px top, #fff, #fff 10px, transparent 11px),
     radial-gradient(circle at 100px bottom, #fff, #fff 10px, transparent 11px);
+  // radial-gradient(circle at 100px right, #fff, #fff 10px, transparent 11px),
+  // radial-gradient(circle at 100px left, #fff, #fff 10px, transparent 11px);
   background-color: #d0c4c4;
 
   border-radius: 5px;
@@ -37,9 +39,13 @@
   }
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> aa3fa89 (0523/fixed conflic)
+=======
+
+>>>>>>> dev
 .tearAnimation {
   animation: tearEffect 0.5s ease-in-out forwards;
 }

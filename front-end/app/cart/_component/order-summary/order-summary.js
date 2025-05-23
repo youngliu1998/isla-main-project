@@ -61,7 +61,6 @@ export default function OrderSummary({
 
     // 百分比券：discount_rate < 1
     if (coupon.discount_rate && Number(coupon.discount_rate) < 1) {
-      // 例：0.85 -> 15% off
       return Math.round(base * (1 - Number(coupon.discount_rate)))
     }
     // 金額折抵券

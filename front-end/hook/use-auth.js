@@ -4,6 +4,7 @@ import { createContext, useContext, useState, useEffect } from 'react'
 
 const AuthContext = createContext(null)
 AuthContext.displayName = 'AuthContext'
+// ==== 清除 localstorage 的function ====
 
 export function AuthProvider({ children }) {
   // set user default status
@@ -21,11 +22,22 @@ export function AuthProvider({ children }) {
     mem_cpon: 0,
   }
   const [user, setUser] = useState(defaultUser)
-  let isAuth = Boolean(user?.id)
+  const isAuth = Boolean(user.id)
+  // === 用於驗證登入狀態 ====
+  // const [isAuth, setIsAuth] = useState(true)
+  const cleanStorage = () => {
+    console.warn('驗證失敗，清除 token')
+    localStorage.removeItem('jwtToken')
+    localStorage.removeItem('googleToken')
+  }
   // 取得使用者資料(驗證後才可使用)
   const initAuth = async () => {
     const token = localStorage.getItem('jwtToken')
-    if (!token) return console.log('not get token')
+    if (!token) {
+      console.log('not get token')
+      cleanStorage()
+      return
+    }
     // get user's data from db
     try {
       const response = await fetch('http://localhost:3005/api/member/login', {
@@ -37,15 +49,13 @@ export function AuthProvider({ children }) {
       if (response.ok && data?.data) {
         console.log('useAuth: ', data.data)
         setUser(data.data)
+        // setIsAuth(true)
       } else {
-        console.warn('驗證失敗，清除 token')
-        localStorage.removeItem('jwtToken')
-        localStorage.removeItem('googleToken')
+        cleanStorage()
       }
     } catch (err) {
       console.error('驗證錯誤:', err)
-      localStorage.removeItem('jwtToken')
-      localStorage.removeItem('googleToken')
+      cleanStorage()
     }
   }
   // login function
@@ -60,8 +70,9 @@ export function AuthProvider({ children }) {
       const data = await response.json()
 
       if (response.ok) {
-        if (!data['data']['token']) {
-          return console.log('沒有取得token，登入失敗')
+        if (!data || !data.data || !data.data.token) {
+          console.log('沒有取得token，登入失敗', data);
+          return;
         }
         // set token to localStorage
         localStorage.setItem('jwtToken', data['data']['token'])
@@ -79,9 +90,9 @@ export function AuthProvider({ children }) {
 
   // logout function
   const logout = () => {
-    localStorage.removeItem('jwtToken')
-    localStorage.removeItem('googleToken')
     setUser(defaultUser)
+    cleanStorage()
+    // setIsAuth(false)
   }
   // 初始讀取 jwtToken 並取得使用者資料
   useEffect(() => {

@@ -5,7 +5,6 @@
     flex-direction: column;
     align-items: flex-start;
     border-radius: 10px;
-    border-top: 1px solid rgba(255, 255, 255, 0.50);
     background: #FBFBFB;
     max-height: 700px;
     max-width: 650px;
@@ -34,15 +33,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 6px;
+    gap: 16px;
 }
 
 /* 評論卡片用戶圖片容器 */
 .comment-card-head-right .card-user-img {
-    width: 46px;
-    height: 46px;
+    width: 52px;
+    height: 52px;
     overflow: hidden;
-    border-radius: 50px;
+    /*border-radius: 50%;*/
 }
 
 /* 評論卡片頭部用戶名和評分容器 */
@@ -54,7 +53,7 @@
 
 /* 評論卡片用戶名 */
 .comment-card-head-right .card-head-user .username-card {
-    font-size: 16px;
+    font-size: 14px;
     color: #494949;
     font-weight: 400;
 }
@@ -86,9 +85,9 @@
 /* 評論文本內容 */
 .card-context {
     color: var(--MainText, #373737);
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 300;
-    line-height: 28px; /* 175% */
+    line-height: 26px; /* 175% */
     overflow: hidden;
 
     /* 限制文本行數並添加省略號 */
@@ -190,6 +189,61 @@
     display: block; /* 移除圖片底部額外空間 */
 }
 
+.user-img {
+    width: 100%;
+    height: 100%;
+}
+
+.post-and-color-box {
+    display: flex;
+    font-size: 12px;
+    gap: 3px;
+    flex-direction: column;
+    .post-date {
+        color: #8d8d8d;
+    }
+
+    .color-name-card {
+        color: #8d8d8d;
+    }
+}
+
+.custom-modal-dialog {
+    max-width: 800px;
+}
+
+.custom-modal-content {
+    border-radius: 16px;
+    padding: 12px 5px;
+    background-color: rgba(162, 111, 111, 0.34);
+    box-shadow: 0 2px 30px rgba(0, 0, 0, 0.5);
+}
+.custom-modal-title {
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+.custom-modal-context {
+    font-size: 18px;
+    color: rgb(255, 255, 255);
+    text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+    line-height: 32px; /* 175% */
+
+}
+
+.color-name-card {
+display: none;
+}
+
+.color-name-card-has-color {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    border-radius: 8px;
+    padding: 2px 6px;
+    color: #ffffff;
+}
+
 /* 響應式設計調整 (在小屏幕上) */
 @media (max-width: 768px) {
     .comment-card-head-left {
@@ -198,9 +252,25 @@
         flex-wrap: wrap; /* 圖片換行 */
     }
 
-    .comment-image-box {
-        width: 48px; /* 調整圖片大小 */
+    .comment-card-head-right .card-user-img {
+        width: 48px;
         height: 48px;
+        /*background: #000;*/
+        overflow: hidden;
+        /*border-radius: 50%;*/
+    }
+
+    .comment-image-box {
+        width: 38px; /* 調整圖片大小 */
+        height: 38px;
+    }
+    .comment-images-container {
+        display: flex;
+        /*background: #000;*/
+        /*flex-direction: column;*/
+        flex-wrap: wrap;
+        /*height: 100px;*/
+        justify-content: end;
     }
 
     .comment-card:hover .comment-image-box {
@@ -222,4 +292,6 @@
          width: 50px;
          height: 50px;
      }
+
+
 }

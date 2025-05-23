@@ -10,6 +10,7 @@ button {
   color: var(--MainText, #373737); /* 修正顏色值 typo */
 }
 
+
 /* 容器樣式 */
 .container {
   /* height: 100vh; /* 根據實際內容調整是否需要 100vh */
@@ -21,10 +22,22 @@ button {
   width: 100%; /* 確保容器在小屏幕上佔滿寬度 */
 }
 
+
 /* 產品主要區塊 */
 .product-main {
   margin-bottom: 32px;
   padding-top: 20px; /* 添加一些頂部空間 */
+background-color: #ffffff;
+  /*--s: 150px; !* control the size*!*/
+  /*--c1: #ffffff;*/
+  /*--c2: #fcfcfc;*/
+
+  /*background:*/
+  /*        linear-gradient(45deg,var(--c1) 12.5%,var(--c2) 0 25%,#0000 0 75%,var(--c2) 0 87.5%,var(--c1) 0)*/
+  /*        calc(var(--s)/2) calc(var(--s)/2),*/
+  /*        linear-gradient(45deg,var(--c2) 12.5%,var(--c1) 0 25%,#0000 0 75%,var(--c1) 0 87.5%,var(--c2) 0),*/
+  /*        repeating-linear-gradient(-45deg,var(--c1) 0 12.5%,var(--c2) 0 25%,var(--c1) 0 37.5%,var(--c2) 0 62.5%);*/
+  /*background-size: var(--s) var(--s);*/
 }
 
 /* 產品資訊標題 */
@@ -87,12 +100,13 @@ button {
 
 /* 圖片側邊欄 */
 .pic-bar {
-  height: 568px; /* 固定高度可能需要調整響應式 */
+  /*height: 568px; !* 固定高度可能需要調整響應式 *!*/
   border-right: 1px solid #d3d3d3;
   width: fit-content;
   padding: 10px;
   display: flex;
   flex-direction: column;
+  flex-wrap: wrap;
   justify-content: flex-start;
   align-items: center;
   gap: 10px; /* 圖片之間的間距 */
@@ -108,6 +122,10 @@ button {
   transition: border-color 0.3s ease; /* 添加過渡效果 */
 }
 
+[data-yarl__container] {
+  z-index: 9999 !important;
+}
+
 .pic-bar-item:hover {
   border-color: var(--MainColor, #fd7061); /* hover 時改變邊框顏色 */
 }
@@ -115,7 +133,8 @@ button {
 /* 圖片展示區 */
 .pic-show {
   height: 650px; /* 固定高度可能需要調整響應式 */
-  width: 400px; /* 固定寬度可能需要調整響應式 */
+  max-width: 400px; /* 固定寬度可能需要調整響應式 */
+  flex-wrap: wrap;
   padding: 64px 24px;
   margin: 0 12px;
   display: flex; /* 添加 flex 確保圖片居中 */
@@ -130,11 +149,20 @@ button {
   width: 100%;
   object-fit: cover;
 }
+@media (max-width: 768px) {
+  [data-rmiz-ghost] {
+    width: 90vw !important;
+    height: auto !important;
+    left: 5vw !important;
+    top: auto !important;
+    transform: none !important;
+  }
+}
 
 /* 產品索引/信息區塊 */
 .product-index {
   padding: 24px 22px;
-  height: 576px; /* 固定高度可能需要調整響應式 */
+  /*height: 576px; !* 固定高度可能需要調整響應式 *!*/
   width: 450px; /* 固定寬度可能需要調整響應式 */
   display: flex;
   flex-direction: column;
@@ -172,18 +200,19 @@ button {
 /* 產品名稱 */
 .name {
   color: var(--MainText, #373737);
-  font-size: 36px;
+  font-size: 32px;
   font-weight: 700;
 }
 
 /* 產品描述 */
 .description {
   padding: 0 12px;
-  color: var(--MainText, #373737);
+  color: var(--MainText, #676767);
   font-size: 16px;
-  font-style: normal;
   font-weight: 400;
-  line-height: 32px; /* 200% */
+  line-height: 30px; /* 200% */
+  padding-top: 2px;
+  padding-bottom: 32px;
 }
 
 /* 價格區塊 */
@@ -230,39 +259,7 @@ button {
   background: var(--MainColor, #fd7061); /* hover 時改變背景顏色 */
 }
 
-/* 數量選擇器 */
-.number－select {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 18px;
-}
 
-/* 數量選擇按鈕 */
-.number－select-btn {
-  font-size: 28px;
-  cursor: pointer; /* 添加鼠標指針效果 */
-  transition: color 0.3s ease; /* 添加過渡效果 */
-}
-
-/* 數量選擇按鈕內的 icon */
-.number－select-btn i {
-  color: #858585;
-}
-
-.number－select-btn:hover i {
-  color: var(--MainColor, #fd7061); /* hover 時改變顏色 */
-}
-
-/* 數量顯示 */
-.number－select-num {
-  color: var(--MainText, #373737);
-  text-align: center;
-  font-size: 32px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-}
 
 /* 顏色選擇容器 */
 .color-select-box {
@@ -330,10 +327,10 @@ button {
 /* 書籤 icon */
 .bookmark i {
   font-size: 32px;
-  color: rgba(255, 255, 255, 0); /* 默認紅色 */
-  -webkit-text-stroke-width: 2px;
-  -webkit-text-stroke-color: #fd7061;
-  transition: color 0.3s ease; /* 添加過渡效果 */
+  color: rgb(232, 106, 106); /* 默認紅色 */
+  /*-webkit-text-stroke-width: 2px;*/
+  /*-webkit-text-stroke-color: #fd7061;*/
+  /*transition: color 0.3s ease; !* 添加過渡效果 *!*/
 }
 
 .bookmark:hover i {
@@ -347,11 +344,12 @@ button {
   display: flex;
   gap: 24px;
   align-items: center;
-  margin-bottom: 20px; /* 添加底部空間 */
-  padding: 15px; /* 添加內邊距 */
-  border: 1px solid #eee; /* 添加邊框 */
-  border-radius: 8px; /* 添加圓角 */
-  background-color: #fff; /* 添加背景色 */
+  margin-bottom: 50px; /* 添加底部空間 */
+  padding: 15px;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0);
+  /*box-shadow: 0 2px 16px 0 rgba(0, 0, 0, 0.1);*/
 }
 
 .cat-card .cat-head {
@@ -383,12 +381,12 @@ button {
 }
 
 .user-img {
-  width: 42px;
-  height: 42px;
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
   overflow: hidden;
   border: 1px solid var(--subElement, #ececec);
-  margin-bottom: 12px;
+  /*margin-bottom: 12px;*/
 }
 
 .user-img img {
@@ -441,263 +439,7 @@ button {
   margin-bottom: 32px;
 }
 
-/* 評論側邊欄 */
-.comment-sidebar {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  width: 300px; /* 側邊欄固定寬度，考慮響應式調整 */
-  flex-shrink: 0; /* 防止側邊欄被壓縮 */
-}
 
-/* 評論側邊欄評分區塊 */
-.comment-sidebar-rating {
-  display: flex;
-  align-items: center;
-  gap: 15px; /* 數字與星級之間的間距 */
-  justify-content: center;
-}
-
-/* 評論側邊欄評分條容器 */
-.comment-sidebar-rating-bars {
-  display: flex;
-  flex-direction: column-reverse; /* 使 5星在最上面 */
-  gap: 15px; /* 評分條之間的間距 */
-}
-
-/* 評分數字 */
-.rating-num {
-  color: var(--MainColor, #fd7061);
-  font-size: 64px;
-  font-weight: 700;
-}
-
-/* 評分條標籤 */
-.rating-bar-label {
-  padding-right: 10px; /* 調整間距 */
-  color: #151515;
-  font-size: 16px;
-  font-weight: 400;
-  white-space: nowrap; /* 防止文本換行 */
-  width: 60px; /* 固定標籤寬度 */
-  text-align: right; /* 文本右對齊 */
-}
-
-/* 評分條容器 */
-.rating-bar {
-  width: 170px; /* 固定寬度，考慮響應式調整 */
-  height: 12px;
-  border-radius: 50px;
-  outline: 2px solid var(--subElement, #f1f1f1);
-  overflow: hidden; /* 隱藏溢出的條形 */
-  flex-grow: 1; /* 佔滿剩餘空間 */
-}
-
-/* 評分條內部容器 */
-.rating-bar .rating-bar-box {
-  display: flex;
-  height: 100%;
-}
-
-/* 評分條 - 1星 (示例寬度，請根據實際數據調整) */
-.rating-bar-1 {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 176, 176, 1) 0%,
-    rgba(245, 140, 189, 1) 65%,
-    rgba(255, 115, 115, 1) 100%
-  );
-  height: 100%;
-  width: 10%; /* 示例寬度 */
-}
-
-/* 評分條 - 2星 (示例寬度，請根據實際數據調整) */
-.rating-bar-2 {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 176, 176, 1) 0%,
-    rgba(245, 140, 189, 1) 65%,
-    rgba(255, 115, 115, 1) 100%
-  );
-  height: 100%;
-  width: 5%; /* 示例寬度 */
-}
-
-/* 評分條 - 3星 (示例寬度，請根據實際數據調整) */
-.rating-bar-3 {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 176, 176, 1) 0%,
-    rgba(245, 140, 189, 1) 65%,
-    rgba(255, 115, 115, 1) 100%
-  );
-  height: 100%;
-  width: 15%; /* 示例寬度 */
-}
-
-/* 評分條 - 4星 (示例寬度，請根據實際數據調整) */
-.rating-bar-4 {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 176, 176, 1) 0%,
-    rgba(245, 140, 189, 1) 65%,
-    rgba(255, 115, 115, 1) 100%
-  );
-  height: 100%;
-  width: 20%; /* 示例寬度 */
-}
-
-/* 評分條 - 5星 (示例寬度，請根據實際數據調整) */
-.rating-bar-5 {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 176, 176, 1) 0%,
-    rgba(245, 140, 189, 1) 65%,
-    rgba(255, 115, 115, 1) 100%
-  );
-  height: 100%;
-  width: 50%; /* 示例寬度 */
-}
-
-/* 評分星級區塊 */
-.rating-starbox {
-  display: flex; /* 添加 flex */
-  flex-direction: column; /* 垂直排列 */
-  gap: 6px;
-}
-
-/* 評分星級狀態文字 */
-.rating-starbox .rating-starbox-status {
-  color: var(--MainColor, #fd7061);
-  font-size: 11px;
-  font-weight: 400;
-}
-
-/* 評論側邊欄所有圖片區塊 */
-.comment-sidebar-photos-box {
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  justify-content: center;
-  align-items: center;
-  border-radius: 8px;
-  background-color: #f9f9f9; /* 添加背景色 */
-}
-
-/* 評論側邊欄所有圖片標題 */
-.comment-sidebar-photos-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: #656565;
-}
-
-/* 評論側邊欄圖片網格 */
-.comment-sidebar-photos {
-  display: grid;
-  width: 100%;
-  max-width: 250px; /* 限制最大寬度 */
-  grid-template-columns: 1fr 1fr; /* 兩列 */
-  gap: 15px; /* 圖片之間的間距 */
-}
-
-/* 評論側邊欄單個圖片按鈕 */
-.comment-sidebar-photos .comment-img {
-  width: 100%;
-  height: auto; /* 高度自動 */
-  overflow: hidden;
-  border-radius: 4px;
-  cursor: pointer; /* 添加鼠標指針效果 */
-  border: 1px solid transparent; /* 默認邊框 */
-  transition: border-color 0.3s ease; /* 添加過渡效果 */
-}
-
-.comment-sidebar-photos .comment-img:hover {
-  border-color: var(--MainColor, #fd7061); /* hover 時改變邊框顏色 */
-}
-
-/* 評論側邊欄圖片 */
-.comment-sidebar-photos .comment-img img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* 評論側邊欄查看全部圖片按鈕 */
-.comment-sidebar-photos-show-more {
-  color: var(--SubColor, #fa8e83);
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: normal;
-  cursor: pointer; /* 添加鼠標指針效果 */
-  transition: color 0.3s ease; /* 添加過渡效果 */
-}
-
-.comment-sidebar-photos-show-more:hover {
-  color: var(--MainColor, #fd7061); /* hover 時改變顏色 */
-  text-decoration: underline; /* 添加下劃線 */
-}
-
-/* 評論區塊 (主要評論列表) */
-.comment-box {
-  padding: 12px 24px;
-  flex-grow: 1; /* 佔滿剩餘空間 */
-  min-width: 300px; /* 設置最小寬度，防止在小屏幕上過窄 */
-}
-
-/* 評論工具欄 */
-.comment-box .tools {
-  height: 55px;
-  width: 100%;
-  gap: 16px;
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid #eee; /* 添加底部邊框 */
-  margin-bottom: 20px; /* 添加底部空間 */
-}
-
-/* 排序按鈕 */
-.sort-btn {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 6px;
-  align-self: stretch;
-  color: #a8a8a8;
-  font-size: 16px; /* 設置字體大小 */
-  font-weight: 400; /* 設置字體粗細 */
-  transition: color 0.3s ease; /* 添加過渡效果 */
-}
-
-.sort-btn:hover {
-  color: #666; /* hover 時顏色變化 */
-}
-
-/* 活躍的排序按鈕 */
-.sort-btn-active {
-  color: var(--MainColor, #fd7061);
-  font-weight: 600; /* 活躍時字體更粗 */
-}
-
-.sort-btn-active:hover {
-  color: var(--MainColor, #fd7061);
-}
-
-/* 評論卡片列表容器 */
-.comment-cards {
-  padding-top: 0; /* 調整內邊距 */
-  display: flex;
-  width: 100%;
-  flex-direction: column;
-  gap: 20px; /* 評論卡片之間的間距 */
-}
-
-.comment-card-footer .card_show_more:hover {
-  color: var(--MainColor, #fd7061); /* hover 時顏色變化 */
-  text-decoration: underline; /* 添加下劃線 */
-}
 
 @media (max-width: 1098px) {
   .product {
@@ -803,6 +545,18 @@ button {
 
 /* 響應式設計調整 1098 */
 @media (max-width: 768px) {
+  .user-img {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 1px solid var(--subElement, #ececec);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /*margin-bottom: 12px;*/
+  }
+
   .product {
     flex-direction: column; /* 在小屏幕上垂直排列 */
     align-items: center;
@@ -879,70 +633,70 @@ button {
     padding: 8px;
   }
 
-  .comment-component {
-    flex-direction: column; /* 在小屏幕上垂直排列 */
-    padding: 30px 15px;
-    gap: 20px;
-  }
-
-  .comment-sidebar {
-    width: 100%; /* 佔滿寬度 */
-    align-items: center; /* 內容居中 */
-  }
-
-  .comment-sidebar-rating {
-    flex-direction: column; /* 垂直排列評分數字和星級 */
-    gap: 10px;
-  }
-
-  .comment-sidebar-rating-bars {
-    display: none;
-    width: 100%; /* 佔滿寬度 */
-    padding: 0 20px; /* 添加內邊距 */
-  }
-
-  .rating-bar-label {
-    width: auto; /* 自動寬度 */
-    text-align: left; /* 左對齊 */
-    padding-right: 10px;
-  }
-
-  .rating-bar {
-    width: auto; /* 自動寬度 */
-    flex-grow: 1; /* 佔滿剩餘空間 */
-  }
-
-  .comment-sidebar-photos-box {
-    display: none;
-  }
-
-  /*.comment-sidebar-photos {*/
-  /*    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); !* 自動調整列數 *!*/
-  /*    max-width: none; !* 移除最大寬度限制 *!*/
-  /*    gap: 10px;*/
+  /*.comment-component {*/
+  /*  flex-direction: column; !* 在小屏幕上垂直排列 *!*/
+  /*  padding: 30px 15px;*/
+  /*  gap: 20px;*/
   /*}*/
 
-  .comment-box {
-    padding: 0 15px;
-    min-width: auto; /* 移除最小寬度限制 */
-  }
+  /*.comment-sidebar {*/
+  /*  width: 100%; !* 佔滿寬度 *!*/
+  /*  align-items: center; !* 內容居中 *!*/
+  /*}*/
 
-  .comment_img {
-    /* 如果這個類名用於絕對定位圖片，在響應式中可能需要調整或移除 */
-    position: static; /* 移除絕對定位 */
-    height: auto;
-    margin-top: 10px; /* 添加間距 */
-  }
+  /*.comment-sidebar-rating {*/
+  /*  flex-direction: column; !* 垂直排列評分數字和星級 *!*/
+  /*  gap: 10px;*/
+  /*}*/
 
-  .comment_img .comment_img_box {
-    width: 50px; /* 調整圖片大小 */
-    height: 50px;
-  }
+  /*.comment-sidebar-rating-bars {*/
+  /*  display: none;*/
+  /*  width: 100%; !* 佔滿寬度 *!*/
+  /*  padding: 0 20px; !* 添加內邊距 *!*/
+  /*}*/
 
-  .comment_img:hover .comment_img_box {
-    width: 50px; /* 在小屏幕上 hover 時不改變大小 */
-    height: 50px;
-  }
+  /*.rating-bar-label {*/
+  /*  width: auto; !* 自動寬度 *!*/
+  /*  text-align: left; !* 左對齊 *!*/
+  /*  padding-right: 10px;*/
+  /*}*/
+
+  /*.rating-bar {*/
+  /*  width: auto; !* 自動寬度 *!*/
+  /*  flex-grow: 1; !* 佔滿剩餘空間 *!*/
+  /*}*/
+
+  /*.comment-sidebar-photos-box {*/
+  /*  !*display: none;*!*/
+  /*}*/
+
+  /*!*.comment-sidebar-photos {*!*/
+  /*!*    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); !* 自動調整列數 *!*!*/
+  /*!*    max-width: none; !* 移除最大寬度限制 *!*!*/
+  /*!*    gap: 10px;*!*/
+  /*!*}*!*/
+
+  /*.comment-box {*/
+  /*  padding: 0 15px;*/
+  /*  min-width: auto; !* 移除最小寬度限制 *!*/
+  /*}*/
+
+  /*.comment_img {*/
+  /*  !* 如果這個類名用於絕對定位圖片，在響應式中可能需要調整或移除 *!*/
+  /*  position: static; !* 移除絕對定位 *!*/
+  /*  height: auto;*/
+  /*  margin-top: 10px; !* 添加間距 *!*/
+  /*}*/
+
+  /*.comment_img .comment_img_box {*/
+  /*  width: 50px; !* 調整圖片大小 *!*/
+  /*  height: 50px;*/
+  /*}*/
+
+  /*.comment_img:hover .comment_img_box {*/
+  /*  width: 50px; !* 在小屏幕上 hover 時不改變大小 *!*/
+  /*  height: 50px;*/
+  /*}*/
 
   .relative-products-cards {
     padding: 16px 0;
