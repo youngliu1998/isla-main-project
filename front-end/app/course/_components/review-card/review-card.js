@@ -4,6 +4,7 @@ import React from 'react'
 import Image from 'next/image'
 import './review-card.css'
 import LikeButton from '../like-button/like-button'
+import { USER_AVA_URL } from '@/_route/img-url'
 
 export default function ReviewCard({
   member_name = '',

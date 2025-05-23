@@ -6,11 +6,12 @@ export default function Select({
   arr = [],
   selectKey = '',
   text = {},
+  postCode = '',
   setText = () => {},
 }) {
-  console.log('text', text)
-  console.log('selectKey', selectKey)
-  console.log('text.selectKey', text[`${selectKey}`])
+  // console.log('text', text)
+  // console.log('selectKey', selectKey)
+  // console.log('text.selectKey', text[`${selectKey}`])
   return (
     <>
       <div className="user-form-input">
@@ -21,6 +22,9 @@ export default function Select({
           defaultValue={text[`${selectKey}`]}
           onChange={(e) => {
             setText({ ...text, [selectKey]: e.target.value })
+            if (selectKey == 'AreaName') {
+              setText({ ...text, ['ZipCode']: postCode[0]['ZipCode'] })
+            }
           }}
         >
           <option value={text.selectKey}>{text[`${selectKey}`]}</option>

@@ -23,6 +23,7 @@ export default function RegisterPage() {
     e.preventDefault()
     // 新使用者
     if (!user.email) {
+      console.log('新增使用者(not google account)')
       try {
         const response = await fetch(
           'http://localhost:3005/api/member/register',
@@ -36,33 +37,43 @@ export default function RegisterPage() {
         )
         const result = await response.json()
         alert('提交成功：' + JSON.stringify(result))
+        // 轉跳至login
         router.push('login')
       } catch (err) {
         console.log(err)
       }
     }
     // 新使用者(使用google 登入)
-    try {
-      const response = await fetch(
-        'http://localhost:3005/api/member/register/google',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(regiInfo),
-        }
-      )
-      const result = await response.json()
-      alert('提交成功：' + JSON.stringify(result))
-      router.push('login')
-    } catch (err) {
-      console.log(err)
+    if (user.email) {
+      try {
+        console.log('新增使用者(google account)')
+        const response = await fetch(
+          'http://localhost:3005/api/member/register/google',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(regiInfo),
+          }
+        )
+        const result = await response.json()
+        alert('提交成功：' + JSON.stringify(result))
+        // 轉跳至login
+        router.push('login')
+      } catch (err) {
+        console.log(err)
+      }
     }
   }
   useEffect(() => {
-    // if get auth, go to profile
-    if (user.birthday) router.push('profile')
+    // ==== 檢查是否已登入 ====
+    if (user.birthday && !user.birthday.includes('undefined')) {
+      console.log('register-page: 已登入')
+      router.push('profile')
+      return
+    }
+    // ==== END 檢查是否已登入 ====
     console.log('register-page-user: ', user)
     console.log('register-page-isAuth: ', isAuth)
     console.log('register-page-birthday: ', user.birthday)
@@ -72,8 +83,8 @@ export default function RegisterPage() {
       ['name']: user.name,
       ['tel']: user.tel,
     })
+    console.log('email: ', user.email)
   }, [isAuth])
-  // console.log('regiInfo', regiInfo)
 
   return (
     <>

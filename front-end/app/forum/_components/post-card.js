@@ -88,7 +88,7 @@ export default function ComponentsPostCard({
         tabIndex={0} //可被tab鍵聚焦
         style={{ cursor: 'pointer' }}
       >
-        <div className="d-flex align-items-center px-4">
+        <div className="d-flex align-items-center px-4 mb-1">
           <ComponentsAuthorInfo
             authorID={authorID}
             width={width}

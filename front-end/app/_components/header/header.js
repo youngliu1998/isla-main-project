@@ -2,20 +2,23 @@
 import Link from 'next/link'
 //styles
 import { BsHandbag } from 'react-icons/bs'
+import { useAuth } from '@/hook/use-auth'
 import HamMenu from './_component/ham-menu'
 import HamMeunNav from './_component/ham-meun-nav'
 import HeaderNav from './_component/header-nav'
 import './header.css'
 // hook
-import { useAuth } from '../../hook/use-auth'
 import useCartCount from '@/app/cart/hook/useCartCount'
 import { usePathname, useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export default function Header() {
   const cartIconNum = useCartCount()
+  const pathname = usePathname()
   const router = useRouter()
-
+  const [hamMenuOpen, setHamMenuOpen] = useState(false)
+  const { isAuth } = useAuth()
+  // ==== 購物車按鈕路徑定義 ====
   const handleCartClick = () => {
     const token = localStorage.getItem('jwtToken')
     if (!token) {
@@ -24,18 +27,20 @@ export default function Header() {
       router.push('/cart')
     }
   }
-  const [hamMenuOpen, setHamMenuOpen] = useState(false)
-  // const pathname = usePathname()
-  const { isAuth } = useAuth()
-  const loginUrl = isAuth ? 'profile' : 'login'
+  // ==== END 購物車按鈕路徑定義 ====
+  // ==== 使用者按鈕路徑定義 ====
+  let loginUrl = isAuth ? 'profile' : 'login'
+  // ==== END 使用者按鈕路徑定義 ====
   if (
     pathname.includes('login') ||
     pathname.includes('register') ||
-    pathname.includes('forget-password')
+    pathname.includes('forget-password') ||
+    pathname.includes('dashboard')
   ) {
     return <></>
   }
-
+  // console.log('main-page isAuth:', isAuth)
+  // console.log('main-page user:', user)
   return (
     <>
       <header>
@@ -47,7 +52,9 @@ export default function Header() {
           />
           <HamMenu hamMenuOpen={hamMenuOpen} setHamMenuOpen={setHamMenuOpen} />
           {/* (END) for burger menu */}
-          <div className="order-lg-1 order-2 title">ISLA</div>
+          <Link href="/">
+            <div className="order-lg-1 order-2 title">ISLA</div>
+          </Link>
           {/*  nav-bar */}
           <HeaderNav />
           <div className="order-3 icons">
