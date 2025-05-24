@@ -2,20 +2,13 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-<<<<<<< HEAD
 import ComponentsAvatar from '../_components/avatar'
-=======
->>>>>>> dev
 
 export default function PostIDCommentCard(props) {
   return (
     <>
       <div className="comment-content d-flex gap10">
-<<<<<<< HEAD
         <Link href="/" className="user-avatar">
-=======
-        {/* <Link href="/" className="user-avatar">
->>>>>>> dev
           <ComponentsAvatar
             classWidth="32"
             src={`/images/forum/320.webp`}
@@ -52,11 +45,7 @@ export default function PostIDCommentCard(props) {
               回覆
             </Link>
           </div>
-<<<<<<< HEAD
         </div>
-=======
-        </div> */}
->>>>>>> dev
       </div>
     </>
   )
