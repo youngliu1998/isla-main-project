@@ -88,6 +88,7 @@ export default function Header() {
               <BsHandbag style={{ color: 'white', fontSize: '30px' }} />
               {cartIconNum > 0 && <div>{cartIconNum}</div>}
             </button>
+
             <Link href={'/member/' + loginUrl} className="d-lg-block d-none">
               <button>{loginAva}</button>
             </Link>

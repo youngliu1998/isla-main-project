@@ -200,7 +200,6 @@ export default function CartPage() {
       </section>
     )
   }
-
   // 過濾 area=1 商品券
   const filterProdCoups = processedCouponsProd.filter(
     (coupon) => coupon.area === 1
@@ -219,6 +218,10 @@ export default function CartPage() {
       <section className="container text-center text-lg-start mt-2">
         <h1 className="text-subtext h2 m-5">購物袋</h1>
       </section>
+
+      {/* <section className="container d-none d-lg-block mb-4">
+        <StepProgress currentStep={1} />
+      </section> */}
 
       {cartItems.length === 0 ? (
         <section className="container text-center my-5">
