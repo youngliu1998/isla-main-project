@@ -22,8 +22,14 @@ export default function Select({
           defaultValue={text[`${selectKey}`]}
           onChange={(e) => {
             setText({ ...text, [selectKey]: e.target.value })
+            // ==== 直接輸入郵遞區號 ====
             if (selectKey == 'AreaName') {
-              setText({ ...text, ['ZipCode']: postCode[0]['ZipCode'] })
+              setText({
+                ...text,
+                ['ZipCode']: arr.filter((v) => {
+                  return v['AreaName'] === e.target.value
+                })[0]['ZipCode'],
+              })
             }
           }}
         >

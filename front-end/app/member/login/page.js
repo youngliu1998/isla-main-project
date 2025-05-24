@@ -8,7 +8,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import InputText from '../_component/input-text'
-import InputPass from '../_component/input-Pass'
+import InputPass from '../_component/input-pass'
 import '../_styles/login.css'
 
 export default function LoginPage() {
@@ -23,9 +23,12 @@ export default function LoginPage() {
     e.preventDefault()
     console.log('account', memAuth.email)
     await login(memAuth.email, memAuth.password)
-    const isAuthLocal = localStorage.getItem('isAuth') || false
+    const isAuthLocal = localStorage.getItem('jwtToken') || false
     if (isAuthLocal) {
+      alert('登入成功')
       router.push('/')
+    } else {
+      alert('登入失敗')
     }
   }
   // ==== google 認證設定 ====
@@ -58,9 +61,9 @@ export default function LoginPage() {
   }
   // ==== END google 認證設定 ====
   useEffect(() => {
-    const isAuth = localStorage.getItem('isAuth') || false
+    const isAuthLocal = localStorage.getItem('jwtToken') || false
     // if get auth, go to main page
-    if (isAuth) router.push('/')
+    if (isAuthLocal) router.push('/')
     // console.log('login-page-user: ', user)
     // console.log('login-page-isAuth: ', isAuth)
   }, [])

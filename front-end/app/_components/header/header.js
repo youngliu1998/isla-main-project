@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import Image from 'next/image'
 //styles
 import { BsHandbag } from 'react-icons/bs'
 import { useAuth } from '@/hook/use-auth'
@@ -11,13 +12,15 @@ import './header.css'
 import useCartCount from '@/app/cart/hook/useCartCount'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
+// route
+import { USER_AVA_URL } from '@/_route/img-url'
 
 export default function Header() {
   const cartIconNum = useCartCount()
   const pathname = usePathname()
   const router = useRouter()
   const [hamMenuOpen, setHamMenuOpen] = useState(false)
-  const { isAuth } = useAuth()
+  const { user, isAuth } = useAuth()
   // ==== 購物車按鈕路徑定義 ====
   const handleCartClick = () => {
     const token = localStorage.getItem('jwtToken')
@@ -28,9 +31,24 @@ export default function Header() {
     }
   }
   // ==== END 購物車按鈕路徑定義 ====
-  // ==== 使用者按鈕路徑定義 ====
+  // ==== 使用者按鈕路徑、圖像定義 ====
   let loginUrl = isAuth ? 'profile' : 'login'
-  // ==== END 使用者按鈕路徑定義 ====
+  let loginAva = isAuth ? (
+    <div
+      className="
+    overflow-hidden rounded-pill"
+    >
+      <Image
+        src={USER_AVA_URL + user.ava_url}
+        alt={USER_AVA_URL + user.ava_url}
+        width={40}
+        height={40}
+      />
+    </div>
+  ) : (
+    <i className="bi bi-person-circle" />
+  )
+  // ==== END 使用者按鈕路徑、圖像定義 ====
   if (
     pathname.includes('login') ||
     pathname.includes('register') ||
@@ -70,10 +88,9 @@ export default function Header() {
               <BsHandbag style={{ color: 'white', fontSize: '30px' }} />
               {cartIconNum > 0 && <div>{cartIconNum}</div>}
             </button>
+
             <Link href={'/member/' + loginUrl} className="d-lg-block d-none">
-              <button>
-                <i className="bi bi-person-circle" />
-              </button>
+              <button>{loginAva}</button>
             </Link>
             {/* </Link> */}
             {/* </button> */}
