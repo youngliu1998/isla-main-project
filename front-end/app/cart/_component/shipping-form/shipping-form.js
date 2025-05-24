@@ -1,9 +1,34 @@
 import styles from './shipping-form.module.scss'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
-export default function ShippingForm() {
+import { useShip711StoreOpener } from '../../hook/ship-711/use-ship-711-store.js'
+import { nextUrl, apiURL } from '@/config'
+
+export default function ShippingForm({
+  memberSameInfo,
+  setMemberSameInfo,
+  handleCopyMemberInfo,
+}) {
   const [shippingWay, setShippingWay] = useState('home')
-  const [memberInfo, setMemberInfo] = useState(false)
+  const [check, setCheck] = useState(false)
+
+  const { store711, openWindow } = useShip711StoreOpener(
+    `${nextUrl}/cart/hook/ship-711/api`,
+    { autoCloseMins: 3 }
+  )
+
+  useEffect(() => {
+    if (store711 && store711.storeid) {
+      setShippingWay('711')
+    }
+  }, [store711])
+
+  // checkbox 點擊時處理
+  const handleCheckboxChange = (evt) => {
+    const isChecked = evt.target.checked
+    setCheck(isChecked)
+    handleCopyMemberInfo(isChecked)
+  }
 
   return (
     <form method="POST" action="" id="formHome" className="card-style mb-4 p-4">
@@ -13,7 +38,6 @@ export default function ShippingForm() {
       <div className="d-flex justify-content-between">
         <div className="form-check mb-3">
           <input
-            // className="form-check-input"
             className={`${styles.radioInput} form-check-input`}
             type="radio"
             name="shipping"
@@ -39,8 +63,8 @@ export default function ShippingForm() {
               className={`${styles.checkboxInput} form-check-input`}
               type="checkbox"
               id="sameAsMember"
-              checked={memberInfo}
-              onChange={() => setMemberInfo(!memberInfo)}
+              checked={check}
+              onChange={handleCheckboxChange}
             />
             <label htmlFor="sameAsMember" className="form-check-label">
               收件人資料與會員資料相符
@@ -57,6 +81,13 @@ export default function ShippingForm() {
                 id="name"
                 name="name"
                 placeholder="真實姓名"
+                value={memberSameInfo.recipientName}
+                onChange={(evt) =>
+                  setMemberSameInfo({
+                    ...memberSameInfo,
+                    recipientName: evt.target.value,
+                  })
+                }
               />
             </div>
             <div className="mb-3">
@@ -69,6 +100,13 @@ export default function ShippingForm() {
                 id="phone"
                 name="phone"
                 placeholder="聯絡電話"
+                value={memberSameInfo.recipientPhone}
+                onChange={(evt) =>
+                  setMemberSameInfo({
+                    ...memberSameInfo,
+                    recipientPhone: evt.target.value,
+                  })
+                }
               />
             </div>
             <div className="mb-3">
@@ -81,6 +119,13 @@ export default function ShippingForm() {
                 id="address"
                 name="address"
                 placeholder="請輸入地址"
+                value={memberSameInfo.recipientAdress}
+                onChange={(evt) =>
+                  setMemberSameInfo({
+                    ...memberSameInfo,
+                    recipientAdress: evt.target.value,
+                  })
+                }
               />
             </div>
           </div>
@@ -108,7 +153,7 @@ export default function ShippingForm() {
           <span className="text-secondary">達免運門檻</span>
         </small>
       </div>
-
+      {/* 711 選擇門市 */}
       {shippingWay === '711' && (
         <div id="store711Info" className="d-flex flex-column ms-4 p-3">
           <h6 className="fw-bold mb-3 text-subtext">選擇 7-11 取貨門市</h6>
@@ -121,7 +166,8 @@ export default function ShippingForm() {
               type="text"
               name="storeName"
               id="storeName"
-              defaultValue="永信門市"
+              value={store711.storename}
+              readOnly
             />
           </div>
           <div className="d-flex flex-column">
@@ -134,11 +180,15 @@ export default function ShippingForm() {
                 type="text"
                 name="storeAddress"
                 id="storeAddress"
-                defaultValue="台北市信義區永吉路30巷10號"
+                value={store711.storeaddress}
+                readOnly
               />
             </div>
-            <button className="btn btn-secondary btn-sm ms-auto">
-              變更門市
+            <button
+              className="btn btn-secondary btn-sm ms-auto"
+              onClick={openWindow}
+            >
+              選擇門市
             </button>
           </div>
         </div>

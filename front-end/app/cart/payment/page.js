@@ -9,10 +9,31 @@ import ShippingForm from '../_component/shipping-form/shipping-form'
 import useIsMobile from '../hook/useIsMobile'
 import { useEffect, useState } from 'react'
 import { useCartContext } from '../context/cart-context'
+import { useAuth } from '../../../hook/use-auth'
 
 export default function PaymentPage() {
   const isMobile = useIsMobile()
   const { orderData, setOrderData } = useCartContext()
+  const { user } = useAuth()
+  const defaultMemberInfo = {
+    recipientName: '',
+    recipientPhone: '',
+    recipientAdress: '',
+  }
+  const [memberSameInfo, setMemberSameInfo] = useState(defaultMemberInfo)
+  // 勾選自動帶入會員資料
+  const handleCopyMemberInfo = (checked) => {
+    if (checked) {
+      setMemberSameInfo({
+        recipientName: user.name || '',
+        recipientPhone: user.tel || '',
+        recipientAdress: user.address || '',
+      })
+    } else {
+      setMemberSameInfo(defaultMemberInfo)
+    }
+  }
+
   useEffect(() => {
     if (!orderData) {
       const saved = localStorage.getItem('orderSummary')
@@ -34,7 +55,11 @@ export default function PaymentPage() {
         <div className="row gy-5">
           {/* Left */}
           <div className="col-lg-7 col-12">
-            <ShippingForm />
+            <ShippingForm
+              memberSameInfo={memberSameInfo}
+              setMemberSameInfo={setMemberSameInfo}
+              handleCopyMemberInfo={handleCopyMemberInfo}
+            />
 
             {/* 付款方式 */}
             <div className="card-style mb-3 p-4">
