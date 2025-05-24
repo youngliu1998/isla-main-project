@@ -42,7 +42,7 @@ export const useToggleWish = (token, type, id) => {
       deleteFavorite.mutate(payload, {
         onSuccess: () => {
           queryClient.invalidateQueries(['wishlist'])
-            toast.success('已加入願望清單',{position: "bottom-center",})
+          toast.success('已從願望清單移除', { position: 'bottom-center' })
         },
         onError: (err) => {
           toast.error('移除失敗：' + err.message)
@@ -52,7 +52,7 @@ export const useToggleWish = (token, type, id) => {
       addFavorite.mutate(payload, {
         onSuccess: () => {
           queryClient.invalidateQueries(['wishlist'])
-            toast.success('已從願望清單移除',{position: "bottom-center",})
+          toast.success('已加入願望清單', { position: 'bottom-center' })
         },
         onError: (err) => {
           toast.error('加入失敗：' + err.message)
