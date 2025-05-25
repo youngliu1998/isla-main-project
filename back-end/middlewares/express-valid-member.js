@@ -15,8 +15,8 @@ export const ValidatePass = body('password')
 
 // ==== 驗證姓名 ====
 export const validateName = body('name')
-  .isLength({ max: 18 })
-  .withMessage('名字請小於18個字')
+  .isLength({ min: 2, max: 18 })
+  .withMessage('名字請介於2~18個字')
 // ==== 驗證姓名 ====
 export const validateNickName = body('nickname')
   .isLength({ max: 18 })
@@ -72,11 +72,11 @@ export const validateBirthday = body('birthday').custom((value) => {
 // ==== 電話認證 ====
 export const validateTel = body('tel')
   .matches(/^09\d{8}$/)
-  .withMessage('請輸入正確的台灣手機號碼（共10碼，開頭為09）')
+  .withMessage('（共10碼，開頭為09）')
 
 // ==== 膚質 ====
 export const validateSkin = body('skin_type').isIn([
-  '混合肌',
+  '乾性',
   '中性',
   '敏感性',
   '',
@@ -87,7 +87,8 @@ export const validateRequest = (req, res, next) => {
   const errors = validationResult(req)
 
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() })
+    // return res.status(400).json({ status: 'error', errors: errors.array() })
+    return res.status(400).json({ status: 'error', errors: errors.array() })
   }
   next()
 }

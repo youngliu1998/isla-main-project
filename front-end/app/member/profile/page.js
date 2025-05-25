@@ -11,7 +11,7 @@ import { cities } from './data/CityCountyData'
 export default function ProfilePage() {
   // const router = useRouter()
   const { initAuth } = useAuth()
-  const [text, setText] = useState({
+  const defaultProfile = {
     name: '',
     nickname: '',
     tel: '',
@@ -22,7 +22,9 @@ export default function ProfilePage() {
     AreaName: '',
     ZipCode: '',
     address: '',
-  })
+  }
+  const [text, setText] = useState({ ...defaultProfile })
+  const [error, setError] = useState({ ...defaultProfile })
   // console.log('text', text)
 
   // ==== 處理地址 ====
@@ -56,10 +58,47 @@ export default function ProfilePage() {
         },
         body: JSON.stringify(formData),
       })
-      const result = await response.json()
-      alert('提交成功：' + JSON.stringify(result))
-      // 更新 useAuth
-      initAuth()
+      const data = await response.json()
+      // ==== 清除上次錯誤提示 ====
+      setError({ ...defaultProfile })
+      // ==== 處理資料 ====
+      if (response.ok) {
+        // ==== 200 status: success ====
+        if (data.status === 'success') {
+          alert('更新個人資料成功', data)
+        }
+      } else {
+        // ==== 404 status: error ====
+        let newError = { ...defaultProfile }
+        const serverErrors = data.errors
+        if (Array.isArray(serverErrors)) {
+          console.log('Errors: ', serverErrors)
+          serverErrors.forEach((serverError) => {
+            switch (serverError.path) {
+              case 'name':
+                newError = { ...newError, ['name']: serverError.msg }
+                break
+              case 'nickname':
+                newError = { ...newError, ['nickname']: serverError.msg }
+                break
+              case 'tel':
+                newError = { ...newError, ['tel']: serverError.msg }
+                break
+              case 'skin_type':
+                newError = { ...newError, ['skin_type']: serverError.msg }
+                break
+              case 'city':
+                newError = { ...newError, ['city']: serverError.msg }
+                break
+            }
+          })
+          setError(newError)
+        } else {
+          console.log('未知錯誤')
+        }
+        // ==== END 404 status: error ====
+      }
+      // ====  END 處理資料 ====
     } catch (error) {
       console.error('錯誤：', error)
     }
@@ -117,6 +156,7 @@ export default function ProfilePage() {
               name="name"
               value={text.name}
               setText={setText}
+              errorMsg={error.name}
             />
             <InputText
               text={text}
@@ -124,6 +164,7 @@ export default function ProfilePage() {
               name="nickname"
               value={text.nickname}
               setText={setText}
+              errorMsg={error.nickname}
             />
             <InputText
               text={text}
@@ -131,6 +172,7 @@ export default function ProfilePage() {
               name="tel"
               value={text.tel}
               setText={setText}
+              errorMsg={error.tel}
             />
             {/* <!-- input[type=radio] --> */}
             <div className="user-form-input">

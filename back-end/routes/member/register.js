@@ -117,7 +117,6 @@ router.post(
   notEmpty,
   validation,
   validateRequest,
-  isNew,
   async (req, res) => {
     let error = ''
 

@@ -11,7 +11,7 @@ import './header.css'
 // hook
 import useCartCount from '@/app/cart/hook/useCartCount'
 import { usePathname, useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 // route
 import { USER_AVA_URL } from '@/_route/img-url'
 
@@ -21,7 +21,7 @@ export default function Header() {
   const router = useRouter()
   const [hamMenuOpen, setHamMenuOpen] = useState(false)
   const { user, isAuth } = useAuth()
-  console.log('header: user: ', user)
+  // console.log('header: user: ', user)
   // ==== 購物車按鈕路徑定義 ====
   const handleCartClick = () => {
     const token = localStorage.getItem('jwtToken')
@@ -40,7 +40,11 @@ export default function Header() {
     overflow-hidden rounded-pill"
     >
       <Image
-        src={USER_AVA_URL + user.ava_url}
+        src={
+          user.ava_url
+            ? USER_AVA_URL + user.ava_url
+            : 'http://localhost:3000/images/member/default-user.jpg'
+        }
         alt={USER_AVA_URL + user.ava_url}
         width={40}
         height={40}

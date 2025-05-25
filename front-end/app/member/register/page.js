@@ -19,9 +19,43 @@ export default function RegisterPage() {
     tel: '',
   }
   const [regiInfo, setregiInfo] = useState({ ...defaultRegi })
+  const [error, setError] = useState({ ...defaultRegi })
+  // ==== 錯誤受理 ====
+  const errorComfirm = (data) => {
+    // ==== 404 status: error ====
+    let newError = { ...defaultRegi }
+    const serverErrors = data.errors
+    if (Array.isArray(serverErrors)) {
+      console.log('Errors: ', serverErrors)
+      serverErrors.forEach((serverError) => {
+        switch (serverError.path) {
+          case 'email':
+            newError = { ...newError, ['email']: serverError.msg }
+            break
+          case 'password':
+            newError = { ...newError, ['password']: serverError.msg }
+            break
+          case 'name':
+            newError = { ...newError, ['name']: serverError.msg }
+            break
+          case 'tel':
+            newError = { ...newError, ['tel']: serverError.msg }
+            break
+          case 'birthday':
+            newError = { ...newError, ['birthday']: serverError.msg }
+            break
+        }
+      })
+      setError(newError)
+    } else {
+      console.log('未知錯誤')
+    }
+    // ==== END 404 status: error ====
+  }
+  // ==== 表單處理 ====
   const handleSubmit = async (e) => {
     e.preventDefault()
-    // 新使用者
+    // 新使用者，未從google登入過
     if (!user.email) {
       console.log('新增使用者(not google account)')
       try {
@@ -35,10 +69,20 @@ export default function RegisterPage() {
             body: JSON.stringify(regiInfo),
           }
         )
-        const result = await response.json()
-        alert('提交成功：' + JSON.stringify(result))
-        // 轉跳至login
-        router.push('login')
+        const data = await response.json()
+        // ==== 清除上次錯誤提示 ====
+        setError({ ...defaultRegi })
+        // ==== 處理資料 ====
+        if (response.ok) {
+          // ==== 200 status: success ====
+          if (data.status === 'success') {
+            alert('註冊成功，將返回登入頁')
+            // 轉跳至login
+            router.push('login')
+          }
+        } else {
+          errorComfirm(data)
+        }
       } catch (err) {
         console.log(err)
       }
@@ -57,15 +101,26 @@ export default function RegisterPage() {
             body: JSON.stringify(regiInfo),
           }
         )
-        const result = await response.json()
-        alert('提交成功：' + JSON.stringify(result))
-        // 轉跳至login
-        router.push('login')
+        const data = await response.json()
+        // ==== 清除上次錯誤提示 ====
+        setError({ ...defaultRegi })
+        // ==== 處理資料 ====
+        if (response.ok) {
+          // ==== 200 status: success ====
+          if (data.status === 'success') {
+            alert('註冊成功，將返回首頁')
+            // 轉跳至login
+            router.push('/')
+          }
+        } else {
+          errorComfirm(data)
+        }
       } catch (err) {
         console.log(err)
       }
     }
   }
+  // ==== END 表單處理 ====
   useEffect(() => {
     // ==== 檢查是否已登入 ====
     if (user.birthday && !user.birthday.includes('undefined')) {
@@ -79,9 +134,9 @@ export default function RegisterPage() {
     console.log('register-page-birthday: ', user.birthday)
     setregiInfo({
       ...defaultRegi,
-      ['email']: user.email,
-      ['name']: user.name,
-      ['tel']: user.tel,
+      ['email']: user.email || '',
+      ['name']: user.name || '',
+      ['tel']: user.tel || '',
     })
     console.log('email: ', user.email)
   }, [isAuth])
@@ -127,6 +182,7 @@ export default function RegisterPage() {
                 value={regiInfo.email}
                 text={regiInfo}
                 setText={setregiInfo}
+                errorMsg={error.email}
               />
             )}
 
@@ -137,6 +193,7 @@ export default function RegisterPage() {
               value={regiInfo.password}
               text={regiInfo}
               setText={setregiInfo}
+              errorMsg={error.password}
             />
             <RegisterInput
               title={'本名'}
@@ -144,6 +201,7 @@ export default function RegisterPage() {
               value={regiInfo.name}
               text={regiInfo}
               setText={setregiInfo}
+              errorMsg={error.name}
             />
             <RegisterInput
               title={'生日'}
@@ -152,6 +210,7 @@ export default function RegisterPage() {
               value={regiInfo.birthday}
               text={regiInfo}
               setText={setregiInfo}
+              errorMsg={error.birthday}
             />
             <RegisterInput
               title={'電話'}
@@ -159,6 +218,7 @@ export default function RegisterPage() {
               value={regiInfo.tel}
               text={regiInfo}
               setText={setregiInfo}
+              errorMsg={error.tel}
             />
             <button className="btn btn-primary">註冊</button>
             <div className="d-flex flex-column justify-content-center gap-3">

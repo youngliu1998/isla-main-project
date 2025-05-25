@@ -14,11 +14,17 @@ router.post(
   verifyToken,
   [
     body('oriPass')
-      .isLength({ min: 10, max: 12 })
+      .isLength({ min: 5, max: 12 })
       .withMessage('密碼長度為5~16字元間'),
     body('newPass')
-      .isLength({ min: 10, max: 12 })
+      .isLength({ min: 5, max: 12 })
       .withMessage('密碼長度為5~16字元間'),
+    body('againPass').custom((value,{req}) => {
+      if (value != req.body.newPass){
+        throw new Error('密碼不一致')
+      }
+      return true
+    }),
   ],
   validateRequest,
   async (req, res) => {
