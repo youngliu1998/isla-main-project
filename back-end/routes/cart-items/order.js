@@ -3,60 +3,103 @@ import db from '../../config/mysql.js'
 import verifyToken from '../../lib/verify-token.js'
 
 const router = express.Router()
-// POST /api/cart-items/order
+
+// POST http://localhost:3005/api/cart-items/order
 router.post('/', verifyToken, async (req, res) => {
+  //要執行多個SQL且要保證它們「全部成功或全部失敗」（orders → order_items → order_coupon），就需要一個獨立連線來控制交易（transaction）
+  const connection = await db.getConnection()
+  await connection.beginTransaction()
   try {
-    // 前端回傳資料格式
     const {
-      user_id,
-      items, // [{ product_id, course_id, quantity, unit_price }]
-      total_price,
-      discount_total,
-      status = 'pending',
-      payment_method = null,
-      shipping_method = null,
-      shipping_address = null,
-      shipping_store_code = null,
+      cartItems,
+      discountTotal = 0,
+      selecProdCoup,
+      selecCourCoup,
+      selecGloCoup,
+      shippingMethod,
+      shippingAddress,
+      shippingStoreCode,
+      paymentMethod,
     } = req.body
 
-    // 2. 建立訂單主表 order
-    const [orderResult] = await db.execute(
-      `INSERT INTO orders (user_id, total_price, discount_total, status, payment_method, shipping_method, shipping_address, shipping_store_code) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    const userId = req.user.id
+    const orderNumber = `ORD${new Date()
+      .toISOString()
+      .replace(/\D/g, '')
+      .slice(0, 14)}`
+    const totalPrice = cartItems.reduce((sum, item) => {
+      const price = parseInt(item.sale_price ?? item.base_price) || 0
+      return sum + price * item.quantity
+    }, 0)
+
+    // #1 寫入order
+    const [orderResult] = await connection.execute(
+      `INSERT INTO orders 
+      (user_id, order_number, total_price, discount_total, status, payment_method, shipping_method, shipping_address, shipping_store_code, created_at, updated_at) 
+      VALUES (?, ?, ?, ?, 'pending', ?, ?, ?, ?, NOW(), NOW())`,
       [
-        user_id,
-        total_price,
-        discount_total,
-        status,
-        payment_method,
-        shipping_method,
-        shipping_address,
-        shipping_store_code,
+        userId,
+        orderNumber,
+        totalPrice,
+        discountTotal,
+        paymentMethod,
+        shippingMethod,
+        shippingAddress ?? null,
+        shippingStoreCode ?? null,
       ]
     )
-    const order_id = orderResult.insertId
+    const orderId = orderResult.insertId
 
-    // 3. 建立訂單明細 order_items
-    for (let item of items) {
-      await db.execute(
-        `INSERT INTO order_items (order_id, product_id, course_id, quantity, unit_price)
-        VALUES (?, ?, ?, ?, ?)`,
+    // #2寫入 order_items
+    for (const item of cartItems) {
+      const product_id = item.product_id ?? null
+      const course_id = item.course_id ?? null
+      const experience_id = item.course_experience_id ?? null
+      const item_type = item.item_type ?? null
+      const price = parseInt(item.sale_price ?? item.base_price) || 0
+
+      await connection.execute(
+        `INSERT INTO order_items 
+          (order_id, product_id, course_id, course_experience_id, quantity, price, item_type)
+          VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [
-          order_id,
-          item.product_id ?? null,
-          item.course_id ?? null,
+          orderId,
+          product_id,
+          course_id,
+          experience_id,
           item.quantity,
-          item.unit_price,
+          price,
+          item_type,
         ]
       )
     }
 
-    res.json({ status: 'success', order_id })
-  } catch (error) {
-    console.error('建立訂單失敗:', error)
-    res
-      .status(500)
-      .json({ status: 'fail', message: '建立訂單失敗', error: error.message })
+    // #3 寫入 order_coupons
+    const usedCoupons = [selecProdCoup, selecCourCoup, selecGloCoup].filter(
+      Boolean
+    )
+    for (const coupon of usedCoupons) {
+      await connection.execute(
+        `INSERT INTO order_coupons (order_id, coupon_id) VALUES (?, ?)`,
+        [orderId, coupon.id]
+      )
+    }
+
+    await connection.commit()
+
+    // 回傳訂單資訊（讓前端接到後可跳轉至綠界）
+    res.json({
+      success: true,
+      orderId,
+      orderNumber,
+      totalAmount: totalPrice - discountTotal,
+    })
+  } catch (err) {
+    await connection.rollback()
+    console.error(err)
+    res.status(500).json({ success: false, message: '建立訂單失敗' })
+  } finally {
+    connection.release()
   }
 })
 

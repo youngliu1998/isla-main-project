@@ -4,6 +4,7 @@ import styles from './order-summary.module.scss'
 import Link from 'next/link'
 import { Collapse } from 'react-bootstrap'
 // import { useCartContext } from '../../context/cart-context'
+import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 
 //數字轉千分位，防止 null/undefined
@@ -21,11 +22,13 @@ export default function OrderSummary({
   setSelecGloCoup,
   filterGloCoups = [],
   onCheckout,
+  isLoading = false,
   // filterCourCoups = [],
   // filterProdCoups = [],
 }) {
   const [openProdList, setOpenProdList] = useState(false)
   const [openCourList, setOpenCourList] = useState(false)
+  const pathname = usePathname()
 
   // 分類商品(目前沒有加購商品)
   const makeupItems = cartItems.filter((item) => item.item_type === 'product')
@@ -267,11 +270,21 @@ export default function OrderSummary({
       </div>
 
       <div className="w-100 d-flex justify-content-end">
-        <Link href="/cart/payment">
-          <button className="btn btn-primary text-white" onClick={onCheckout}>
-            結帳
+        {pathname === '/cart/payment' ? (
+          <button
+            className="btn btn-primary text-white"
+            onClick={onCheckout}
+            disabled={isLoading}
+          >
+            {isLoading ? '正在跳轉...' : '結帳'}
           </button>
-        </Link>
+        ) : (
+          <Link href="/cart/payment">
+            <button className="btn btn-primary text-white" onClick={onCheckout}>
+              結帳
+            </button>
+          </Link>
+        )}
       </div>
     </div>
   )

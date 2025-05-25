@@ -1,15 +1,18 @@
 'use client'
 
 // import styles from '../_styles/cart-style.module.scss'
+import { toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import StepProgress from '../_component/step-progress/step-progress'
 import OrderSummary from '../_component/order-summary/order-summary'
 import MobileOrderBar from '../_component/mobile-order-bar/mobile-order-bar'
 import ShippingForm from '../_component/shipping-form/shipping-form'
-
+//hook
 import useIsMobile from '../hook/useIsMobile'
-import { useEffect, useState } from 'react'
 import { useCartContext } from '../context/cart-context'
 import { useAuth } from '../../../hook/use-auth'
+import cartApi from '../utils/axios'
+import { useEffect, useState } from 'react'
 
 export default function PaymentPage() {
   const isMobile = useIsMobile()
@@ -42,6 +45,61 @@ export default function PaymentPage() {
       }
     }
   }, [orderData, setOrderData])
+
+  // 綠界付款流程
+  const [isLoading, setIsLoading] = useState(false)
+  const handleCheckout = async () => {
+    const cartItems = orderData?.cartItems || []
+
+    if (cartItems.length === 0) {
+      toast.error('購物車是空的喔！')
+      return
+    }
+    setIsLoading(true)
+    const items = cartItems.map((item) => ({
+      name: item.name,
+      quantity: item.quantity,
+    }))
+
+    const totalAmount = cartItems.reduce((acc, item) => {
+      const price = parseInt(item.sale_price ?? item.base_price) || 0
+      return acc + price * item.quantity
+    }, 0)
+
+    console.log('傳送 items:', items)
+    console.log('傳送 amount:', totalAmount)
+
+    try {
+      const res = await cartApi.post('cart-items/ecpay', {
+        amount: totalAmount,
+        items,
+      })
+
+      const html = res.data
+
+      // 插入表單並自動送出
+      const container = document.querySelector('#ecpay-form-container')
+      if (!container) {
+        toast.error('找不到表單容器')
+        return
+      }
+      container.innerHTML = html
+      //手動送出綠界表單
+      const form = container.querySelector('form')
+      if (form) {
+        form.submit()
+        console.log('✅ 表單已自動送出')
+      } else {
+        toast.error('綠界表單產生失敗')
+      }
+    } catch (error) {
+      console.error(error)
+      toast.error('發生錯誤，無法導向綠界付款')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <>
       <section className="container text-center text-lg-start mt-2">
@@ -115,12 +173,17 @@ export default function PaymentPage() {
                 filterGloCoups={orderData?.filterGloCoups || []}
                 filterCourCoups={orderData?.filterCourCoups || []}
                 filterProdCoups={orderData?.filterProdCoups || []}
+                onCheckout={handleCheckout} // ecpay
+                isLoading={isLoading}
               />
             )}
           </div>
           {isMobile && <MobileOrderBar />}
         </div>
       </section>
+
+      {/* 表單容器 */}
+      <div id="ecpay-form-container" style={{ display: 'none' }} />
     </>
   )
 }
