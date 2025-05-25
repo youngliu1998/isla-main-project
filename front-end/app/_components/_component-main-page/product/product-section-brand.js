@@ -12,7 +12,7 @@ export default function ProductSectionBrand() {
   // ==== 取得商品資料 ====
   const [filters, setFilters] = useState({
     keyword: '',
-    brandIds: [],
+    brandIds: [3],
     tagIds: [],
     categoryIds: [],
     minRating: 0,
@@ -24,21 +24,19 @@ export default function ProductSectionBrand() {
     sortBy: '',
     sortOrder: 'ASC',
   })
-  const { products, productsLoading, productsError, brands, categories, tags } =
-    useProducts(filters)
+  const { products } = useProducts(filters)
   // ==== END 取得商品資料 ====
   // ==== tab setting ====
   const navBrands = [
     'Unleashia',
+    "A'Piuw",
     'COSLORI',
     'MUZIGAE MANSION',
-    'Rom&nd',
     'Kaja',
-    "A'Piuw",
+    'Rom&nd',
   ]
-  // ==== END tab settin ====
+  // ==== END tab setting ====
   const [tabSwitch, setTabSwitch] = useState(1)
-  console.log('tabSwitch', tabSwitch)
   const handleFilterChange = (partialUpdate) => {
     setFilters((prev) => {
       const updated = { ...prev, ...partialUpdate }
@@ -68,27 +66,26 @@ export default function ProductSectionBrand() {
     })
   }
   useEffect(() => {
-    setFilters({ ...filters, ['brandIds']: tabSwitch })
-    handleFilterChange()
+    console.log('==== useEffect: tabswitch ====')
+    handleFilterChange({ brandIds: [tabSwitch] })
+
+    console.log('==== END ====')
     // eslint-disable-next-line
   }, [tabSwitch])
-  // useEffect(() => {
-  //   setFilters({ ...filters, ['brandIds']: tabSwitch })
-  //   console.log('filters.brandIds ', filters.brandIds)
-  // }, [tabSwitch])
   return (
     <>
-      <div className="d-flex flex-column align-items-center">
+      <div className="d-flex flex-column align-items-center gap-4">
         <div className="d-flex flex-column align-items-center gap-4">
           <h3>品牌暢銷商品</h3>
           <Componentstab cates={navBrands} handleTabChange={setTabSwitch} />
         </div>
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-lg-4 g-4 p-0 m-0 mt-4">
-          {tabSwitch === 1 && (
+          {
             <div className="d-flex gap-4 product-list">
+              {console.log('products in page', products)}
               {products.slice(0, 4).map((p) => (
                 <div key={p.product_id} className="product-card-container">
-                  {/* <ProductCard
+                  <ProductCard
                     product={{
                       id: p.product_id,
                       brand: p.brand_name,
@@ -101,11 +98,11 @@ export default function ProductSectionBrand() {
                       isBookmarked: p.is_bookmarked,
                       isSale: p.is_on_sale,
                     }}
-                  /> */}
+                  />
                 </div>
               ))}
             </div>
-          )}
+          }
           {tabSwitch === 2}
         </div>
         <Link href="/course">
