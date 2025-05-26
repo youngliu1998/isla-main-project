@@ -1,10 +1,58 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
 import LikeButton from '../like-button/like-button'
 import './comments-card.css'
 import { useAuth } from '@/hook/use-auth'
+import { toast } from 'react-toastify'
+
+// ⭐ 星星評分選擇器
+function StarSelector({ value = 5, onChange = () => {} }) {
+  const [hoverValue, setHoverValue] = useState(null)
+
+  const handleClick = (e, num) => {
+    const { left, width } = e.currentTarget.getBoundingClientRect()
+    const x = e.clientX - left
+    const isHalf = x < width / 2
+    const selected = isHalf ? num - 0.5 : num
+    onChange(selected)
+  }
+
+  const displayValue = hoverValue !== null ? hoverValue : value
+
+  return (
+    <div
+      className="text-warning fs-4 d-flex"
+      onMouseLeave={() => setHoverValue(null)}
+    >
+      {[1, 2, 3, 4, 5].map((num) => {
+        const isFull = displayValue >= num
+        const isHalf = displayValue >= num - 0.5 && displayValue < num
+        const iconClass = isFull
+          ? 'bx bxs-star'
+          : isHalf
+            ? 'bx bxs-star-half'
+            : 'bx bx-star'
+
+        return (
+          <i
+            key={num}
+            role="button"
+            tabIndex={0}
+            className={`${iconClass} cursor-pointer`}
+            onClick={(e) => handleClick(e, num)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') handleClick(e, num)
+            }}
+            onMouseEnter={() => setHoverValue(num)}
+            style={{ marginRight: '4px' }}
+          />
+        )
+      })}
+    </div>
+  )
+}
 
 export default function CommentsCard({
   member_name = '',
@@ -13,24 +61,63 @@ export default function CommentsCard({
   content = '',
   ava_url = '',
   comment_id = 0,
-  member_id = 0, // ✅ 傳入該留言的會員 ID
+  member_id = 0,
   likeData = {},
   onToggleLike = () => {},
   onOpenModal = () => {},
-  onEdit = () => {}, // ✅ 傳入編輯函式
-  onDelete = () => {}, // ✅ 傳入刪除函式
+  onUpdate = () => {},
+  onDelete = () => {},
 }) {
   const { user } = useAuth()
   const image = ava_url
     ? `http://localhost:3005/images/member/${ava_url}`
     : 'http://localhost:3005/images/member/default-avatar.jpg'
 
+  const [isEditing, setIsEditing] = useState(false)
+  const [editContent, setEditContent] = useState(content)
+  const [editStar, setEditStar] = useState(star)
+  const [renderedContent, setRenderedContent] = useState(content)
+  const [renderedStar, setRenderedStar] = useState(star)
+
+  const handleSave = async () => {
+    if (!editContent.trim()) {
+      toast.error('請輸入留言內容')
+      return
+    }
+
+    const token = localStorage.getItem('jwtToken')
+    try {
+      const res = await fetch(
+        `http://localhost:3005/api/course/comments/${comment_id}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ content: editContent, star: editStar }),
+        }
+      )
+      const result = await res.json()
+      if (result.status === 'success') {
+        toast.success('留言已更新')
+        setRenderedContent(editContent)
+        setRenderedStar(editStar)
+        onUpdate(comment_id, editContent, editStar)
+        setIsEditing(false)
+      } else {
+        toast.error(result.message || '更新失敗')
+      }
+    } catch (err) {
+      toast.error('更新過程出錯')
+    }
+  }
+
   const renderStars = (score) => {
     const ratingNum = Number(score)
     const fullStars = Math.floor(ratingNum)
     const halfStar = ratingNum % 1 >= 0.5
     const emptyStars = 5 - fullStars - (halfStar ? 1 : 0)
-
     return (
       <>
         {[...Array(fullStars)].map((_, i) => (
@@ -48,6 +135,7 @@ export default function CommentsCard({
     <div className="col">
       <div className="card box5-comment-p comments-card">
         <div className="card-body">
+          {/* 頭像與星等 */}
           <div className="d-flex justify-content-between align-items-center">
             <div className="d-flex align-items-center">
               <div className="me-3">
@@ -65,12 +153,27 @@ export default function CommentsCard({
               </div>
             </div>
             <div className="d-flex justify-content-center box5-comment-star fs-5">
-              {renderStars(star)}
+              {isEditing ? (
+                <StarSelector value={editStar} onChange={setEditStar} />
+              ) : (
+                renderStars(renderedStar)
+              )}
             </div>
           </div>
 
-          <p className="card-text my-4 box5-card-text">{content}</p>
+          {/* 內容區塊 */}
+          {isEditing ? (
+            <textarea
+              className="form-control my-3"
+              rows={4}
+              value={editContent}
+              onChange={(e) => setEditContent(e.target.value)}
+            />
+          ) : (
+            <p className="card-text my-4 box5-card-text">{renderedContent}</p>
+          )}
 
+          {/* 按鈕區塊 */}
           <div className="d-flex justify-content-between box5-comment-like">
             <LikeButton
               commentId={comment_id}
@@ -79,23 +182,48 @@ export default function CommentsCard({
               onToggle={onToggleLike}
             />
 
-            {/* ✅ 如果是本人，就顯示編輯／刪除按鈕 */}
-            {user?.id === member_id ? (
+            {/* 若本人才可編輯刪除 */}
+            {user?.id === member_id && (
               <div className="d-flex gap-2">
-                <button
-                  className="btn btn-outline-primary btn-sm"
-                  onClick={() => onEdit(comment_id)}
-                >
-                  編輯
-                </button>
-                <button
-                  className="btn btn-outline-danger btn-sm"
-                  onClick={() => onDelete(comment_id)}
-                >
-                  刪除
-                </button>
+                {isEditing ? (
+                  <>
+                    <button
+                      className="btn btn-secondary btn-sm"
+                      onClick={() => setIsEditing(false)}
+                    >
+                      取消
+                    </button>
+                    <button
+                      className="btn btn-success btn-sm"
+                      onClick={handleSave}
+                    >
+                      儲存
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      className="btn btn-outline-primary btn-sm"
+                      onClick={() => {
+                        setIsEditing(true)
+                        setEditContent(renderedContent)
+                        setEditStar(renderedStar)
+                      }}
+                    >
+                      編輯
+                    </button>
+                    <button
+                      className="btn btn-outline-danger btn-sm"
+                      onClick={() => onDelete(comment_id)}
+                    >
+                      刪除
+                    </button>
+                  </>
+                )}
               </div>
-            ) : (
+            )}
+
+            {!isEditing && (
               <button
                 className="btn btn-sm more-comment open-review-modal"
                 onClick={onOpenModal}

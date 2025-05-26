@@ -10,10 +10,7 @@
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.3s ease;
-  background: none;
-  border: none;
-  outline: none;
-  cursor: pointer;
+  color: var(--main-color);
 }
 
 .heart-icon-course i {
@@ -63,6 +60,7 @@
 .card-img-container-course {
   position: relative;
   overflow: hidden;
+  border-radius: 8px 8px 0px 0px;
   /* height: clamp(180px, 22vw, 200px); */
   /* height: 100%; */
   aspect-ratio: 16/9;
@@ -80,9 +78,14 @@
 
 /* ---------- 圖片放大 ---------- */
 .card-hover-course {
+  border-radius: 8px;
   transition:
     transform 0.3s ease,
     box-shadow 0.3s ease;
+}
+
+.card-hover-course:hover {
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .card-hover-course:hover .card-img-top-course {
@@ -92,6 +95,12 @@
 .card-hover-course:hover .heart-icon-course {
   opacity: 1;
 }
+
+/* ✅ 新增：hover 時 heart icon 顏色 */
+.card-hover-course:hover .heart-icon-course i {
+  color: var(--main-color);
+}
+
 /* ---------- course按鈕樣式 ---------- */
 .card-btn-course {
   padding: 2px 10px;
