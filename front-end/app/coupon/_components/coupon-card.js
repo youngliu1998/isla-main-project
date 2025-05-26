@@ -108,7 +108,7 @@ export default function CouponCard({
   const goUrl =
     area === 2
       ? `/course?course_categories_id=${course_categories_id}`
-      : `/product/list?brand_id=${brand_id}?categories=${categories}`
+      : `/product/list?brand_id=${brand_id}&categories=${categories}`
   const isUsed = state_id === 2
   const isExpired = state_id === 3
 
