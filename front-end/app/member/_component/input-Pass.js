@@ -1,18 +1,23 @@
 'use client'
 
-import { useState } from 'react'
+import clsx from 'clsx'
+
 export default function InputPass({
   password = {},
   title = '',
   name = '',
   value = '',
   setPassword = () => {},
+  errorMsg = '',
 }) {
   // const [passType, setPassType] = useState('password')
   return (
     <>
-      <div className="user-form-input">
-        <label htmlFor={name}>{title}</label>
+      <div className={clsx(['user-form-input'], errorMsg && 'user-error')}>
+        <label htmlFor={name}>
+          {title}
+          <span>{errorMsg}</span>
+        </label>
         <input
           type="password"
           name={name}

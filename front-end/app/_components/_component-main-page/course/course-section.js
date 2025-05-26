@@ -11,7 +11,7 @@ export default function CourseSection(props) {
   const [courseCard, setCourseCard] = useState([]) // 課程資料
   const [experienceCard, setExperienceCard] = useState([]) // 體驗資料
   const [tabSwitch, setTabSwitch] = useState(1)
-  console.log('tabSwitch ', tabSwitch)
+  // console.log('tabSwitch ', tabSwitch)
 
   useEffect(() => {
     async function getCourse() {
