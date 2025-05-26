@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 // ==== compoents ====
 import Componentstab from '@/app/_components/tab'
+import BrandSelect from './_component/brand-select'
 import ProductCard from '@/app/product/_components/product-card-s'
 // ==== hooks ====
 import { useProducts } from '@/hook/use-products'
@@ -53,15 +54,6 @@ export default function ProductSectionNew() {
           }
         }
       }
-      // 如果 onSaleOnly 被直接更新 (它不在 partialUpdate 但在 prev 中)
-      // 且是唯一被更新的 filter，也需要考慮
-      // if (
-      //   partialUpdate.onSaleOnly !== undefined &&
-      //   prev.onSaleOnly !== partialUpdate.onSaleOnly
-      // ) {
-      //   hasChanged = true
-      // }
-
       return hasChanged ? updated : prev
     })
   }
@@ -74,7 +66,14 @@ export default function ProductSectionNew() {
       <div className="d-flex flex-column align-items-center gap-4">
         <div className="d-flex flex-column align-items-center gap-4">
           <h3>新進商品</h3>
-          <Componentstab cates={navBrands} handleTabChange={setTabSwitch} />
+          <div className="d-lg-block d-none">
+            <Componentstab cates={navBrands} handleTabChange={setTabSwitch} />
+          </div>
+          <BrandSelect
+            navBrands={navBrands}
+            tabSwitch={tabSwitch}
+            setTabSwitch={setTabSwitch}
+          />
         </div>
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-lg-4 g-4 p-0 m-0 mt-4">
           {
