@@ -31,7 +31,7 @@ export default function RootLayout({ children }) {
       <Provider>
         <body>
           <Header />
-          <div style={{ marginTop: '80px' }}>{children}</div>
+          <div>{children}</div>
           <Footer />
           <ToastContainer />
         </body>

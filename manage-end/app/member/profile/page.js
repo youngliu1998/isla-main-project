@@ -1,15 +1,24 @@
 'use client'
 
-import '../_component/_style.css/form.css'
 import { useState, useEffect } from 'react'
-// import { useRouter } from 'next/navigation'
-import InputText from '../_component/input-text'
-import Select from '../_component/select'
 import { useAuth } from '@/hook/use-auth'
 import { cities } from './data/CityCountyData'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Loader2, User, MapPin } from 'lucide-react'
 
 export default function ProfilePage() {
-  // const router = useRouter()
   const { initAuth } = useAuth()
   const defaultProfile = {
     name: '',
@@ -23,19 +32,44 @@ export default function ProfilePage() {
     ZipCode: '',
     address: '',
   }
+
   const [text, setText] = useState({ ...defaultProfile })
   const [error, setError] = useState({ ...defaultProfile })
-  // console.log('text', text)
+  const [isLoading, setIsLoading] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [successMessage, setSuccessMessage] = useState('')
 
-  // ==== 處理地址 ====
-  const areas = cities.filter((v) => v.CityName == text.CityName)[0]?.AreaList
-  // const postCodes = cities
-  //   .filter((v) => v.CityName == text.CityName)[0]
-  //   ?.AreaList.filter((v) => v.AreaName == text.AreaName)
-  // ==== END 處理地址 ====
-  // form submit fucntion
+  // 處理地址
+  const areas =
+    cities.filter((v) => v.CityName === text.CityName)[0]?.AreaList || []
+
+  // 當城市改變時，重置區域和郵遞區號
+  const handleCityChange = (cityName) => {
+    setText((prev) => ({
+      ...prev,
+      CityName: cityName,
+      AreaName: '',
+      ZipCode: '',
+    }))
+  }
+
+  // 當區域改變時，自動填入郵遞區號
+  const handleAreaChange = (areaName) => {
+    const selectedArea = areas.find((area) => area.AreaName === areaName)
+    setText((prev) => ({
+      ...prev,
+      AreaName: areaName,
+      ZipCode: selectedArea?.ZipCode || '',
+    }))
+  }
+
+  // 表單提交函數
   const handleSubmit = async (event) => {
     event.preventDefault()
+    setIsSubmitting(true)
+    setSuccessMessage('')
+    setError({ ...defaultProfile })
+
     const formData = {
       name: text?.name || '',
       nickname: text?.nickname || '',
@@ -48,6 +82,7 @@ export default function ProfilePage() {
       postcode: text?.ZipCode || '',
       address: text?.address || '',
     }
+
     try {
       const token = localStorage.getItem('jwtToken')
       const response = await fetch('http://localhost:3005/api/member/profile', {
@@ -59,36 +94,32 @@ export default function ProfilePage() {
         body: JSON.stringify(formData),
       })
       const data = await response.json()
-      // ==== 清除上次錯誤提示 ====
-      setError({ ...defaultProfile })
-      // ==== 處理資料 ====
+
       if (response.ok) {
-        // ==== 200 status: success ====
         if (data.status === 'success') {
-          alert('更新個人資料成功', data)
+          setSuccessMessage('更新個人資料成功！')
+          setTimeout(() => setSuccessMessage(''), 3000)
         }
       } else {
-        // ==== 404 status: error ====
         let newError = { ...defaultProfile }
         const serverErrors = data.errors
         if (Array.isArray(serverErrors)) {
-          console.log('Errors: ', serverErrors)
           serverErrors.forEach((serverError) => {
             switch (serverError.path) {
               case 'name':
-                newError = { ...newError, ['name']: serverError.msg }
+                newError = { ...newError, name: serverError.msg }
                 break
               case 'nickname':
-                newError = { ...newError, ['nickname']: serverError.msg }
+                newError = { ...newError, nickname: serverError.msg }
                 break
               case 'tel':
-                newError = { ...newError, ['tel']: serverError.msg }
+                newError = { ...newError, tel: serverError.msg }
                 break
               case 'skin_type':
-                newError = { ...newError, ['skin_type']: serverError.msg }
+                newError = { ...newError, skinType: serverError.msg }
                 break
               case 'city':
-                newError = { ...newError, ['city']: serverError.msg }
+                newError = { ...newError, CityName: serverError.msg }
                 break
             }
           })
@@ -96,23 +127,21 @@ export default function ProfilePage() {
         } else {
           console.log('未知錯誤')
         }
-        // ==== END 404 status: error ====
       }
-      // ====  END 處理資料 ====
     } catch (error) {
       console.error('錯誤：', error)
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
   useEffect(() => {
     const token = localStorage.getItem('jwtToken') || null
     if (!token) return
-    // if get auth, fetch profile data
-    let profileData = {}
-    async function getProfile() {
-      try {
-        const token = localStorage.getItem('jwtToken')
 
+    async function getProfile() {
+      setIsLoading(true)
+      try {
         const response = await fetch(
           'http://localhost:3005/api/member/profile',
           {
@@ -123,8 +152,7 @@ export default function ProfilePage() {
         const data = await response.json()
 
         if (response.ok && data?.data) {
-          profileData = await data['data']
-          // console.log('profileData: ', profileData)
+          const profileData = data.data
           setText({
             name: profileData?.name || '',
             nickname: profileData?.nickname || '',
@@ -140,133 +168,262 @@ export default function ProfilePage() {
         }
       } catch (err) {
         console.log(err)
+      } finally {
+        setIsLoading(false)
       }
     }
     getProfile()
   }, [])
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin" />
+        <span className="ml-2">載入中...</span>
+      </div>
+    )
+  }
+
   return (
-    <>
-      <form onSubmit={handleSubmit}>
-        <div className="user-content">
-          <h3>會員資料</h3>
-          <div className="row row-cols-md-2 row-cols-1 g-4">
-            <InputText
-              text={text}
-              title="本名"
-              name="name"
-              value={text.name}
-              setText={setText}
-              errorMsg={error.name}
-            />
-            <InputText
-              text={text}
-              title="暱稱"
-              name="nickname"
-              value={text.nickname}
-              setText={setText}
-              errorMsg={error.nickname}
-            />
-            <InputText
-              text={text}
-              title="電話"
-              name="tel"
-              value={text.tel}
-              setText={setText}
-              errorMsg={error.tel}
-            />
-            {/* <!-- input[type=radio] --> */}
-            <div className="user-form-input">
-              <label htmlFor="skin_type">膚質</label>
-              <div className="user-input-box user-radio-box">
-                <div className="row row-cols-2">
-                  <label htmlFor="skin_type">
-                    <input
-                      type="radio"
-                      name="skin_type"
-                      value="中性"
-                      onChange={(e) => {
-                        setText({ ...text, ['skinType']: e.target.value })
-                      }}
-                    />
-                    中性
-                  </label>
-                  <label htmlFor="skin_type">
-                    <input
-                      type="radio"
-                      name="skin_type"
-                      value="乾性"
-                      onChange={(e) => {
-                        setText({ ...text, ['skinType']: e.target.value })
-                      }}
-                    />
-                    乾性
-                  </label>
-                </div>
-                <div className="row row-cols-2">
-                  <label htmlFor="skin_type">
-                    <input
-                      type="radio"
-                      name="skin_type"
-                      value="敏感性"
-                      onChange={(e) => {
-                        setText({ ...text, ['skinType']: e.target.value })
-                      }}
-                    />
-                    敏感性
-                  </label>
-                  <label htmlFor="skin_type">
-                    <input
-                      type="radio"
-                      name="skin_type"
-                      value=""
-                      onChange={(e) => {
-                        setText({ ...text, ['skinType']: e.target.value })
-                      }}
-                    />
-                    不確定
-                  </label>
-                </div>
+    <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <form onSubmit={handleSubmit} className="space-y-8">
+        {/* 成功訊息 */}
+        {successMessage && (
+          <Alert className="border-green-200 bg-green-50">
+            <AlertDescription className="text-green-700">
+              {successMessage}
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {/* 會員資料 */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <User className="h-5 w-5" />
+              會員資料
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* 本名 */}
+              <div className="space-y-2">
+                <Label htmlFor="name">本名 *</Label>
+                <Input
+                  id="name"
+                  value={text.name}
+                  onChange={(e) => setText({ ...text, name: e.target.value })}
+                  className={error.name ? 'border-red-500' : ''}
+                />
+                {error.name && (
+                  <p className="text-sm text-red-500">{error.name}</p>
+                )}
+              </div>
+
+              {/* 暱稱 */}
+              <div className="space-y-2">
+                <Label htmlFor="nickname">暱稱 *</Label>
+                <Input
+                  id="nickname"
+                  value={text.nickname}
+                  onChange={(e) =>
+                    setText({ ...text, nickname: e.target.value })
+                  }
+                  className={error.nickname ? 'border-red-500' : ''}
+                />
+                {error.nickname && (
+                  <p className="text-sm text-red-500">{error.nickname}</p>
+                )}
+              </div>
+
+              {/* 電話 */}
+              <div className="space-y-2">
+                <Label htmlFor="tel">電話 *</Label>
+                <Input
+                  id="tel"
+                  value={text.tel}
+                  onChange={(e) => setText({ ...text, tel: e.target.value })}
+                  className={error.tel ? 'border-red-500' : ''}
+                />
+                {error.tel && (
+                  <p className="text-sm text-red-500">{error.tel}</p>
+                )}
+              </div>
+
+              {/* 生日 */}
+              <div className="space-y-2">
+                <Label htmlFor="birthday">生日</Label>
+                <Input
+                  id="birthday"
+                  type="date"
+                  value={text.birthday}
+                  onChange={(e) =>
+                    setText({ ...text, birthday: e.target.value })
+                  }
+                />
+              </div>
+
+              {/* 性別 */}
+              <div className="space-y-2">
+                <Label>性別</Label>
+                <RadioGroup
+                  value={text.gender}
+                  onValueChange={(value) => setText({ ...text, gender: value })}
+                  className="flex flex-row space-x-6"
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="男" id="male" />
+                    <Label htmlFor="male">男</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="女" id="female" />
+                    <Label htmlFor="female">女</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="其他" id="other" />
+                    <Label htmlFor="other">其他</Label>
+                  </div>
+                </RadioGroup>
+              </div>
+
+              {/* 膚質 */}
+              <div className="space-y-2 md:col-span-2">
+                <Label>膚質</Label>
+                <RadioGroup
+                  value={text.skinType}
+                  onValueChange={(value) =>
+                    setText({ ...text, skinType: value })
+                  }
+                  className="grid grid-cols-2 gap-4"
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="中性" id="normal" />
+                    <Label htmlFor="normal">中性</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="乾性" id="dry" />
+                    <Label htmlFor="dry">乾性</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="敏感性" id="sensitive" />
+                    <Label htmlFor="sensitive">敏感性</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="" id="unknown" />
+                    <Label htmlFor="unknown">不確定</Label>
+                  </div>
+                </RadioGroup>
+                {error.skinType && (
+                  <p className="text-sm text-red-500">{error.skinType}</p>
+                )}
               </div>
             </div>
-          </div>
-          <h3>預設地址</h3>
-          <div className="row row-cols-md-3 row-cols-1 g-4 w-100">
-            <Select
-              title="城市"
-              name="city"
-              arr={cities}
-              selectKey="CityName"
-              text={text}
-              setText={setText}
-            />
-            <Select
-              title="市/區/鄉/鎮"
-              name="area"
-              arr={areas}
-              selectKey="AreaName"
-              text={text}
-              setText={setText}
-            />
-            <InputText
-              title="郵遞區號"
-              name="postcode"
-              selectKey="ZipCode"
-              value={text.ZipCode}
-              disabled="disabled"
-            />
-          </div>
-          <div className="row row-cols-md-2 row-cols-1 w-100">
-            <InputText
-              text={text}
-              title="地址"
-              name="address"
-              value={text.address}
-              setText={setText}
-            />
-          </div>
-          <button className="btn btn-primary">送出</button>
+          </CardContent>
+        </Card>
+
+        {/* 預設地址 */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <MapPin className="h-5 w-5" />
+              預設地址
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-6">
+              {/* 地址選擇 */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {/* 城市 */}
+                <div className="space-y-2">
+                  <Label>城市 *</Label>
+                  <Select
+                    value={text.CityName}
+                    onValueChange={handleCityChange}
+                  >
+                    <SelectTrigger
+                      className={error.CityName ? 'border-red-500' : ''}
+                    >
+                      <SelectValue placeholder="請選擇城市" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {cities.map((city) => (
+                        <SelectItem key={city.CityName} value={city.CityName}>
+                          {city.CityName}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {error.CityName && (
+                    <p className="text-sm text-red-500">{error.CityName}</p>
+                  )}
+                </div>
+
+                {/* 區域 */}
+                <div className="space-y-2">
+                  <Label>市/區/鄉/鎮 *</Label>
+                  <Select
+                    value={text.AreaName}
+                    onValueChange={handleAreaChange}
+                  >
+                    <SelectTrigger disabled={!text.CityName}>
+                      <SelectValue placeholder="請選擇區域" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {areas.map((area) => (
+                        <SelectItem key={area.AreaName} value={area.AreaName}>
+                          {area.AreaName}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* 郵遞區號 */}
+                <div className="space-y-2">
+                  <Label htmlFor="zipcode">郵遞區號</Label>
+                  <Input
+                    id="zipcode"
+                    value={text.ZipCode}
+                    disabled
+                    className="bg-gray-50"
+                  />
+                </div>
+              </div>
+
+              {/* 詳細地址 */}
+              <div className="space-y-2">
+                <Label htmlFor="address">詳細地址</Label>
+                <Input
+                  id="address"
+                  value={text.address}
+                  onChange={(e) =>
+                    setText({ ...text, address: e.target.value })
+                  }
+                  placeholder="請輸入詳細地址"
+                />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* 提交按鈕 */}
+        <div className="flex justify-center">
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="bg-blue-600 hover:bg-blue-700 px-8 py-2"
+          >
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                更新中...
+              </>
+            ) : (
+              '送出'
+            )}
+          </Button>
         </div>
       </form>
-    </>
+    </div>
   )
 }

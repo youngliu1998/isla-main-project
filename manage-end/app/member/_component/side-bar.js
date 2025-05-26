@@ -52,8 +52,8 @@ export default function SideBar() {
   return (
     <>
       {/* aside-bar */}
-      <aside className="col-lg-3 col-12 flex-lg-column">
-        <div className="d-flex flex-column align-items-center gap-2 w-100 position-relative user-head">
+      <aside className="lg:w-1/4  flex flex-col lg:flex-col">
+        <div className="flex flex-col items-center gap-2 w-full relative user-head">
           {/* avatar, nickname, .... (member info) */}
           <button
             className="avatar-button"
@@ -61,17 +61,17 @@ export default function SideBar() {
               setOpenAvatar(!openAvatar)
             }}
           >
-            <div className="avartar overflow-hidden">
+            <div className="avartar overflow-hidden rounded-full">
               <Image
                 src={'http://localhost:3005/images/member/' + user.ava_url}
                 alt="Picture of the member"
-                width={100}
-                height={100}
+                width={10}
+                height={10}
               />
             </div>
           </button>
-          <UploadAva openAvatar={openAvatar} setOpenAvatar={setOpenAvatar} />
-          <h4 className="user-title">{user?.nickname || 'Rookie'}</h4>
+          {/* <UploadAva openAvatar={openAvatar} setOpenAvatar={setOpenAvatar} /> */}
+          <h4 className="user-title ">{user?.nickname || 'Rookie'}</h4>
           <p>{user?.email || 'illegal@nomail.com'}</p>
           <Link
             onClick={() => {
@@ -82,9 +82,17 @@ export default function SideBar() {
             登出
           </Link>
         </div>
-        {/* panel */}
-        <OpneNav OpenMenu={OpenMenu} setOpenMenu={setOpenMenu} />
-        <MemberNav OpenMenu={OpenMenu} />
+        <div className={'user-nav'}>
+          <ul>
+            <li className="title">個人</li>
+            <Link href="/member/profile">
+              <li>基本資料</li>
+            </Link>
+            <Link href="/member/password">
+              <li>密碼變更</li>
+            </Link>
+          </ul>
+        </div>
       </aside>
     </>
   )

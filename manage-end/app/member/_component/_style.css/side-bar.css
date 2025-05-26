@@ -1,4 +1,7 @@
-/* about avartar */
+about avartar .container-user {
+  min-height: 100vh;
+}
+
 .user-head {
   padding-top: 20px;
   padding-bottom: 24px;
@@ -54,7 +57,7 @@
     color: var(--sub-text);
   }
   @media (max-width: 992px) {
-    height: 0;
+    /* height: 0; */
   }
 }
 .user-nav ul {
@@ -85,8 +88,4 @@
   font-size: 1.25rem;
   padding-top: 0.75rem;
   padding-bottom: 0.25rem;
-}
-/* RWD menu open */
-.open {
-  height: 580px;
 }
