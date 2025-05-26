@@ -13,6 +13,7 @@ const BookmarkComponent = ({
   return (
     <div className="product-card-bookmark">
       <button
+          className={'bookmark-btn'}
         onClick={onToggle}
         aria-label={isbookmarked ? '移除書籤' : '加入書籤'}
       >

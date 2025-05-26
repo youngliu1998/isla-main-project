@@ -287,26 +287,34 @@ function parseColorDetails(colorDetailsString) {
 export async function getProductDetail(productId) {
   const [productRows] = await db.query(
     `
-      SELECT 
-        products.product_id, 
-        products.name, 
-        products.description, 
-        products.usage_instructions,
-        products.base_price, 
-        products.sale_price, 
-        products.status,
-        brands.brand_id, 
-        brands.name AS brand_name,
-        categories.category_id, 
-        categories.name AS category_name,
-        product_tag_relations.tag_id,
-        product_tags.name AS tag_name
-      FROM products
-      LEFT JOIN brands ON products.brand_id = brands.brand_id
-      LEFT JOIN product_tag_relations ON products.product_id = product_tag_relations.product_id
-      LEFT JOIN product_tags ON product_tag_relations.tag_id = product_tags.tag_id
-      LEFT JOIN categories ON products.category_id = categories.category_id
-      WHERE products.product_id = ?
+    SELECT 
+      products.product_id, 
+      products.name, 
+      products.description, 
+      products.usage_instructions,
+      products.base_price, 
+      products.sale_price, 
+      products.status,
+      brands.brand_id, 
+      brands.name AS brand_name,
+      categories.category_id, 
+      categories.name AS category_name,
+      product_tag_relations.tag_id,
+      product_tags.name AS tag_name,
+      -- 計算最終價格（促銷價 or 原價）
+      CASE 
+        WHEN products.sale_price IS NOT NULL 
+            AND NOW() >= products.sale_start_date
+            AND NOW() <= products.sale_end_date
+        THEN products.sale_price
+        ELSE products.base_price
+      END AS final_price
+    FROM products
+    LEFT JOIN brands ON products.brand_id = brands.brand_id
+    LEFT JOIN product_tag_relations ON products.product_id = product_tag_relations.product_id
+    LEFT JOIN product_tags ON product_tag_relations.tag_id = product_tags.tag_id
+    LEFT JOIN categories ON products.category_id = categories.category_id
+    WHERE products.product_id = ?
   `,
     [productId]
   )
@@ -375,7 +383,7 @@ export async function getProductDetail(productId) {
     name: product.name,
     description: product.description,
     usage_instructions: product.usage_instructions,
-    price: product.price,
+    final_price: product.final_price,
     status: product.status,
     brand: {
       brand_id: product.brand_id,

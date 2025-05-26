@@ -27,11 +27,11 @@ const saveFiltersToCache = (filters) => {
 }
 
 const loadFiltersFromCache = () => {
+  if (typeof window === 'undefined') return null
   try {
     const cached = sessionStorage.getItem(FILTER_CACHE_KEY)
     if (cached) {
       const { filters, timestamp } = JSON.parse(cached)
-      // 快取有效期1小時
       if (Date.now() - timestamp < 60 * 60 * 1000) {
         return filters
       }
@@ -108,8 +108,13 @@ export default function ProductPage() {
       sortOrder: 'ASC',
     }
   }
+  const [filters, setFilters] = useState(null)
+  // const [filters, setFilters] = useState(getInitialFilters)
+  useEffect(() => {
+    const initialFilters = getInitialFilters()
+    setFilters(initialFilters)
+  }, [])
 
-  const [filters, setFilters] = useState(getInitialFilters)
 
   const handleFilterChange = (partialUpdate) => {
     setFilters((prev) => {
@@ -154,7 +159,7 @@ export default function ProductPage() {
     tags,
     fetchNextPage,
     hasNextPage,
-  } = useProducts(filters)
+  } = useProducts(filters || {})
 
   useEffect(() => {
     console.log('Filters 更新 :', filters)
@@ -162,7 +167,7 @@ export default function ProductPage() {
 
   // 當URL參數變化時，重新初始化篩選器
   useEffect(() => {
-    if (hasUrlParams) {
+    if (typeof window !== 'undefined' && hasUrlParams) {
       const newFilters = getInitialFilters()
       setFilters(newFilters)
     }
@@ -171,6 +176,9 @@ export default function ProductPage() {
   const toggleMobilePanel = useCallback(() => {
     setIsMobilePanelOpen((prev) => !prev)
   }, [])
+  if (!filters) {
+    return <div>載入篩選器中...</div>
+  }
 
   const ProductList = ({ products, fetchNextPage, hasNextPage }) => {
     if (!products || !Array.isArray(products) || products.length === 0) {
@@ -196,7 +204,7 @@ export default function ProductPage() {
           dataLength={products.length}
           next={fetchNextPage}
           hasMore={hasNextPage}
-          loader={<div className={'infinite-scroll-loader'}>到底了！</div>}
+          loader={<div className={'infinite-scroll-loader'}>載入中...</div>}
           endMessage={<div className={'infinite-scroll-end'}>到底了！</div>}
           className="infinite-scroll-layout"
         >

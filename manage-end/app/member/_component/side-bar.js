@@ -1,0 +1,91 @@
+'use client'
+
+import { useAuth } from '@/hook/use-auth'
+import { useEffect, useState } from 'react'
+import Link from 'next/link'
+import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
+import MemberNav from './_side-bar-component/member-nav'
+import OpneNav from './_side-bar-component/open-nav'
+import UploadAva from './_side-bar-component/upload-ava'
+import './_style.css/side-bar.css'
+
+export default function SideBar() {
+  const pathname = usePathname()
+  const router = useRouter()
+  const [OpenMenu, setOpenMenu] = useState(false) // open nav bar in RWD
+  const [openAvatar, setOpenAvatar] = useState(false)
+  const { user, logout, initAuth } = useAuth()
+
+  // ==== 確認是否登入 ====
+  useEffect(() => {
+    const isLogin = async () => {
+      await initAuth()
+      const isAuthLocal = localStorage.getItem('jwtToken') || false
+      // console.log(`isAuth`, isAuth)
+      if (!isAuthLocal) {
+        alert('請先登入')
+        router.push('/member/login')
+        return
+      }
+    }
+    // 不包含以下網址才執行
+    if (
+      !(
+        pathname.includes('login') ||
+        pathname.includes('register') ||
+        pathname.includes('forget-password')
+      )
+    ) {
+      isLogin()
+    }
+  }, [])
+  // return <></> in login, register, ......
+  if (
+    pathname.includes('login') ||
+    pathname.includes('register') ||
+    pathname.includes('forget-password')
+  ) {
+    return <></>
+  }
+  return (
+    <>
+      {/* aside-bar */}
+      <aside className="col-lg-3 col-12 flex-lg-column">
+        <div className="d-flex flex-column align-items-center gap-2 w-100 position-relative user-head">
+          {/* avatar, nickname, .... (member info) */}
+          <button
+            className="avatar-button"
+            onClick={() => {
+              setOpenAvatar(!openAvatar)
+            }}
+          >
+            <div className="avartar overflow-hidden">
+              <Image
+                src={'http://localhost:3005/images/member/' + user.ava_url}
+                alt="Picture of the member"
+                width={100}
+                height={100}
+              />
+            </div>
+          </button>
+          <UploadAva openAvatar={openAvatar} setOpenAvatar={setOpenAvatar} />
+          <h4 className="user-title">{user?.nickname || 'Rookie'}</h4>
+          <p>{user?.email || 'illegal@nomail.com'}</p>
+          <Link
+            onClick={() => {
+              logout()
+            }}
+            href="/"
+          >
+            登出
+          </Link>
+        </div>
+        {/* panel */}
+        <OpneNav OpenMenu={OpenMenu} setOpenMenu={setOpenMenu} />
+        <MemberNav OpenMenu={OpenMenu} />
+      </aside>
+    </>
+  )
+}
