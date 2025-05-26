@@ -1,8 +1,12 @@
 'use client'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './course-card.css'
+import { useAuth } from '@/hook/use-auth'
+import LoginModal from '../../_components/login-modal'
+import { toast } from 'react-toastify'
+import { useRouter } from 'next/navigation'
 
 export default function CourseCard({
   id = '',
@@ -25,21 +29,80 @@ export default function CourseCard({
   const [isFavorited, setIsFavorited] = useState(false)
   const [hover, setHover] = useState(false)
   const [animate, setAnimate] = useState(false)
+  const { user } = useAuth()
+  const [showLoginModal, setShowLoginModal] = useState(false)
+  const cardRef = useRef(null)
+  const router = useRouter()
 
   useEffect(() => {
-    const stored = localStorage.getItem(`favorite_${id}`) === 'true'
-    setIsFavorited(stored)
-  }, [id])
+    if (user && user.id) {
+      const stored = localStorage.getItem(`favorite_${id}`) === 'true'
+      setIsFavorited(stored)
+    }
+  }, [id, user])
 
-  const toggleFavorite = () => {
+  useEffect(() => {
+    const pending = localStorage.getItem('pendingFavorite')
+    if (user?.id && String(pending) === String(id)) {
+      localStorage.removeItem('pendingFavorite')
+      toggleFavorite(true)
+      setTimeout(() => {
+        cardRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      }, 300)
+    }
+  }, [user])
+
+  const toggleFavorite = async (fromAutoLogin = false) => {
+    if (!user || !user.id) {
+      localStorage.setItem('redirectAfterLogin', window.location.href)
+      localStorage.setItem('pendingFavorite', id)
+      setShowLoginModal(true)
+      return
+    }
+
     const newState = !isFavorited
     setIsFavorited(newState)
     localStorage.setItem(`favorite_${id}`, newState.toString())
     setAnimate(true)
     setTimeout(() => setAnimate(false), 400)
+
+    const token = localStorage.getItem('jwtToken')
+
+    try {
+      const res = await fetch('http://localhost:3005/api/course/wishlist', {
+        method: newState ? 'POST' : 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          user_id: user.id,
+          courses_id: id,
+        }),
+      })
+
+      const contentType = res.headers.get('content-type')
+      if (!res.ok || !contentType?.includes('application/json')) {
+        throw new Error('儲存失敗或格式錯誤')
+      }
+
+      const data = await res.json()
+      console.log('收藏結果', data)
+
+      if (fromAutoLogin) {
+        toast.success('已自動加入收藏！')
+      } else {
+        if (newState) {
+          toast.success('已加入收藏！')
+        } else {
+          toast.info('已取消收藏！')
+        }
+      }
+    } catch (err) {
+      console.error('收藏失敗', err.message)
+    }
   }
 
-  // ✅ 將條件渲染移到底部
   if (tag === 0 || tag === '0') return null
 
   const renderStars = (score) => {
@@ -66,6 +129,7 @@ export default function CourseCard({
       className="col mb-5"
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
+      ref={cardRef}
     >
       <Link
         href={`/course/course-list/${id}`}
@@ -80,7 +144,6 @@ export default function CourseCard({
               height={450}
               className="card-img-top-course"
             />
-            {/* ❤️ 收藏 icon */}
             <button
               className="heart-icon-course"
               style={{ opacity: hover || isFavorited ? 1 : 0 }}
@@ -104,9 +167,6 @@ export default function CourseCard({
             <div className="d-flex align-content-center">
               <div className="mb-2 me-3 card-score-course">
                 {avg_star.toFixed(1)} {renderStars(avg_star)}
-                {/* <small className="text-muted ms-2">
-                  ({comment_count} 則評論)
-                </small> */}
               </div>
               <div className="d-flex">
                 <i className="bi bi-people me-2" />
@@ -127,6 +187,10 @@ export default function CourseCard({
           </div>
         </div>
       </Link>
+      <LoginModal
+        show={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+      />
     </div>
   )
 }

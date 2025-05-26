@@ -1,9 +1,32 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import './more-courses-toggle.css'
+import { useAuth } from '@/hook/use-auth'
 
-export default function MoreCoursesToggle({ isExpanded, onToggle }) {
+export default function MoreCoursesToggle({
+  isExpanded = 0,
+  onToggle = '',
+  id = 0,
+  toggleFavorite = 0,
+  cardRef = '',
+}) {
+  const { user } = useAuth()
+
+  useEffect(() => {
+    const pending = localStorage.getItem('pendingExperienceFavorite')
+    if (user?.id && String(pending) === String(id)) {
+      localStorage.removeItem('pendingExperienceFavorite')
+      toggleFavorite(true)
+      setTimeout(() => {
+        cardRef?.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        })
+      }, 300)
+    }
+  }, [user, id, toggleFavorite, cardRef])
+
   return (
     <button
       className="more-courses-toggle d-flex align-items-center"
