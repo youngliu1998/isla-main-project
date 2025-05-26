@@ -19,21 +19,27 @@ import axios from 'axios'
 export const useAddCart = (token) => {
   return useMutation({
     mutationFn: async ({ product_id, quantity, color_id }) => {
-      const res = await axios.post(
-        `http://localhost:3005/api/cart-items/create`,
-        {
-          product_id,
-          quantity,
-          color_id,
-        },
-        {
-          headers: {
-            'content-type': 'application/json',
-            Authorization: `Bearer ${token}`,
+      try {
+        console.log('送出的 token:', token)
+        const res = await axios.post(
+          `http://localhost:3005/api/cart-items/create`,
+          {
+            product_id,
+            quantity,
+            color_id,
           },
-        }
-      )
-      return res.data
+          {
+            headers: {
+              'content-type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        return res.data
+      } catch (error) {
+        console.error('API 錯誤細節:', error.response?.data || error.message)
+        throw error
+      }
     },
   })
 }

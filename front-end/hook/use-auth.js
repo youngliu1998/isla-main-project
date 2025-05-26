@@ -28,7 +28,6 @@ export function AuthProvider({ children }) {
   const cleanStorage = () => {
     console.warn('驗證失敗，清除 token')
     localStorage.removeItem('jwtToken')
-    localStorage.removeItem('isAuth')
     localStorage.removeItem('googleToken')
   }
   // 取得使用者資料(驗證後才可使用)
@@ -71,10 +70,10 @@ export function AuthProvider({ children }) {
       const data = await response.json()
 
       if (response.ok) {
-        if (!data['data']['token']) {
-          return console.log('沒有取得token，登入失敗')
+        if (!data || !data.data || !data.data.token) {
+          console.log('沒有取得token，登入失敗', data);
+          return;
         }
-        localStorage.setItem('isAuth', true)
         // set token to localStorage
         localStorage.setItem('jwtToken', data['data']['token'])
         console.log('check token: ', data['data']['token'])

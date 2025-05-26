@@ -71,7 +71,7 @@ export default function UploadAva({
               setOpenAvatar(!openAvatar)
             }}
           >
-            關閉
+            <i className="bi bi-x-lg"></i>
           </button>
         </div>
       </div>

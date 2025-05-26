@@ -14,7 +14,7 @@ import { courseUrl } from '../../../_route/courseUrl'
 
 export default function LoginPage() {
   const router = useRouter()
-  const { login } = useAuth() // Context
+  const { login, initAuth } = useAuth() // Context
   const [memAuth, setMemAuth] = useState({
     email: 'johnsmith@gmail.com',
     password: '12345',
@@ -24,28 +24,12 @@ export default function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     await login(memAuth.email, memAuth.password)
-
-    const isAuthLocal = localStorage.getItem('isAuth') === 'true'
+    const isAuthLocal = localStorage.getItem('jwtToken') || false
     if (isAuthLocal) {
-      const redirectPath = localStorage.getItem('redirectAfterLogin')
-      const pendingBuyNow = localStorage.getItem('pendingBuyNow')
-
-      localStorage.removeItem('redirectAfterLogin')
-
-      // ✅ 若登入前曾點擊立即購買
-      if (pendingBuyNow) {
-        localStorage.removeItem('pendingBuyNow')
-        // 直接回到課程詳情頁，讓 useEffect 自動處理加購邏輯
-        router.push(`/course/course-list/${pendingBuyNow}`)
-        return
-      }
-
-      // 一般情況
-      if (redirectPath) {
-        router.push(redirectPath)
-      } else {
-        router.push('/')
-      }
+      alert('登入成功')
+      router.push('/')
+    } else {
+      alert('登入失敗')
     }
   }
   // 跳轉結束
@@ -63,88 +47,45 @@ export default function LoginPage() {
   // ==== google 認證設定 ====
   // course登入後跳回原本畫面並自動執行收藏
   const responseMessage = async (response) => {
-    try {
-      const res = await fetch('http://localhost:3005/api/member/google', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          token: response.credential,
-        }),
-      })
-
-      const data = await res.json()
-
-      if (!data?.data?.token) {
-        return console.log('沒有取得 token，登入失敗')
-      }
-
-      // ✅ 儲存登入資料
-      localStorage.setItem('jwtToken', data.data.token)
-      localStorage.setItem('googleToken', data.data.tokenGoogle)
-      localStorage.setItem('isAuth', 'true') // 要用字串 'true'
-
-      // ✅ 確認登入成功再處理跳轉
-      const isAuthLocal = localStorage.getItem('isAuth') === 'true'
-      const redirectPath = localStorage.getItem('redirectAfterLogin')
-      if (redirectPath) {
-        localStorage.removeItem('redirectAfterLogin')
-        router.push(redirectPath)
-      } else {
-        router.push('/')
-      }
-
-      const hasPendingFavorite = localStorage.getItem('pendingFavorite')
-      const hasPendingExperience = localStorage.getItem(
-        'pendingExperienceFavorite'
-      )
-
-      localStorage.removeItem('redirectAfterLogin')
-
-      if (isAuthLocal && (hasPendingFavorite || hasPendingExperience)) {
-        router.push(redirectPath)
-      } else if (isAuthLocal) {
-        router.push('/')
-      }
-    } catch (error) {
-      console.error('Google 登入失敗:', error)
+    const data = await fetch('http://localhost:3005/api/member/google', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        token: response.credential, // Google Token
+      }),
+    })
+      .then((response) => response.json())
+      .catch((error) => console.error('Error:', error))
+    if (!data || !data.data || !data.data.token) {
+      console.log('沒有取得token，登入失敗', data)
+      return
+    }
+    // set token to localStorage
+    localStorage.setItem('jwtToken', data['data']['token'])
+    localStorage.setItem('googleToken', data['data']['tokenGoogle'])
+    console.log('check token: ', data['data']['token'])
+    console.log('check google: ', data['data']['tokenGoogle'])
+    console.log('Google後端回應成功')
+    console.log(response)
+    initAuth()
+    const isAuthLocal = localStorage.getItem('jwtToken') || false
+    if (isAuthLocal) {
+      alert('登入成功')
+      router.push('/')
+    } else {
+      alert('登入失敗')
     }
   }
-  // 跳轉結束
-
-  // 原本
-  // const responseMessage = async (response) => {
-  //   const data = await fetch('http://localhost:3005/api/member/google', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify({
-  //       token: response.credential, // Google Token
-  //     }),
-  //   })
-  //     .then((response) => response.json())
-  //     .catch((error) => console.error('Error:', error))
-  //   if (!data['data']['token']) {
-  //     return console.log('沒有取得token，登入失敗')
-  //   }
-  //   // set token to localStorage
-  //   localStorage.setItem('jwtToken', data['data']['token'])
-  //   localStorage.setItem('googleToken', data['data']['tokenGoogle'])
-  //   console.log('check token: ', data['data']['token'])
-  //   console.log('check google: ', data['data']['tokenGoogle'])
-  //   console.log('Google後端回應成功')
-  //   console.log(response)
-  // }
   const errorMessage = (error) => {
     console.log(error)
   }
   // ==== END google 認證設定 ====
   useEffect(() => {
-    const isAuth = localStorage.getItem('isAuth') || false
+    const isAuthLocal = localStorage.getItem('jwtToken') || false
     // if get auth, go to main page
-    if (isAuth) router.push('/')
+    if (isAuthLocal) router.push('/')
     // console.log('login-page-user: ', user)
     // console.log('login-page-isAuth: ', isAuth)
   }, [])

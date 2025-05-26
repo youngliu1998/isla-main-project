@@ -8,7 +8,7 @@ export default function HeaderNav() {
       <nav className="order-lg-2 d-lg-block d-none">
         <ul className="d-flex flex-lg-row flex-column justify-content-center align-items-center">
           <li>
-            <Link href="">所有產品</Link>
+            <Link href="/product">所有產品</Link>
           </li>
           <li>
             <Link href="">品牌總覽</Link>

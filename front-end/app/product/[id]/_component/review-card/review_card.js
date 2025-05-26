@@ -6,6 +6,11 @@ import StarRatingItem from '../../../_components/star-generator.js'
 import Image from 'next/image'
 import Modal from 'react-bootstrap/Modal'
 
+import Lightbox from 'yet-another-react-lightbox'
+import Thumbnails from 'yet-another-react-lightbox/plugins/thumbnails'
+import 'yet-another-react-lightbox/styles.css'
+import 'yet-another-react-lightbox/plugins/thumbnails.css'
+
 const MAX_LENGTH = 120
 
 const ReviewCard = ({ review }) => {
@@ -29,6 +34,13 @@ const ReviewCard = ({ review }) => {
 
   const openModal = () => setShowModal(true)
   const closeModal = () => setShowModal(false)
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const openLightboxAt = (index) => {
+    setCurrentIndex(index)
+    setLightboxOpen(true)
+  }
+  console.log(color_code)
   return (
     <>
       <div className={styles['comment-card']}>
@@ -58,8 +70,15 @@ const ReviewCard = ({ review }) => {
                     day: 'numeric',
                   })}
                 </div>
-                {color_name && (
-                  <div className={styles['color-name-card']}>
+                {color_name !== '標準色' && (
+                  <div
+                    className={`${styles['color-name-card']} ${color_code ? styles['color-name-card-has-color'] : ''}`}
+                    style={
+                      color_code
+                        ? { backgroundColor: color_code, color: '#ffffff'}
+                        : { backgroundColor: '#FBFBFB' }
+                    }
+                  >
                     顏色：{color_name}
                   </div>
                 )}
@@ -70,7 +89,12 @@ const ReviewCard = ({ review }) => {
             <div className={styles['comment-card-head-left']}>
               <div className={styles['comment-images-container']}>
                 {images.map((imgSrc, index) => (
-                  <div key={index} className={styles['comment-image-box']}>
+                  <div
+                    key={index}
+                    className={styles['comment-image-box']}
+                    onClick={() => openLightboxAt(index)}
+                    style={{ cursor: 'pointer' }}
+                  >
                     <Image
                       className="img-fluid"
                       src={imgSrc}
@@ -129,6 +153,16 @@ const ReviewCard = ({ review }) => {
           {comment_text}
         </Modal.Body>
       </Modal>
+
+      {/* Lightbox Component */}
+      {lightboxOpen && (
+        <Lightbox
+          open={lightboxOpen}
+          close={() => setLightboxOpen(false)}
+          index={currentIndex}
+          slides={images.map((imgSrc) => ({ src: imgSrc }))}
+        />
+      )}
     </>
   )
 }

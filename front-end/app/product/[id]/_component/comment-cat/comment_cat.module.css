@@ -4,16 +4,23 @@
 }
 
 .cat-card {
+    /*height: 130px;*/
+    height: 150px;
+    width: 800px;
     background-color: #fff;
     border-radius: 12px;
-    padding: 1rem;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #efefef;
+    padding: 1rem 1.5rem;
+    /*margin-bottom: 1rem;*/
+    /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);*/
 }
 
 .cat-head {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: left;
+    gap: 1rem;
+    color: #868686;
 }
 
 .user-img img {
@@ -33,6 +40,13 @@
 
 .cat-body {
     margin-top: 0.5rem;
-    font-size: 0.9rem;
-    color: #333;
+    font-size: 16px;
+    color: #c27373;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-grow: 1;
+    line-height: 1.4;
 }

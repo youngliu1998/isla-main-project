@@ -230,6 +230,20 @@
 
 }
 
+.color-name-card {
+display: none;
+}
+
+.color-name-card-has-color {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    border-radius: 8px;
+    padding: 2px 6px;
+    color: #ffffff;
+}
+
 /* 響應式設計調整 (在小屏幕上) */
 @media (max-width: 768px) {
     .comment-card-head-left {
@@ -278,4 +292,6 @@
          width: 50px;
          height: 50px;
      }
+
+
 }
