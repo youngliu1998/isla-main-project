@@ -117,12 +117,11 @@ export default function page({ params }) {
       {
         onSuccess: (data) => {
           console.log('加入成功：', data)
-          // 可以添加成功提示 UI
         },
         onError: (err) => {
           console.error('加入購物車失敗：', err)
           // 可以添加錯誤提示 UI
-          alert('加入購物車失敗，請稍後再試')
+          toast.error('加入失敗，請稍後再試')
         },
       }
     )
@@ -251,7 +250,7 @@ export default function page({ params }) {
                   />
                 </div>
                 <div className="price-box d-flex align-items-center ">
-                  <div className="price">$425</div>{' '}
+                  <div className="price">NT${parseInt(product.final_price)}</div>{' '}
                   <button
                     className="add-cart"
                     type="button"
@@ -275,7 +274,7 @@ export default function page({ params }) {
             <div className="relative-tag-title">相關類別</div>
             <div className="relative-tags d-flex align-items-center gap-3">
               {product.tags?.map((tag) => (
-                <Link key={tag.tag_id} href={`/products?tag_id=${tag.tag_id}`}>
+                <Link key={tag.tag_id} href={`/product?tagIds=${tag.tag_id}`}>
                   <button className="relative-tag" type="button">
                     {tag.name}
                   </button>

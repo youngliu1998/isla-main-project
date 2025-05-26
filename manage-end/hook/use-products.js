@@ -109,6 +109,61 @@ export const useProducts = (filters, { pageSize = 20 } = {}) => {
   }
 }
 
+//const { brandProducts, isLoading, error } = useBrandProducts({
+//   brandIds: [1, 3],
+//   limit: 12,
+// })
+export const useBrandProducts = ({
+  brandIds = [],
+  limit = 10,
+  categoryIds = [],
+  tagIds = [],
+  minRating = 0,
+  maxRating = 5,
+  minPrice = 0,
+  maxPrice = 9999,
+} = {}) => {
+  const parsedFilters = {
+    brandIds: brandIds.map((id) => Number(id)).filter((id) => !isNaN(id)),
+    categoryIds: categoryIds.map((id) => Number(id)).filter((id) => !isNaN(id)),
+    tagIds: tagIds.map((id) => Number(id)).filter((id) => !isNaN(id)),
+    minRating: Number(minRating) || 0,
+    maxRating: Number(maxRating) || 5,
+    minPrice: Number(minPrice) || 0,
+    maxPrice: Number(maxPrice) || 9999,
+    limit: Number(limit) || 10,
+    offset: 0,
+  }
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['brand-products', parsedFilters],
+    queryFn: async () => {
+      const res = await axios.get('http://localhost:3005/api/products', {
+        params: parsedFilters,
+        paramsSerializer: (params) =>
+          qs.stringify(params, { arrayFormat: 'brackets' }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (res.status !== 200 || res.data.status !== 'success') {
+        throw new Error('Failed to fetch brand products')
+      }
+
+      return res.data.data
+    },
+    enabled: parsedFilters.brandIds.length > 0, // 僅當品牌 ID 有指定時才執行查詢
+    staleTime: 1000 * 60 * 5,
+  })
+
+  return {
+    brandProducts: data || [],
+    isLoading,
+    error,
+  }
+}
+
 export const UseProductDetail = (id) => {
   return useQuery({
     queryKey: ['product', id],

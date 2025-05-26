@@ -8,10 +8,20 @@ import RatingComponent from './product-rating.js'
 import BookmarkComponent from './product-bookmark.js'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useClientToken } from '@/hook/use-client-token.js'
+import { useAuth } from '@/hook/use-auth.js'
+import { useAddCart } from '@/hook/use-add-cart.js'
+import { useToggleWish } from '@/hook/use-toggle-wish.js'
+import WishButton from '../../_components/wish-toggle.js'
+import { toast } from 'react-toastify'
 
 function ProductCard({ product }) {
   if (!product) return <div></div>
+  const { user, isLoading: isAuthLoading } = useAuth()
+  if (isAuthLoading) return <div></div>;
+  const token = useClientToken()
   const [isImageLoaded, setIsImageLoaded] = useState(false)
+  const { mutate: addToCart } = useAddCart(token)
 
   const {
     id,
@@ -25,22 +35,30 @@ function ProductCard({ product }) {
     isBookmarked: initialIsBookmarked = false,
     isColorful,
   } = product
-
-  const [bookmarked, setBookmarked] = useState(initialIsBookmarked)
+  const { isFavorited, toggleFavorite } = useToggleWish(token, 'product', id)
 
   // ✅ 加入購物車
   const handleAddToCart = (e) => {
     e.preventDefault()
     console.log(`Product ${id} (${name}) added to cart.`)
-
-  }
-
-  // ✅ 切換收藏狀態
-  const toggleBookmark = (e) => {
-    e.preventDefault()
-    setBookmarked(!bookmarked)
-    console.log(`Product ${id} (${name}) bookmark status: ${!bookmarked}`)
-    // TODO: 更新後端書籤狀態
+    const quantity = 1
+    addToCart(
+      {
+        product_id: product.product_id,
+        quantity,
+      },
+      {
+        onSuccess: (data) => {
+          // toast.success('加入成功：', data)
+          // 可以添加成功提示 UI
+        },
+        onError: (err) => {
+          console.error('加入購物車失敗：', err)
+          // 可以添加錯誤提示 UI
+          toast.error('加入購物車失敗，請稍後再試')
+        },
+      }
+    )
   }
 
   // ✅ SSR 安全的 RWD 偵測
@@ -77,9 +95,12 @@ function ProductCard({ product }) {
               </div>
             </div>
             <BookmarkComponent
-              isbookmarked={bookmarked}
+              isbookmarked={isFavorited}
               isMobile={isMobile}
-              onToggle={toggleBookmark}
+              onToggle={(e) => {
+                e.preventDefault()
+                toggleFavorite()
+              }}
             />
           </div>
 
@@ -125,7 +146,9 @@ function ProductCard({ product }) {
 
           <div className="product-card-price d-flex justify-content-between">
             <div className="product-card-price-box d-flex gap-2">
-              <div className="product-card-main-price">NT${parseInt(price)}</div>
+              <div className="product-card-main-price">
+                NT${parseInt(price)}
+              </div>
               {originalPrice && originalPrice !== price && (
                 <div className="product-card-basic-price">
                   <del>${parseInt(originalPrice)}</del>
