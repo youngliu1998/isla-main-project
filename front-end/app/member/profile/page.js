@@ -2,15 +2,18 @@
 
 import '../_component/_style.css/form.css'
 import { useState, useEffect } from 'react'
+import { useAuth } from '@/hook/use-auth'
 // import { useRouter } from 'next/navigation'
+// ==== component ====
+import BasicProfile from './_component/basic-profile'
 import InputText from '../_component/input-text'
 import Select from '../_component/select'
-import { useAuth } from '@/hook/use-auth'
+// ==== data ====
 import { cities } from './data/CityCountyData'
 
 export default function ProfilePage() {
   // const router = useRouter()
-  const { initAuth } = useAuth()
+  const { user } = useAuth()
   const defaultProfile = {
     name: '',
     nickname: '',
@@ -25,7 +28,7 @@ export default function ProfilePage() {
   }
   const [text, setText] = useState({ ...defaultProfile })
   const [error, setError] = useState({ ...defaultProfile })
-  // console.log('text', text)
+  console.log('text', text)
 
   // ==== 處理地址 ====
   const areas = cities.filter((v) => v.CityName == text.CityName)[0]?.AreaList
@@ -149,6 +152,7 @@ export default function ProfilePage() {
       <form onSubmit={handleSubmit}>
         <div className="user-content">
           <h3>會員資料</h3>
+          <BasicProfile user={user} />
           <div className="row row-cols-md-2 row-cols-1 g-4">
             <InputText
               text={text}
@@ -238,6 +242,7 @@ export default function ProfilePage() {
               selectKey="CityName"
               text={text}
               setText={setText}
+              errorMsg={error.city}
             />
             <Select
               title="市/區/鄉/鎮"

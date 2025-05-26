@@ -1,8 +1,8 @@
 'use client'
 
 import React, { useState } from 'react'
-import OrderProdList from './_order-component/order-prod-list'
-import './_style.css/order-list.css'
+import OrderProdList from './_component/order-prod-list'
+import './_style/order-list.css'
 
 export default function OrderList(props) {
   const [orderTable, setOrderTable] = useState({
