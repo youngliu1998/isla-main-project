@@ -22,6 +22,7 @@ import { pathToFileURL } from 'url'
 
 import 'dotenv/config.js'
 import { request } from 'http'
+import wishlistRouter from '../routes/course/wishlist.js'
 
 // 建立 Express 應用程式
 const app = express()
@@ -207,5 +208,7 @@ app.use(function (err, req, res) {
 const port = process.env.PORT || 3000
 
 app.listen(port, () => console.log(`Server ready on port ${port}`))
+
+app.use('/api/course/wishlist', wishlistRouter)
 
 export default app

@@ -77,7 +77,7 @@ export default function AddReviewForm({ courseID, onReviewAdded }) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: token,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           course_id: courseID,

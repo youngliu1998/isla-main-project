@@ -5,9 +5,11 @@ import Image from 'next/image'
 import './review-card.css'
 import LikeButton from '../like-button/like-button'
 import { USER_AVA_URL } from '@/_route/img-url'
+import { useAuth } from '@/hook/use-auth'
 
 export default function ReviewCard({
   member_name = '',
+  member_id = 0,
   star = 0,
   created = '',
   content = '',
@@ -15,7 +17,10 @@ export default function ReviewCard({
   comment_id = 0,
   likeData = {},
   onToggleLike = () => {},
+  onEdit = () => {}, // ✅ 加上這行
+  onDelete = () => {}, // ✅ 加上這行
 }) {
+  const { user } = useAuth()
   const image = ava_url
     ? `http://localhost:3005/images/member/${ava_url}`
     : 'http://localhost:3005/images/member/default-avatar.jpg'
@@ -25,7 +30,7 @@ export default function ReviewCard({
     const fullStars = Math.floor(ratingNum)
     const halfStar = ratingNum % 1 >= 0.5
     const emptyStars = 5 - fullStars - (halfStar ? 1 : 0)
-
+    console.log(member_id)
     return (
       <>
         {[...Array(fullStars)].map((_, i) => (
@@ -70,6 +75,23 @@ export default function ReviewCard({
             count={likeData.count}
             onToggle={onToggleLike}
           />
+          {/* ✅ 如果是本人，就顯示編輯／刪除按鈕 */}
+          {user?.id === member_id && (
+            <div className="d-flex gap-2">
+              <button
+                className="btn btn-outline-primary btn-sm"
+                onClick={() => onEdit(comment_id)}
+              >
+                編輯
+              </button>
+              <button
+                className="btn btn-outline-danger btn-sm"
+                onClick={() => onDelete(comment_id)}
+              >
+                刪除
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

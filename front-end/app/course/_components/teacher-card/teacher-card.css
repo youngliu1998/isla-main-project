@@ -4,6 +4,7 @@
 /* ---------- 卡片浮起效果 ---------- */
 .card-hover-teacher {
   overflow: hidden;
+  border-radius: 8px;
   transition:
     transform 0.3s ease,
     box-shadow 0.3s ease;

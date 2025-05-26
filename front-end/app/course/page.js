@@ -289,7 +289,7 @@ export default function CoursePage() {
               <hr />
               <p className="mb-1 fw-bold">狀態</p>
 
-              <div className="form-check form-switch py-2">
+              <div className="form-check form-switch py-2 d-flex align-items-center">
                 <input
                   className="form-check-input rounded-pill  search-btn1"
                   type="checkbox"
@@ -298,7 +298,7 @@ export default function CoursePage() {
                   onChange={() => setShowExperienceOnly((prev) => !prev)}
                 />
                 <label
-                  className="form-check-label search-btntext"
+                  className="form-check-label search-btntext ps-1"
                   htmlFor="mobileExperienceSwitch"
                 >
                   只顯示彩妝體驗

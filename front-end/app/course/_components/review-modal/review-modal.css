@@ -89,3 +89,9 @@
 .box5-comment-p {
   color: var(--sub-text);
 }
+.bx-star:hover,
+.bxs-star:hover,
+.bxs-star-half:hover {
+  transform: scale(1.2);
+  transition: transform 0.1s;
+}
