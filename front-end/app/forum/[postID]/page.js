@@ -10,10 +10,11 @@ import ComponentsAvatar from '../_components/avatar'
 import EditPostModal from '../_components/edit-post-modal'
 import useSWR from 'swr'
 import ComponentsBtnLikedSaved from '../_components/btn-liked-saved'
-import ComponentsMorePost from './more-post'
+import ComponentsMorePost from './_components/more-post'
 import ComponentsAuthorInfo from '../_components/author-info'
 import { useAuth } from '../../../hook/use-auth'
-import DeleteConfirmModal from './deleteConfirmModal'
+import DeleteConfirmModal from './_components/deleteConfirmModal'
+import PostIDComment from './comment'
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
 
@@ -139,7 +140,7 @@ export default function PostIDPage(props) {
                       className="dropdown-item-forum px-0 py-2 button-clear"
                       type="button"
                       data-bs-toggle="modal"
-                      data-bs-target="#editPostModal"
+                      data-bs-target="#updatedPostModal"
                     >
                       編輯文章
                     </button>
@@ -234,154 +235,7 @@ export default function PostIDPage(props) {
                   })}
               </div>
             </div>
-            <div className="comments-section">
-              <div className="comments-header py-2 bottom-stroke sub-text-color">
-                全部留言
-              </div>
-              <div className="comment-cards d-flex flex-column gap-2 px-1 py-1">
-                <div className="comment-card d-flex flex-column gap-3 py-3 bottom-stroke">
-                  <div className="comment-content d-flex gap10">
-                    <Link href="/" className="user-avatar">
-                      <ComponentsAvatar
-                        classWidth="32"
-                        src={`/images/forum/320.webp`}
-                        alt="測試"
-                      />
-                    </Link>
-                    <div className="comment-main d-flex flex-column flex-grow-1 gap-1">
-                      <div className="comment-header d-flex align-items-start">
-                        <div className="author-account me-auto">
-                          <Link
-                            href="/"
-                            className="d-flex align-items-center gap-1 text-decoration-none fw-medium main-text-color"
-                          >
-                            lillypolly
-                          </Link>
-                        </div>
-                        <button className="evaluate px-2 py-1 border-0 rounded-3 d-flex align-items-center fs14 sub-text-color">
-                          <i className="bi bi-heart me-1" />
-                          23
-                        </button>
-                      </div>
-                      <div className="comment-text">
-                        試過~真的會比一般遮瑕有氣色
-                        <br />
-                        黑眼圈比較青的人 這樣畫妝感會比較顯氣色
-                      </div>
-                      <div className="comment-info d-flex gap-3 fs14 sub-text-color">
-                        <div className="comment-date">3 月 26 日 16:07</div>
-                        <Link
-                          href="/"
-                          role="button"
-                          className="reply text-decoration-none sub-text-color"
-                        >
-                          回覆
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="comment-more d-flex flex-column gap-3">
-                    <Link
-                      href="/"
-                      role="button"
-                      className="text-decoration-none fs14 fw-medium sub-text-color"
-                    >
-                      <span className="fw-light d-inline">——</span>
-                      查看更多留言
-                    </Link>
-                  </div>
-                </div>
-                <div className="comment-card d-flex flex-column gap-3 py-3 bottom-stroke">
-                  <div className="comment-content d-flex gap10">
-                    <Link href="/" className="user-avatar">
-                      <ComponentsAvatar
-                        classWidth="32"
-                        src={`/images/forum/320.webp`}
-                        alt="測試"
-                      />
-                    </Link>
-                    <div className="comment-main d-flex flex-column flex-grow-1 gap-1">
-                      <div className="comment-header d-flex align-items-start">
-                        <div className="author-account me-auto">
-                          <Link
-                            href="/"
-                            className="d-flex align-items-center gap-1 text-decoration-none fw-medium main-text-color"
-                          >
-                            lillypolly
-                          </Link>
-                        </div>
-                        <button className="evaluate px-2 py-1 border-0 rounded-3 d-flex align-items-center fs14 sub-text-color">
-                          <i className="bi bi-heart me-1" />
-                          23
-                        </button>
-                      </div>
-                      <div className="comment-text">
-                        試過~真的會比一般遮瑕有氣色
-                        <br />
-                        黑眼圈比較青的人 這樣畫妝感會比較顯氣色
-                      </div>
-                      <div className="comment-info d-flex gap-3 fs14 sub-text-color">
-                        <div className="comment-date">3 月 26 日 16:07</div>
-                        <Link
-                          href="/"
-                          role="button"
-                          className="reply text-decoration-none sub-text-color"
-                        >
-                          回覆
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="comment-more d-flex flex-column gap-3">
-                    <div href="/" className="">
-                      <button className="text-decoration-none fs14 fw-medium sub-text-color">
-                        <span className="fw-light d-inline">——</span> 收起留言
-                      </button>
-                    </div>
-                    <div className="comment-content d-flex gap10">
-                      <Link href="/" className="user-avatar">
-                        <ComponentsAvatar
-                          classWidth="32"
-                          src={`/images/forum/320.webp`}
-                          alt="測試"
-                        />
-                      </Link>
-                      <div className="comment-main d-flex flex-column flex-grow-1 gap-1">
-                        <div className="comment-header d-flex align-items-start">
-                          <div className="author-account me-auto">
-                            <Link
-                              href="/"
-                              className="d-flex align-items-center gap-1 text-decoration-none fw-medium main-text-color"
-                            >
-                              lillypolly
-                            </Link>
-                          </div>
-                          <button className="evaluate px-2 py-1 border-0 rounded-3 d-flex align-items-center fs14 sub-text-color">
-                            <i className="bi bi-heart me-1" />
-                            23
-                          </button>
-                        </div>
-                        <div className="comment-text">
-                          試過~真的會比一般遮瑕有氣色
-                          <br />
-                          黑眼圈比較青的人 這樣畫妝感會比較顯氣色
-                        </div>
-                        <div className="comment-info d-flex gap-3 fs14 sub-text-color">
-                          <div className="comment-date">3 月 26 日 16:07</div>
-                          <Link
-                            href="/"
-                            role="button"
-                            className="reply text-decoration-none sub-text-color"
-                          >
-                            回覆
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <PostIDComment />
           </div>
         </div>
       </main>
@@ -392,6 +246,15 @@ export default function PostIDPage(props) {
         postTitle={post.title}
         postContent={post.content}
         isUpdated={true}
+        mutate={mutate}
+      />
+      <EditPostModal
+        postID=""
+        productCate=""
+        postCate=""
+        postTitle=""
+        postContent=""
+        isUpdated={false}
         mutate={mutate}
       />
       {/* <DeleteConfirmModal modalId={'#confirmModal'} /> FIXME */}

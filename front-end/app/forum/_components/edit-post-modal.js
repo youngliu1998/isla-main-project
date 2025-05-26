@@ -1,10 +1,9 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import ComponentsAuthorInfo from './author-info'
 import { useAuth } from '../../../hook/use-auth'
 import { useFilter } from '../_context/filterContext'
-import { mutate } from 'swr'
 import { useRouter } from 'next/navigation'
 // import '/bootstrap/dist/js/bootstrap.bundle.min.js' 無法直接引入
 
@@ -215,7 +214,8 @@ export default function EditPostModal({
       <form onSubmit={handleSubmit}>
         <div
           className="modal fade"
-          id="editPostModal"
+          // id="editPostModal"
+          id={isUpdated ? 'updatedPostModal' : 'editPostModal'}
           ref={modalRef}
           tabIndex={-1}
           aria-labelledby="editPostModalLabel"
@@ -372,7 +372,7 @@ export default function EditPostModal({
                   取消
                 </button>
                 <button
-                  type="button"
+                  type="submit"
                   data-bs-dismiss="modal"
                   className={`px-4 py-2 rounded-3 border-0 bounce ${isTitleValid && isContentValid ? 'bg-main color-isla-white' : 'bg-hover-gray sub-text-color border-0'}`}
                   onClick={() => {

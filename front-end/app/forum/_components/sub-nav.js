@@ -243,9 +243,9 @@ export default function ComponentsSubNav() {
           </div>
         </aside>
       </div>
-      {/* <div className="position-absolute">
+      <div className="position-absolute">
         <EditPostModal isUpdated={false} mutate={() => {}} />
-      </div> */}
+      </div>
     </>
   )
 }

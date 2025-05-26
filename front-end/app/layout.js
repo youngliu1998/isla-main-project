@@ -7,6 +7,7 @@ import Header from './_components/header/header'
 import Footer from './_components/footer/footer'
 import '@/app/_styles/globals.scss'
 import Provider from './provider'
+import Chat from './_components/service-chat/chat'
 
 export const metadata = {
   title: 'ISLA project',
@@ -33,6 +34,7 @@ export default function RootLayout({ children }) {
           <div style={{ marginTop: '80px' }}>{children}</div>
           <Footer />
           <ToastContainer />
+          <Chat />
         </body>
       </Provider>
     </html>
