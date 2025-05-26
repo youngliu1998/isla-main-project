@@ -3,8 +3,8 @@ import '@fontsource/plaster'
 import '@fontsource/noto-sans-tc'
 import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer } from 'react-toastify'
-import Header from './_components/header'
-import Footer from './_components/footer'
+import Header from './_components/header/header'
+import Footer from './_components/footer/footer'
 import '@/app/_styles/globals.scss'
 import Provider from './provider'
 
@@ -26,13 +26,36 @@ export default function RootLayout({ children }) {
           href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
           rel="stylesheet"
         />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+TC:wght@100..900&display=swap"
+          rel="stylesheet"
+        />
       </head>
       <Provider>
         <body>
           <Header />
+          <ToastContainer
+            position="top-right" // 放在畫面上方中間
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            toastClassName="custom-toast"
+            style={{ marginTop: '70px', zIndex: 9999 }} // 根據 header 高度調整 marginTop
+          />
           <div style={{ marginTop: '80px' }}>{children}</div>
           <Footer />
-          <ToastContainer />
+          {/* <ToastContainer /> */}
         </body>
       </Provider>
     </html>

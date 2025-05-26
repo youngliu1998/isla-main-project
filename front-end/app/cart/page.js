@@ -1,6 +1,5 @@
 'use client'
 import styles from './_styles/cart-style.module.scss'
-import { checkCouponStatus } from './utils/coupon-helper'
 import { toast } from 'react-toastify'
 //import component
 import StepProgress from './_component/step-progress/step-progress'
@@ -10,6 +9,8 @@ import CouponAccordionCourse from './_component/coupon-accordion/coupon-accordio
 import CouponSwiper from './_component/coupon-swiper/coupon-swiper'
 import OrderSummary from './_component/order-summary/order-summary'
 import MobileOrderBar from './_component/mobile-order-bar/mobile-order-bar'
+import EmptyCart from './_component/cart-empty/empty-cart'
+import CartLoading from './_component/cart-Loading/cart-loading'
 // coustom-hook
 import { useAuth } from '@/hook/use-auth'
 import useIsMobile from './hook/useIsMobile'
@@ -25,7 +26,12 @@ export default function CartPage() {
   const [checkedItems, setCheckedItems] = useState({}) // 以 id 為 key 儲存是否勾選
   const [couponDataProd, setCouponDataProd] = useState([])
   const [couponDataCour, setCouponDataCour] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [selecProdCoup, setSelecProdCoup] = useState(null)
+  const [selecCourCoup, setSelecCourCoup] = useState(null)
+  const [selecGloCoup, setSelecGloCoup] = useState(null)
 
+  //init-get cart-items & member-coupon
   useEffect(() => {
     // fetch get-cart-items
     const cartItemsData = async () => {
@@ -34,6 +40,7 @@ export default function CartPage() {
         const rawCartItems = res.data.data.cartItems
 
         console.log('前端抓到的購物車資料：', rawCartItems)
+        // toast.success('頁面載入成功！')
         const typedItems = rawCartItems.map((item) => {
           let type = 'normal'
 
@@ -53,6 +60,8 @@ export default function CartPage() {
         localStorage.setItem('cartItems', JSON.stringify(typedItems))
       } catch (error) {
         console.error('購物車資料抓取失敗:', error.message)
+      } finally {
+        setIsLoading(false)
       }
     }
     //fetch member-coupon
@@ -63,8 +72,9 @@ export default function CartPage() {
         console.log('會員已領取的優惠券', rawCouponItems)
 
         localStorage.setItem('member-coupons', JSON.stringify(rawCouponItems))
-        setCouponDataProd(rawCouponItems.productCoupons)
-        setCouponDataCour(rawCouponItems.courseCoupons)
+        console.log('會員已領取的優惠券存到token')
+        setCouponDataProd(rawCouponItems.productCoupons || [])
+        setCouponDataCour(rawCouponItems.courseCoupons || [])
       } catch (error) {
         console.error('會員已領取的優惠券資料抓取失敗', error.message)
       }
@@ -84,9 +94,10 @@ export default function CartPage() {
         localStorage.setItem('cartItems', JSON.stringify(updated))
         toast.success('已從購物車移除', {
           position: 'top-right',
-          autoClose: 2000,
+          autoClose: 1000,
           hideProgressBar: false,
         })
+        console.log('toast 要跑囉')
       } else {
         console.error(res.data.message)
         toast.error(res.data.message || '刪除失敗')
@@ -97,7 +108,19 @@ export default function CartPage() {
     }
   }
 
-  const [selectedCoupon, setSelectedCoupon] = useState(null)
+  useEffect(() => {
+    // 判斷目前已勾選商品是否為 0
+    const checkedCount = Object.values(checkedItems).filter(Boolean).length
+    if (checkedCount === 0) {
+      setSelecProdCoup(null)
+      setSelecCourCoup(null)
+      setSelecGloCoup(null)
+    }
+    // checkedItems 變動就清空
+    setSelecProdCoup(null)
+    setSelecCourCoup(null)
+    setSelecGloCoup(null)
+  }, [checkedItems])
 
   // 計算總金額（你也可以只算勾選的 cartItems）
   const totalAmount = cartItems.reduce(
@@ -112,7 +135,6 @@ export default function CartPage() {
     checkedItems,
     totalAmount
   )
-
   // 處理 課程-優惠券
   const processedCouponsCourse = useProcesCoups(
     couponDataCour,
@@ -120,24 +142,22 @@ export default function CartPage() {
     checkedItems,
     totalAmount
   )
-
-  const onSelectCoupon = (coupon) => {
-    // 若點到的是已選的，就取消選擇（toggle）
-    if (selectedCoupon && selectedCoupon.id === coupon.id) {
-      setSelectedCoupon(null)
+  // 商品優惠券選擇toggle
+  const onSelectProdCoup = (coupon) => {
+    if (selecProdCoup && selecProdCoup.id === coupon.id) {
+      setSelecProdCoup(null)
     } else {
-      setSelectedCoupon(coupon)
+      setSelecProdCoup(coupon)
     }
   }
-
-  // 判斷是否為手機裝置
-  const isMobile = useIsMobile()
-  // 記錄元件是否 已Mounted完成
-  const [hasMounted, setHasMounted] = useState(false)
-  useEffect(() => {
-    setHasMounted(true)
-  }, [])
-  if (!hasMounted) return null // 預防報錯
+  // 課程優惠券選擇toggle
+  const onSelectCourCoup = (coupon) => {
+    if (selecCourCoup && selecCourCoup.id === coupon.id) {
+      setSelecCourCoup(null)
+    } else {
+      setSelecCourCoup(coupon)
+    }
+  }
 
   const productItems = cartItems.filter(
     (item) => item.type === 'normal' || item.type === 'colorDots'
@@ -162,136 +182,200 @@ export default function CartPage() {
     setSelectAll(isAllChecked)
   }
 
+  // 記錄元件是否 已加載完成
+  const [hasMounted, setHasMounted] = useState(false)
+  // 判斷是否為手機裝置
+  const isMobile = useIsMobile()
+  useEffect(() => {
+    setHasMounted(true)
+  }, [])
+  if (!hasMounted) return null // 預防報錯
+
+  // 購物車頁面沒有加載完成 就跑loading動畫
+  if (!hasMounted) return null
+  if (isLoading) {
+    return (
+      <section className="container text-center my-5">
+        <CartLoading />
+      </section>
+    )
+  }
+  // 過濾 area=1 商品券
+  const filterProdCoups = processedCouponsProd.filter(
+    (coupon) => coupon.area === 1
+  )
+  // 過濾 area=2 課程券
+  const filterCourCoups = processedCouponsCourse.filter(
+    (coupon) => coupon.area === 2
+  )
+  // 過濾 area=0 全站券
+  const filterGloCoups = processedCouponsProd.filter(
+    (coupon) => coupon.area === 0
+  )
+
   return (
     <>
       <section className="container text-center text-lg-start mt-2">
         <h1 className="text-subtext h2 m-5">購物袋</h1>
       </section>
-      {/* step-icon */}
-      <section className="container d-none d-lg-block mb-4">
+
+      {/* <section className="container d-none d-lg-block mb-4">
         <StepProgress currentStep={1} />
-      </section>
+      </section> */}
 
-      {/* main */}
-      <section
-        className="container-fluid container-lg"
-        style={{ paddingBottom: '50px' }}
-      >
-        <div className="row gy-5">
-          <div className="col-lg-4 col-12">
-            <div className="form-check m-4 ">
-              <input
-                className={`form-check-input me-2 ${styles.checkboxInput}`}
-                type="checkbox"
-                id="allCheck"
-                checked={selectAll}
-                onChange={(evt) => {
-                  handleSelectAll(evt.target.checked)
-                }}
-              />
-              <label htmlFor="allCheck" className="text-subtext">
-                選取所有
-              </label>
-            </div>
-          </div>
-          <div className="col-lg-8 col-12 d-none d-lg-block"></div>
-        </div>
-
-        <div className="row gy-5">
-          <div className="col-lg-8 col-12 gy-5">
-            <div className="card-style mb-4 p-4">
-              <div className="mb-3 d-flex align-items-center text-primary">
-                <i className="bi bi-cart4 fs-6 mb-1 me-1"></i>
-                <div>彩妝商品</div>
-              </div>
-              {productItems.map((item) => (
-                <ProductCard
-                  key={item.id}
-                  type={item.type}
-                  id={item.id}
-                  title={item.name}
-                  image={item.image_url}
-                  salePrice={item.sale_price ?? item.base_price}
-                  basePrice={item.base_price}
-                  quantity={item.quantity}
-                  color={item.color}
-                  colorOptions={item.color_options}
-                  category={item.category}
-                  onDelete={() => handleDeleteItem(item.id)}
-                  onQuantityChange={(newQty) =>
-                    console.log(`cartItem-id：${item.id}, 數量變更：${newQty}`)
-                  }
-                  isChecked={checkedItems[item.id] || false}
-                  onCheckChange={(checked) =>
-                    handleItemCheckChange(item.id, checked)
-                  }
-                />
-              ))}
-
-              {/* add-on-divider */}
-              <div
-                className="w-100 bg-subtext my-3"
-                style={{ height: '1px' }}
-              ></div>
-              <div className="text-elem">
-                <i className="bi bi-cart-check-fill me-2"></i>加購商品
-              </div>
-            </div>
-
-            <CouponAccordion>
-              {/* 載入商品優惠券元件 */}
-              <CouponSwiper
-                coupons={processedCouponsProd}
-                selectedCoupon={selectedCoupon}
-                onSelectCoupon={onSelectCoupon}
-              />
-            </CouponAccordion>
-
-            <div className="card-style mb-3 p-4">
-              <div className="mb-3">
-                <div className="mb-3 d-flex align-items-center text-primary">
-                  <i className="bi bi-film fs-6 mb-1 me-2"></i>
-                  <div>彩妝課程</div>
+      {cartItems.length === 0 ? (
+        <section className="container text-center my-5">
+          <EmptyCart />
+        </section>
+      ) : (
+        <>
+          <section className="container d-none d-lg-block mb-4">
+            <StepProgress currentStep={1} />
+          </section>
+          <section
+            className="container-fluid container-lg"
+            style={{ paddingBottom: '50px' }}
+          >
+            <div className="row gy-5">
+              <div className="col-lg-4 col-12">
+                <div className="form-check m-4 ">
+                  <input
+                    className={`form-check-input me-2 ${styles.checkboxInput}`}
+                    type="checkbox"
+                    id="allCheck"
+                    checked={selectAll}
+                    onChange={(evt) => {
+                      handleSelectAll(evt.target.checked)
+                    }}
+                  />
+                  <label htmlFor="allCheck" className="text-subtext">
+                    選取所有
+                  </label>
                 </div>
               </div>
-              {/* === Product Card Course === */}
-              {courseItems.map((item) => (
-                <ProductCard
-                  key={item.id}
-                  type={item.type}
-                  id={item.id}
-                  title={item.name}
-                  image={item.image_url}
-                  salePrice={item.sale_price ?? item.base_price}
-                  basePrice={item.base_price}
-                  quantity={item.quantity}
-                  color={item.color}
-                  colorOptions={item.color_options}
-                  category={item.category}
-                  onDelete={() => handleDeleteItem(item.id)}
-                  onQuantityChange={(newQty) =>
-                    console.log('變更數量', item.id, newQty)
-                  }
-                  isChecked={checkedItems[item.id] || false}
-                  onCheckChange={(checked) =>
-                    handleItemCheckChange(item.id, checked)
-                  }
-                />
-              ))}
+              <div className="col-lg-8 col-12 d-none d-lg-block"></div>
             </div>
-            <CouponAccordionCourse>
-              {/* 載入課程優惠券元件 */}
-              <CouponSwiper
-                coupons={processedCouponsCourse}
-                selectedCoupon={selectedCoupon}
-                onSelectCoupon={onSelectCoupon}
-              />
-            </CouponAccordionCourse>
-          </div>
-          <div className="col-lg-4 col-12">{!isMobile && <OrderSummary />}</div>
-          {isMobile && <MobileOrderBar />}
-        </div>
-      </section>
+
+            <div className="row gy-5">
+              <div className="col-lg-8 col-12 gy-5">
+                <div className="card-style mb-4 p-4">
+                  <div className="mb-3 d-flex align-items-center text-primary">
+                    <i className="bi bi-cart4 fs-6 mb-1 me-1"></i>
+                    <div>彩妝商品</div>
+                  </div>
+                  {productItems.map((item) => (
+                    <ProductCard
+                      key={item.id}
+                      type={item.type}
+                      id={item.id}
+                      title={item.name}
+                      image={item.image_url}
+                      salePrice={item.sale_price ?? item.base_price}
+                      basePrice={item.base_price}
+                      quantity={item.quantity}
+                      color={item.color}
+                      colorOptions={item.color_options}
+                      category={item.category}
+                      onDelete={() => handleDeleteItem(item.id)}
+                      onQuantityChange={(newQty) => {
+                        const updated = cartItems.map((p) =>
+                          p.id === item.id ? { ...p, quantity: newQty } : p
+                        )
+                        setCartItems(updated)
+                        localStorage.setItem(
+                          'cartItems',
+                          JSON.stringify(updated)
+                        )
+                      }}
+                      isChecked={checkedItems[item.id] || false}
+                      onCheckChange={(checked) =>
+                        handleItemCheckChange(item.id, checked)
+                      }
+                    />
+                  ))}
+
+                  {/* add-on-divider */}
+                  <div
+                    className="w-100 bg-subtext my-3"
+                    style={{ height: '1px' }}
+                  ></div>
+                  <div className="text-elem">
+                    <i className="bi bi-cart-check-fill me-2"></i>加購商品
+                  </div>
+                </div>
+
+                <CouponAccordion>
+                  <CouponSwiper
+                    coupons={filterProdCoups}
+                    selectedCoupon={selecProdCoup}
+                    onSelectCoupon={setSelecProdCoup}
+                  />
+                </CouponAccordion>
+
+                <div className="card-style mb-3 p-4">
+                  <div className="mb-3">
+                    <div className="mb-3 d-flex align-items-center text-primary">
+                      <i className="bi bi-film fs-6 mb-1 me-2"></i>
+                      <div>彩妝課程</div>
+                    </div>
+                  </div>
+                  {courseItems.map((item) => (
+                    <ProductCard
+                      key={item.id}
+                      type={item.type}
+                      id={item.id}
+                      title={item.name}
+                      image={item.image_url}
+                      salePrice={item.sale_price ?? item.base_price}
+                      basePrice={item.base_price}
+                      quantity={item.quantity}
+                      category={item.category}
+                      onDelete={() => handleDeleteItem(item.id)}
+                      onQuantityChange={(newQty) => {
+                        const updated = cartItems.map((p) =>
+                          p.id === item.id ? { ...p, quantity: newQty } : p
+                        )
+                        setCartItems(updated)
+                        localStorage.setItem(
+                          'cartItems',
+                          JSON.stringify(updated)
+                        )
+                      }}
+                      isChecked={checkedItems[item.id] || false}
+                      onCheckChange={(checked) =>
+                        handleItemCheckChange(item.id, checked)
+                      }
+                    />
+                  ))}
+                </div>
+
+                <CouponAccordionCourse>
+                  <CouponSwiper
+                    coupons={filterCourCoups}
+                    selectedCoupon={selecCourCoup}
+                    onSelectCoupon={setSelecCourCoup}
+                  />
+                </CouponAccordionCourse>
+              </div>
+              <div className="col-lg-4 col-12">
+                {!isMobile && (
+                  <OrderSummary
+                    cartItems={cartItems.filter((i) => checkedItems[i.id])}
+                    selecProdCoup={selecProdCoup}
+                    selecCourCoup={selecCourCoup}
+                    selecGloCoup={selecGloCoup}
+                    setSelecGloCoup={setSelecGloCoup}
+                    filterGloCoups={filterGloCoups}
+                    filterCourCoups={filterProdCoups}
+                    filterProdCoups={filterProdCoups}
+                  />
+                )}
+              </div>
+              {isMobile && <MobileOrderBar />}
+            </div>
+          </section>
+        </>
+      )}
     </>
   )
 }

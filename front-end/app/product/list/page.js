@@ -12,7 +12,7 @@ export default function ProductPage() {
   // const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
   const isMobile = useMobileDisplay('(max-width: 768px)')
   console.log('isMobile:', isMobile)
-  const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false) // 預設為收起
+  const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false)
 
   const [filters, setFilters] = useState({
     keyword: '',
@@ -78,19 +78,7 @@ export default function ProductPage() {
     }
 
     return (
-      // 1. 父容器使用 Bootstrap 'row' class。
-      // 2. 'row-cols-*' class 用於響應式地定義每行顯示多少個欄位：
-      //    - 'row-cols-1':        超小螢幕 (xs, <576px)，每行 1 個
-      //    - 'row-cols-sm-2':     小螢幕 (sm, >=576px)，每行 2 個
-      //    - 'row-cols-md-3':     中等螢幕 (md, >=768px)，每行 3 個
-      //    - 'row-cols-lg-4':     大螢幕 (lg, >=992px)，每行 4 個
-      //    - 'row-cols-xl-4':     超大螢幕 (xl, >=1200px)，這裡設為每行4個，您可以根據卡片寬度調整為5或6 (row-cols-xl-5)
-      // 3. 'g-3' 或 'g-4' (gutter) class 用於設定欄位之間的間距 (gap)。
-      // 4. 'justify-content-center' (可選): 如果希望在項目不足一行時，該行內的項目能夠水平居中。
-      //    對於 `row-cols-*`，通常項目會緊湊排列，但如果最後一行項目較少，此 class 可以幫助居中。
       <div className="product-list">
-        {' '}
-        {/* 通常預設是 justify-content-start，可依需求調整為 center */}
         {products.map((p) => (
           <div key={p.product_id} className="product-card-container">
             <ProductCard

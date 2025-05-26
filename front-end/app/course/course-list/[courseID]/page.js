@@ -256,6 +256,23 @@ export default function CourseIDPage() {
     setReviewCard((prev) => prev.filter((v) => v.comment_id !== deletedId))
   }
 
+  // ✅ 登入成功後滾回留言區
+  useEffect(() => {
+    const pendingScrollToComment = localStorage.getItem(
+      'pendingScrollToComment'
+    )
+    if (user?.id && pendingScrollToComment === id) {
+      localStorage.removeItem('pendingScrollToComment')
+      toast.success('歡迎回來！您可以撰寫評論囉')
+      setTimeout(() => {
+        sectionRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        })
+      }, 500)
+    }
+  }, [user])
+
   // ✅ 初始化：取得課程資料與留言
   useEffect(() => {
     async function getCourseList() {
@@ -771,12 +788,21 @@ export default function CourseIDPage() {
                   ) : (
                     <div className="alert alert-warning my-3" role="alert">
                       請先登入會員後才能撰寫評論。
-                      <Link
-                        href="/member/login"
+                      <button
                         className="btn btn-sm btn-primary ms-3"
+                        onClick={() => {
+                          // ✅ 未登入點擊 → 顯示登入 Modal，並記錄課程 ID。
+                          localStorage.setItem(
+                            'redirectAfterLogin',
+                            window.location.href
+                          )
+                          localStorage.setItem('pendingScrollToComment', id)
+                          toast.info('請先登入會員')
+                          setShowLoginModal(true)
+                        }}
                       >
                         前往登入
-                      </Link>
+                      </button>
                     </div>
                   )}
                 </div>
@@ -985,7 +1011,7 @@ export default function CourseIDPage() {
       <LoginModal
         show={showLoginModal}
         onClose={() => setShowLoginModal(false)}
-        handleBuyNow={handleBuyNow}
+        // handleBuyNow={handleBuyNow}
       />
     </>
   )

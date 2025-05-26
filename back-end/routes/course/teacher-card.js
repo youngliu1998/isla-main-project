@@ -2,7 +2,7 @@ import express from 'express'
 const router = express.Router()
 import db from '../../config/mysql.js'
 
-// Url: http://localhost:3006/api/course/teacher-card
+// Url: http://localhost:3005/api/course/teacher-card
 router.get('/', async (req, res) => {
   try {
     const [teachers] = await db.query(`

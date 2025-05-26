@@ -65,11 +65,11 @@ export default function ForumPage(props) {
             <div className="d-flex flex-wrap justify-content-center align-items-center gap-3 px-2">
               <div className="author-info d-flex align-items-center gap-2 me-auto">
                 <ComponentsAvatar
-                  src="/images/forum/320.webp"
-                  alt="Mandy"
+                  src={posts[0].user_img}
+                  alt={posts[0].user_nick}
                   classWidth="64"
                 />
-                <span className="fs24 fw-medium">Mandy</span>
+                <span className="fs24 fw-medium">{posts[0].user_nick}</span>
               </div>
               <div className="d-flex justify-content-end gap-3 text-nowrap">
                 <div className="d-flex align-items-center gap-2">
@@ -96,7 +96,7 @@ export default function ForumPage(props) {
                 postContent={post.content}
                 authorID={post.user_id}
                 width="21"
-                src={`/images/forum/320.webp`}
+                src={post.user_img}
                 alt={post.user_name}
                 fontSize="14"
                 color="var(--sub-text)"
@@ -119,11 +119,11 @@ export default function ForumPage(props) {
           <div className="d-flex flex-column justify-content-center align-items-center gap-3">
             <div className="d-flex flex-column align-items-center gap-1 w-100">
               <ComponentsAvatar
-                src="/images/forum/320.webp"
-                alt="Mandy"
+                src={posts[0].user_img}
+                alt={posts[0].user_nick}
                 classWidth="64"
               />
-              <span className="fs24 fw-medium">Mandy</span>
+              <span className="fs24 fw-medium">{posts[0].user_nick}</span>
             </div>
             <div className="d-flex justify-content-end gap-3 text-nowrap">
               <div className="d-flex align-items-center gap-2 w-50">
