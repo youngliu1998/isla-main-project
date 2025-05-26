@@ -1,5 +1,7 @@
 'use client'
 
+import clsx from 'clsx'
+
 export default function RegisterInput({
   title = '',
   name = 'account',
@@ -10,11 +12,12 @@ export default function RegisterInput({
     f
   },
   disabled = '',
+  errorMsg = '',
 }) {
   const isStar = name == 'email' || name == 'birthday' ? '*' : ''
   return (
     <>
-      <div className="register-input-block">
+      <div className={clsx(['register-input-block'], errorMsg && 'user-error')}>
         <label htmlFor={name}>
           {title}
           <span className="user-star">{isStar}</span>
@@ -28,6 +31,7 @@ export default function RegisterInput({
           onChange={(e) => {
             setText({ ...text, [name]: e.target.value })
           }}
+          placeholder={errorMsg}
         />
       </div>
     </>

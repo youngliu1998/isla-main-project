@@ -3,6 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { BiSolidHeart, BiHeart } from 'react-icons/bi'
 import './_style/product-bookmark.css'
+import Link from 'next/link'
 
 const BookmarkComponent = ({
   isbookmarked = false,
@@ -11,7 +12,7 @@ const BookmarkComponent = ({
 }) => {
   return (
     <div className="product-card-bookmark">
-      <a
+      <Link
         href="#"
         onClick={onToggle}
         aria-label={isbookmarked ? '移除書籤' : '加入書籤'}
@@ -25,7 +26,7 @@ const BookmarkComponent = ({
             className={` product-card-bookmark-icon ${isMobile ? 'product-card-bookmark-icon-mobile' : ''} `}
           />
         )}
-      </a>
+      </Link>
     </div>
   )
 }
