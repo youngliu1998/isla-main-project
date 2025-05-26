@@ -1,27 +1,56 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-// ==== swiper ====
 import { Swiper, SwiperSlide } from 'swiper/react'
+import { Navigation } from 'swiper/modules'
 import 'swiper/css'
+import 'swiper/css/navigation'
 
-export default function SwiperProduct(props) {
+// Import Swiper styles
+import 'swiper/css'
+import 'swiper/css/pagination'
+
+// import './styles.css';
+
+// import required modules
+import { Pagination } from 'swiper/modules'
+
+export default function SwiperProduct() {
   return (
     <>
-      <div className="overflow-hidden position-relative">
-        <Swiper
-          // install Swiper modules
-          // modules={[Pagination]}
-          spaceBetween={50}
-          slidesPerView={4}
-          onSwiper={(swiper) => console.log(swiper)}
-          onSlideChange={() => console.log('slide change')}
-        >
-          <SwiperSlide>Slide 1</SwiperSlide>
-          <SwiperSlide>Slide 2</SwiperSlide>
-          <SwiperSlide>Slide 3</SwiperSlide>
-        </Swiper>
-      </div>
+      {/* <Swiper
+        // onSwiper={(swiper) => {
+        //   swiperRef.current = swiper
+        // }}
+        modules={[Navigation]}
+        navigation
+        spaceBetween={6}
+        breakpoints={{
+          0: {
+            slidesPerView: 1.1,
+            spaceBetween: 10,
+          },
+          420: {
+            slidesPerView: 1.2,
+            spaceBetween: 12,
+          },
+          768: {
+            slidesPerView: 2.5,
+            spaceBetween: 14,
+          },
+          992: {
+            slidesPerView: 1.8,
+            // spaceBetween: 18,
+          },
+          1200: {
+            slidesPerView: 2.3,
+            spaceBetween: 20,
+          },
+        }}
+      >
+        <SwiperSlide>slide1 </SwiperSlide>
+        <SwiperSlide>slide2 </SwiperSlide>
+        <SwiperSlide>slide3 </SwiperSlide>
+      </Swiper> */}
     </>
   )
 }

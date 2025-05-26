@@ -6,7 +6,7 @@ import Link from 'next/link'
 import Componentstab from '@/app/_components/tab'
 import BrandSelect from './_component/brand-select'
 import ProductCard from '@/app/product/_components/product-card-s'
-// import SwiperProduct from './_component/swiper-product.js'
+import SwiperProduct from './_component/swiper-product.js'
 // ==== hooks ====
 import { useProducts } from '@/hook/use-products'
 // ==== css ====
@@ -69,7 +69,7 @@ export default function ProductSectionBrand() {
   }, [tabSwitch])
   return (
     <>
-      {/* <SwiperProduct /> */}
+      <SwiperProduct />
       <div className="d-flex flex-column align-items-center gap-4">
         <div className="d-flex flex-column align-items-center gap-4">
           <h3>品牌暢銷商品</h3>
