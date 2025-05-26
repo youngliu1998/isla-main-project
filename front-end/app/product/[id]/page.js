@@ -21,11 +21,15 @@ import { useAuth } from '@/hook/use-auth.js'
 import ProductInfoAccrodion from './_component/product-info-accordion/product-info-accordion.js'
 import Image from 'next/image.js'
 import Link from 'next/link'
+import {toast} from "react-toastify";
 export default function page({ params }) {
   // i don't know what is this shit, but it's warning
   const { user, isLoading: isAuthLoading } = useAuth()
   const token = useClientToken()
   const userId = user?.id
+  const correct_nickname = user?.nickname
+  const correct_ava_url = user?.ava_url
+
 
   const unwrappedParams = React.use(params)
   const id = unwrappedParams?.id
@@ -90,14 +94,14 @@ export default function page({ params }) {
   const handleAddToCart = useCallback(() => {
     // 檢查是否有產品數據
     if (!product) {
-      alert('產品資料載入中，請稍候')
+      toast.warning('產品資料載入中，請稍候')
       return
     }
 
     const colorId = selectedColorId ?? product.colors?.[0]?.color_id
 
     if (!colorId && !isStandardOnly) {
-      alert('請先選擇顏色')
+      toast.warning('請先選擇顏色')
       return
     }
 
@@ -177,14 +181,14 @@ export default function page({ params }) {
   }
 
   // 等待 token 載入完成（這個邏輯可能需要根據 useClientToken 的實際行為調整）
-  if (token === null) {
-    return <div>載入中...</div>
-  }
-
-  // 未登入的處理
-  if (!token) {
-    return <div>請先登入以使用此功能</div>
-  }
+  // if (token === null) {
+  //   return <div>載入中...</div>
+  // }
+  //
+  // // 未登入的處理
+  // if (!token) {
+  //   return <div>請先登入以使用此功能</div>
+  // }
 
   // 產品不存在
   if (!product) {
@@ -237,7 +241,7 @@ export default function page({ params }) {
             <div className="product-index d-flex flex-column justify-content-between">
               <div className="index-top">
                 <div className="top-main">
-                  <Link href={`/products?brand_id=${product.brand.brand_id}`}>
+                  <Link href={`/product?brandIds=${product.brand.brand_id}`}>
                     <div className="brand">{product.brand.name}</div>
                   </Link>
                   <div className="name">{product.name}</div>
@@ -259,11 +263,6 @@ export default function page({ params }) {
                     quantity={quantity}
                     setQuantity={setQuantity}
                   />
-                  {/*<div className="bookmark">*/}
-                  {/*  <a href="#">*/}
-                  {/*    <i className="bx bxs-heart" />*/}
-                  {/*  </a>{' '}*/}
-                  {/*</div>*/}
                   <WishButton
                     token={token}
                     type="product"
@@ -316,6 +315,8 @@ export default function page({ params }) {
             reviewImages={reviewImages}
             productId={product.product_id}
             userId={userId}
+            userName={correct_nickname}
+            userAvatar={correct_ava_url}
           />
         </div>
       </section>
@@ -324,212 +325,7 @@ export default function page({ params }) {
           <div className="relative-products-title-main">猶豫不決嗎？</div>
           <div className="relative-products-title-sub">下面有其他類似商品</div>
         </div>
-        <div className="relative-products-cards">
-          <div className="card-full-product_card_box">
-            <div className="card-full-product_card">
-              <div className="card-full-product_card-head">
-                <div className="card-full-bookmark">
-                  <a href="">
-                    <i className="bx bxs-heart" />
-                  </a>
-                </div>
-                <div className="card-full-product_card-img">
-                  <img src="./imgs/1.jpg" alt="" className="card-img" />
-                </div>
-                <div className="card-full-hover-add-cart">
-                  <a href="" className="card-full-add-cart-btn">
-                    加入購物車
-                  </a>
-                </div>
-              </div>
-              <div className="card-full-product_card-info">
-                <div className="card-full-info">
-                  <div className="card-full-product_details">
-                    <div className="card-full-brand">CLIO</div>
-                    <div className="card-full-product_name">
-                      KILL COVER HIGH GLOW FOUNDATION
-                    </div>
-                  </div>
-                  <div className="card-full-rating">
-                    <div className="card-full-star-box">
-                      <i className="bx bxs-star card-full-star card-full-star-active" />
-                      <i className="bx bxs-star card-full-star card-full-star-active" />
-                      <i className="bx bxs-star card-full-star card-full-star-active" />
-                      <i className="bx bxs-star card-full-star" />
-                      <i className="bx bxs-star card-full-star" />
-                    </div>
-                    <div className="card-full-rating_text">4 則評論</div>
-                  </div>
-                </div>
-                <div className="card-full-price">
-                  <div className="card-full-price-box d-flex gap-2">
-                    <div className="card-full-main-price">$1,089</div>
-                    <div className="card-full-basic-price">
-                      <del>$1300</del>
-                    </div>
-                  </div>
-                  <div className="card-full-discount d-flex gap-2">
-                    <div className="card-full-discount-box">18%</div>
-                    <div className="card-full-discount-text">省下 $231.58</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="card-full-product_card_box">
-            <div className="card-full-product_card">
-              <div className="card-full-product_card-head">
-                <div className="card-full-bookmark">
-                  <a href="">
-                    <i className="bx bxs-heart" />
-                  </a>
-                </div>
-                <div className="card-full-product_card-img">
-                  <img src="./imgs/1.jpg" alt="" className="card-img" />
-                </div>
-                <div className="card-full-hover-add-cart">
-                  <a href="" className="card-full-add-cart-btn">
-                    加入購物車
-                  </a>
-                </div>
-              </div>
-              <div className="card-full-product_card-info">
-                <div className="card-full-info">
-                  <div className="card-full-product_details">
-                    <div className="card-full-brand">CLIO</div>
-                    <div className="card-full-product_name">
-                      KILL COVER HIGH GLOW FOUNDATION
-                    </div>
-                  </div>
-                  <div className="card-full-rating">
-                    <div className="card-full-star-box">
-                      <i className="bx bxs-star card-full-star card-full-star-active" />
-                      <i className="bx bxs-star card-full-star card-full-star-active" />
-                      <i className="bx bxs-star card-full-star card-full-star-active" />
-                      <i className="bx bxs-star card-full-star" />
-                      <i className="bx bxs-star card-full-star" />
-                    </div>
-                    <div className="card-full-rating_text">4 則評論</div>
-                  </div>
-                </div>
-                <div className="card-full-price">
-                  <div className="card-full-price-box d-flex gap-2">
-                    <div className="card-full-main-price">$1,089</div>
-                    <div className="card-full-basic-price">
-                      <del>$1300</del>
-                    </div>
-                  </div>
-                  <div className="card-full-discount d-flex gap-2">
-                    <div className="card-full-discount-box">18%</div>
-                    <div className="card-full-discount-text">省下 $231.58</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="card-full-product_card_box">
-            <div className="card-full-product_card">
-              <div className="card-full-product_card-head">
-                <div className="card-full-bookmark">
-                  <a href="">
-                    <i className="bx bxs-heart" />
-                  </a>
-                </div>
-                <div className="card-full-product_card-img">
-                  <img src="./imgs/1.jpg" alt="" className="card-img" />
-                </div>
-                <div className="card-full-hover-add-cart">
-                  <a href="" className="card-full-add-cart-btn">
-                    加入購物車
-                  </a>
-                </div>
-              </div>
-              <div className="card-full-product_card-info">
-                <div className="card-full-info">
-                  <div className="card-full-product_details">
-                    <div className="card-full-brand">CLIO</div>
-                    <div className="card-full-product_name">
-                      KILL COVER HIGH GLOW FOUNDATION
-                    </div>
-                  </div>
-                  <div className="card-full-rating">
-                    <div className="card-full-star-box">
-                      <i className="bx bxs-star card-full-star card-full-star-active" />
-                      <i className="bx bxs-star card-full-star card-full-star-active" />
-                      <i className="bx bxs-star card-full-star card-full-star-active" />
-                      <i className="bx bxs-star card-full-star" />
-                      <i className="bx bxs-star card-full-star" />
-                    </div>
-                    <div className="card-full-rating_text">4 則評論</div>
-                  </div>
-                </div>
-                <div className="card-full-price">
-                  <div className="card-full-price-box d-flex gap-2">
-                    <div className="card-full-main-price">$1,089</div>
-                    <div className="card-full-basic-price">
-                      <del>$1300</del>
-                    </div>
-                  </div>
-                  <div className="card-full-discount d-flex gap-2">
-                    <div className="card-full-discount-box">18%</div>
-                    <div className="card-full-discount-text">省下 $231.58</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="card-full-product_card_box">
-            <div className="card-full-product_card">
-              <div className="card-full-product_card-head">
-                <div className="card-full-bookmark">
-                  <a href="">
-                    <i className="bx bxs-heart" />
-                  </a>
-                </div>
-                <div className="card-full-product_card-img">
-                  <img src="./imgs/1.jpg" alt="" className="card-img" />
-                </div>
-                <div className="card-full-hover-add-cart">
-                  <a href="" className="card-full-add-cart-btn">
-                    加入購物車
-                  </a>
-                </div>
-              </div>
-              <div className="card-full-product_card-info">
-                <div className="card-full-info">
-                  <div className="card-full-product_details">
-                    <div className="card-full-brand">CLIO</div>
-                    <div className="card-full-product_name">
-                      KILL COVER HIGH GLOW FOUNDATION
-                    </div>
-                  </div>
-                  <div className="card-full-rating">
-                    <div className="card-full-star-box">
-                      <i className="bx bxs-star card-full-star card-full-star-active" />
-                      <i className="bx bxs-star card-full-star card-full-star-active" />
-                      <i className="bx bxs-star card-full-star card-full-star-active" />
-                      <i className="bx bxs-star card-full-star" />
-                      <i className="bx bxs-star card-full-star" />
-                    </div>
-                    <div className="card-full-rating_text">4 則評論</div>
-                  </div>
-                </div>
-                <div className="card-full-price">
-                  <div className="card-full-price-box d-flex gap-2">
-                    <div className="card-full-main-price">$1,089</div>
-                    <div className="card-full-basic-price">
-                      <del>$1300</del>
-                    </div>
-                  </div>
-                  <div className="card-full-discount d-flex gap-2">
-                    <div className="card-full-discount-box">18%</div>
-                    <div className="card-full-discount-text">省下 $231.58</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <div className="relative-products-cards"></div>
       </section>
     </>
   )

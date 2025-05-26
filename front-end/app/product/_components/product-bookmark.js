@@ -12,8 +12,7 @@ const BookmarkComponent = ({
 }) => {
   return (
     <div className="product-card-bookmark">
-      <Link
-        href="#"
+      <button
         onClick={onToggle}
         aria-label={isbookmarked ? '移除書籤' : '加入書籤'}
       >
@@ -26,7 +25,7 @@ const BookmarkComponent = ({
             className={` product-card-bookmark-icon ${isMobile ? 'product-card-bookmark-icon-mobile' : ''} `}
           />
         )}
-      </Link>
+      </button>
     </div>
   )
 }

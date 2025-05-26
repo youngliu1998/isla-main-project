@@ -3,6 +3,7 @@ import { BsSearch, BsX, BsArrowDown, BsArrowUp } from 'react-icons/bs'
 import clsx from 'clsx'
 import styles from './_style/desktop-filter.module.css'
 import DesktopFilterButtons from './desktop-filter-buttons.js'
+import IslaSwitch from "../../_components/form/switch/form-switch.js";
 
 const priceRanges = ['100 ~ 300', '300 ~ 500', '500 ~ 1000', '1000 元以上']
 
@@ -174,13 +175,7 @@ function SidebarFilter({ filters, onFilterChange, brands, categories, tags }) {
       >
         <div className={styles['sidebar-filter-filter-menu']}>
           <div className={clsx('form-check', 'form-switch' ,styles['sidebar-filter-filter-menu-sale'])} >
-            <input
-              className={clsx(
-                'form-check-input',
-                styles['form-check-input-sale-only']
-              )}
-              type="checkbox"
-              role="switch"
+            <IslaSwitch
               id="switch-sale"
               checked={onSaleOnly}
               onChange={onSaleOnlyToggle}

@@ -1,5 +1,6 @@
 // src/components/ProductCard.jsx
 'use client'
+
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import './_style/product-card-s.css'
@@ -9,46 +10,49 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 function ProductCard({ product }) {
-  if (!product) {
-    return <div>無法載入產品資訊。</div>
-  }
+  if (!product) return <div></div>
+  const [isImageLoaded, setIsImageLoaded] = useState(false)
 
   const {
     id,
     brand = 'N/A',
     name = 'Unnamed Product',
-    price = 'NT$0.00',
+    price = '0',
     originalPrice,
     rating = 0,
     reviews = 0,
-    primary_image_url = `/images/product/test/test1.png`,
+    imageUrl = `/images/product/test/test1.png`,
     isBookmarked: initialIsBookmarked = false,
+    isColorful,
   } = product
 
   const [bookmarked, setBookmarked] = useState(initialIsBookmarked)
 
+  // ✅ 加入購物車
   const handleAddToCart = (e) => {
     e.preventDefault()
-    setBookmarked(!bookmarked)
     console.log(`Product ${id} (${name}) added to cart.`)
-    // TODO: Add to cart logic
+
   }
 
+  // ✅ 切換收藏狀態
   const toggleBookmark = (e) => {
     e.preventDefault()
     setBookmarked(!bookmarked)
     console.log(`Product ${id} (${name}) bookmark status: ${!bookmarked}`)
-    // TODO: Update bookmark logic
+    // TODO: 更新後端書籤狀態
   }
 
+  // ✅ SSR 安全的 RWD 偵測
   const useIsMobile = (breakpoint = 1400) => {
-    const [isMobile, setIsMobile] = useState(window.innerWidth < breakpoint)
+    const [isMobile, setIsMobile] = useState(false)
 
     useEffect(() => {
       const handleResize = () => {
         setIsMobile(window.innerWidth < breakpoint)
       }
 
+      handleResize() // 初始化
       window.addEventListener('resize', handleResize)
       return () => window.removeEventListener('resize', handleResize)
     }, [breakpoint])
@@ -59,13 +63,12 @@ function ProductCard({ product }) {
   const isMobile = useIsMobile()
 
   const IMAGE_PREFIX = 'https://isla-image.chris142852145.workers.dev/'
-  const fullImageUrl = `${IMAGE_PREFIX}${product.imageUrl}`
-
-  const toProduct_Prefix = 'http://localhost:3000/product/'
+  const fullImageUrl = `${IMAGE_PREFIX}${imageUrl}`
+  const productUrl = `http://localhost:3000/product/${id}`
 
   return (
-    <Link href={`${toProduct_Prefix}${product.id}`} passHref>
-      <div key={product.product_id} className="product-card-product_card">
+    <Link href={productUrl} passHref>
+      <div className="product-card-product_card" key={id}>
         <div className="product-card-product_card-head">
           <div className="product-card-head-top d-flex">
             <div className="product-card-rating product-card-rating-desktop">
@@ -80,56 +83,58 @@ function ProductCard({ product }) {
             />
           </div>
 
-          <div className="product-card-product_card-img">
+          <div className="product-card-product_card-img image-container">
+            <div className="skeleton-image" />
             <Image
               src={fullImageUrl}
               alt={name}
-              className="card-img"
+              onLoad={() => setIsImageLoaded(true)}
+              className={`card-img ${isImageLoaded ? 'fade-in' : 'hidden'}`}
               width={0}
               height={0}
-              style={{ width: '100%', height: 'auto' }}
             />
           </div>
 
           <div className="product-card-hover-add-cart">
-            <a
-              href="#"
+            <button
               onClick={handleAddToCart}
               className="product-card-add-cart-btn"
             >
               加入購物車
-            </a>
+            </button>
           </div>
         </div>
 
         <div className="product-card-product_card-info">
           <div className="product-card-info">
             <div className="product-card-product_details">
-              <div className="product-card-brand">{product.brand}</div>
-              <div className="product-card-product_name">{product.name}</div>
+              <div className="product-card-brand">{brand}</div>
+              <div className="product-card-product_name">{name}</div>
             </div>
           </div>
 
           <div className="product-card-rating product-card-rating-mobile">
             <div className="product-card-star-box">
               <RatingComponent
-                rating={product.rating}
-                reviewCount={product.review_count}
+                rating={rating}
+                reviewCount={reviews}
                 isMobile={true}
               />
             </div>
           </div>
 
-          <div className="product-card-price">
+          <div className="product-card-price d-flex justify-content-between">
             <div className="product-card-price-box d-flex gap-2">
-              <div className="product-card-main-price">{price}</div>
-
-              {originalPrice !== price && (
+              <div className="product-card-main-price">NT${parseInt(price)}</div>
+              {originalPrice && originalPrice !== price && (
                 <div className="product-card-basic-price">
-                  <del>{originalPrice}</del>
+                  <del>${parseInt(originalPrice)}</del>
                 </div>
               )}
             </div>
+            {isColorful && isColorful !== '1' && (
+              <div className="product-card-tag">多色可選</div>
+            )}
           </div>
         </div>
       </div>

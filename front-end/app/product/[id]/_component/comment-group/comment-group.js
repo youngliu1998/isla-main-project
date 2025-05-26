@@ -17,6 +17,8 @@ export function CommentGroup({
   reviewImages,
   productId,
   userId,
+  userName,
+  userAvatar,
 }) {
   console.log('Reviews', reviews)
 
@@ -26,6 +28,8 @@ export function CommentGroup({
   const [editReview, setEditReview] = useState(null)
   const [editImages, setEditImages] = useState([])
   const [isLoaded, setIsLoaded] = useState(false)
+
+  const USER_AVA_URL = 'http://localhost:3005/images/member/'
 
   const filteredReviews = reviews
     .filter((review) => {
@@ -44,6 +48,7 @@ export function CommentGroup({
     productId,
     userId
   )
+
   useEffect(() => {
     if (isSuccess) {
       if (data) {
@@ -123,27 +128,7 @@ export function CommentGroup({
             )
           })}
         </div>
-<PictureShowAll reviewImages={reviewImages} />
-      {/*  <div className="comment-sidebar-photos-box">*/}
-      {/*    <div className="comment-sidebar-photos-title">所有圖片</div>*/}
-      {/*    <div className="comment-sidebar-photos">*/}
-      {/*      {(reviewImages || []).slice(0, 6).map(({ imageUrl }, i) => (*/}
-      {/*        <button key={i} className="comment-img" type="button">*/}
-      {/*          <Image*/}
-      {/*            className="img-fluid"*/}
-      {/*            src={imageUrl}*/}
-      {/*            alt={`評論圖片 ${i + 1}`}*/}
-      {/*            width={0}*/}
-      {/*            height={0}*/}
-      {/*          />*/}
-      {/*        </button>*/}
-      {/*      ))}*/}
-      {/*    </div>*/}
-
-      {/*    <button className="comment-sidebar-photos-show-more" type="button">*/}
-      {/*      查看全部*/}
-      {/*    </button>*/}
-      {/*  </div>*/}
+        <PictureShowAll reviewImages={reviewImages} />
       </div>
 
       <div className="comment-box">
