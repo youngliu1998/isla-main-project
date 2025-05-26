@@ -2,16 +2,16 @@
 
 import '../_component/_style.css/form.css'
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+// import { useRouter } from 'next/navigation'
 import InputText from '../_component/input-text'
 import Select from '../_component/select'
 import { useAuth } from '@/hook/use-auth'
 import { cities } from './data/CityCountyData'
 
 export default function ProfilePage() {
-  const router = useRouter()
-  const { isAuth, initAuth } = useAuth()
-  const [text, setText] = useState({
+  // const router = useRouter()
+  const { initAuth } = useAuth()
+  const defaultProfile = {
     name: '',
     nickname: '',
     tel: '',
@@ -22,16 +22,17 @@ export default function ProfilePage() {
     AreaName: '',
     ZipCode: '',
     address: '',
-  })
-  console.log('text', text)
+  }
+  const [text, setText] = useState({ ...defaultProfile })
+  const [error, setError] = useState({ ...defaultProfile })
+  // console.log('text', text)
 
-  // define array areas for selct
+  // ==== 處理地址 ====
   const areas = cities.filter((v) => v.CityName == text.CityName)[0]?.AreaList
-  // console.log('areas', areas)
-  // define array postcodes for selct
-  const postCodes = cities
-    .filter((v) => v.CityName == text.CityName)[0]
-    ?.AreaList.filter((v) => v.AreaName == text.AreaName)
+  // const postCodes = cities
+  //   .filter((v) => v.CityName == text.CityName)[0]
+  //   ?.AreaList.filter((v) => v.AreaName == text.AreaName)
+  // ==== END 處理地址 ====
   // form submit fucntion
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -57,9 +58,47 @@ export default function ProfilePage() {
         },
         body: JSON.stringify(formData),
       })
-      const result = await response.json()
-      alert('提交成功：' + JSON.stringify(result))
-      initAuth()
+      const data = await response.json()
+      // ==== 清除上次錯誤提示 ====
+      setError({ ...defaultProfile })
+      // ==== 處理資料 ====
+      if (response.ok) {
+        // ==== 200 status: success ====
+        if (data.status === 'success') {
+          alert('更新個人資料成功', data)
+        }
+      } else {
+        // ==== 404 status: error ====
+        let newError = { ...defaultProfile }
+        const serverErrors = data.errors
+        if (Array.isArray(serverErrors)) {
+          console.log('Errors: ', serverErrors)
+          serverErrors.forEach((serverError) => {
+            switch (serverError.path) {
+              case 'name':
+                newError = { ...newError, ['name']: serverError.msg }
+                break
+              case 'nickname':
+                newError = { ...newError, ['nickname']: serverError.msg }
+                break
+              case 'tel':
+                newError = { ...newError, ['tel']: serverError.msg }
+                break
+              case 'skin_type':
+                newError = { ...newError, ['skin_type']: serverError.msg }
+                break
+              case 'city':
+                newError = { ...newError, ['city']: serverError.msg }
+                break
+            }
+          })
+          setError(newError)
+        } else {
+          console.log('未知錯誤')
+        }
+        // ==== END 404 status: error ====
+      }
+      // ====  END 處理資料 ====
     } catch (error) {
       console.error('錯誤：', error)
     }
@@ -67,7 +106,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     const token = localStorage.getItem('jwtToken') || null
-    if (!token) router.push('login')
+    if (!token) return
     // if get auth, fetch profile data
     let profileData = {}
     async function getProfile() {
@@ -81,22 +120,24 @@ export default function ProfilePage() {
             headers: { Authorization: `Bearer ${token}` },
           }
         )
-
         const data = await response.json()
-        profileData = await data['data']
-        console.log('profileData: ', profileData)
-        setText({
-          name: profileData?.name || '',
-          nickname: profileData?.nickname || '',
-          birthday: profileData?.birthday || '',
-          gender: profileData?.gender || '',
-          tel: profileData?.tel || '',
-          skinType: profileData?.skin_type || '',
-          CityName: profileData?.city || '',
-          AreaName: profileData?.area || '',
-          ZipCode: profileData?.postcode || '',
-          address: profileData?.address || '',
-        })
+
+        if (response.ok && data?.data) {
+          profileData = await data['data']
+          // console.log('profileData: ', profileData)
+          setText({
+            name: profileData?.name || '',
+            nickname: profileData?.nickname || '',
+            birthday: profileData?.birthday || '',
+            gender: profileData?.gender || '',
+            tel: profileData?.tel || '',
+            skinType: profileData?.skin_type || '',
+            CityName: profileData?.city || '',
+            AreaName: profileData?.area || '',
+            ZipCode: profileData?.postcode || '',
+            address: profileData?.address || '',
+          })
+        }
       } catch (err) {
         console.log(err)
       }
@@ -115,6 +156,7 @@ export default function ProfilePage() {
               name="name"
               value={text.name}
               setText={setText}
+              errorMsg={error.name}
             />
             <InputText
               text={text}
@@ -122,6 +164,7 @@ export default function ProfilePage() {
               name="nickname"
               value={text.nickname}
               setText={setText}
+              errorMsg={error.nickname}
             />
             <InputText
               text={text}
@@ -129,6 +172,7 @@ export default function ProfilePage() {
               name="tel"
               value={text.tel}
               setText={setText}
+              errorMsg={error.tel}
             />
             {/* <!-- input[type=radio] --> */}
             <div className="user-form-input">
@@ -203,13 +247,12 @@ export default function ProfilePage() {
               text={text}
               setText={setText}
             />
-            <Select
+            <InputText
               title="郵遞區號"
               name="postcode"
-              arr={postCodes}
               selectKey="ZipCode"
-              text={text}
-              setText={setText}
+              value={text.ZipCode}
+              disabled="disabled"
             />
           </div>
           <div className="row row-cols-md-2 row-cols-1 w-100">

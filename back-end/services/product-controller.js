@@ -1,4 +1,5 @@
 import db from '../config/mysql.js'
+import { uploadImageAndGetUrl } from './product-picture-upload-service.js'
 
 export async function getFilteredProducts(filters) {
   const {
@@ -200,7 +201,7 @@ export async function getFilteredProducts(filters) {
   try {
     // DEBUG
     // console.log('==== SQL ====')
-    console.log(sql)
+    // console.log(sql)
     // console.log('==== Params ====')
     // console.log(params)
     // console.log(
@@ -224,21 +225,26 @@ export async function getFilteredProducts(filters) {
 export async function getProductDetail(productId) {
   const [productRows] = await db.query(
     `
-    SELECT 
-    products.product_id, 
-    products.name, 
-    products.description, 
-    products.base_price, 
-    products.sale_price, 
-    products.status,
-    brands.brand_id, 
-    brands.name AS brand_name,
-    categories.category_id, 
-    categories.name AS category_name
-    FROM products
-    LEFT JOIN brands ON products.brand_id = brands.brand_id
-    LEFT JOIN categories ON products.category_id = categories.category_id
-    WHERE products.product_id = ?
+      SELECT 
+        products.product_id, 
+        products.name, 
+        products.description, 
+        products.usage_instructions,
+        products.base_price, 
+        products.sale_price, 
+        products.status,
+        brands.brand_id, 
+        brands.name AS brand_name,
+        categories.category_id, 
+        categories.name AS category_name,
+        product_tag_relations.tag_id,
+        product_tags.name AS tag_name
+      FROM products
+      LEFT JOIN brands ON products.brand_id = brands.brand_id
+      LEFT JOIN product_tag_relations ON products.product_id = product_tag_relations.product_id
+      LEFT JOIN product_tags ON product_tag_relations.tag_id = product_tags.tag_id
+      LEFT JOIN categories ON products.category_id = categories.category_id
+      WHERE products.product_id = ?
   `,
     [productId]
   )
@@ -292,6 +298,13 @@ export async function getProductDetail(productId) {
     [productId]
   )
 
+  const tags = productRows
+    .filter((row) => row.tag_id && row.tag_name)
+    .map((row) => ({
+      tag_id: row.tag_id,
+      name: row.tag_name,
+    }))
+
   const average_rating = avgResult[0].average_rating || 0
 
   // 組合回傳資料
@@ -299,6 +312,7 @@ export async function getProductDetail(productId) {
     product_id: product.product_id,
     name: product.name,
     description: product.description,
+    usage_instructions: product.usage_instructions,
     price: product.price,
     status: product.status,
     brand: {
@@ -309,6 +323,7 @@ export async function getProductDetail(productId) {
       category_id: product.category_id,
       name: product.category_name,
     },
+    tags,
     colors,
     images,
     average_rating,
@@ -341,7 +356,7 @@ export async function getProductReviews(productId) {
         )
         if (stock?.color_id) {
           const [[colorInfo]] = await db.query(
-            `SELECT color_id, color_name FROM colors WHERE color_id = ?`,
+            `SELECT color_id, color_name, color_code FROM colors WHERE color_id = ?`,
             [stock.color_id]
           )
           if (colorInfo) {
@@ -374,4 +389,93 @@ export async function getProductIngredient(productId) {
   )
 
   return ingredients
+}
+
+//http://localhost:3005/api/product-reviews/user/check?product_id=133812&user_id=52
+export async function getUserReviewForProduct(userId, productId) {
+  const [reviewRows] = await db.query(
+    `SELECT review_id, product_id, user_id, rating, comment_text, created_at
+     FROM product_reviews
+     WHERE user_id = ? AND product_id = ? AND status = 'approved'`,
+    [userId, productId]
+  )
+  if (reviewRows.length === 0) return null
+  const review = reviewRows[0]
+  const [imageRows] = await db.query(
+    `SELECT review_image_id, image_url FROM review_images WHERE review_id = ?`,
+    [review.review_id]
+  )
+  const images = imageRows.map((img) => ({
+    id: img.review_image_id,
+    url: img.image_url,
+  }))
+  return {
+    review,
+    images,
+  }
+}
+
+export async function saveOrUpdateReview({
+  product_id,
+  user_id,
+  rating,
+  context,
+  review_id,
+  imageToDelete,
+  images,
+}) {
+  //GPT建議：使用SQL交易機制，若失敗可以撤消所有操作，保護資料表
+  //GPT建議：使用村民交易機制，若失敗可以毆打村民
+  const conn = await db.getConnection()
+  try {
+    await conn.beginTransaction()
+    let newReviewId = review_id
+    if (!review_id) {
+      // 新增評論
+      const [insertRes] = await conn.execute(
+        `INSERT INTO product_reviews (product_id, user_id, rating, comment_text)
+         VALUES (?, ?, ?, ?)`,
+        [product_id, user_id, rating, context]
+      )
+      newReviewId = insertRes.insertId
+    } else {
+      // 更新評論
+      await conn.execute(
+        `UPDATE product_reviews
+         SET rating = ?, comment_text = ?
+         WHERE review_id = ? AND user_id = ?`,
+        [rating, context, review_id, user_id]
+      )
+    }
+
+    if (Array.isArray(imageToDelete) && imageToDelete.length > 0) {
+      const target = imageToDelete.map(() => '?').join(',')
+      await conn.execute(
+        `DELETE FROM review_images
+         WHERE review_image_id IN (${target}) AND review_id = ?`,
+        [...imageToDelete, newReviewId]
+      )
+    }
+
+    const imageUrls = await Promise.all(
+      images.map((file) => uploadImageAndGetUrl(file.buffer, file.originalname))
+    )
+
+    for (const imgurl of imageUrls) {
+      await conn.execute(
+        `INSERT INTO review_images (review_id, image_url) VALUES (?, ?)`,
+        [newReviewId, imgurl]
+      )
+    }
+
+    //跟村民交易（請準備綠寶石
+    await conn.commit()
+  } catch (error) {
+    //失敗回滾所有操作
+    console.error('saveOrUpdateReview error:', error)
+    await conn.rollback()
+    throw error
+  } finally {
+    conn.release()
+  }
 }

@@ -3,21 +3,19 @@
 import { useAuth } from '@/hook/use-auth'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import InputText from '../_component/input-text'
 import InputPass from '../_component/input-pass'
 import '../_styles/login.css'
+import { courseUrl } from '../../../_route/courseUrl'
 
 export default function LoginPage() {
   const router = useRouter()
-  // const navigater = useNavigate()
+  const { login, initAuth } = useAuth() // Context
   const [memAuth, setMemAuth] = useState({
-    email: '',
+    email: 'johnsmith@gmail.com',
     password: '12345',
   })
-<<<<<<< Updated upstream
-  const { isAuth, login } = useAuth() // Context
-=======
   // ==== handle login form ====
   // course登入後跳回原本畫面並自動執行收藏
   const handleSubmit = async (e) => {
@@ -90,22 +88,50 @@ export default function LoginPage() {
     console.log(error)
   }
   // ==== END google 認證設定 ====
->>>>>>> Stashed changes
   useEffect(() => {
-    // if get auth, go to profile
-    if (isAuth) router.push('profile')
-  }, [login])
+    const isAuthLocal = localStorage.getItem('jwtToken') || false
+    // if get auth, go to main page
+    if (isAuthLocal) router.push('/')
+    // console.log('login-page-user: ', user)
+    // console.log('login-page-isAuth: ', isAuth)
+  }, [])
+
   return (
     <>
       <div className="d-flex flex-column justify-content-centers gap-5 py-5 postion-middle">
         <h1 className="text-center login-title">
           <span className="title">ISLA</span> 會員登入
         </h1>
+        {/* === for test === */}
+        <div className="position-absolute top-50 left-0">
+          <div className="d-flex gap-4">
+            <div>cart:</div>
+            <div> johnsmith@gmail.com</div>
+          </div>
+          <br />
+          <div className="d-flex gap-4">
+            <div>admin:</div>
+            <div> admin@isla.com</div>
+          </div>
+          <div className="d-flex gap-4">
+            <div>teacher1:</div>
+            <div> hankjohnson@gmail.com</div>
+          </div>
+          <div className="d-flex gap-4">
+            <div>teacher2:</div>
+            <div> hankmartinez@gmail.com</div>
+          </div>
+          <div className="d-flex gap-4">
+            <div>teacher3:</div>
+            <div> frankmiller@gmail.com</div>
+          </div>
+        </div>
+        {/* === END for test === */}
         <div className="card-glass-linear login-panel">
           {/* login form */}
           <form
             className="d-flex flex-column align-items-center login-form"
-            method="post"
+            onSubmit={handleSubmit}
           >
             {/* Email */}
 
@@ -130,16 +156,7 @@ export default function LoginPage() {
               <Link href="">忘記密碼?</Link>
             </div>
             {/* submit */}
-            <button
-              className="btn btn-primary"
-              onClick={(e) => {
-                e.preventDefault()
-                console.log('account', memAuth.email)
-                login(memAuth.email, memAuth.password)
-              }}
-            >
-              登入
-            </button>
+            <button className="btn btn-primary">登入</button>
           </form>
           {/* login form end */}
           {/* register and google */}

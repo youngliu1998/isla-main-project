@@ -6,6 +6,7 @@ import { useParams, usePathname } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 // import EditPostModal from './edit-post-modal'
 import ComponentsAuthorInfo from './author-info'
+import EditPostModal from './edit-post-modal'
 
 export default function ComponentsSubNav() {
   const modalRef = useRef()
@@ -93,7 +94,7 @@ export default function ComponentsSubNav() {
                   <ComponentsAuthorInfo
                     authorID="1"
                     width="20"
-                    src="/images/forum/320.webp"
+                    src="/default-avatar.jpg"
                     alt="userName"
                     fontSize="14"
                     color="var(--main-text)"
@@ -105,13 +106,13 @@ export default function ComponentsSubNav() {
                   className="followings-link main-text-color py-1"
                 >
                   <ComponentsAuthorInfo
-                    authorID="123"
+                    authorID="2"
                     width="20"
-                    src="/images/forum/320.webp"
+                    src="/default-avatar.jpg"
                     alt="userName"
                     fontSize="14"
                     color="var(--main-text)"
-                    authorName="lilly"
+                    authorName="Meggy"
                   />
                 </Link>
                 <Link
@@ -119,13 +120,13 @@ export default function ComponentsSubNav() {
                   className="followings-link main-text-color py-1"
                 >
                   <ComponentsAuthorInfo
-                    authorID="123"
+                    authorID="3"
                     width="20"
-                    src="/images/forum/320.webp"
+                    src="/default-avatar.jpg"
                     alt="userName"
                     fontSize="14"
                     color="var(--main-text)"
-                    authorName="lilly"
+                    authorName="Chloe"
                   />
                 </Link>
                 <Link
@@ -173,21 +174,6 @@ export default function ComponentsSubNav() {
                 <i className="bi bi-plus-lg" />
               </div>
             </div>
-            {/* 莫名故障
-            <Link
-              href="/forum"
-              className="sub-nav-item d-flex px-3 py-3 gap-2 rounded-3 text-decoration-none fw-medium main-text-color"
-              data-bs-toggle="tooltip"
-              data-bs-placement="right"
-              title="論壇首頁"
-              onMouseUp={(e) => {
-                e.currentTarget.blur()
-              }}
-            >
-              <i
-                className={`bi ${url === '/forum' ? 'bi-house-door-fill' : 'bi-house-door'}`}
-              />
-            </Link> */}
             <Link
               href="/forum"
               className="sub-nav-item d-flex px-3 py-3 gap-2 rounded-3 text-decoration-none fw-medium main-text-color"
@@ -245,6 +231,9 @@ export default function ComponentsSubNav() {
             </Link>
           </div>
         </aside>
+      </div>
+      <div className="position-absolute">
+        <EditPostModal isUpdated={false} mutate={() => {}} />
       </div>
     </>
   )

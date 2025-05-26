@@ -1,65 +1,66 @@
+'use client'
+
 import Image from 'next/image'
 import Link from 'next/link'
 import Componentstab from './_components/tab'
 // ==== section component ====
-import CourseSection from './_components/_component-main-page/course/course-section'
-import ForumSection from './_components/_component-main-page/forum/forum-section'
+import CourseSection from '@/app/_components/_component-main-page/course/course-section'
+import ForumSection from '@/app/_components/_component-main-page/forum/forum-section'
+import CouponSection from '@/app/_components/_component-main-page/coupon/coupon-section'
+import ProductSectionBrand from '@/app/_components/_component-main-page/product/product-section-brand'
+import ProductSectionNew from '@/app/_components/_component-main-page/product/product-section-new'
 // ==== END section component ====
-import SubForum from './_components/_component-main-page/forum/sub-forum'
-import MainForum from './_components/_component-main-page/forum/main-forum'
 import './_styles/main-page.css'
+import { useRouter } from 'next/navigation'
 
 export default function Home() {
-  const brands = [
-    'Unleashia',
-    'COSLORI',
-    'MUZIGAE MANSION',
-    'Rom&nd',
-    'Kaja',
-    "A'Piuw",
-  ]
+  const router = useRouter()
+  const handleForumTab = () => {}
   return (
     <>
       <div>
         {/* banner */}
         <div className="banner-main-page" />
         {/* main page */}
-        <section className="container section-main-page">
+        <section className="section-main-page">
           {/* ---- START product ---- */}
           <section className="subsectoin-main-page">
-            <h3>品牌暢銷商品</h3>
-            <Componentstab items={brands} height={52} />
-            <div />
-            <button className="btn btn-primary">查看更多</button>
+            <ProductSectionBrand />
           </section>
           <section className="subsectoin-main-page">
-            <h3>新進商品</h3>
-            <Componentstab items={brands} height={52} />
-            <div />
-            <button className="btn btn-primary">查看更多</button>
+            <ProductSectionNew />
           </section>
           {/* ---- END product ---- */}
           {/* ---- START main coupon ---- */}
           <section></section>
           {/* ---- END main coupon ---- */}
           {/* ---- START course ---- */}
-          <section className="subsectoin-main-page">
-            <h3>美妝課程</h3>
-            <Componentstab items={brands} height={52} />
-            <div />
-            <button className="btn btn-primary">查看更多</button>
+          <section className="container subsectoin-main-page">
+            <CourseSection />
           </section>
           {/* ==== END course ==== */}
-          <CourseSection />
           {/* ==== START coupons ==== */}
-          <section></section>
+          <section className="subsectoin-main-page bg-primary">
+            <CouponSection />
+          </section>
           {/* ==== END coupons ==== */}
           {/* ==== START forum ==== */}
-          <section className="subsectoin-main-page">
+          <section className="container subsectoin-main-page">
             <h3>Top 文章</h3>
-            <Componentstab items={['熱門', '最新']} height={52} />
+            <Componentstab
+              cates={['熱門', '最新']}
+              height={52}
+              // handleTabChange={handleForumTab} FIXME
+            />
             <ForumSection />
-            <button className="btn btn-primary">查看更多</button>
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                router.push('/forum')
+              }}
+            >
+              查看更多
+            </button>
           </section>
           {/* ---- END forum ---- */}
         </section>

@@ -22,7 +22,28 @@ const CouponSwiper = ({
         modules={[Navigation]}
         navigation
         spaceBetween={6}
-        slidesPerView={2.5} // 每次顯示兩張卡片
+        breakpoints={{
+          0: {
+            slidesPerView: 1.1,
+            spaceBetween: 10,
+          },
+          420: {
+            slidesPerView: 1.2,
+            spaceBetween: 12,
+          },
+          768: {
+            slidesPerView: 2.5,
+            spaceBetween: 14,
+          },
+          992: {
+            slidesPerView: 1.8,
+            // spaceBetween: 18,
+          },
+          1200: {
+            slidesPerView: 2.3,
+            spaceBetween: 20,
+          },
+        }}
       >
         {coupons.map((coupon) => (
           <SwiperSlide key={coupon.id}>

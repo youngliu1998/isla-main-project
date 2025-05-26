@@ -1,6 +1,9 @@
 // cart/_component/coupon-card-cart.js
 import Image from 'next/image'
+import { FaCheck } from 'react-icons/fa'
 import styles from './coupon-card-cart.module.scss'
+
+import { useState } from 'react'
 
 export default function CouponCardCart({ coupon, onSelect, selected }) {
   const {
@@ -9,18 +12,20 @@ export default function CouponCardCart({ coupon, onSelect, selected }) {
     brand_id,
     area,
     course_categories_id,
+    category_id,
     is_applicable,
     block_reason,
   } = coupon
 
+  // console.log('card', title, 'is_applicable:', is_applicable)
+
   const brandMap = {
-    0: 'isla',
     1: 'unleashia',
-    2: 'cosnori',
-    3: 'muzigae',
-    4: 'kaja',
-    5: 'rom&nd',
-    6: 'apieu',
+    2: 'apieu',
+    3: 'cosnori',
+    4: 'muzigae',
+    5: 'kaja',
+    6: 'rom&nd',
   }
   const courseMap = {
     0: 'isla-class',
@@ -30,14 +35,42 @@ export default function CouponCardCart({ coupon, onSelect, selected }) {
     4: 'other-class',
   }
 
+  const prodMap = {
+    1: '底妝',
+    2: '眼部彩妝',
+    3: '唇部彩妝',
+    4: '臉頰彩妝',
+    5: '眉部彩妝',
+    6: '睫毛彩妝',
+  }
+
   const imageKey =
     area === 2 ? courseMap[course_categories_id] : brandMap[brand_id]
   const imageSrc = `/images/coupon/${imageKey}.png`
+
+  const [isAnimating, setIsAnimating] = useState(false)
+
+  const handleClick = () => {
+    // if (is_applicable) {
+    //   setIsAnimating(true)
+    //   onSelect(coupon)
+    //   setTimeout(() => setIsAnimating(false), 500) // 結束動畫
+    // }
+    if (!is_applicable) return
+
+    if (!selected) {
+      setIsAnimating(true)
+      setTimeout(() => setIsAnimating(false), 500)
+    }
+
+    onSelect(coupon)
+  }
 
   const cardClass = [
     styles.couponCart,
     selected && styles.selected,
     !is_applicable && styles.disabled,
+    isAnimating && styles.tearAnimation,
   ]
     .filter(Boolean)
     .join(' ')
@@ -52,19 +85,21 @@ export default function CouponCardCart({ coupon, onSelect, selected }) {
       </div>
 
       {/* 文字 */}
-      <div className={`${styles.content} ms-4`}>
-        <h5 className="mb-1">{title}</h5>
-        <p className="mb-0">{condition}</p>
+      <div className="ms-4 text-danger">
+        <h5 className="m-0 pt-2">{title}</h5>
+        <p className="m-0">{condition}</p>
+        {area === 1 && category_id !== 0 && (
+          <p className="m-0">適用類別：{prodMap[category_id]}</p>
+        )}
       </div>
 
-      {/* 套用按鈕 */}
       <div>
         <button
-          className={`${styles.applyBtn}`}
+          className={`${styles.circleBtn} ${selected ? styles.active : ''}`}
           disabled={!is_applicable}
-          onClick={() => onSelect(coupon)}
+          onClick={handleClick}
         >
-          使用優惠
+          {selected && <FaCheck className={styles.checkIcon} />}
         </button>
       </div>
     </div>

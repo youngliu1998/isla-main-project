@@ -1,46 +1,49 @@
+// 電影票造型
 .couponCart {
-  width: 260px;
-  height: 100px;
+  width: 300px;
+  height: 130px;
   position: relative;
 
   background:
     radial-gradient(circle at 100px top, #fff, #fff 10px, transparent 11px),
     radial-gradient(circle at 100px bottom, #fff, #fff 10px, transparent 11px);
+  // radial-gradient(circle at 100px right, #fff, #fff 10px, transparent 11px),
+  // radial-gradient(circle at 100px left, #fff, #fff 10px, transparent 11px);
   background-color: #d0c4c4;
 
   border-radius: 5px;
-  filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.2));
+  filter: drop-shadow(2px 2px 2px rgba(50, 50, 50, 0.2));
   display: flex;
   flex-direction: row;
   align-items: center;
   padding: 8px 12px;
   margin: 0 8px;
-  color: #fff;
 
   &.selected {
-    opacity: 0.5;
+    border: 2px solid red;
   }
 
   &.disabled {
-    opacity: 0.5;
+    background-color: #000000;
+    opacity: 0.1;
   }
 }
 
-.applyBtn {
-  background-color: transparent;
-  color: #f06262;
-  border: 2px solid #f06262;
-  border-radius: 4px;
-  font-weight: 300;
-  writing-mode: vertical-rl;
-  padding: 6px 4px;
-  transition: 0.2s ease-in-out;
-
-  &:hover {
-    opacity: 0.7;
-    background-color: #f06262;
-    color: #fff;
+// 截角動畫
+@keyframes tearEffect {
+  0% {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
   }
+  100% {
+    clip-path: polygon(0 0, 90% 0, 85% 20%, 100% 40%, 100% 100%, 0 100%);
+  }
+}
+.tearAnimation {
+  animation: tearEffect 0.5s ease-in-out forwards;
+}
+.selected {
+  clip-path: polygon(0 0, 90% 0, 85% 20%, 100% 40%, 100% 100%, 0 100%);
+  opacity: 1;
 }
 
 .brandLogo {
@@ -48,23 +51,41 @@
   margin-right: 10px;
 }
 
-.content {
-  // margin-right: 2rem;
-  flex: 1;
+.circleBtn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: #343232;
+  border: none;
+  position: relative;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 
-  h5 {
-    font-weight: bold;
-    font-size: 1rem;
-    margin-bottom: 4px;
-  }
-
-  p {
-    font-size: 0.85rem;
-    margin-bottom: 0;
+  &:disabled {
+    background-color: #999;
+    cursor: not-allowed;
   }
 }
 
-.verticalText {
-  writing-mode: vertical-rl;
-  text-orientation: upright;
+.active {
+  background-color: #000;
+
+  .checkIcon {
+    color: #fff;
+    font-size: 14px;
+  }
+}
+
+.checkIcon {
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.2s ease;
+}
+
+.active .checkIcon {
+  opacity: 1;
+  transform: scale(1);
 }

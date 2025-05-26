@@ -27,6 +27,7 @@ export default function CouponCard({
   title = '',
   description = '',
   brand_id = '',
+  categories = '',
   coupon_id = '',
   course_categories_id = '',
   user_id = '',
@@ -37,6 +38,7 @@ export default function CouponCard({
   state_id = '',
   type_id = '',
   isLogin = () => {},
+  handleRefresh = () => {},
 }) {
   const [get, setGet] = useState(claimed_at ? true : false)
   const [loading, setLoading] = useState(false)
@@ -49,6 +51,7 @@ export default function CouponCard({
   const isClaimed = get || state_id === 1 || state_id === 4
 
   const alreadyGet = async () => {
+    console.log('alredyGet!!')
     if (get || loading) return
     if (!user_id) {
       isLogin()
@@ -102,23 +105,26 @@ export default function CouponCard({
   const imageKey =
     area === 2 ? courseMap[course_categories_id] : brandMap[brand_id]
   const imageSrc = `/images/coupon/${imageKey}.png`
-  const goUrl = area === 2 ? '/course' : '/product'
+  const goUrl =
+    area === 2
+      ? `/course?course_categories_id=${course_categories_id}`
+      : `/product/list?brand_id=${brand_id}?categories=${categories}`
   const isUsed = state_id === 2
   const isExpired = state_id === 3
 
   return (
     <div>
       <div
-        className={`coupon mt-lg-4 mb-lg-3 d-flex flex-nowrap justify-content-between mx-auto position-relative ${
+        className={`coupon mt-lg-4 mb-lg-3 d-flex flex-nowrap justify-content-between mx-auto position-relative overflow-hidden ${
           isClaimed ? 'stamping' : ''
         }
            ${isUsed || isExpired ? 'used' : ''}
           `}
       >
         {/* 圖片 */}
-        <div className="d-flex align-items-center flex-shrink-1">
+        <div className="d-flex justify-content-center align-items-center coupon-img">
           <div
-            style={{ width: '160px' }}
+            // style={{ width: '160px' }}
             className="d-flex justify-content-center"
           >
             <Image
@@ -132,7 +138,7 @@ export default function CouponCard({
         </div>
 
         {/* 文字內容 */}
-        <div className="content flex-shrink-0 ps-lg-0 ps-xl-2 pe-lg-4 pe-xl-2">
+        <div className="content ">
           <div className="top">
             <h2 className="text-truncate">{title}</h2>
           </div>
@@ -153,13 +159,15 @@ export default function CouponCard({
         ) : (
           <button
             className={`d-flex align-items-center flex-shrink-0 ${couponstyle}`}
-            onClick={alreadyGet}
+            onClick={async () => {
+              await alreadyGet()
+              handleRefresh()
+            }}
             disabled={loading || isDisabled}
           >
             <CouponButton text={buttonText} />
           </button>
         )}
-
         {/* 領取印章 */}
         <div className={`stamp-img-container ${isClaimed ? 'show' : ''}`}>
           <Image
