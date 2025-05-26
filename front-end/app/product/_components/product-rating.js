@@ -31,11 +31,11 @@ const RatingComponent = ({
             <BsStar key={`empty-${index}`} className="star" />
           ))}
       </div>
-      {reviewCount !== undefined && (
-        <div className="rating_text">
-          {reviewCount} {reviewTextSuffix}
-        </div>
-      )}
+      {/*{reviewCount !== undefined && (*/}
+      {/*  <div className="rating_text">*/}
+      {/*    {reviewCount} {reviewTextSuffix}*/}
+      {/*  </div>*/}
+      {/*)}*/}
     </div>
   )
 }

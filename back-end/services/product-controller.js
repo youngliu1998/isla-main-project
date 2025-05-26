@@ -1,6 +1,12 @@
 import db from '../config/mysql.js'
 import { uploadImageAndGetUrl } from './product-picture-upload-service.js'
 
+import express from 'express'
+const app = express()
+
+// 假設圖片實體放在 ./public/images/member/image_2.jpg
+app.use('/images', express.static('public/images'))
+
 export async function getFilteredProducts(filters) {
   const {
     keyword,
@@ -16,6 +22,7 @@ export async function getFilteredProducts(filters) {
     offset = 0,
     sortOrder,
     sortBy,
+    colors,
   } = filters
 
   const allowedSortMap = {
@@ -47,6 +54,15 @@ export async function getFilteredProducts(filters) {
       review_summary.review_count,
       review_summary.avg_rating,
       GROUP_CONCAT(DISTINCT product_color_stocks.color_id) AS color_ids,
+      GROUP_CONCAT(
+        DISTINCT CONCAT(
+          colors.color_id, ':',
+          colors.color_name, ':',
+          colors.color_code, ':',
+          product_color_stocks.stock_quantity
+        )
+        SEPARATOR '---'
+      ) AS color_details,
       SUM(product_color_stocks.stock_quantity) AS total_stock,
       GROUP_CONCAT(DISTINCT product_tags.name ORDER BY product_tags.name) AS tag_names,
       CASE 
@@ -82,6 +98,7 @@ export async function getFilteredProducts(filters) {
       GROUP BY product_id
     ) AS review_summary ON review_summary.product_id = products.product_id
     LEFT JOIN product_color_stocks ON product_color_stocks.product_id = products.product_id
+    LEFT JOIN colors ON product_color_stocks.color_id = colors.color_id
     LEFT JOIN product_tag_relations ON product_tag_relations.product_id = products.product_id
     LEFT JOIN product_tags ON product_tags.tag_id = product_tag_relations.tag_id
   `
@@ -186,6 +203,24 @@ export async function getFilteredProducts(filters) {
   `)
   }
 
+  if (filters.Colorful) {
+    conditions.push(`
+    products.product_id IN (
+      SELECT product_id
+      FROM product_color_stocks
+      GROUP BY product_id
+      HAVING COUNT(DISTINCT color_id) > 1
+    )
+  `)
+  }
+
+  if (colors && colors.length > 0) {
+    conditions.push(
+      `product_color_stocks.color_id IN (${colors.map(() => '?').join(',')})`
+    )
+    params.push(...colors)
+  }
+
   // 添加 WHERE 子句（如果需要）
   if (conditions.length > 0) {
     sql += ' WHERE ' + conditions.join(' AND ')
@@ -211,6 +246,9 @@ export async function getFilteredProducts(filters) {
     // )
     try {
       const [rows] = await db.query(sql, params)
+      rows.forEach((row) => {
+        row.color_details = parseColorDetails(row.color_details)
+      })
       return rows
     } catch (queryError) {
       console.error('Error:', queryError)
@@ -220,6 +258,30 @@ export async function getFilteredProducts(filters) {
     console.error('SQL Run Time Error:', error)
     throw error
   }
+}
+
+function parseColorDetails(colorDetailsString) {
+  if (!colorDetailsString) return []
+
+  const seen = new Set()
+  return colorDetailsString
+    .split('---')
+    .map((entry) => {
+      const [color_id, color_name, color_code, stock_quantity] =
+        entry.split(':')
+      const key = `${color_id}`
+
+      if (seen.has(key)) return null
+      seen.add(key)
+
+      return {
+        color_id: parseInt(color_id),
+        color_name: color_name || null,
+        color_code: color_code || null,
+        stock_quantity: parseInt(stock_quantity),
+      }
+    })
+    .filter(Boolean)
 }
 
 export async function getProductDetail(productId) {
@@ -333,10 +395,21 @@ export async function getProductDetail(productId) {
 export async function getProductReviews(productId) {
   // TODO: 需與user資料表JOIN，取得使用者名稱
   const [reviews] = await db.query(
-    `SELECT review_id, user_id, rating, comment_text, is_anonymous, created_at, stock_id
-     FROM product_reviews
-     WHERE product_id = ? AND status = 'approved'
-     ORDER BY created_at DESC`,
+    `SELECT
+         product_reviews.review_id,
+         product_reviews.user_id,
+         product_reviews.rating,
+         product_reviews.comment_text,
+         product_reviews.is_anonymous,
+         product_reviews.created_at,
+         product_reviews.stock_id,
+         users.nickname,
+         users.ava_url,
+         users.skin_type
+       FROM product_reviews
+              JOIN users ON product_reviews.user_id = users.id
+       WHERE product_reviews.product_id = ? AND product_reviews.status = 'approved'
+       ORDER BY product_reviews.created_at DESC`,
     [productId]
   )
 
