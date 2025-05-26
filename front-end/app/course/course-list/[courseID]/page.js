@@ -985,6 +985,7 @@ export default function CourseIDPage() {
       <LoginModal
         show={showLoginModal}
         onClose={() => setShowLoginModal(false)}
+        handleBuyNow={handleBuyNow}
       />
     </>
   )

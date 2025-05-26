@@ -25,7 +25,16 @@ export default function LoginPage() {
     e.preventDefault()
     await login(memAuth.email, memAuth.password)
     const isAuthLocal = localStorage.getItem('jwtToken') || false
+
     if (isAuthLocal) {
+      const redirectPath = localStorage.getItem('redirectAfterLogin') || false
+      localStorage.removeItem('redirectAfterLogin')
+      // const pendingBuyNow = localStorage.getItem('pendingBuyNow') || false
+      if (redirectPath) {
+        router.push(redirectPath)
+        alert('登入成功，將返回原畫面')
+        return
+      }
       alert('登入成功')
       router.push('/')
     } else {
