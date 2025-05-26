@@ -3,9 +3,10 @@
 import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
+import '../dashboard.css'
 import menuItems from './sidebar-menu'
 
-export default function MobileSidebar({ onClose = () => {} }) {
+export default function Sidebar({ onClose = () => {} }) {
   const pathname = usePathname()
   const [openMenus, setOpenMenus] = useState({})
   const [isClosing, setIsClosing] = useState(false)
