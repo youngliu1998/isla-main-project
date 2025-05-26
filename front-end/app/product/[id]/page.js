@@ -22,6 +22,9 @@ import ProductInfoAccrodion from './_component/product-info-accordion/product-in
 import Image from 'next/image.js'
 import Link from 'next/link'
 import {toast} from "react-toastify";
+import LoadingLottie from "../_components/loading/lottie-loading.js";
+import LoadingErrorLottie from "../_components/loading-error/lottie-error.js";
+
 export default function page({ params }) {
   // i don't know what is this shit, but it's warning
   const { user, isLoading: isAuthLoading } = useAuth()
@@ -157,11 +160,14 @@ export default function page({ params }) {
   if (errorProduct || errorReviews || errorIngredients) {
     return (
       <div className="error-container">
-        <h2>載入失敗</h2>
-        <p>資料載入時發生錯誤，請重新整理頁面或稍後再試。</p>
-        {errorProduct && <p>產品資料錯誤: {errorProduct.message}</p>}
-        {errorReviews && <p>評論資料錯誤: {errorReviews.message}</p>}
-        {errorIngredients && <p>成分資料錯誤: {errorIngredients.message}</p>}
+        {/*<h2>載入失敗</h2>*/}
+        <LoadingErrorLottie />
+        <h5>載入錯誤，請重新整理頁面或稍後再試 </h5>
+        {/*{errorProduct && <p>找不到產品</p>}*/}
+        {/*{errorReviews && <p>產品資料錯誤</p>}*/}
+        {/*{errorReviews.message}*/}
+        {/*{errorIngredients && <p>產品資料錯誤</p>}*/}
+        {/*{errorIngredients.message}*/}
       </div>
     )
   }
@@ -175,34 +181,9 @@ export default function page({ params }) {
   ) {
     return (
       <div className="loading-container">
-        <div>載入中...</div>
+        <LoadingLottie />
       </div>
     )
-  }
-
-  // 等待 token 載入完成（這個邏輯可能需要根據 useClientToken 的實際行為調整）
-  // if (token === null) {
-  //   return <div>載入中...</div>
-  // }
-  //
-  // // 未登入的處理
-  // if (!token) {
-  //   return <div>請先登入以使用此功能</div>
-  // }
-
-  // 產品不存在
-  if (!product) {
-    return (
-      <div className="not-found-container">
-        <h2>產品不存在</h2>
-        <p>找不到指定的產品，請檢查網址是否正確。</p>
-      </div>
-    )
-  }
-
-  // Debug log - 建議在開發完成後移除
-  if (process.env.NODE_ENV === 'development') {
-    console.log('Product usage instructions:', product.usage_instructions)
   }
   return (
     <>
