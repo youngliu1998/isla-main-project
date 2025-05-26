@@ -4,9 +4,13 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 // ==== compoents ====
 import Componentstab from '@/app/_components/tab'
+import BrandSelect from './_component/brand-select'
 import ProductCard from '@/app/product/_components/product-card-s'
+// import SwiperProduct from './_component/swiper-product.js'
 // ==== hooks ====
 import { useProducts } from '@/hook/use-products'
+// ==== css ====
+import './_style/product-card-s.css'
 
 export default function ProductSectionBrand() {
   // ==== 取得商品資料 ====
@@ -53,15 +57,6 @@ export default function ProductSectionBrand() {
           }
         }
       }
-      // 如果 onSaleOnly 被直接更新 (它不在 partialUpdate 但在 prev 中)
-      // 且是唯一被更新的 filter，也需要考慮
-      // if (
-      //   partialUpdate.onSaleOnly !== undefined &&
-      //   prev.onSaleOnly !== partialUpdate.onSaleOnly
-      // ) {
-      //   hasChanged = true
-      // }
-
       return hasChanged ? updated : prev
     })
   }
@@ -74,36 +69,40 @@ export default function ProductSectionBrand() {
   }, [tabSwitch])
   return (
     <>
+      {/* <SwiperProduct /> */}
       <div className="d-flex flex-column align-items-center gap-4">
         <div className="d-flex flex-column align-items-center gap-4">
           <h3>品牌暢銷商品</h3>
-          <Componentstab cates={navBrands} handleTabChange={setTabSwitch} />
+          <div className="d-lg-block d-none">
+            <Componentstab cates={navBrands} handleTabChange={setTabSwitch} />
+          </div>
+          <BrandSelect
+            navBrands={navBrands}
+            tabSwitch={tabSwitch}
+            setTabSwitch={setTabSwitch}
+          />
         </div>
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-lg-4 g-4 p-0 m-0 mt-4">
-          {
-            <div className="d-flex gap-4 product-list">
-              {console.log('products in page', products)}
-              {products.slice(0, 4).map((p) => (
-                <div key={p.product_id} className="product-card-container">
-                  <ProductCard
-                    product={{
-                      id: p.product_id,
-                      brand: p.brand_name,
-                      name: p.name,
-                      price: p.final_price,
-                      originalPrice: p.base_price,
-                      rating: p.avg_rating,
-                      reviews: p.review_count,
-                      imageUrl: p.primary_image_url,
-                      isBookmarked: p.is_bookmarked,
-                      isSale: p.is_on_sale,
-                    }}
-                  />
-                </div>
-              ))}
-            </div>
-          }
-          {tabSwitch === 2}
+          <div className="d-flex gap-4 product-list">
+            {products.slice(0, 4).map((p, i) => (
+              <div className="product-card-container" key={p.product_id}>
+                <ProductCard
+                  product={{
+                    id: p.product_id,
+                    brand: p.brand_name,
+                    name: p.name,
+                    price: p.final_price,
+                    originalPrice: p.base_price,
+                    rating: p.avg_rating,
+                    reviews: p.review_count,
+                    imageUrl: p.primary_image_url,
+                    isBookmarked: p.is_bookmarked,
+                    isSale: p.is_on_sale,
+                  }}
+                />
+              </div>
+            ))}
+          </div>
         </div>
         <Link href="/course">
           <button className="btn btn-primary">查看更多</button>

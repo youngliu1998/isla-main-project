@@ -10,6 +10,7 @@ import MemberNav from './_side-bar-component/member-nav'
 import OpneNav from './_side-bar-component/open-nav'
 import UploadAva from './_side-bar-component/upload-ava'
 import './_style.css/side-bar.css'
+import { USER_AVA_URL } from '@/_route/img-url.js'
 
 export default function SideBar() {
   const pathname = usePathname()
@@ -63,10 +64,14 @@ export default function SideBar() {
           >
             <div className="avartar overflow-hidden">
               <Image
-                src={'http://localhost:3005/images/member/' + user.ava_url}
-                alt="Picture of the member"
-                width={100}
-                height={100}
+                src={
+                  user.ava_url
+                    ? USER_AVA_URL + user.ava_url
+                    : 'http://localhost:3000/images/member/default-user.jpg'
+                }
+                alt={USER_AVA_URL + user.ava_url}
+                width={90}
+                height={90}
               />
             </div>
           </button>
