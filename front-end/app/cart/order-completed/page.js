@@ -139,8 +139,8 @@ export default function OrderCompletedPage() {
                   <p>收件地址：{recipient.address}</p>
                 ) : (
                   <>
-                    <p>取貨門市：{recipient.name}</p>
-                    <p>門市地址：{recipient.address}</p>
+                    <p>取貨門市：{orderData.pickupStoreName || '—'}</p>
+                    <p>門市地址：{orderData.pickupStoreAddress || '—'}</p>
                   </>
                 )}
               </Accordion.Body>
