@@ -21,6 +21,8 @@ router.get('/', async (req, res) => {
       limit = 20,
       sortBy,
       sortOrder,
+      Colorful,
+      colors,
     } = req.query
 
     function parseIdArray(param) {
@@ -37,6 +39,8 @@ router.get('/', async (req, res) => {
       sortBy: sortBy || 'products.product_id',
       sortOrder: sortOrder || 'DESC',
       onSaleOnly: String(onSaleOnly).toLowerCase() === 'true',
+      colors: parseIdArray(colors),
+      Colorful: String(Colorful).toLowerCase() === 'true',
       keyword: keyword || '',
       brandIds: parseIdArray(brandIds),
       categoryIds: parseIdArray(categoryIds),
