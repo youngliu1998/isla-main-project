@@ -19,11 +19,24 @@
   margin-left: -8px;
 }
 
-.sub-comment-toggle {
+.sub-margin {
   margin-left: 42px;
 }
+/* .sub-comment-toggle {
+  margin-left: 42px;
+} */
 
 .content-image {
   max-height: 400px;
   width: auto;
+}
+
+.comment-input-block {
+  border: 0;
+  border-top: 1px solid var(--border-color-forum);
+  .comment-input {
+    border: 0;
+    outline: 0 solid #ffffff00;
+    height: 48px;
+  }
 }

@@ -14,7 +14,8 @@ import ComponentsMorePost from './_components/more-post'
 import ComponentsAuthorInfo from '../_components/author-info'
 import { useAuth } from '../../../hook/use-auth'
 import DeleteConfirmModal from './_components/deleteConfirmModal'
-import PostIDComment from './comment'
+import CommentSection from './comment-section'
+import CommentInput from './comment-input'
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
 
@@ -62,7 +63,7 @@ export default function PostIDPage(props) {
       }
     })
   }
-  console.log(morePosts)
+  // console.log(morePosts)
   if (isLoading) {
     console.log(isLoading)
     return (
@@ -114,8 +115,8 @@ export default function PostIDPage(props) {
     <>
       <main className="main col col-10 d-flex flex-column align-items-start">
         <div className="posts d-flex flex-column gap16 w-100">
-          <div className="post d-flex flex-column gap-2 rounded-top-4 shadow-forum bg-pure-white px-4 py-4 card-border">
-            <div className="post-header d-flex  align-items-start">
+          <div className="post d-flex flex-column gap-2 rounded-top-4 shadow-forum bg-pure-white pt-4 card-border position-relative">
+            <div className="post-header d-flex  align-items-start mx-4">
               <div className="post-title flex-grow-1 me-3 fs24 fw-medium">
                 <span className="post-tag d-inline align-middle px-2 py-1 me-2 my-auto rounded-pill fs12 text-nowrap bg-light-hover main-color">
                   {post.cate_name}
@@ -168,7 +169,7 @@ export default function PostIDPage(props) {
               </div>
             </div>
             <div>
-              <div className="author-info d-inline-flex align-items-center gap-2 mb-2">
+              <div className="author-info d-inline-flex align-items-center gap-2 mb-2 mx-4">
                 <ComponentsAuthorInfo
                   authorID={post.user_id}
                   width="24"
@@ -185,10 +186,10 @@ export default function PostIDPage(props) {
               </div>
             </div>
             <div
-              className="post-content d-flex flex-column gap-3 pb-4 mb-2 bottom-stroke"
+              className="post-content d-flex flex-column gap-3 mx-4 pb-4 mb-2 bottom-stroke"
               dangerouslySetInnerHTML={{ __html: post.content }}
             />
-            <div className="evaluates d-flex mb-5">
+            <div className="evaluates d-flex mb-5 mx-4">
               <ComponentsBtnLikedSaved
                 type="liked"
                 active={post.liked_user_ids.includes(userID)}
@@ -210,7 +211,7 @@ export default function PostIDPage(props) {
                 mutate={mutate}
               />
             </div>
-            <div className="more-section">
+            <div className="more-section mx-4">
               <div className="more-header py-2 bottom-stroke sub-text-color">
                 更多文章
               </div>
@@ -235,7 +236,8 @@ export default function PostIDPage(props) {
                   })}
               </div>
             </div>
-            <PostIDComment />
+            <CommentSection />
+            <CommentInput />
           </div>
         </div>
       </main>

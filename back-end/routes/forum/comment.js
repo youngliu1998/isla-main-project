@@ -22,7 +22,7 @@ router.get('/', async function (req, res) {
         GROUP BY comment_id
     ) cliked ON c.id = cliked.comment_id
     WHERE c.post_id = ? AND c.valid = 1
-    ORDER BY c.updated_at
+    ORDER BY c.updated_at ASC
     `,
     [postID]
   )
