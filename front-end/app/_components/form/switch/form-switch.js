@@ -65,30 +65,30 @@ const IslaSwitch = ({
   }
 
   // Switch 按鈕樣式
-    const switchButtonStyle = {
-        width: currentSize.width,
-        height: currentSize.height,
-        position: 'relative',
-        borderRadius: currentSize.height,
-        border: 'none',
-        cursor: disabled ? 'not-allowed' : 'pointer',
-        background: checked
-            ? 'linear-gradient(135deg, rgba(253, 112, 97, 0.8), rgba(253, 112, 97, 0.6))'
-            : 'linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.1))',
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)', // Safari support
-        boxShadow: checked
-            ? '0 8px 32px rgba(253, 112, 97, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
-            : `0 8px 32px rgba(0, 0, 0, 0.1), 
+  const switchButtonStyle = {
+    width: currentSize.width,
+    height: currentSize.height,
+    position: 'relative',
+    borderRadius: currentSize.height,
+    border: 'none',
+    cursor: disabled ? 'not-allowed' : 'pointer',
+    background: checked
+      ? 'linear-gradient(135deg, rgba(253, 112, 97, 0.8), rgba(253, 112, 97, 0.6))'
+      : 'linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.1))',
+    backdropFilter: 'blur(10px)',
+    WebkitBackdropFilter: 'blur(10px)', // Safari support
+    boxShadow: checked
+      ? '0 8px 32px rgba(253, 112, 97, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2)'
+      : `0 8px 32px rgba(0, 0, 0, 0.1), 
        inset 0 1px 0 rgba(255, 255, 255, 0.2),
        inset 0 2px 4px rgba(0, 0, 0, 0.1),
        inset 0 -1px 2px rgba(0, 0, 0, 0.05)`,
-        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-        opacity: disabled ? 0.5 : 1,
-        outline: 'none',
-        padding: 0,
-        overflow: 'hidden'
-    };
+    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    opacity: disabled ? 0.5 : 1,
+    outline: 'none',
+    padding: 0,
+    overflow: 'hidden',
+  }
 
   // Focus 狀態樣式
   const focusStyle = {

@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import RegisterInput from '../_component/register-input'
+import TheModal from '../_component/modal'
 import '../_styles/style.css'
 import '../_styles/register.css'
 
@@ -20,6 +21,8 @@ export default function RegisterPage() {
   }
   const [regiInfo, setregiInfo] = useState({ ...defaultRegi })
   const [error, setError] = useState({ ...defaultRegi })
+  // 彈跳視窗
+  const [showLoginModal, setShowLoginModal] = useState(false)
   // ==== 錯誤受理 ====
   const errorComfirm = (data) => {
     // ==== 404 status: error ====
@@ -74,12 +77,9 @@ export default function RegisterPage() {
         setError({ ...defaultRegi })
         // ==== 處理資料 ====
         if (response.ok) {
+          setShowLoginModal(true)
+          return
           // ==== 200 status: success ====
-          if (data.status === 'success') {
-            alert('註冊成功，將返回登入頁')
-            // 轉跳至login
-            router.push('login')
-          }
         } else {
           errorComfirm(data)
         }
@@ -232,6 +232,24 @@ export default function RegisterPage() {
           </div>
         </form>
       </div>
+      {/* 註冊成功後出現彈跳視窗 */}
+      <TheModal
+        title="註冊成功"
+        content="請問要直接領取專屬優惠券嗎"
+        btncls="不，返回首頁"
+        btnsuc="是"
+        show={showLoginModal}
+        onClose={() => {
+          setShowLoginModal(false)
+          router.push('/member/login')
+        }}
+        btnclsOnclick={() => {
+          setShowLoginModal(false)
+        }}
+        btnsucOnclick={() => {
+          setShowLoginModal(false)
+        }}
+      />
     </>
   )
 }
