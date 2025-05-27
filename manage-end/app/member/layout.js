@@ -7,7 +7,6 @@ export default function MemberLayout({ children }) {
         <div className="flex">
           {/* siderBar also check is there user login */}
           <SideBar />
-          {/* main-content */}
           <div className="flex-1">{children}</div>
         </div>
       </div>

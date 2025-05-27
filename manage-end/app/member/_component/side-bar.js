@@ -4,96 +4,99 @@ import { useAuth } from '@/hook/use-auth'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
-import { usePathname } from 'next/navigation'
-import MemberNav from './_side-bar-component/member-nav'
-import OpneNav from './_side-bar-component/open-nav'
-import UploadAva from './_side-bar-component/upload-ava'
-import './_style.css/side-bar.css'
+import { useRouter, usePathname } from 'next/navigation'
+import { toast } from 'react-toastify'
+import { Button } from '@/components/ui/button'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
 
 export default function SideBar() {
   const pathname = usePathname()
   const router = useRouter()
-  const [OpenMenu, setOpenMenu] = useState(false) // open nav bar in RWD
   const [openAvatar, setOpenAvatar] = useState(false)
   const { user, logout, initAuth } = useAuth()
 
-  // ==== 確認是否登入 ====
   useEffect(() => {
     const isLogin = async () => {
       await initAuth()
       const isAuthLocal = localStorage.getItem('jwtToken') || false
-      // console.log(`isAuth`, isAuth)
       if (!isAuthLocal) {
-        alert('請先登入')
+        toast.warning('請先登入')
         router.push('/member/login')
-        return
       }
     }
-    // 不包含以下網址才執行
     if (
-      !(
-        pathname.includes('login') ||
-        pathname.includes('register') ||
-        pathname.includes('forget-password')
-      )
+      !pathname.includes('login') &&
+      !pathname.includes('register') &&
+      !pathname.includes('forget-password')
     ) {
       isLogin()
     }
   }, [])
-  // return <></> in login, register, ......
+
   if (
     pathname.includes('login') ||
     pathname.includes('register') ||
     pathname.includes('forget-password')
   ) {
-    return <></>
+    return null
   }
+
   return (
-    <>
-      {/* aside-bar */}
-      <aside className="lg:w-1/4  flex flex-col lg:flex-col">
-        <div className="flex flex-col items-center gap-2 w-full relative user-head">
-          {/* avatar, nickname, .... (member info) */}
-          <button
-            className="avatar-button"
-            onClick={() => {
-              setOpenAvatar(!openAvatar)
-            }}
-          >
-            <div className="avartar overflow-hidden rounded-full">
-              <Image
-                src={'http://localhost:3005/images/member/' + user.ava_url}
-                alt="Picture of the member"
-                width={10}
-                height={10}
-              />
-            </div>
-          </button>
-          {/* <UploadAva openAvatar={openAvatar} setOpenAvatar={setOpenAvatar} /> */}
-          <h4 className="user-title ">{user?.nickname || 'Rookie'}</h4>
-          <p>{user?.email || 'illegal@nomail.com'}</p>
-          <Link
-            onClick={() => {
-              logout()
-            }}
-            href="/"
-          >
-            登出
-          </Link>
-        </div>
-        <div className={'user-nav'}>
-          <ul>
-            <li className="title">個人</li>
-            <Link href="/member/profile">
-              <li>基本資料</li>
-            </Link>
-            <Link href="/member/password">
-              <li>密碼變更</li>
-            </Link>
+    <aside className="lg:w-1/4 w-full p-4 my-10">
+      <Card className="flex flex-col items-center gap-4 py-6 justify-center">
+        <button
+          onClick={() => setOpenAvatar(!openAvatar)}
+          className="rounded-full border-2 border-gray-300 hover:ring-2 hover:ring-primary transition"
+        >
+          <Image
+            src={`http://localhost:3005/images/member/${user.ava_url}`}
+            alt="會員頭像"
+            width={96}
+            height={96}
+            className="rounded-full object-cover"
+          />
+        </button>
+        <CardHeader className="text-center w-full">
+          <CardTitle className="text-xl font-semibold">
+            {user?.nickname || 'Rookie'}
+          </CardTitle>
+          <p className="text-sm text-gray-500">
+            {user?.email || 'illegal@nomail.com'}
+          </p>
+        </CardHeader>
+        <Button variant="outline" onClick={() => logout()} asChild>
+          <span>登出</span>
+        </Button>
+      </Card>
+
+      <Card className="mt-6">
+        <CardHeader>
+          <CardTitle className="text-base text-muted-foreground">
+            個人
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ul className="space-y-2">
+            <li>
+              <Link
+                href="/member/profile"
+                className="text-primary hover:underline"
+              >
+                基本資料
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/member/password"
+                className="text-primary hover:underline"
+              >
+                密碼變更
+              </Link>
+            </li>
           </ul>
-        </div>
-      </aside>
-    </>
+        </CardContent>
+      </Card>
+    </aside>
   )
 }

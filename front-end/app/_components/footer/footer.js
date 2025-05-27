@@ -32,40 +32,48 @@ export default function Footer() {
               <div className="row row-cols-lg-4 row-cols-3 footer-header-left g-0 d-lg-flex d-none">
                 <ul>
                   <li className="list-title">彩妝</li>
-                  <li>
-                    <Link href="">優惠券專區</Link>
-                  </li>
-                  <li>
-                    <Link href="">所有商品</Link>
-                  </li>
+                  <div className="list-items">
+                    <li>
+                      <Link href="">優惠券專區</Link>
+                    </li>
+                    <li>
+                      <Link href="">所有商品</Link>
+                    </li>
+                  </div>
                 </ul>
                 <ul>
                   <li className="list-title">生活</li>
-                  <li>
-                    <Link href="">美妝教室</Link>
-                  </li>
-                  <li>
-                    <Link href="">美妝社群 </Link>
-                  </li>
+                  <div className="list-items">
+                    <li>
+                      <Link href="">美妝教室</Link>
+                    </li>
+                    <li>
+                      <Link href="">美妝社群 </Link>
+                    </li>
+                  </div>
                 </ul>
                 <ul>
                   <li className="list-title">關於品牌</li>
-                  <li>
-                    <Link href="">ISLA理念</Link>
-                  </li>
-                  <li>
-                    <Link href="">商業合作</Link>
-                  </li>
+                  <div className="list-items">
+                    <li>
+                      <Link href="">ISLA理念</Link>
+                    </li>
+                    <li>
+                      <Link href="">商業合作</Link>
+                    </li>
+                  </div>
                 </ul>
                 <div className="blank d-lg-block d-none" />
               </div>
               <div>
                 <div className="footer-header-right">
                   {/* contact info */}
-                  <div className="contact-info-block">
-                    <h3 className="d-md-block d-none">聯絡窗口</h3>
+                  <div className="contact-info-block px-3">
+                    <h3 className="d-md-block d-none contact-info-title">
+                      聯絡窗口
+                    </h3>
                     <div className="contact-info">
-                      <span>電話 (00) 03554798</span>
+                      <span>電話 TW (00) 03554798</span>
                       <span>電子郵件 isla.supple@isla.com</span>
                     </div>
                   </div>

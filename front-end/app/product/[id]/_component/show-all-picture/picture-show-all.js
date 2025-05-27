@@ -1,20 +1,17 @@
+'use client'
+
 import { useState } from 'react'
 import Image from 'next/image'
-import { Modal, Button } from 'react-bootstrap'
+import Lightbox from 'yet-another-react-lightbox'
+import 'yet-another-react-lightbox/styles.css'
 
 export default function PictureShowAll({ reviewImages = [] }) {
-  const [showModal, setShowModal] = useState(false)
+  const [open, setOpen] = useState(false)
   const [currentIndex, setCurrentIndex] = useState(0)
 
-  const handleShowMore = () => setShowModal(true)
-  const handleClose = () => setShowModal(false)
-
-  const handlePrev = () => {
-    setCurrentIndex((prev) => (prev === 0 ? reviewImages.length - 1 : prev - 1))
-  }
-
-  const handleNext = () => {
-    setCurrentIndex((prev) => (prev === reviewImages.length - 1 ? 0 : prev + 1))
+  const handleOpen = (index) => {
+    setCurrentIndex(index)
+    setOpen(true)
   }
 
   return (
@@ -23,13 +20,20 @@ export default function PictureShowAll({ reviewImages = [] }) {
         <div className="comment-sidebar-photos-title">所有圖片</div>
         <div className="comment-sidebar-photos">
           {reviewImages.slice(0, 6).map(({ imageUrl }, i) => (
-            <button key={i} className="comment-img" type="button">
+            <button
+              key={i}
+              className="comment-img"
+              type="button"
+              onClick={() => handleOpen(i)}
+            >
               <Image
                 className="img-fluid"
                 src={imageUrl}
                 alt={`評論圖片 ${i + 1}`}
                 width={0}
                 height={0}
+                sizes="100px"
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               />
             </button>
           ))}
@@ -38,39 +42,23 @@ export default function PictureShowAll({ reviewImages = [] }) {
         <button
           className="comment-sidebar-photos-show-more"
           type="button"
-          onClick={handleShowMore}
+          onClick={() => handleOpen(0)}
         >
           查看全部
         </button>
       </div>
 
-      {/* Modal 顯示區 */}
-      <Modal show={showModal} onHide={handleClose} centered size="lg">
-        <Modal.Header closeButton>
-          <Modal.Title>所有圖片</Modal.Title>
-        </Modal.Header>
-        <Modal.Body className="text-center">
-          {reviewImages.length > 0 && (
-            <Image
-              src={reviewImages[currentIndex].imageUrl}
-              alt={`評論圖片 ${currentIndex + 1}`}
-              width={600}
-              height={600}
-              className="img-fluid"
-              style={{ objectFit: 'contain', maxHeight: '60vh' }}
-            />
-          )}
-        </Modal.Body>
-        <Modal.Footer className="justify-content-between">
-          <Button variant="secondary" onClick={handlePrev}>
-            上一張
-          </Button>
-          <span>{`${currentIndex + 1} / ${reviewImages.length}`}</span>
-          <Button variant="secondary" onClick={handleNext}>
-            下一張
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      {/* Lightbox 顯示區 */}
+      {open && (
+        <Lightbox
+          open={open}
+          close={() => setOpen(false)}
+          index={currentIndex}
+          slides={reviewImages.map(({ imageUrl }) => ({
+            src: imageUrl,
+          }))}
+        />
+      )}
     </>
   )
 }
