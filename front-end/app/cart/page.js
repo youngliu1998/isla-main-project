@@ -15,9 +15,11 @@ import CartLoading from './_component/cart-Loading/cart-loading'
 import { useAuth } from '@/hook/use-auth'
 import useIsMobile from './hook/useIsMobile'
 import useProcesCoups from './hook/useProcesCoups'
+import { useCartContext } from './context/cart-context'
 // fetch data
 import cartApi from './utils/axios'
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 export default function CartPage() {
   const { user, isAuth } = useAuth()
@@ -30,6 +32,8 @@ export default function CartPage() {
   const [selecProdCoup, setSelecProdCoup] = useState(null)
   const [selecCourCoup, setSelecCourCoup] = useState(null)
   const [selecGloCoup, setSelecGloCoup] = useState(null)
+  const { setOrderData } = useCartContext()
+  const router = useRouter()
 
   //init-get cart-items & member-coupon
   useEffect(() => {
@@ -213,6 +217,23 @@ export default function CartPage() {
     (coupon) => coupon.area === 0
   )
 
+  function handleCheckout() {
+    // 組合要傳到下一步的明細
+    const orderSummaryData = {
+      cartItems: cartItems.filter((i) => checkedItems[i.id]),
+      selecProdCoup,
+      selecCourCoup,
+      selecGloCoup,
+      setSelecGloCoup,
+      filterGloCoups,
+      filterCourCoups,
+      filterProdCoups,
+    }
+    setOrderData(orderSummaryData)
+    localStorage.setItem('orderSummary', JSON.stringify(orderSummaryData))
+    router.push('/cart/payment')
+  }
+
   return (
     <>
       <section className="container text-center text-lg-start mt-2">
@@ -368,6 +389,7 @@ export default function CartPage() {
                     filterGloCoups={filterGloCoups}
                     filterCourCoups={filterProdCoups}
                     filterProdCoups={filterProdCoups}
+                    onCheckout={handleCheckout}
                   />
                 )}
               </div>

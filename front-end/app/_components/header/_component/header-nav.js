@@ -14,7 +14,7 @@ export default function HeaderNav() {
             <Link href="">品牌總覽</Link>
           </li>
           <li>
-            <Link href="">優惠券專區</Link>
+            <Link href="/coupon/products">優惠券專區</Link>
           </li>
           <li>
             <Link href="/course">美妝教室</Link>

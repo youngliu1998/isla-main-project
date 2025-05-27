@@ -7,6 +7,7 @@ import Header from './_components/header/header'
 import Footer from './_components/footer/footer'
 import '@/app/_styles/globals.scss'
 import Provider from './provider'
+import Chat from './_components/service-chat/chat'
 
 export const metadata = {
   title: 'ISLA project',

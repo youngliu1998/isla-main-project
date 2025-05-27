@@ -1,16 +1,164 @@
 'use client'
 
 // import styles from '../_styles/cart-style.module.scss'
+import { toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import StepProgress from '../_component/step-progress/step-progress'
 import OrderSummary from '../_component/order-summary/order-summary'
 import MobileOrderBar from '../_component/mobile-order-bar/mobile-order-bar'
 import ShippingForm from '../_component/shipping-form/shipping-form'
-
+//hook
 import useIsMobile from '../hook/useIsMobile'
+import { useCartContext } from '../context/cart-context'
+import { useAuth } from '../../../hook/use-auth'
+import cartApi from '../utils/axios'
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 export default function PaymentPage() {
+  const router = useRouter()
   const isMobile = useIsMobile()
+  const { orderData, setOrderData } = useCartContext()
+  const { user } = useAuth()
+
+  const defaultMemberInfo = {
+    recipientName: '',
+    recipientPhone: '',
+    recipientAdress: '',
+  }
+  const [memberSameInfo, setMemberSameInfo] = useState(defaultMemberInfo)
+  const [paymentMethod, setPaymentMethod] = useState('信用卡')
+
+  // 用來接收從 ShippingForm 傳來的配送資料
+  const [shippingInfo, setShippingInfo] = useState({
+    shippingMethod: '',
+    recipientName: '',
+    recipientPhone: '',
+    recipientAddress: '',
+    pickupStoreName: '',
+    pickupStoreAddress: '',
+  })
+
+  // 勾選自動帶入會員資料
+  const handleCopyMemberInfo = (checked) => {
+    if (checked) {
+      setMemberSameInfo({
+        recipientName: user.name || '',
+        recipientPhone: user.tel || '',
+        recipientAdress: user.address || '',
+      })
+    } else {
+      setMemberSameInfo(defaultMemberInfo)
+    }
+  }
+
+  useEffect(() => {
+    if (!orderData) {
+      const saved = localStorage.getItem('orderSummary')
+      if (saved) {
+        setOrderData(JSON.parse(saved))
+      }
+    }
+  }, [orderData, setOrderData])
+
+  // 綠界付款流程
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleCheckout = async () => {
+    const cartItems = orderData?.cartItems || []
+
+    if (cartItems.length === 0) {
+      toast.error('購物車是空的喔！')
+      return
+    }
+
+    // 驗證基本資料
+    if (shippingInfo.shippingMethod === '宅配') {
+      if (
+        !shippingInfo.recipientName ||
+        !shippingInfo.recipientPhone ||
+        !shippingInfo.recipientAddress
+      ) {
+        toast.error('請填寫完整宅配收件人資料')
+        return
+      }
+    } else if (shippingInfo.shippingMethod === '超商取貨') {
+      if (!shippingInfo.pickupStoreName || !shippingInfo.pickupStoreAddress) {
+        toast.error('請選擇超商門市')
+        return
+      }
+    }
+
+    setIsLoading(true)
+
+    try {
+      // 組裝優惠券資料
+      const selecProdCoup = orderData?.selecProdCoup || null
+      const selecCourCoup = orderData?.selecCourCoup || null
+      const selecGloCoup = orderData?.selecGloCoup || null
+      const discountTotal = orderData?.discountTotal || 0
+      // 建立訂單送進資料庫
+      const res = await cartApi.post('/order/create', {
+        cartItems,
+        discountTotal,
+        selecProdCoup,
+        selecCourCoup,
+        selecGloCoup,
+        paymentMethod: paymentMethod,
+        // 配送資訊
+        shippingMethod: shippingInfo.shippingMethod,
+        shippingAddress: shippingInfo.recipientAddress,
+        recipientName: shippingInfo.recipientName,
+        recipientPhone: shippingInfo.recipientPhone,
+        pickupStoreName: shippingInfo.pickupStoreName,
+        pickupStoreAddress: shippingInfo.pickupStoreAddress,
+      })
+
+      const { orderId, orderNumber, totalAmount } = res.data
+      if (!orderNumber) {
+        toast.error('訂單建立失敗，無法取得訂單編號')
+        return
+      }
+
+      // 把訂單編號存起來（之後 order-completed 頁面可以用）
+      localStorage.setItem('lastOrderNumber', orderNumber)
+
+      // 準備綠界資料
+      const items = cartItems.map((item) => ({
+        name: item.name,
+        quantity: item.quantity,
+      }))
+
+      const ecpayRes = await cartApi.post('cart-items/ecpay', {
+        amount: totalAmount,
+        items,
+        orderNumber,
+      })
+
+      const html = ecpayRes.data
+
+      // 插入表單並自動送出
+      const container = document.querySelector('#ecpay-form-container')
+      if (!container) {
+        toast.error('找不到表單容器')
+        return
+      }
+      container.innerHTML = html
+      //手動送出綠界表單
+      const form = container.querySelector('form')
+      if (form) {
+        form.submit()
+      } else {
+        toast.error('綠界表單產生失敗')
+      }
+    } catch (error) {
+      console.error(error)
+      toast.error('發生錯誤，無法導向綠界付款')
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <>
       <section className="container text-center text-lg-start mt-2">
@@ -24,55 +172,65 @@ export default function PaymentPage() {
         <div className="row gy-5">
           {/* Left */}
           <div className="col-lg-7 col-12">
-            <ShippingForm />
+            <ShippingForm
+              memberSameInfo={memberSameInfo}
+              setMemberSameInfo={setMemberSameInfo}
+              handleCopyMemberInfo={handleCopyMemberInfo}
+              onShippingChange={setShippingInfo}
+            />
 
             {/* 付款方式 */}
             <div className="card-style mb-3 p-4">
               <h5 className="fw-bold mb-5 text-maintext">付款方式</h5>
-              <div className="form-check mb-3">
-                <input
-                  className="form-check-input"
-                  type="radio"
-                  name="payment"
-                  id="paymentCredit"
-                  value="credit"
-                  defaultChecked
-                />
-                <label htmlFor="paymentCredit" className="form-check-label">
-                  信用卡一次付清(綠界科技)
-                </label>
-              </div>
-              <div className="form-check mb-3">
-                <input
-                  className="form-check-input"
-                  type="radio"
-                  name="payment"
-                  id="payment711"
-                  value="711"
-                />
-                <label htmlFor="payment711" className="form-check-label">
-                  超商取貨付款
-                </label>
-              </div>
-              <div className="form-check mb-3">
-                <input
-                  className="form-check-input"
-                  type="radio"
-                  name="payment"
-                  id="paymentLinePay"
-                  value="linepay"
-                />
-                <label htmlFor="paymentLinePay" className="form-check-label">
-                  LINE Pay
-                </label>
-              </div>
+
+              {[
+                { id: '信用卡', label: '信用卡一次付清(綠界科技)' },
+                { id: '超商付款', label: '超商取貨付款' },
+                { id: 'LINE Pay', label: 'LINE Pay' },
+              ].map((option) => (
+                <div className="form-check mb-3" key={option.id}>
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="payment"
+                    id={`payment-${option.id}`}
+                    value={option.id}
+                    checked={paymentMethod === option.id}
+                    onChange={() => setPaymentMethod(option.id)}
+                  />
+                  <label
+                    htmlFor={`payment-${option.id}`}
+                    className="form-check-label"
+                  >
+                    {option.label}
+                  </label>
+                </div>
+              ))}
             </div>
           </div>
           {/* Right*/}
-          <div className="col-lg-5 col-12">{!isMobile && <OrderSummary />}</div>
+          <div className="col-lg-5 col-12">
+            {!isMobile && (
+              <OrderSummary
+                cartItems={orderData?.cartItems || []}
+                selecProdCoup={orderData?.selecProdCoup}
+                selecCourCoup={orderData?.selecCourCoup}
+                selecGloCoup={orderData?.selecGloCoup}
+                setSelecGloCoup={() => {}}
+                filterGloCoups={orderData?.filterGloCoups || []}
+                filterCourCoups={orderData?.filterCourCoups || []}
+                filterProdCoups={orderData?.filterProdCoups || []}
+                onCheckout={handleCheckout} // ecpay
+                isLoading={isLoading}
+              />
+            )}
+          </div>
           {isMobile && <MobileOrderBar />}
         </div>
       </section>
+
+      {/* 表單容器 */}
+      <div id="ecpay-form-container" style={{ display: 'none' }} />
     </>
   )
 }

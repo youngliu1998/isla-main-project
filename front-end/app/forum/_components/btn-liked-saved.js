@@ -13,6 +13,7 @@ export default function ComponentsBtnLikedSaved({
   active = Boolean,
   count = '',
   postID = '',
+  commentID = '',
   // userID = '',
   mutate = () => {},
   color = '',
@@ -47,14 +48,13 @@ export default function ComponentsBtnLikedSaved({
                   Accept: 'application/json',
                   'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ userID, postID }),
+                body: JSON.stringify({ userID, postID, commentID }),
               }
             )
             const json = await res.json()
             if (json.status === 'success') {
               mutate()
             }
-            console.log(userID)
           }
         }}
       >

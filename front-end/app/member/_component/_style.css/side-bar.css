@@ -24,6 +24,9 @@
   aspect-ratio: 1/1;
   background-color: var(--main-text);
   border-radius: 50%;
+  > img {
+    display: block;
+  }
 }
 .user-head .user-title {
   color: var(--main-text);

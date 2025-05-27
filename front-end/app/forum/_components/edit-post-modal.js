@@ -1,10 +1,9 @@
 'use client'
 
-import React, { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import ComponentsAuthorInfo from './author-info'
 import { useAuth } from '../../../hook/use-auth'
 import { useFilter } from '../_context/filterContext'
-import { mutate } from 'swr'
 import { useRouter } from 'next/navigation'
 // import '/bootstrap/dist/js/bootstrap.bundle.min.js' 無法直接引入
 
@@ -20,7 +19,7 @@ export default function EditPostModal({
   const modalRef = useRef()
   const router = useRouter()
   const { user, isAuth } = useAuth() //NOTE
-  console.log(user)
+  // console.log(user)
   const userID = user.id
   const userUrl = user.ava_url
   const userNick = user.nickname
@@ -90,7 +89,10 @@ export default function EditPostModal({
       select.rangeCount === 0 ||
       !contentRef.current.contains(select.anchorNode)
     ) {
-      contentRef.current.focus() //強制上傳位置為content區域
+      if (!modalRef.current.hasAttribute('aria-hidden')) {
+        // contentRef.current.focus()
+      }
+      // contentRef.current.focus() //強制上傳位置為content區域
       range = document.createRange()
       range.selectNodeContents(contentRef.current)
       range.collapse(false)
@@ -131,6 +133,7 @@ export default function EditPostModal({
   }
   // 提交表單
   const handleSubmit = async (e) => {
+    console.log('submit')
     e.preventDefault()
     const productCate = productCateRef.current.value
     const postCate = postCateRef.current.value
@@ -154,6 +157,7 @@ export default function EditPostModal({
     fd.append('title', title) //fd長怎樣QU
     fd.append('content', content)
     fd.append('userID', userID)
+    console.log(fd)
 
     // 建立還是更新
     if (isUpdated) {
@@ -210,7 +214,8 @@ export default function EditPostModal({
       <form onSubmit={handleSubmit}>
         <div
           className="modal fade"
-          id="editPostModal"
+          // id="editPostModal"
+          id={isUpdated ? 'updatedPostModal' : 'editPostModal'}
           ref={modalRef}
           tabIndex={-1}
           aria-labelledby="editPostModalLabel"
@@ -218,7 +223,7 @@ export default function EditPostModal({
         >
           <div className="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable modal-forum">
             <div className="modal-content bg-pure-white">
-              <div className="modal-header main-color">
+              <div className="modal-header main-color py-2">
                 <h5
                   className="modal-title main-text-color fs20"
                   id="editPostModalLabel"
@@ -346,12 +351,17 @@ export default function EditPostModal({
                     handleFilesChange(e)
                   }}
                 />
+                <span></span>
                 <label
                   htmlFor="uploadImage"
                   className="mx-0 my-0 me-auto h-100"
                 >
-                  <div role="button">
+                  <div
+                    role="button"
+                    className="d-flex align-items-center gap-2"
+                  >
                     <i className="bi bi-image fs32 sub-text-color"></i>
+                    <span className="sub-text-color">上傳多張圖片</span>
                   </div>
                 </label>
                 <button
@@ -362,7 +372,7 @@ export default function EditPostModal({
                   取消
                 </button>
                 <button
-                  type="button-bounce"
+                  type="submit"
                   data-bs-dismiss="modal"
                   className={`px-4 py-2 rounded-3 border-0 bounce ${isTitleValid && isContentValid ? 'bg-main color-isla-white' : 'bg-hover-gray sub-text-color border-0'}`}
                   onClick={() => {
