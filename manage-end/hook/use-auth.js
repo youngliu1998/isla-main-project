@@ -71,8 +71,8 @@ export function AuthProvider({ children }) {
 
       if (response.ok) {
         if (!data || !data.data || !data.data.token) {
-          console.log('沒有取得token，登入失敗', data);
-          return;
+          console.log('沒有取得token，登入失敗', data)
+          return
         }
         // set token to localStorage
         localStorage.setItem('jwtToken', data['data']['token'])

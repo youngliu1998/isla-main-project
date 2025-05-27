@@ -12,10 +12,19 @@ import ProductSectionNew from '@/app/_components/_component-main-page/product/pr
 // ==== END section component ====
 import './_styles/main-page.css'
 import { useRouter } from 'next/navigation'
+// ==== home animation by song ====
+import { useEffect, useState } from 'react'
+import HomeAnimationSplash from './home-animation/splash'
 
 export default function Home() {
+  const [showMain, setShowMain] = useState(false)
+
   const router = useRouter()
-  const handleForumTab = () => {}
+  // const handleForumTab = () => {}
+
+  if (!showMain)
+    return <HomeAnimationSplash onFinish={() => setShowMain(true)} />
+
   return (
     <>
       <div>

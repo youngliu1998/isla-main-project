@@ -41,14 +41,14 @@ router.get('/', verifyToken, async (req, res) => {
     if (productIds.length > 0) {
       const placeholders = productIds.map(() => '?').join(',')
       const [productRows] = await db.execute(
-        `SELECT p.product_id, p.name, p.base_price, p.sale_price, p.category_id, p.brand_id, cat.name AS category_name,
+        `
+        SELECT p.product_id, p.name, p.base_price, p.sale_price, p.category_id, p.brand_id, cat.name AS category_name,
         pi.image_url
         FROM products p
         LEFT JOIN categories cat ON p.category_id = cat.category_id
         LEFT JOIN product_images pi ON pi.product_id = p.product_id AND pi.is_primary = 1
-        WHERE p.product_id IN (${placeholders})
-        `,
-        productIds
+        WHERE p.product_id IN (${placeholders})`
+        ,productIds
       )
       products = productRows
     }

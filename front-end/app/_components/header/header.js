@@ -4,19 +4,19 @@ import Image from 'next/image'
 //styles
 import { BsHandbag } from 'react-icons/bs'
 import { useAuth } from '@/hook/use-auth'
+import { useCartContext } from '../../cart/context/cart-context'
 import HamMenu from './_component/ham-menu'
 import HamMeunNav from './_component/ham-meun-nav'
 import HeaderNav from './_component/header-nav'
 import './header.css'
 // hook
-import useCartCount from '@/app/cart/hook/useCartCount'
 import { usePathname, useRouter } from 'next/navigation'
 import { useState } from 'react'
 // route
 import { USER_AVA_URL } from '@/_route/img-url'
 
 export default function Header() {
-  const cartIconNum = useCartCount()
+  const { totalCount } = useCartContext()
   const pathname = usePathname()
   const router = useRouter()
   const [hamMenuOpen, setHamMenuOpen] = useState(false)
@@ -91,7 +91,7 @@ export default function Header() {
               onClick={handleCartClick}
             >
               <BsHandbag style={{ color: 'white', fontSize: '30px' }} />
-              {cartIconNum > 0 && <div>{cartIconNum}</div>}
+              <div>{totalCount}</div>
             </button>
 
             <Link href={'/member/' + loginUrl} className="d-lg-block d-none">

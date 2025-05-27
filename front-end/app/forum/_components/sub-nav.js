@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from 'react'
 // import EditPostModal from './edit-post-modal'
 import ComponentsAuthorInfo from './author-info'
 import EditPostModal from './edit-post-modal'
+import Ripples from 'react-ripples'
 
 export default function ComponentsSubNav() {
   const modalRef = useRef()
@@ -33,55 +34,62 @@ export default function ComponentsSubNav() {
       <div className="sub-nav-container col col-2 d-none d-lg-block px-0 position-relative">
         <aside className="sub-nav position-sticky d-flex flex-column gap-3 w-100">
           <div className="sub-nav-items">
-            <Link
-              href="/"
-              className={`sub-nav-item d-flex px-3 py-3 gap-2 rounded-3 text-decoration-none fw-medium main-color`}
-              type="button"
-              data-bs-toggle="modal"
-              data-bs-target="#editPostModal"
-              onMouseUp={(e) => {
-                e.currentTarget.blur()
-              }}
-            >
-              <i className="bi bi-plus-lg" />
-              <span className="">撰寫貼文</span>
-            </Link>
-            <Link
-              href="/forum"
-              className={`sub-nav-item d-flex px-3 py-3 gap-2 rounded-3 text-decoration-none fw-medium main-text-color`}
-              onMouseUp={(e) => {
-                e.currentTarget.blur()
-              }}
-            >
-              <i
-                className={`bi ${url === '/forum' ? 'bi-house-door-fill' : 'bi-house-door'}`}
-              />
-              <span className="">論壇首頁</span>
-            </Link>
-            <Link
-              href="/forum/chat"
-              className={`sub-nav-item d-flex px-3 py-3 gap-2 rounded-3 text-decoration-none fw-medium main-text-color`}
-              onMouseUp={(e) => {
-                e.currentTarget.blur()
-              }}
-            >
-              <i
-                className={`bi ${url === '/forum/chat' ? 'bi-chat-dots-fill' : 'bi-chat-dots'}`}
-              />
-              <span className="">我的訊息</span>
-            </Link>
-
-            <div
-              className={`sub-nav-item d-flex px-3 py-3 gap-2 rounded-3 text-decoration-none fw-medium main-text-color fs16`}
-              data-bs-toggle="collapse"
-              data-bs-target="#panelsStayOpen-collapseOne"
-              aria-expanded="true"
-              aria-controls="panelsStayOpen-collapseOne"
-              role="button"
-            >
-              <i className="bi bi-people" />
-              <span className="">追蹤對象</span>
-            </div>
+            <Ripples className="rounded-3 d-block">
+              <Link
+                href="/"
+                className={`sub-nav-item d-flex px-3 py-3 gap-2 rounded-3 text-decoration-none fw-medium main-color`}
+                type="button"
+                data-bs-toggle="modal"
+                data-bs-target="#editPostModal"
+                onMouseUp={(e) => {
+                  e.currentTarget.blur()
+                }}
+              >
+                <i className="bi bi-plus-lg" />
+                <span className="">撰寫貼文</span>
+              </Link>
+            </Ripples>
+            <Ripples className="rounded-3 d-block">
+              <Link
+                href="/forum"
+                className={`sub-nav-item d-flex px-3 py-3 gap-2 rounded-3 text-decoration-none fw-medium main-text-color`}
+                onMouseUp={(e) => {
+                  e.currentTarget.blur()
+                }}
+              >
+                <i
+                  className={`bi ${url === '/forum' ? 'bi-house-door-fill' : 'bi-house-door'}`}
+                />
+                <span className="">論壇首頁</span>
+              </Link>
+            </Ripples>
+            <Ripples className="rounded-3 d-block">
+              <Link
+                href="/forum/chat"
+                className={`sub-nav-item d-flex px-3 py-3 gap-2 rounded-3 text-decoration-none fw-medium main-text-color`}
+                onMouseUp={(e) => {
+                  e.currentTarget.blur()
+                }}
+              >
+                <i
+                  className={`bi ${url === '/forum/chat' ? 'bi-chat-dots-fill' : 'bi-chat-dots'}`}
+                />
+                <span className="">我的訊息</span>
+              </Link>
+            </Ripples>
+            <Ripples className="rounded-3 d-block">
+              <div
+                className={`sub-nav-item d-flex px-3 py-3 gap-2 rounded-3 text-decoration-none fw-medium main-text-color fs16`}
+                data-bs-toggle="collapse"
+                data-bs-target="#panelsStayOpen-collapseOne"
+                aria-expanded="true"
+                aria-controls="panelsStayOpen-collapseOne"
+                role="button"
+              >
+                <i className="bi bi-people" />
+                <span className="">追蹤對象</span>
+              </div>
+            </Ripples>
             <div
               id="panelsStayOpen-collapseOne"
               className="accordion-collapse collapse show"
@@ -137,23 +145,26 @@ export default function ComponentsSubNav() {
                 </Link>
               </div>
             </div>
-
-            <Link
-              href="/member/my-forum/my-post"
-              className={`sub-nav-item d-flex px-3 py-3 gap-2 rounded-3 text-decoration-none fw-medium main-text-color`}
-            >
-              <i className="bi bi-file-earmark-text" />
-              <span className="">我的文章</span>
-              <i className="bi bi-arrow-up-right"></i>
-            </Link>
-            <Link
-              href="/member/my-forum/saved-post"
-              className={`sub-nav-item d-flex px-3 py-3 gap-2 rounded-3 text-decoration-none fw-medium main-text-color`}
-            >
-              <i className="bi bi-bookmark" />
-              <span className="">文章收藏</span>
-              <i className="bi bi-arrow-up-right"></i>
-            </Link>
+            <Ripples className="rounded-3 d-block">
+              <Link
+                href="/member/my-forum/my-post"
+                className={`sub-nav-item d-flex px-3 py-3 gap-2 rounded-3 text-decoration-none fw-medium main-text-color`}
+              >
+                <i className="bi bi-file-earmark-text" />
+                <span className="">我的文章</span>
+                <i className="bi bi-arrow-up-right"></i>
+              </Link>
+            </Ripples>
+            <Ripples className="rounded-3 d-block">
+              <Link
+                href="/member/my-forum/saved-post"
+                className={`sub-nav-item d-flex px-3 py-3 gap-2 rounded-3 text-decoration-none fw-medium main-text-color`}
+              >
+                <i className="bi bi-bookmark" />
+                <span className="">文章收藏</span>
+                <i className="bi bi-arrow-up-right"></i>
+              </Link>
+            </Ripples>
           </div>
         </aside>
       </div>

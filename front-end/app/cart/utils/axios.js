@@ -5,6 +5,7 @@ import axios from 'axios'
 // axios instance
 const cartApi = axios.create({
   baseURL: 'http://localhost:3005/api', // back-end base url
+  withCredentials: true,
   timeout: 5000,
 })
 
