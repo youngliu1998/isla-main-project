@@ -76,8 +76,8 @@ export default function SideBar() {
             </div>
           </button>
           <UploadAva openAvatar={openAvatar} setOpenAvatar={setOpenAvatar} />
-          <h4 className="user-title">{user?.nickname || 'Rookie'}</h4>
-          <p>{user?.email || 'illegal@nomail.com'}</p>
+          <h4 className="user-title">{user?.nickname || '訪客'}</h4>
+          <p>{user?.email || 'no account'}</p>
           <Link
             onClick={() => {
               logout()

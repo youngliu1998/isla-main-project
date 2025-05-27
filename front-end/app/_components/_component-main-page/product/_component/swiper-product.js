@@ -1,56 +1,39 @@
 'use client'
 
+import React, { useRef, useState } from 'react'
+// Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react'
-import { Navigation } from 'swiper/modules'
-import 'swiper/css'
-import 'swiper/css/navigation'
 
 // Import Swiper styles
 import 'swiper/css'
+import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 
-// import './styles.css';
-
 // import required modules
-import { Pagination } from 'swiper/modules'
+import { Navigation, Pagination, Mousewheel, Keyboard } from 'swiper/modules'
 
 export default function SwiperProduct() {
   return (
     <>
-      {/* <Swiper
-        // onSwiper={(swiper) => {
-        //   swiperRef.current = swiper
-        // }}
-        modules={[Navigation]}
-        navigation
-        spaceBetween={6}
-        breakpoints={{
-          0: {
-            slidesPerView: 1.1,
-            spaceBetween: 10,
-          },
-          420: {
-            slidesPerView: 1.2,
-            spaceBetween: 12,
-          },
-          768: {
-            slidesPerView: 2.5,
-            spaceBetween: 14,
-          },
-          992: {
-            slidesPerView: 1.8,
-            // spaceBetween: 18,
-          },
-          1200: {
-            slidesPerView: 2.3,
-            spaceBetween: 20,
-          },
-        }}
+      <Swiper
+        cssMode={true}
+        navigation={true}
+        pagination={true}
+        mousewheel={true}
+        keyboard={true}
+        modules={[Navigation, Pagination, Mousewheel, Keyboard]}
+        className="mySwiper"
       >
-        <SwiperSlide>slide1 </SwiperSlide>
-        <SwiperSlide>slide2 </SwiperSlide>
-        <SwiperSlide>slide3 </SwiperSlide>
-      </Swiper> */}
+        <SwiperSlide>Slide 1</SwiperSlide>
+        <SwiperSlide>Slide 2</SwiperSlide>
+        <SwiperSlide>Slide 3</SwiperSlide>
+        <SwiperSlide>Slide 4</SwiperSlide>
+        <SwiperSlide>Slide 5</SwiperSlide>
+        <SwiperSlide>Slide 6</SwiperSlide>
+        <SwiperSlide>Slide 7</SwiperSlide>
+        <SwiperSlide>Slide 8</SwiperSlide>
+        <SwiperSlide>Slide 9</SwiperSlide>
+      </Swiper>
     </>
   )
 }
