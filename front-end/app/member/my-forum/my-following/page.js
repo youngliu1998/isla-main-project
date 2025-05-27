@@ -76,16 +76,14 @@ export default function MyPostPage(props) {
           <div className="my-following-main d-flex flex-lg-column flex-row flex-wrap gap-3">
             {followings.map((f, i) => {
               return (
-                <>
-                  <FollowingCard
-                    key={i}
-                    cardHref={`/forum/profile/${f.id}`}
-                    imgSrc={f.ava_url}
-                    imgAlt={f.nick}
-                    imgClassWidth="50"
-                    nick={f.nickname}
-                  />
-                </>
+                <FollowingCard
+                  key={i}
+                  cardHref={`/forum/profile/${f.id}`}
+                  imgSrc={f.ava_url}
+                  imgAlt={f.nick}
+                  imgClassWidth="50"
+                  nick={f.nickname}
+                />
               )
             })}
           </div>

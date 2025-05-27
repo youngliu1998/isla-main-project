@@ -20,6 +20,7 @@
   /* --bg-gray-article: #f2f1ef; */
   --bg-gray-article: #f7f7f7;
   --hover-gray: #dfdfdf;
+  --hover-gray-ripple: #dfdfdfb2;
   --hover-light-gray: #eeeeed;
   --focus-gray: #d2d2d2b9;
   --main-text: #373737;
@@ -126,6 +127,12 @@
 .shadow-forum {
   /* box-shadow: 0 0 8px #5447340d; fb */
   box-shadow: 0 0 12px 0 #0000000a;
+}
+
+/* btn */
+.ripples-container {
+  /* border-radius: 50px; */
+  /* overflow: hidden; */
 }
 
 /* font */
@@ -306,15 +313,16 @@
     font-size: 16px;
     font-weight: 500; */
     &:hover {
-      background-color: var(--hover-gray);
+      /* background-color: var(--hover-gray); */
+      color: var(--main-color);
     }
     &:focus {
       background-color: var(--focus-gray);
     }
   }
   .cate .active {
-    background-color: var(--hover-gray);
-    color: var(--main-text);
+    background-color: var(--hover-light-gray);
+    color: var(--main-color);
   }
 }
 .search-bar {
@@ -334,7 +342,7 @@
 .tabs {
   padding-inline: 12px;
   max-width: 800px;
-  background-color: var(--bg-gray-article);
+  background-color: #fafafa;
   /* background: linear-gradient(0deg, #fafafa6e, #fafafa 100%); */
   /* backdrop-filter: blur(5px); */
   z-index: 999;
@@ -403,7 +411,7 @@
   .sub-nav-item {
     transition: 0.05s;
     &:hover {
-      background: var(--hover-gray);
+      background: var(--hover-light-gray);
     }
     &:focus {
       background: var(--focus-gray);
