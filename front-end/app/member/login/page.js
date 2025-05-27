@@ -21,17 +21,45 @@ export default function LoginPage() {
   })
   // ==== handle login form ====
   // course登入後跳回原本畫面並自動執行收藏
+  // 宣告一個非同步的函式 handleSubmit，參數 e 是事件物件（例如表單提交事件）
   const handleSubmit = async (e) => {
+    // 阻止表單預設行為（例如頁面重新載入）
     e.preventDefault()
+
     await login(memAuth.email, memAuth.password)
-    const isAuthLocal = localStorage.getItem('jwtToken') || false
+
+    // 檢查 localStorage 中的 'isAuth' 是否為 'true'（表示使用者已成功登入）
+    const isAuthLocal = localStorage.getItem('isAuth') === 'true'
+
+    // 如果使用者成功登入
     if (isAuthLocal) {
-      alert('登入成功')
-      router.push('/')
-    } else {
-      alert('登入失敗')
+      // 取得登入前預先儲存的導向路徑（例如使用者原本想進入的頁面）
+      const redirectPath = localStorage.getItem('redirectAfterLogin')
+      // 檢查使用者是否在登入前點擊「立即購買」按鈕
+      const pendingBuyNow = localStorage.getItem('pendingBuyNow')
+
+      // 清除已使用過的 redirect path 資料
+      localStorage.removeItem('redirectAfterLogin')
+
+      // ✅ 若登入前曾點擊立即購買
+      if (pendingBuyNow) {
+        // 清除 pending 購買記錄
+        localStorage.removeItem('pendingBuyNow')
+        // 導向該課程詳情頁，讓該頁 useEffect 中的購買邏輯自動處理
+        router.push(`/course/course-list/${pendingBuyNow}`)
+        return // 結束函式，不繼續往下執行
+      }
+
+      // 一般情況（未點擊立即購買），若有設定登入後要導向的頁面，就跳轉過去
+      if (redirectPath) {
+        router.push(redirectPath)
+      } else {
+        // 若無特定導向頁面，預設導回首頁
+        router.push('/')
+      }
     }
   }
+
   // 跳轉結束
 
   //無跳轉頁面
