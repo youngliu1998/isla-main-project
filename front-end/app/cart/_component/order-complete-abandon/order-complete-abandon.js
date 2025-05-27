@@ -1,5 +1,12 @@
-// components/OrderComplete.jsx
 import { Accordion } from 'react-bootstrap'
+import { useRouter } from 'next/navigation'
+
+// 格式化金額
+function formatCurrency(num) {
+  const n = Number(num)
+  if (isNaN(n)) return '0'
+  return `NT$${n.toLocaleString('zh-Hant-TW')}`
+}
 
 export default function OrderComplete({ orderData }) {
   const {
@@ -11,6 +18,8 @@ export default function OrderComplete({ orderData }) {
     recipient,
     products,
   } = orderData
+
+  const router = useRouter()
 
   return (
     <section className="container my-5">
@@ -75,10 +84,18 @@ export default function OrderComplete({ orderData }) {
 
         {/* 按鈕 */}
         <div className="d-grid gap-2 d-md-flex justify-content-center">
-          <button className="btn btn-outline-secondary px-5" type="button">
+          <button
+            className="btn btn-outline-secondary px-5"
+            type="button"
+            onClick={() => router.push('/member/orders')}
+          >
             查看訂單
           </button>
-          <button className="btn btn-subtext text-white px-5" type="button">
+          <button
+            className="btn btn-subtext text-white px-5"
+            type="button"
+            onClick={() => router.push('/')}
+          >
             回到首頁
           </button>
         </div>

@@ -7,6 +7,7 @@ import Header from './_components/header/header'
 import Footer from './_components/footer/footer'
 import '@/app/_styles/globals.scss'
 import Provider from './provider'
+import Chat from './_components/service-chat/chat'
 
 export const metadata = {
   title: 'ISLA project',
@@ -27,7 +28,11 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
         <link
           href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+TC:wght@100..900&display=swap"
           rel="stylesheet"
@@ -36,9 +41,21 @@ export default function RootLayout({ children }) {
       <Provider>
         <body>
           <Header />
+          <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            toastClassName="custom-toast"
+            style={{ marginTop: '70px', zIndex: 9999 }} // 根據 header 高度調整 marginTop
+          />
           <div style={{ marginTop: '80px' }}>{children}</div>
           <Footer />
-          <ToastContainer />
         </body>
       </Provider>
     </html>

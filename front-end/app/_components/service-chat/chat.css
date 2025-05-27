@@ -1,0 +1,76 @@
+* {
+  /* outline: 1px solid rgba(180, 142, 216, 0.657); */
+}
+.service-chat-room {
+  width: 300px;
+  height: 64vh;
+  .chat-main-input {
+    background-color: #f7f7f7;
+    outline: 0;
+  }
+}
+
+.chat-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 100% 100% 8px 100%;
+  background-color: #fa8e83;
+  color: #fbfbfb;
+
+  .face {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    translate: 0px 1px;
+    transition: 0.3s;
+  }
+  .leftEye {
+    width: 8px;
+    height: 8px;
+    background-color: #fbfbfb;
+    transition: 0.3s;
+  }
+  .rightEye {
+    width: 8px;
+    height: 8px;
+    background-color: #fbfbfb;
+    transition: 0.3s;
+  }
+  .mouth {
+    width: 8px;
+    height: 8px;
+    background-color: #fbfbfb;
+    border-radius: 100%;
+    transition: 0.3s;
+  }
+
+  &:hover {
+    .leftEye {
+      transform: translate(2px, -5px);
+    }
+    .rightEye {
+      transform: translate(-2px, -5px);
+    }
+    .mouth {
+      height: 6px;
+      transform: translateY(10px) scale(2);
+      border-radius: 20px 20px 100px 100px;
+    }
+  }
+  .face.look {
+    transform: rotate(30deg);
+
+    .leftEye {
+      transform: translate(2px, -5px);
+    }
+    .rightEye {
+      transform: translate(-2px, -5px);
+    }
+    .mouth {
+      height: 6px;
+      transform: translateY(10px) scale(2);
+      border-radius: 20px 20px 100px 100px;
+    }
+  }
+}
