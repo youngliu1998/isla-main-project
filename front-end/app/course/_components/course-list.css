@@ -216,7 +216,7 @@
 /* box3 */
 
 .box3-content-collapse {
-  max-height: 800px;
+  max-height: 600px;
   overflow: hidden;
   position: relative;
   transition: max-height 0.3s ease;
