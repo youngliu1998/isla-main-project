@@ -4,7 +4,7 @@ import verifyToken from '../../lib/verify-token.js'
 
 const router = express.Router()
 
-// POST http://localhost:3005/api/cart-items/order
+// POST http://localhost:3005/api/order/create
 router.post('/', verifyToken, async (req, res) => {
   //要執行多個SQL且要保證它們「全部成功或全部失敗」（orders → order_items → order_coupon），就需要一個獨立連線來控制交易（transaction）
   const connection = await db.getConnection()
@@ -18,7 +18,8 @@ router.post('/', verifyToken, async (req, res) => {
       selecGloCoup,
       shippingMethod,
       shippingAddress,
-      shippingStoreCode,
+      pickupStoreName,
+      pickupStoreAddress,
       paymentMethod,
     } = req.body
 
@@ -35,8 +36,11 @@ router.post('/', verifyToken, async (req, res) => {
     // #1 寫入order
     const [orderResult] = await connection.execute(
       `INSERT INTO orders 
-      (user_id, order_number, total_price, discount_total, status, payment_method, shipping_method, shipping_address, shipping_store_code, created_at, updated_at) 
-      VALUES (?, ?, ?, ?, 'pending', ?, ?, ?, ?, NOW(), NOW())`,
+        (user_id, order_number, total_price, discount_total, status, payment_method, 
+        shipping_method, shipping_address, 
+        pickup_store_name, pickup_store_address, 
+        created_at, updated_at) 
+        VALUES (?, ?, ?, ?, 'pending', ?, ?, ?, ?, ?, NOW(), NOW())`,
       [
         userId,
         orderNumber,
@@ -45,9 +49,11 @@ router.post('/', verifyToken, async (req, res) => {
         paymentMethod,
         shippingMethod,
         shippingAddress ?? null,
-        shippingStoreCode ?? null,
+        pickupStoreName ?? null,
+        pickupStoreAddress ?? null,
       ]
     )
+
     const orderId = orderResult.insertId
 
     // #2寫入 order_items

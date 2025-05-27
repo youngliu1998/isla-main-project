@@ -13,17 +13,32 @@ import { useCartContext } from '../context/cart-context'
 import { useAuth } from '../../../hook/use-auth'
 import cartApi from '../utils/axios'
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 
 export default function PaymentPage() {
+  const router = useRouter()
   const isMobile = useIsMobile()
   const { orderData, setOrderData } = useCartContext()
   const { user } = useAuth()
+
   const defaultMemberInfo = {
     recipientName: '',
     recipientPhone: '',
     recipientAdress: '',
   }
   const [memberSameInfo, setMemberSameInfo] = useState(defaultMemberInfo)
+  const [paymentMethod, setPaymentMethod] = useState('信用卡')
+
+  // 用來接收從 ShippingForm 傳來的配送資料
+  const [shippingInfo, setShippingInfo] = useState({
+    shippingMethod: '',
+    recipientName: '',
+    recipientPhone: '',
+    recipientAddress: '',
+    pickupStoreName: '',
+    pickupStoreAddress: '',
+  })
+
   // 勾選自動帶入會員資料
   const handleCopyMemberInfo = (checked) => {
     if (checked) {
@@ -48,6 +63,7 @@ export default function PaymentPage() {
 
   // 綠界付款流程
   const [isLoading, setIsLoading] = useState(false)
+
   const handleCheckout = async () => {
     const cartItems = orderData?.cartItems || []
 
@@ -55,27 +71,71 @@ export default function PaymentPage() {
       toast.error('購物車是空的喔！')
       return
     }
+
+    // 驗證基本資料
+    if (shippingInfo.shippingMethod === '宅配') {
+      if (
+        !shippingInfo.recipientName ||
+        !shippingInfo.recipientPhone ||
+        !shippingInfo.recipientAddress
+      ) {
+        toast.error('請填寫完整宅配收件人資料')
+        return
+      }
+    } else if (shippingInfo.shippingMethod === '超商取貨') {
+      if (!shippingInfo.pickupStoreName || !shippingInfo.pickupStoreAddress) {
+        toast.error('請選擇超商門市')
+        return
+      }
+    }
+
     setIsLoading(true)
-    const items = cartItems.map((item) => ({
-      name: item.name,
-      quantity: item.quantity,
-    }))
-
-    const totalAmount = cartItems.reduce((acc, item) => {
-      const price = parseInt(item.sale_price ?? item.base_price) || 0
-      return acc + price * item.quantity
-    }, 0)
-
-    console.log('傳送 items:', items)
-    console.log('傳送 amount:', totalAmount)
 
     try {
-      const res = await cartApi.post('cart-items/ecpay', {
-        amount: totalAmount,
-        items,
+      // 組裝優惠券資料
+      const selecProdCoup = orderData?.selecProdCoup || null
+      const selecCourCoup = orderData?.selecCourCoup || null
+      const selecGloCoup = orderData?.selecGloCoup || null
+      const discountTotal = orderData?.discountTotal || 0
+      // 建立訂單送進資料庫
+      const res = await cartApi.post('/order/create', {
+        cartItems,
+        discountTotal,
+        selecProdCoup,
+        selecCourCoup,
+        selecGloCoup,
+        paymentMethod: paymentMethod,
+        // 配送資訊
+        shippingMethod: shippingInfo.shippingMethod,
+        shippingAddress: shippingInfo.recipientAddress,
+        recipientName: shippingInfo.recipientName,
+        recipientPhone: shippingInfo.recipientPhone,
+        pickupStoreName: shippingInfo.pickupStoreName,
+        pickupStoreAddress: shippingInfo.pickupStoreAddress,
       })
 
-      const html = res.data
+      const { orderId, orderNumber, totalAmount } = res.data
+      if (!orderNumber) {
+        toast.error('訂單建立失敗，無法取得訂單編號')
+        return
+      }
+
+      // 把訂單編號存起來（之後 order-completed 頁面可以用）
+      localStorage.setItem('lastOrderNumber', orderNumber)
+
+      // 準備綠界資料
+      const items = cartItems.map((item) => ({
+        name: item.name,
+        quantity: item.quantity,
+      }))
+
+      const ecpayRes = await cartApi.post('cart-items/ecpay', {
+        amount: totalAmount,
+        items,
+        orderNumber,
+      })
+
+      const html = ecpayRes.data
 
       // 插入表單並自動送出
       const container = document.querySelector('#ecpay-form-container')
@@ -88,7 +148,6 @@ export default function PaymentPage() {
       const form = container.querySelector('form')
       if (form) {
         form.submit()
-        console.log('✅ 表單已自動送出')
       } else {
         toast.error('綠界表單產生失敗')
       }
@@ -117,48 +176,36 @@ export default function PaymentPage() {
               memberSameInfo={memberSameInfo}
               setMemberSameInfo={setMemberSameInfo}
               handleCopyMemberInfo={handleCopyMemberInfo}
+              onShippingChange={setShippingInfo}
             />
 
             {/* 付款方式 */}
             <div className="card-style mb-3 p-4">
               <h5 className="fw-bold mb-5 text-maintext">付款方式</h5>
-              <div className="form-check mb-3">
-                <input
-                  className="form-check-input"
-                  type="radio"
-                  name="payment"
-                  id="paymentCredit"
-                  value="credit"
-                  defaultChecked
-                />
-                <label htmlFor="paymentCredit" className="form-check-label">
-                  信用卡一次付清(綠界科技)
-                </label>
-              </div>
-              <div className="form-check mb-3">
-                <input
-                  className="form-check-input"
-                  type="radio"
-                  name="payment"
-                  id="payment711"
-                  value="711"
-                />
-                <label htmlFor="payment711" className="form-check-label">
-                  超商取貨付款
-                </label>
-              </div>
-              <div className="form-check mb-3">
-                <input
-                  className="form-check-input"
-                  type="radio"
-                  name="payment"
-                  id="paymentLinePay"
-                  value="linepay"
-                />
-                <label htmlFor="paymentLinePay" className="form-check-label">
-                  LINE Pay
-                </label>
-              </div>
+
+              {[
+                { id: '信用卡', label: '信用卡一次付清(綠界科技)' },
+                { id: '超商付款', label: '超商取貨付款' },
+                { id: 'LINE Pay', label: 'LINE Pay' },
+              ].map((option) => (
+                <div className="form-check mb-3" key={option.id}>
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="payment"
+                    id={`payment-${option.id}`}
+                    value={option.id}
+                    checked={paymentMethod === option.id}
+                    onChange={() => setPaymentMethod(option.id)}
+                  />
+                  <label
+                    htmlFor={`payment-${option.id}`}
+                    className="form-check-label"
+                  >
+                    {option.label}
+                  </label>
+                </div>
+              ))}
             </div>
           </div>
           {/* Right*/}

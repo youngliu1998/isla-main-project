@@ -2,12 +2,13 @@ import styles from './shipping-form.module.scss'
 import { useState, useEffect } from 'react'
 
 import { useShip711StoreOpener } from '../../hook/ship-711/use-ship-711-store.js'
-import { nextUrl, apiURL } from '@/config'
+import { nextUrl } from '@/config'
 
 export default function ShippingForm({
   memberSameInfo,
   setMemberSameInfo,
   handleCopyMemberInfo,
+  onShippingChange,
 }) {
   const [shippingWay, setShippingWay] = useState('home')
   const [check, setCheck] = useState(false)
@@ -22,6 +23,31 @@ export default function ShippingForm({
       setShippingWay('711')
     }
   }, [store711])
+
+  // 回傳配送資訊給父層（shippingWay/member/store711 改變時）
+  useEffect(() => {
+    if (!onShippingChange) return
+
+    if (shippingWay === 'home') {
+      onShippingChange({
+        shippingMethod: '宅配',
+        recipientName: memberSameInfo.recipientName,
+        recipientPhone: memberSameInfo.recipientPhone,
+        recipientAddress: memberSameInfo.recipientAdress,
+        pickupStoreName: '',
+        pickupStoreAddress: '',
+      })
+    } else if (shippingWay === '711' && store711?.storeid) {
+      onShippingChange({
+        shippingMethod: '超商取貨',
+        recipientName: '',
+        recipientPhone: '',
+        recipientAddress: '',
+        pickupStoreName: store711.storename || '',
+        pickupStoreAddress: store711.storeaddress || '',
+      })
+    }
+  }, [shippingWay, memberSameInfo, store711, onShippingChange])
 
   // checkbox 點擊時處理
   const handleCheckboxChange = (evt) => {

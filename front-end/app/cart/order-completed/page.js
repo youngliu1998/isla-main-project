@@ -1,42 +1,181 @@
 'use client'
 
 import StepProgress from '../_component/step-progress/step-progress'
-import OrderComplete from '../_component/order-complete/order-complete'
-import React, { useState, useEffect } from 'react'
+import { Accordion, Spinner } from 'react-bootstrap'
+import { useRouter } from 'next/navigation'
+import cartApi from '../utils/axios'
+import { useState, useEffect } from 'react'
+
+// 格式化金額
+function formatCurrency(num) {
+  const n = Number(num)
+  if (isNaN(n)) return '0'
+  return `NT$${n.toLocaleString('zh-Hant-TW')}`
+}
 
 export default function OrderCompletedPage() {
+  const [orderData, setOrderData] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState('')
+  const router = useRouter()
+
+  const [orderNumber, setOrderNumber] = useState(null)
+
   useEffect(() => {
-    localStorage.removeItem('orderSummary')
-    // 順便清掉購物車的資料
-    localStorage.removeItem('cartItems')
+    if (typeof window !== 'undefined') {
+      const savedOrderNumber = localStorage.getItem('lastOrderNumber')
+      console.log('🔍 從 localStorage 拿到的 orderNumber:', savedOrderNumber)
+      setOrderNumber(savedOrderNumber)
+    }
   }, [])
-  const orderData = {
-    orderId: '1743478951522',
-    orderDate: '2025/04/17 13:38',
-    orderStatus: '已確認',
-    paymentMethod: '信用卡',
-    paymentStatus: '已付款',
-    recipient: {
-      name: '洛特',
-      phone: '0977-000-000',
-      address: '台北市中正區仁愛路一段1號',
-    },
-    products: [
-      { name: '[Kaja] Crystal Glam Tint', price: 'NT$1250' },
-      { name: '[Kaja] XXX XXX', price: 'NT$1250' },
-    ],
+
+  useEffect(() => {
+    if (!orderNumber) return // 等待 orderNumber 被 set 之後才開始
+
+    const fetchData = async () => {
+      try {
+        const res = await cartApi.get(`/order/order-number/${orderNumber}`)
+        console.log('✅ 成功取得訂單資料:', res.data)
+        setOrderData(res.data)
+        console.log('📦 嘗試取得訂單資料，orderNumber:', orderNumber)
+        setIsLoading(false)
+      } catch (err) {
+        console.error('取得訂單資料失敗', err)
+        setError('找不到訂單資料')
+        setIsLoading(false)
+      }
+    }
+    fetchData()
+
+    // 清除 localStorage
+    localStorage.removeItem('orderSummary')
+    localStorage.removeItem('cartItems')
+  }, [orderNumber])
+
+  if (isLoading) {
+    return (
+      <div className="container text-center mt-5" style={{ height: '300px' }}>
+        <Spinner animation="border" />
+        <p>載入中...</p>
+      </div>
+    )
   }
+
+  if (error || !orderData) {
+    return (
+      <div className="container text-center mt-5">
+        <p className="text-danger">{error || '發生未知錯誤'}</p>
+      </div>
+    )
+  }
+
+  const {
+    orderId,
+    orderDate,
+    orderStatus,
+    paymentMethod,
+    paymentStatus,
+    recipient,
+    shippingMethod,
+    products = [],
+  } = orderData
 
   return (
     <>
       <section className="container text-center text-lg-start mt-2">
         <h1 className="text-subtext h2 m-5">購物袋</h1>
       </section>
-      {/* step-icon */}
+
       <section className="container d-none d-lg-block mb-4">
         <StepProgress currentStep={3} />
       </section>
-      <OrderComplete orderData={orderData} />
+
+      <section className="container my-5">
+        <div className="card p-5 text-center shadow-sm rounded-4">
+          {/* 打勾圖示 */}
+          <div className="mb-4">
+            <div
+              className="bg-success-subtle rounded-circle d-inline-flex justify-content-center align-items-center"
+              style={{ width: '120px', height: '120px' }}
+            >
+              <i className="bi bi-check2 h1"></i>
+            </div>
+          </div>
+
+          {/* 訂單完成訊息 */}
+          <h5 className="fw-bold text-secondary mb-2">已收到你的訂單</h5>
+          <p className="text-muted small mb-4">
+            訂單編號：<span className="fw-bold">{orderId}</span>
+          </p>
+
+          {/* 訂單資訊列 */}
+          <div className="row text-center mb-4">
+            <div className="col-6 col-md-3 mb-2">
+              <div className="fw-bold">訂單日期</div>
+              <div className="text-muted">{orderDate}</div>
+            </div>
+            <div className="col-6 col-md-3 mb-2">
+              <div className="fw-bold">訂單狀態</div>
+              <div style={{ color: 'green' }}>{orderStatus}</div>
+            </div>
+            <div className="col-6 col-md-3 mb-2">
+              <div className="fw-bold">付款方式</div>
+              <div className="text-muted">{paymentMethod}</div>
+            </div>
+            <div className="col-6 col-md-3 mb-2">
+              <div className="fw-bold">付款狀態</div>
+              <div style={{ color: 'green' }}>{paymentStatus}</div>
+            </div>
+          </div>
+
+          {/* 收件人與商品資訊 Accordion */}
+          <Accordion flush className="text-start mb-4">
+            <Accordion.Item eventKey="0">
+              <Accordion.Header>收件人資訊</Accordion.Header>
+              <Accordion.Body style={{ paddingBottom: 0 }}>
+                <p>收件人：{recipient.name}</p>
+                <p>收件人電話：{recipient.phone}</p>
+                {shippingMethod === '宅配' ? (
+                  <p>收件地址：{recipient.address}</p>
+                ) : (
+                  <>
+                    <p>取貨門市：{recipient.name}</p>
+                    <p>門市地址：{recipient.address}</p>
+                  </>
+                )}
+              </Accordion.Body>
+            </Accordion.Item>
+            <Accordion.Item eventKey="1">
+              <Accordion.Header>商品</Accordion.Header>
+              <Accordion.Body>
+                {products.map((item, index) => (
+                  <p key={index}>
+                    {item.name} x{item.quantity} - {formatCurrency(item.price)}
+                  </p>
+                ))}
+              </Accordion.Body>
+            </Accordion.Item>
+          </Accordion>
+
+          {/* 按鈕 */}
+          <div className="d-grid gap-2 d-md-flex justify-content-center">
+            <button
+              className="btn btn-outline-secondary px-5"
+              type="button"
+              onClick={() => router.push('/member/orders')}
+            >
+              查看訂單
+            </button>
+            <button
+              className="btn btn-subtext text-white px-5"
+              type="button"
+              onClick={() => router.push('/')}
+            >
+              回到首頁
+            </button>
+          </div>
+        </div>
+      </section>
     </>
   )
 }

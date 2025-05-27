@@ -80,7 +80,7 @@ function generateCheckMacValue(params) {
 }
 
 router.post('/', verifyToken, (req, res) => {
-  const { amount, items } = req.body
+  const { amount, items, orderNumber } = req.body
   console.log('🟠 收到的 req.body:', req.body)
 
   if (!amount || !items || !Array.isArray(items)) {
@@ -100,10 +100,11 @@ router.post('/', verifyToken, (req, res) => {
     TradeDesc: 'beauty_products_checkout',
     // TradeDesc: '購買美妝相關產品'.replace(/[^a-zA-Z0-9_\s]/g, ''),
     ItemName: getItemName(items),
-    ReturnURL: 'https://www.ecpay.com.tw',
-    ClientBackURL: 'http://localhost:3000/cart/success',
+    ReturnURL: 'http://localhost:3005/api/order/ecpay-return',
+    ClientBackURL: `http://localhost:3000/cart/order-completed`,
     ChoosePayment: 'Credit',
     EncryptType: 1,
+    CustomField1: orderNumber,
   }
 
   const checkMacValue = generateCheckMacValue(params)
