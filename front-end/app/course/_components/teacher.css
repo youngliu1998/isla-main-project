@@ -1,6 +1,5 @@
 /* * {
   outline: 1px solid rgb(108, 186, 231);
-  box-sizing: border-box;
 } */
 /* box1 */
 .bread-crumbs {
@@ -84,21 +83,21 @@
   object-fit: cover;
 }
 .box3-content-collapse {
-  max-height: 1000px;
+  max-height: 700px;
   overflow: hidden;
   transition: max-height 0.3s ease;
   position: relative;
 }
 
+/* 下方遮罩：用來在未展開時模糊底部 */
 .box3-fade-mask {
-  height: 100px;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #fff);
-  pointer-events: none;
-  transition: opacity 0.3s;
+  height: 6rem;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgb(251, 251, 251));
 }
 
-.box3-expanded .box3-content-collapse {
-  max-height: 9999px;
+/* 展開狀態：高度不限 */
+.box3-content-collapse.expanded {
+  max-height: none;
 }
 
 .box3-expanded #box3-fadeMask {
@@ -174,6 +173,45 @@
 }
 
 /* box6 */
+/* ---------- 愛心 icon ---------- */
+.heart-icon-course {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  color: var(--main-color);
+}
+
+.heart-icon-course i {
+  color: rgba(0, 0, 0, 0.5);
+  transition: color 0.3s ease;
+}
+
+.heart-icon-course i.active {
+  color: var(--main-color);
+}
+
+.heart-icon-course i.animate-pop {
+  animation: heart-pop 0.4s ease;
+}
+
+@keyframes heart-pop {
+  0% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.4);
+  }
+  60% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
 /* ---------- 圖片放大效果 ---------- */
 .card-img-container-course {
   position: relative;

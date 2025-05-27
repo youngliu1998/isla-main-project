@@ -217,7 +217,7 @@ export default function ForumPage() {
         productCateItems={productCateItems}
         handleAsideSearchChange={handleAsideSearchChange}
       />
-      {/* <EditPostModal postTitle="" postContent="" isUpdated={false} /> */}
+      <EditPostModal postTitle="" postContent="" isUpdated={false} />
     </>
   )
 }
