@@ -8,14 +8,14 @@
   justify-content: flex-start;
 }
 
-/* Step1：葉子動畫和文字包裹容器（偏上） */
+/* Step1：葉子動畫和文字的container（偏上） */
 .step1-wrapper {
   height: 45vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding-top: 5vh;
+  padding-top: 9vh;
 }
 
 /* 葉子動畫 */
@@ -34,13 +34,13 @@
 
 /* 「自然之島」字逐字進場 */
 .isla-text {
-  margin-top: -100px;
+  margin-top: -90px;
   display: flex;
   gap: 8px;
-  font-size: 36px;
-  font-weight: bold;
+  font-size: 32px;
+  font-weight: 300;
   color: #8e6f91;
-  font-family: 'FangSong', serif;
+  font-family: 'NotoSans TC', serif;
 }
 
 .isla-letter {
@@ -78,7 +78,7 @@
   margin-top: -10vh;
 }
 
-/* 錯位堆疊容器 */
+/* 錯位container */
 .logo-stack {
   position: relative;
   display: flex;
