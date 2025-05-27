@@ -174,17 +174,17 @@ $form-radio-disabled-bg: #eee;
 
 //Accordion
 .accordion {
-  --bs-accordion-border-radius: 8px;
-  --bs-accordion-inner-border-radius: 8px;
+  --bs-accordion-border-radius: 16px;
+  --bs-accordion-inner-border-radius: 16px;
   --bs-accordion-bg: rgba(255, 255, 255, 0.2);
   --bs-accordion-border-color: rgba(255, 255, 255, 0.3);
   --bs-accordion-btn-focus-box-shadow: none;
 
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(224, 224, 224, 0.15);
   backdrop-filter: blur(10px);
   border: none;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  //box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .accordion-item {
@@ -196,14 +196,16 @@ $form-radio-disabled-bg: #eee;
 }
 
 .accordion-header {
-  background: #dedede;
+  background: #eae9e9;
+  border-top: 2px solid #ffffff;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
   .accordion-button {
     background: transparent;
-    font-weight: bold;
+    font-weight: 500;
     font-size: 18px;
     padding: 16px 20px;
     border-radius: 5px;
-    color: #373737;
+    color: #4b4b4b;
     transition:
       background 0.3s ease,
       color 0.3s ease;

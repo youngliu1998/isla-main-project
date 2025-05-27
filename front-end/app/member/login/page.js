@@ -10,18 +10,19 @@ import { useEffect, useState } from 'react'
 import InputText from '../_component/input-text'
 import InputPass from '../_component/input-pass'
 import '../_styles/login.css'
+import { courseUrl } from '../../../_route/courseUrl'
 
 export default function LoginPage() {
   const router = useRouter()
-  const { login } = useAuth() // Context
+  const { login, initAuth } = useAuth() // Context
   const [memAuth, setMemAuth] = useState({
     email: 'johnsmith@gmail.com',
     password: '12345',
   })
   // ==== handle login form ====
+  // course登入後跳回原本畫面並自動執行收藏
   const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log('account', memAuth.email)
     await login(memAuth.email, memAuth.password)
     const isAuthLocal = localStorage.getItem('jwtToken') || false
     if (isAuthLocal) {
@@ -31,7 +32,20 @@ export default function LoginPage() {
       alert('登入失敗')
     }
   }
+  // 跳轉結束
+
+  //無跳轉頁面
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault()
+  //   console.log('account', memAuth.email)
+  //   await login(memAuth.email, memAuth.password)
+  //   const isAuthLocal = localStorage.getItem('isAuth') || false
+  //   if (isAuthLocal) {
+  //     router.push('/')
+  //   }
+  // }
   // ==== google 認證設定 ====
+  // course登入後跳回原本畫面並自動執行收藏
   const responseMessage = async (response) => {
     const data = await fetch('http://localhost:3005/api/member/google', {
       method: 'POST',
@@ -45,8 +59,8 @@ export default function LoginPage() {
       .then((response) => response.json())
       .catch((error) => console.error('Error:', error))
     if (!data || !data.data || !data.data.token) {
-      console.log('沒有取得token，登入失敗', data);
-      return;
+      console.log('沒有取得token，登入失敗', data)
+      return
     }
     // set token to localStorage
     localStorage.setItem('jwtToken', data['data']['token'])
@@ -55,6 +69,14 @@ export default function LoginPage() {
     console.log('check google: ', data['data']['tokenGoogle'])
     console.log('Google後端回應成功')
     console.log(response)
+    initAuth()
+    const isAuthLocal = localStorage.getItem('jwtToken') || false
+    if (isAuthLocal) {
+      alert('登入成功')
+      router.push('/')
+    } else {
+      alert('登入失敗')
+    }
   }
   const errorMessage = (error) => {
     console.log(error)

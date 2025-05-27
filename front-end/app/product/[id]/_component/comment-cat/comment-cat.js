@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import StarRatingItem from '../../../_components/star-generator'
 import styles from './comment_cat.module.css' // 建議抽出 CSS module
+import Image from "next/image";
 
 const CommentCat = ({ reviews }) => {
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -25,11 +26,11 @@ const CommentCat = ({ reviews }) => {
       <div className={styles['cat-card']}>
         <div className={styles['cat-head']}>
           <div className={styles['user-img']}>
-            <img src={currentReview.userAvatarSrc} alt="" />
+            <Image src={'http://localhost:3005/images/member/'+currentReview.ava_url} alt="ava_url" width={40} height={40} />
           </div>
           <div className={styles['cat-head-user']}>
             <div className={styles['username-cat']}>
-              {currentReview.user_id}
+              {currentReview.nickname}
             </div>
           </div>
           <div className={styles['star-box']}>

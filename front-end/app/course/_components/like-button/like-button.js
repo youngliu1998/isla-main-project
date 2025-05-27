@@ -3,13 +3,25 @@
 import PropTypes from 'prop-types'
 import './like-button.css'
 import { useState } from 'react'
+import { toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 export default function LikeButton({ commentId, liked, count, onToggle }) {
   const [likeAnimate, setLikeAnimate] = useState(false)
 
   const handleClick = () => {
     setLikeAnimate(true)
+
+    // 觸發父元件的切換
     onToggle(commentId)
+
+    // 顯示 toast 訊息
+    if (liked) {
+      toast.info('已取消喜歡')
+    } else {
+      toast.success('已送出喜歡')
+    }
+
     setTimeout(() => setLikeAnimate(false), 300)
   }
 

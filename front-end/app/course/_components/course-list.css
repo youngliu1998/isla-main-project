@@ -12,10 +12,14 @@
   height: 100%;
   background: linear-gradient(rgba(0, 0, 0, 0.4) 80%);
   pointer-events: none; /* 不影響 hover / click */
+  pointer-events: none;
 }
 .bread-crumbs {
   font-size: 15px;
   color: var(--white);
+}
+.banner-play-box {
+  pointer-events: auto;
 }
 .banner-play-icon i {
   font-size: 80px;
@@ -25,8 +29,12 @@
   color: var(--sub-text);
   font-size: 14px;
 }
+
+
 .banner-author {
-  width: 202px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 12px;
   height: 74px;
   border-radius: 15px;
   background: linear-gradient(
@@ -37,19 +45,42 @@
   border: 2px solid rgba(185, 185, 185, 0.15);
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
   backdrop-filter: blur(10px);
+  max-width: 100%;
+  cursor: pointer;
+  transition: all 0.3s ease; /* ✅ 滑入滑出動畫 */
+  pointer-events: auto;
+}
+
+.banner-author:hover {
+  background: rgba(255, 255, 255, 0.3); /* ✅ hover 背景稍微變亮 */
+  border-color: rgba(255, 255, 255, 0.5); /* ✅ 邊框變亮 */
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.4); /* ✅ 外層發光 */
+}
+.banner-author-img,
+.banner-author-name {
+  transition: transform 0.3s ease;
+}
+
+.banner-author:hover .banner-author-img {
+  transform: scale(1.05);
+}
+
+.banner-author:hover .banner-author-name {
+  transform: translateX(2px);
 }
 
 @media screen and (max-width: 1200px) {
   .banner-author {
-    width: 141px;
     height: 49px;
+    padding: 0 10px;
     border-radius: 10px;
   }
 }
+
 @media screen and (max-width: 576px) {
   .banner-author {
-    width: 90px;
     height: 30px;
+    padding: 0 6px;
     border-radius: 5px;
   }
 }
@@ -78,7 +109,12 @@
   font-weight: 400;
   font-style: normal;
   line-height: normal;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px; /* 依需求調整最大長度 */
 }
+
 @media screen and (max-width: 1200px) {
   .banner-author-name {
     font-size: 20px;
@@ -112,7 +148,13 @@
 .banner-ctabox button {
   z-index: 50;
   position: relative;
+  pointer-events: auto;
 }
+/* .hover-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+} */
+
 .banner-ctabox h5 {
   font-size: 16px;
 }
@@ -172,18 +214,43 @@
   background-color: var(--main-color);
 }
 /* box3 */
+
 .box3-content-collapse {
-  max-height: 1000px;
+  max-height: 800px;
   overflow: hidden;
-  transition: max-height 0.3s ease;
   position: relative;
+  transition: max-height 0.3s ease;
+}
+
+.box3-content-collapse.expanded {
+  max-height: unset; /* or unset */
+  overflow: visible;
 }
 
 .box3-fade-mask {
-  height: 100px;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #fbfbfb);
-  pointer-events: none;
-  transition: opacity 0.3s;
+  height: 80px;
+  background: linear-gradient(to top, #fbfbfb, transparent);
+}
+
+.box3-content-collapse p {
+  line-height: 1.8;
+  margin-bottom: 1rem;
+}
+
+.box3-content-collapse img {
+  max-width: 100%;
+  height: auto;
+  /* margin: 1rem 0; */
+}
+
+.box3-content-collapse b,
+.box3-content-collapse strong {
+  font-weight: bold;
+  color: var(--main-color);
+}
+
+.more-courses-toggle {
+  color: var(--main-color);
 }
 
 .box3-expanded .box3-content-collapse {

@@ -7,33 +7,114 @@ import MobileBottomFilter from '../_components/mobile-bottom-filter.js'
 import ProductCard from '../_components/product-card-s'
 import '../_style.css/product-list.css'
 import useMobileDisplay from '../../../hook/use-mobile-display.js'
+import { useSearchParams, useRouter } from 'next/navigation'
+import Image from 'next/image'
+
+// 簡單的篩選快取管理
+const FILTER_CACHE_KEY = 'product_filters_cache'
+
+const saveFiltersToCache = (filters) => {
+  try {
+    const filterData = {
+      filters,
+      timestamp: Date.now(),
+    }
+    sessionStorage.setItem(FILTER_CACHE_KEY, JSON.stringify(filterData))
+  } catch (error) {
+    console.warn('無法保存篩選快取:', error)
+  }
+}
+
+const loadFiltersFromCache = () => {
+  try {
+    const cached = sessionStorage.getItem(FILTER_CACHE_KEY)
+    if (cached) {
+      const { filters, timestamp } = JSON.parse(cached)
+      // 快取有效期1小時
+      if (Date.now() - timestamp < 60 * 60 * 1000) {
+        return filters
+      }
+    }
+  } catch (error) {
+    console.warn('無法讀取篩選快取:', error)
+  }
+  return null
+}
+
+const clearFiltersCache = () => {
+  try {
+    sessionStorage.removeItem(FILTER_CACHE_KEY)
+  } catch (error) {
+    console.warn('無法清除篩選快取:', error)
+  }
+}
 
 export default function ProductPage() {
-  // const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false)
   const isMobile = useMobileDisplay('(max-width: 768px)')
   console.log('isMobile:', isMobile)
   const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false)
 
-  const [filters, setFilters] = useState({
-    keyword: '',
-    brandIds: [],
-    tagIds: [],
-    categoryIds: [],
-    minRating: 0,
-    maxRating: 5,
-    minPrice: 0,
-    maxPrice: 9999,
-    onSaleOnly: false,
-    selectedPriceRangeKeys: [], // 保存未被parsePriceRanges轉換的價格區間
-    sortBy: '',
-    sortOrder: 'ASC',
-  })
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const parseArrayParam = (value) =>
+    value ? value.split(',').map((v) => (isNaN(+v) ? v : +v)) : []
+
+  // 檢查是否有URL參數傳入
+  const hasUrlParams = searchParams.toString().length > 0
+
+  const getInitialFilters = () => {
+    // 如果有URL參數，優先使用URL參數並清除快取
+    if (hasUrlParams) {
+      clearFiltersCache()
+      return {
+        keyword: searchParams.get('keyword') || '',
+        brandIds: parseArrayParam(searchParams.get('brandIds')),
+        tagIds: parseArrayParam(searchParams.get('tagIds')),
+        categoryIds: parseArrayParam(searchParams.get('categoryIds')),
+        minRating: +(searchParams.get('minRating') || 0),
+        maxRating: +(searchParams.get('maxRating') || 5),
+        minPrice: +(searchParams.get('minPrice') || 0),
+        maxPrice: +(searchParams.get('maxPrice') || 9999),
+        onSaleOnly: searchParams.get('onSaleOnly') === 'true',
+        selectedPriceRangeKeys: parseArrayParam(
+          searchParams.get('selectedPriceRangeKeys')
+        ),
+        sortBy: searchParams.get('sortBy') || '',
+        sortOrder: searchParams.get('sortOrder') || 'ASC',
+      }
+    }
+
+    // 嘗試從快取讀取
+    const cachedFilters = loadFiltersFromCache()
+    if (cachedFilters) {
+      console.log('使用快取的篩選條件:', cachedFilters)
+      return cachedFilters
+    }
+
+    // 預設值
+    return {
+      keyword: '',
+      brandIds: [],
+      tagIds: [],
+      categoryIds: [],
+      minRating: 0,
+      maxRating: 5,
+      minPrice: 0,
+      maxPrice: 9999,
+      onSaleOnly: false,
+      selectedPriceRangeKeys: [],
+      sortBy: '',
+      sortOrder: 'ASC',
+    }
+  }
+
+  const [filters, setFilters] = useState(getInitialFilters)
 
   const handleFilterChange = (partialUpdate) => {
     setFilters((prev) => {
       const updated = { ...prev, ...partialUpdate }
-      // 更安全的比較方式是比較每個 key，或者相信 React 的 setState 機制
-      // 這裡我們假設 partialUpdate 總是包含"有效"的更新
+
+      // 檢查是否有變化
       let hasChanged = false
       for (const key in partialUpdate) {
         if (Object.prototype.hasOwnProperty.call(partialUpdate, key)) {
@@ -45,8 +126,7 @@ export default function ProductPage() {
           }
         }
       }
-      // 如果 onSaleOnly 被直接更新 (它不在 partialUpdate 但在 prev 中)
-      // 且是唯一被更新的 filter，也需要考慮
+
       if (
         partialUpdate.onSaleOnly !== undefined &&
         prev.onSaleOnly !== partialUpdate.onSaleOnly
@@ -54,7 +134,13 @@ export default function ProductPage() {
         hasChanged = true
       }
 
-      return hasChanged ? updated : prev
+      if (hasChanged) {
+        // 保存到快取
+        saveFiltersToCache(updated)
+        return updated
+      }
+
+      return prev
     })
   }
 
@@ -65,16 +151,35 @@ export default function ProductPage() {
     console.log('Filters 更新 :', filters)
   }, [filters])
 
+  // 當URL參數變化時，重新初始化篩選器
+  useEffect(() => {
+    if (hasUrlParams) {
+      const newFilters = getInitialFilters()
+      setFilters(newFilters)
+    }
+  }, [searchParams])
+
   const toggleMobilePanel = useCallback(() => {
     setIsMobilePanelOpen((prev) => !prev)
-  }, []) // 空依賴陣列
+  }, [])
 
   const ProductList = ({ products }) => {
-    // 如果沒有產品或 products 不是陣列，可以提前返回 null 或提示信息
     if (!products || !Array.isArray(products) || products.length === 0) {
-      // 這個訊息也可以由 ProductPage 來處理
-      // return <div>暫無商品</div>;
-      return null
+      return (
+        <div className="no-product-container">
+          <div className="no-products-image-wrapper">
+            <Image
+              src={'/images/product-elements/no-more-product-3.png'}
+              alt={'No Products'}
+              width={400}
+              height={400}
+              className="no-product-image"
+            />
+            {/*<AiTwotoneMeh style={{ width: '100%', height: 'auto' }} />*/}
+          </div>
+          <p className="no-product-message">沒有符合條件的商品了</p>
+        </div>
+      )
     }
 
     return (
@@ -93,6 +198,7 @@ export default function ProductPage() {
                 imageUrl: p.primary_image_url,
                 isBookmarked: p.is_bookmarked,
                 isSale: p.is_on_sale,
+                isColorful: p.color_ids,
               }}
             />
           </div>
@@ -100,6 +206,7 @@ export default function ProductPage() {
       </div>
     )
   }
+
   return (
     <div className="product-body container">
       {isMobile ? (
@@ -110,8 +217,8 @@ export default function ProductPage() {
             brands={brands || []}
             categories={categories || []}
             tags={tags || []}
-            isPanelOpen={isMobilePanelOpen} // 面板的開啟狀態
-            onTogglePanel={toggleMobilePanel} // 切換面板狀態
+            isPanelOpen={isMobilePanelOpen}
+            onTogglePanel={toggleMobilePanel}
           />
         </>
       ) : (
