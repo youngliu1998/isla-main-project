@@ -38,16 +38,18 @@ export default function ExperienceIDPage() {
             </div>
             <div className="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-end p-xl-4 p-lg-3 p-md-2 p-sm-1 p-0">
               <div className="container">
-                <div className="banner-author d-flex justify-content-center align-content-center my-xl-4 my-2">
-                  <Image
-                    src="/images/course/teacherall/image_73.jpg"
-                    alt="講師圖片"
-                    width={800}
-                    height={450}
-                    className="banner-author-img my-auto me-md-3 me-1"
-                  />
-                  <p className="banner-author-name my-auto">李昀熹</p>
-                </div>
+                <Link href="/course/teacher/2">
+                  <div className="banner-author my-xl-4 my-2 px-4">
+                    <Image
+                      src="/images/course/teacherall/image_73.jpg"
+                      alt="講師圖片"
+                      width={50}
+                      height={50}
+                      className="banner-author-img me-2"
+                    />
+                    <p className="banner-author-name my-auto">黃黃黃</p>
+                  </div>
+                </Link>
                 <h1 className="text-white banner-h1 my-xl-4 my-2 fw-bold">
                   「熹」式美學 解鎖韓星級妝容
                 </h1>
@@ -134,32 +136,12 @@ export default function ExperienceIDPage() {
                 </div>
               </div>
             </section>
-            {/* box2 */}
-            <div className="px-0 my-5">
-              <div className="d-flex ms-2">
-                <div className="title-mark me-2" />
-                <h3>關於課程</h3>
-              </div>
-              <div className="m-4 text-color">
-                <p>
-                  明明只是想畫一個偷偷變美的高級妝容，卻變成回頭率 0
-                  的粗糙大濃妝嗎？明明是想暈出漂亮漸層的大眼睛眼妝，卻變成奇怪熊貓妝嗎？其實，所有的高級妝容精華都在細節裡，很多看似簡單的妝效，實際上都有絕對的步驟還有美感！跟著
-                  Ｍ.A.C 前任後台彩妝師堯蘭達，你不只能夠學會日常淡...
-                </p>
-                <Image
-                  src="/images/course/bannerall/banner31.jpg"
-                  alt="課程圖片"
-                  width={800}
-                  height={450}
-                  className="card-img-top-course py-2"
-                />
-              </div>
-            </div>
+
             {/* box3 */}
             <div className="px-0 my-5">
               <div className="d-flex ms-2">
                 <div className="title-mark me-2" />
-                <h3>課程內容</h3>
+                <h3>活動介紹</h3>
               </div>
               <div className="position-relative" id="box3-expand-section">
                 <div

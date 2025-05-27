@@ -1,0 +1,91 @@
+about avartar .container-user {
+  min-height: 100vh;
+}
+
+.user-head {
+  padding-top: 20px;
+  padding-bottom: 24px;
+  background-color: rgb(255, 255, 255);
+  color: var(--sub-text);
+  a {
+    color: var(--sub-text);
+  }
+  a:hover {
+    color: var(--strong-color);
+  }
+  @media (max-width: 992px) {
+    background-color: transparent;
+  }
+  .avatar-button {
+    display: block;
+    background-color: transparent;
+    border: 0;
+  }
+}
+.user-head .avartar {
+  width: 84px;
+  aspect-ratio: 1/1;
+  background-color: var(--main-text);
+  border-radius: 50%;
+}
+.user-head .user-title {
+  color: var(--main-text);
+}
+/* user menu */
+.user-menu-head {
+  display: none;
+  width: 100%;
+  padding-block: 0.75rem;
+  border: 0;
+  background-color: #fff;
+  color: var(--main-color);
+  @media (max-width: 992px) {
+    display: block;
+  }
+}
+/* user nav */
+.user-nav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--sub-text);
+  overflow: hidden;
+  transition: all 0.4s;
+  margin-top: 0.4rem;
+  margin-bottom: 1rem;
+  a {
+    color: var(--sub-text);
+  }
+  @media (max-width: 992px) {
+    /* height: 0; */
+  }
+}
+.user-nav ul {
+  list-style-type: none;
+  display: block;
+  width: 100%;
+  padding-inline: 0.5rem;
+  padding-bottom: 0.5rem;
+  margin-block: 0.4rem;
+  text-align: center;
+  /* background & card */ /* 漸層玻璃卡片 */
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  font-size: 0.8rem;
+}
+.user-nav ul li {
+  padding-block: 0.375rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.user-nav ul li:not(.title):hover {
+  background: var(--sub-element);
+  color: var(--white);
+}
+.user-nav ul .title {
+  color: var(--sub-color);
+  font-size: 1.25rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0.25rem;
+}

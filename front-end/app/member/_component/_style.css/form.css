@@ -29,6 +29,9 @@
   &.user-error input {
     border-color: var(--strong-color);
   }
+  &.user-error select {
+    border-color: var(--strong-color);
+  }
   label {
     display: flex;
     justify-content: space-between;

@@ -174,9 +174,9 @@ export default function ReviewEditor({
 
   return (
     <>
-      <Button variant="primary" onClick={handleShow}>
+      <button className={clsx(style['editor-btn'])} onClick={handleShow}>
         {edit ? '編輯評論' : '撰寫評論'}
-      </Button>
+      </button>
 
       <Modal show={showModal} onHide={handleClose} size="lg" centered>
         <Modal.Header closeButton>
