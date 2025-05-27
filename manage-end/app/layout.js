@@ -6,6 +6,7 @@ import Header from './_components/header/header'
 import Footer from './_components/footer/footer'
 import '@/app/_styles/globals.scss'
 import Provider from './provider'
+import AdminPanelLayout from '@/components/admin-panel/admin-panel-layout'
 
 export const metadata = {
   title: 'ISLA project',
@@ -30,9 +31,10 @@ export default function RootLayout({ children }) {
       </head>
       <Provider>
         <body>
-          <Header />
-          <div>{children}</div>
-          <Footer />
+          {/* <Header /> */}
+          <AdminPanelLayout>
+            <div>{children}</div>
+          </AdminPanelLayout>
           <ToastContainer />
         </body>
       </Provider>
