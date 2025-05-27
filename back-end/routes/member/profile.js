@@ -1,7 +1,23 @@
 import express from 'express'
 const router = express.Router()
+import {
+  validateName,
+  validateNickName,
+  validateAddress,
+  validateTel,
+  validateSkin,
+  validateRequest,
+} from '../../middlewares/express-valid-member.js'
 import db from '../../config/mysql.js'
 import verifyToken from '../../lib/verify-token.js' // token verification
+
+const validation = [
+  validateName,
+  validateNickName,
+  validateAddress,
+  validateSkin,
+  validateTel,
+]
 
 const profileInfo =
   'name,nickname,birthday,gender,tel,skin_type,city,area,postcode,address'
@@ -29,11 +45,11 @@ router.get('/', verifyToken, async (req, res) => {
 })
 
 /* GET profile page. */
-router.post('/', verifyToken, async (req, res) => {
+router.post('/', verifyToken, validation, validateRequest, async (req, res) => {
   let error
   const id = req?.user?.id || 0
   // 將profileInfo 改寫成符合 UPDATE 語法的形式(updateProfile) && 設定update的新值(解構賦值from req.body)
-  const profileArray = profileInfo.split(',').map((v, _) => `${v}=?`)
+  const profileArray = profileInfo.split(',').map((v) => `${v}=?`)
   const updateProfile = profileArray.toString()
   console.log(updateProfile)
   const {
@@ -48,18 +64,6 @@ router.post('/', verifyToken, async (req, res) => {
     postcode,
     address,
   } = req.body
-  // console.log(
-  //   name,
-  //   nickname,
-  //   birthday,
-  //   gender,
-  //   tel,
-  //   skin_type,
-  //   city,
-  //   area,
-  //   postcode,
-  //   address
-  // )
   try {
     const query = `UPDATE users SET ${updateProfile} WHERE id=?`
     const user = await db

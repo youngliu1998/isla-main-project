@@ -8,7 +8,8 @@ const ReviewsSection = ({ reviews = [] }) => {
 
   const reviewCommentCardFormater = (review) => ({
     userId: review.is_anonymous ? '匿名用戶' : `用戶 ${review.user_id}`,
-    userAvatarSrc: '',
+    nickname: review.nickname,
+    userAvatar: `http://localhost:3005/images/images/member/${review.ava_url}`,
     rating: review.rating,
     comment_text: review.comment_text,
     created_at: review.created_at,

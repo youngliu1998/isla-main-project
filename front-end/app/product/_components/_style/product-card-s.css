@@ -1,14 +1,19 @@
-/* ./_style.css/product-card-s.css */
+.product-card-add-cart-btn {
+  border: none;
+  outline: none;
+  background: none;
+  color: var(--main-color);
+}
+.product-card-add-cart-btn:hover {
+  color: #c77469;
+}
 
-/* Original styles if any were above the .product-card-product_card rule */
-/*.product-card-container {*/
-/* height: 100vh;*/
-/* width: 100vw;*/
-/* background-color: #ececec;*/
-/* display: flex;*/
-/* align-items: center;*/
-/* justify-content: center;*/
-/*}*/
+.image-wrapper {
+  position: relative;
+  width: 100%;
+  padding-top: 100%;
+  overflow: hidden;
+}
 
 .product-card-product_card {
   display: flex;
@@ -27,7 +32,7 @@
   box-shadow:
     0 -2px 0 #dcdcdc,
     0 3px 10px rgba(0, 0, 0, 0.45);
-  background: #f1f1f1;
+  /*background: #f1f1f1;*/
   border-radius: 8px;
 }
 
@@ -53,19 +58,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
 }
 .product-card-product_card-img .card-img {
-  max-width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 80%;
   max-height: 100%;
-  object-fit: contain; /* or cover */
+  object-fit: contain;
 }
 
 .product-card-product_card-head {
   position: relative;
-  /* Define a height for the head section if image size is not fixed,
-     to prevent layout shifts or ensure consistency.
-     For example: height: 200px;
-  */
 }
 
 .product-card-hover-add-cart {
@@ -77,7 +82,7 @@
   left: 50%;
   transform: translateX(-50%);
   height: 40px;
-  background-color: rgba(255, 255, 255, 0.7);
+  background-color: rgba(243, 243, 243, 0.01);
   width: 100%;
   align-items: center;
   justify-content: center;
@@ -93,7 +98,6 @@
   transition: all 0.1s;
 }
 .product-card-hover-add-cart:hover a {
-  /* cursor: pointer; /* Already on .product-card-bookmark, not strictly needed here but fine */
   color: #fd7061;
 }
 
@@ -111,7 +115,6 @@
 .product-card-rating {
   display: flex;
   align-items: center;
-  /* justify-content: center; */
   gap: 6px;
 }
 .product-card-rating .product-card-rating_text {
@@ -143,15 +146,13 @@
   justify-content: space-between;
   flex-direction: column;
   gap: 3px;
-  height: 100%; /* This makes the info section try to fill the parent's height */
-  /* Be cautious if .product-card-product_card doesn't have a flexible height for this section */
-  flex-grow: 1; /* Add this to make product_card-info take available space if product_card is flex column */
+  height: 100%;
+  flex-grow: 1;
 }
 
 .product-card-info {
   display: flex;
-  /* align-items: start; /* This will left-align items */
-  justify-content: center; /* This will center items if the container is wider */
+  justify-content: center;
   flex-direction: column;
   gap: 10px;
 }
@@ -159,7 +160,6 @@
 .product-card-product_details {
   display: flex;
   flex-direction: column;
-  /* text-align: left; /* Default, but good to be explicit if needed */
 }
 .product-card-product_details .product-card-brand {
   font-size: 14px;
@@ -179,14 +179,12 @@
 
 .product-card-price {
   display: flex;
-  flex-direction: column;
+  /*flex-direction: column;*/
   gap: 8px;
-  /* align-items: flex-start; /* To align price to the left if desired */
 }
 .product-card-price-box {
   display: flex;
-  align-items: center; /* Vertically aligns main price and basic price if they have different font sizes */
-  /* justify-content: flex-start; /* To ensure prices start from left */
+  align-items: center;
 }
 .product-card-price-box .product-card-main-price {
   font-size: 20px;
@@ -195,9 +193,81 @@
 }
 .product-card-price-box .product-card-basic-price {
   font-size: 16px;
-  font-weight: 500;
-  color: #bebebe;
+  font-weight: 400;
+  color: #d2d2d2;
 }
+
+.product-card-tag {
+  background-image: linear-gradient(
+          45deg,
+          hsl(194deg 34% 73%) 0%,
+          hsl(200deg 41% 74%) 8%,
+          hsl(207deg 46% 76%) 17%,
+          hsl(215deg 48% 78%) 25%,
+          hsl(227deg 47% 80%) 33%,
+          hsl(247deg 42% 82%) 42%,
+          hsl(271deg 40% 80%) 50%,
+          hsl(298deg 35% 78%) 58%,
+          hsl(322deg 50% 79%) 67%,
+          hsl(337deg 67% 81%) 75%,
+          hsl(349deg 80% 82%) 83%,
+          hsl(360deg 87% 82%) 92%,
+          hsl(10deg 88% 80%) 100%
+  );
+  border-radius: 15px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 10px;
+}
+
+.image-container {
+  position: relative;
+  width: 100%;
+  padding: 20px;
+}
+
+/* 骨架 */
+.skeleton-image {
+  width: 100%;
+  padding-top: 100%;
+  background-color: #ffffff;
+  border-radius: 8px;
+  position: relative;
+}
+
+.card-img {
+  position: absolute;
+  top: 0;
+  /*left: 0;*/
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.fade-in {
+  opacity: 1;
+  transition: opacity 0.5s ease-in;
+}
+
+.hidden {
+  opacity: 0;
+}
+
+@keyframes pulse {
+  0% {
+    background-color: #e0e0e0;
+  }
+  50% {
+    background-color: #f0f0f0;
+  }
+  100% {
+    background-color: #e0e0e0;
+  }
+}
+
 
 @media (max-width: 1400px) {
   .product-card-product_card {
@@ -206,7 +276,6 @@
   }
 
   .product-card-product_card-info {
-    /* justify-content: space-between; /* Already defined in base */
   }
   .product-card-product_card-info .product-card-brand {
     font-size: 16px;
@@ -225,10 +294,4 @@
     width: 100%;
     justify-content: flex-end;
   }
-
-  /* .product-card-hover-add-cart styles remain the same as base or are overridden if needed */
-  /* .product-card-hover-add-cart a styles remain the same as base or are overridden if needed */
-
-  /* .product-card-product_card-info height and justify-content are already set in base */
-  /* If they need to be different for mobile, specify here. */
 }

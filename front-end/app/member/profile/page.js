@@ -2,16 +2,19 @@
 
 import '../_component/_style.css/form.css'
 import { useState, useEffect } from 'react'
+import { useAuth } from '@/hook/use-auth'
 // import { useRouter } from 'next/navigation'
+// ==== component ====
+import BasicProfile from './_component/basic-profile'
 import InputText from '../_component/input-text'
 import Select from '../_component/select'
-import { useAuth } from '@/hook/use-auth'
+// ==== data ====
 import { cities } from './data/CityCountyData'
 
 export default function ProfilePage() {
   // const router = useRouter()
-  const { initAuth } = useAuth()
-  const [text, setText] = useState({
+  const { user } = useAuth()
+  const defaultProfile = {
     name: '',
     nickname: '',
     tel: '',
@@ -22,8 +25,10 @@ export default function ProfilePage() {
     AreaName: '',
     ZipCode: '',
     address: '',
-  })
-  // console.log('text', text)
+  }
+  const [text, setText] = useState({ ...defaultProfile })
+  const [error, setError] = useState({ ...defaultProfile })
+  console.log('text', text)
 
   // ==== 處理地址 ====
   const areas = cities.filter((v) => v.CityName == text.CityName)[0]?.AreaList
@@ -56,10 +61,47 @@ export default function ProfilePage() {
         },
         body: JSON.stringify(formData),
       })
-      const result = await response.json()
-      alert('提交成功：' + JSON.stringify(result))
-      // 更新 useAuth
-      initAuth()
+      const data = await response.json()
+      // ==== 清除上次錯誤提示 ====
+      setError({ ...defaultProfile })
+      // ==== 處理資料 ====
+      if (response.ok) {
+        // ==== 200 status: success ====
+        if (data.status === 'success') {
+          alert('更新個人資料成功', data)
+        }
+      } else {
+        // ==== 404 status: error ====
+        let newError = { ...defaultProfile }
+        const serverErrors = data.errors
+        if (Array.isArray(serverErrors)) {
+          console.log('Errors: ', serverErrors)
+          serverErrors.forEach((serverError) => {
+            switch (serverError.path) {
+              case 'name':
+                newError = { ...newError, ['name']: serverError.msg }
+                break
+              case 'nickname':
+                newError = { ...newError, ['nickname']: serverError.msg }
+                break
+              case 'tel':
+                newError = { ...newError, ['tel']: serverError.msg }
+                break
+              case 'skin_type':
+                newError = { ...newError, ['skin_type']: serverError.msg }
+                break
+              case 'city':
+                newError = { ...newError, ['city']: serverError.msg }
+                break
+            }
+          })
+          setError(newError)
+        } else {
+          console.log('未知錯誤')
+        }
+        // ==== END 404 status: error ====
+      }
+      // ====  END 處理資料 ====
     } catch (error) {
       console.error('錯誤：', error)
     }
@@ -110,6 +152,7 @@ export default function ProfilePage() {
       <form onSubmit={handleSubmit}>
         <div className="user-content">
           <h3>會員資料</h3>
+          <BasicProfile user={user} />
           <div className="row row-cols-md-2 row-cols-1 g-4">
             <InputText
               text={text}
@@ -117,6 +160,7 @@ export default function ProfilePage() {
               name="name"
               value={text.name}
               setText={setText}
+              errorMsg={error.name}
             />
             <InputText
               text={text}
@@ -124,6 +168,7 @@ export default function ProfilePage() {
               name="nickname"
               value={text.nickname}
               setText={setText}
+              errorMsg={error.nickname}
             />
             <InputText
               text={text}
@@ -131,6 +176,7 @@ export default function ProfilePage() {
               name="tel"
               value={text.tel}
               setText={setText}
+              errorMsg={error.tel}
             />
             {/* <!-- input[type=radio] --> */}
             <div className="user-form-input">
@@ -196,6 +242,7 @@ export default function ProfilePage() {
               selectKey="CityName"
               text={text}
               setText={setText}
+              errorMsg={error.city}
             />
             <Select
               title="市/區/鄉/鎮"

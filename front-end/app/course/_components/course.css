@@ -104,6 +104,7 @@
   font-weight: bold;
   cursor: pointer;
   transition: background 0.3s ease;
+  
 }
 .search-btntext:hover {
   color: var(--main-color);

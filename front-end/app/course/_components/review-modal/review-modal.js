@@ -1,8 +1,12 @@
+// ✅ review-modal.js
 'use client'
 
 import { useState, useMemo } from 'react'
 import ReviewCard from '../review-card/review-card'
 import './review-modal.css'
+import { useAuth } from '@/hook/use-auth'
+import { toast } from 'react-toastify'
+import EditReviewModal from '../edit-review-modal/edit-review-modal'
 
 export default function ReviewModal({
   isOpen,
@@ -10,17 +14,57 @@ export default function ReviewModal({
   reviewCard = [],
   likesMap = {},
   toggleLike = () => {},
+  onAfterDelete = () => {},
+  onUpdate = () => {},
 }) {
   const [sortOption, setSortOption] = useState(1)
+  const { user } = useAuth()
+  const token = user?.token || ''
+  const [editingComment, setEditingComment] = useState(null)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
 
-  // ⭐ 平均評分（始終執行）
+  const handleEditComment = (comment) => {
+    setEditingComment(comment)
+    setIsEditModalOpen(true) // ✅ 要打開 Modal
+  }
+  // ⭐ 留言更新後立即反映畫面
+  const handleCommentUpdate = (id, newContent, newStar) => {
+    // 呼叫父層 onUpdate 函式就好，由父層更新 reviewCard
+    onUpdate(id, newContent, newStar)
+  }
+
+  const handleDelete = async (commentId) => {
+    if (!window.confirm('確定要刪除這則留言嗎？')) return
+
+    try {
+      const res = await fetch(
+        `http://localhost:3005/api/course/comments/${commentId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      const data = await res.json()
+      if (data.status === 'success') {
+        toast.success('留言已刪除')
+        onAfterDelete(commentId)
+      } else {
+        toast.error(data.message || '刪除失敗')
+      }
+    } catch (err) {
+      toast.error('刪除過程出錯')
+      console.error(err)
+    }
+  }
+
   const avgStar = useMemo(() => {
     if (reviewCard.length === 0) return 0
     const sum = reviewCard.reduce((acc, cur) => acc + Number(cur.star || 0), 0)
     return (sum / reviewCard.length).toFixed(1)
   }, [reviewCard])
 
-  // ⭐ 星星圖示渲染（始終執行）
   const renderStars = (score) => {
     const ratingNum = Number(score)
     const fullStars = Math.floor(ratingNum)
@@ -40,7 +84,6 @@ export default function ReviewModal({
     )
   }
 
-  // ⭐ 排序邏輯（始終執行）
   const sortedReviews = useMemo(() => {
     const copy = [...reviewCard]
     switch (sortOption) {
@@ -58,7 +101,6 @@ export default function ReviewModal({
     }
   }, [reviewCard, sortOption])
 
-  // ⭐ 防止 modal 開關觸發 hook 問題
   if (!isOpen) return null
 
   return (
@@ -87,24 +129,27 @@ export default function ReviewModal({
                   </div>
                 </div>
               </div>
-              <div className="row col-3 h-25 my-2 mb-4">
-                <select
-                  className="form-select no-border"
-                  value={sortOption}
-                  onChange={(e) => setSortOption(Number(e.target.value))}
-                >
-                  <option value={1}>最有幫助</option>
-                  <option value={2}>評價最高</option>
-                  <option value={3}>評價最低</option>
-                  <option value={4}>日期最新</option>
-                  <option value={5}>日期最舊</option>
-                </select>
-              </div>
+              {!editingComment && (
+                <div className="row col-3 h-25 my-2 mb-4">
+                  <select
+                    className="form-select no-border"
+                    value={sortOption}
+                    onChange={(e) => setSortOption(Number(e.target.value))}
+                  >
+                    <option value={1}>最有幫助</option>
+                    <option value={2}>評價最高</option>
+                    <option value={3}>評價最低</option>
+                    <option value={4}>日期最新</option>
+                    <option value={5}>日期最舊</option>
+                  </select>
+                </div>
+              )}
             </div>
 
             {sortedReviews.map((v) => (
               <ReviewCard
                 key={v.comment_id}
+                member_id={v.member_id}
                 member_name={v.member_name}
                 star={v.star}
                 created={v.created}
@@ -113,6 +158,48 @@ export default function ReviewModal({
                 comment_id={v.comment_id}
                 likeData={likesMap[v.comment_id] || { liked: false, count: 0 }}
                 onToggleLike={toggleLike}
+                onEdit={() => setEditingComment(v)}
+                onDelete={() => handleDelete(v.comment_id)}
+                isEditing={editingComment?.comment_id === v.comment_id}
+                editingContent={editingComment?.content || ''}
+                editingStar={editingComment?.star || 0}
+                onEditChange={(field, value) => {
+                  setEditingComment((prev) => ({ ...prev, [field]: value }))
+                }}
+                onEditCancel={() => setEditingComment(null)}
+                onEditSave={async () => {
+                  const token = localStorage.getItem('jwtToken')
+                  try {
+                    const res = await fetch(
+                      `http://localhost:3005/api/course/comments/${editingComment.comment_id}`,
+                      {
+                        method: 'PATCH',
+                        headers: {
+                          'Content-Type': 'application/json',
+                          Authorization: `Bearer ${token}`,
+                        },
+                        body: JSON.stringify({
+                          content: editingComment.content,
+                          star: editingComment.star,
+                        }),
+                      }
+                    )
+                    const result = await res.json()
+                    if (result.status === 'success') {
+                      toast.success('留言已更新')
+                      onUpdate(
+                        editingComment.comment_id,
+                        editingComment.content,
+                        editingComment.star
+                      )
+                      setEditingComment(null)
+                    } else {
+                      toast.error(result.message || '更新失敗')
+                    }
+                  } catch (err) {
+                    toast.error('更新出錯')
+                  }
+                }}
               />
             ))}
           </div>
@@ -126,6 +213,12 @@ export default function ReviewModal({
         onKeyDown={(e) => {
           if (e.key === 'Enter' || e.key === ' ') onClose()
         }}
+      />
+      <EditReviewModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        comment={editingComment}
+        onUpdate={handleCommentUpdate}
       />
     </>
   )

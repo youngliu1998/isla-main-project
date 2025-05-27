@@ -15,7 +15,8 @@ const MAX_LENGTH = 120
 
 const ReviewCard = ({ review }) => {
   const {
-    userAvatarSrc,
+    userAvatar,
+    nickname,
     userId,
     rating,
     images = [],
@@ -49,16 +50,14 @@ const ReviewCard = ({ review }) => {
             <div className={styles['card-user-img']}>
               <Image
                 className="user-img"
-                src={
-                  'https://i.ibb.co/M5VCPJvM/Screenshot-2025-04-15-at-9-30-59-am.png'
-                }
+                src={userAvatar}
                 alt="UserPicture"
                 width={1}
                 height={1}
               />
             </div>
             <div className={styles['card-head-user']}>
-              <div className={styles['username-card']}>{userId}</div>
+              <div className={styles['username-card']}>{nickname}</div>
               <div className={styles['user-rating']}>
                 <StarRatingItem star={rating} maxStars={5} />
               </div>
@@ -75,7 +74,7 @@ const ReviewCard = ({ review }) => {
                     className={`${styles['color-name-card']} ${color_code ? styles['color-name-card-has-color'] : ''}`}
                     style={
                       color_code
-                        ? { backgroundColor: color_code, color: '#ffffff'}
+                        ? { backgroundColor: color_code, color: '#ffffff' }
                         : { backgroundColor: '#FBFBFB' }
                     }
                   >

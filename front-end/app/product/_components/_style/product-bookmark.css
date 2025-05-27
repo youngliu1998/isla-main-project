@@ -1,3 +1,10 @@
+.bookmark-btn {
+  background: none;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
 .product-card-bookmark {
   cursor: pointer;
   padding: 4px 0 0 0;

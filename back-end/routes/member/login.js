@@ -1,13 +1,20 @@
 import express from 'express'
 const router = express.Router()
-import db from '../../config/mysql.js'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+// ==== exported functions ====
+import {
+  validateEmail,
+  ValidatePass,
+  validateRequest,
+} from '../../middlewares/express-valid-member.js'
+import db from '../../config/mysql.js'
 import verifyToken from '../../lib/verify-token.js' // token verification
 // jwt key
 const secretKey = process.env.JWT_SECRET_KEY
 
 // api settings
+const validation = [validateEmail, ValidatePass]
 
 // get: Send data if Auth is ok
 router.get('/', verifyToken, async (req, res) => {
@@ -33,7 +40,7 @@ router.get('/', verifyToken, async (req, res) => {
 })
 
 // post: Send Auth token
-router.post('/', async (req, res) => {
+router.post('/', validation, validateRequest, async (req, res) => {
   let error
   const { email, password } = req.body
   try {
@@ -68,7 +75,7 @@ router.post('/', async (req, res) => {
       message: '登入成功',
     })
   } catch (err) {
-    res.json({ status: 'error', message: '會員資料讀取失敗: '+error})
+    res.json({ status: 'error', message: '會員資料讀取失敗: ' + error })
   }
 })
 

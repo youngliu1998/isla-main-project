@@ -4,10 +4,24 @@ import db from '../../config/mysql.js'
 import verifyToken from '../../lib/verify-token.js'
 
 // Url: http://localhost:3005/api/course/course/:id
-router.get('/:id', verifyToken, async (req, res) => {
-  const user_id = req.user.id
+// router.get('/:id', verifyToken, async (req, res) => {
+//   const user_id = req.user.id
+//   const courseId = req.params.id
+//   console.log('courseId: ', courseId)
+router.get('/:id', async (req, res) => {
   const courseId = req.params.id
-  console.log('courseId: ', courseId)
+  const token = req.headers.authorization?.split(' ')[1] || null
+
+  let user_id = null
+  if (token) {
+    try {
+      const payload = await verifyToken(token)
+      user_id = payload.id
+    } catch (err) {
+      // 若 token 錯誤就不設 user_id
+      console.warn('Token 無效，非登入者')
+    }
+  }
 
   try {
     let baseSQL = `

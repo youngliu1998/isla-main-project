@@ -1,6 +1,6 @@
 .rating-component .rating_text {
   padding: 6px 0 0 0;
-  font-size: 13px;
+  font-size: 10px;
   font-weight: 300;
   color: #858585;
   padding-bottom: 6px;
@@ -32,7 +32,7 @@
     height: 22px;
   }
   .rating_text {
-    font-size: 16px;
+    font-size: 10px;
     padding-bottom: 6px;
   }
 }
