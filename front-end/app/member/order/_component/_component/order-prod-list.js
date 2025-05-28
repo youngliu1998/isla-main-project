@@ -6,6 +6,7 @@ import Link from 'next/link'
 // ==== route ====
 import { COURSE_BANNER_URL } from '@/_route/img-url'
 import { COURSE_PAGE_URL } from '@/_route/page-url'
+import { PRODUCT_IMG_URL } from '@/_route/img-url'
 
 export default function OrderProdList({ order_id = 0 }) {
   const [openProd, setOpenProd] = useState(false)
@@ -58,10 +59,19 @@ export default function OrderProdList({ order_id = 0 }) {
               className="row justify-content-start gy-2 ms-3 mb-3 w-100"
             >
               <div className="prodImg">
+                {item.item_type === 'product' && (
+                  <Image
+                    src={PRODUCT_IMG_URL + item.product_pic}
+                    alt={item.product_pic || 'product pic'}
+                    width={'50'}
+                    height={'50'}
+                    style={{ objectFit: 'contain' }}
+                  />
+                )}
                 {item.item_type === 'course' && (
                   <Image
                     src={COURSE_BANNER_URL + item.course_pic}
-                    alt={item.course_pic}
+                    alt={item.course_pic || 'course pic'}
                     width={'50'}
                     height={'50'}
                     style={{ objectFit: 'contain' }}

@@ -46,11 +46,56 @@ router.post('/item', verifyToken, async (req, res) => {
      oi.item_type,
      c.title AS course_tit,
      c.picture AS course_pic,
-     p.name AS product_tit
+     p.name AS product_tit,
+     p.image_url AS product_pic
 FROM order_items AS oi 
 LEFT JOIN courses AS c ON c.id = oi.course_id
-LEFT JOIN products AS p ON p.product_id = oi.product_id
+LEFT JOIN (SELECT 
+    p.product_id,
+    p.name,
+    pi.image_url
+FROM products AS p
+LEFT JOIN (
+    SELECT product_id, image_url
+    FROM product_images
+    WHERE sort_order = 1
+) AS pi ON p.product_id = pi.product_id) AS p ON p.product_id = oi.product_id
 WHERE oi.order_id = ?;
+`
+    const items = await db
+      .execute(query, [id])
+      .then((data) => data[0])
+      .catch((err) => {
+        error = err
+      })
+    if (!items) return res.json({ status: 'success', message: '無此商品' })
+    // send user data to client
+    res.json({
+      status: 'success',
+      data: items,
+      message: '品項取得成功',
+    })
+  } catch (err) {
+    res.json({ status: '品項取得失敗', message: error })
+  }
+})
+router.post('/test', verifyToken, async (req, res) => {
+  let error = {}
+  // if verifyToken works, it would send user's id to req.user.id
+  const { id } = req?.body || 0
+  console.log('order_id ', id)
+  // set query here
+  try {
+    const query = `SELECT 
+    p.product_id,
+    p.name,
+    pi.image_url
+FROM products AS p
+LEFT JOIN (
+    SELECT product_id, image_url
+    FROM product_images
+    WHERE sort_order = 1
+) AS pi ON p.product_id = pi.product_id;
 `
     const items = await db
       .execute(query, [id])
