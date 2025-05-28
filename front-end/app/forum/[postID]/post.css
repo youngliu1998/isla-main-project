@@ -34,9 +34,19 @@
 .comment-input-block {
   border: 0;
   border-top: 1px solid var(--border-color-forum);
+  border-left: 1px solid var(--border-color-forum);
   .comment-input {
     border: 0;
     outline: 0 solid #ffffff00;
-    height: 48px;
+    height: 36px;
+  }
+}
+.sub-comment-stroke {
+  border-bottom: 1px solid var(--border-color-forum);
+}
+
+.sub-input {
+  &:focus {
+    outline: 0;
   }
 }
