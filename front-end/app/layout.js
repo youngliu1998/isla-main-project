@@ -56,7 +56,7 @@ export default function RootLayout({ children }) {
           />
           <div style={{ marginTop: '80px' }}>{children}</div>
           <Footer />
-          <ToastContainer />
+          {/* <ToastContainer /> */}
           <Chat />
         </Provider>
       </body>

@@ -32,7 +32,10 @@
   /* overscroll-behavior: none; */
   .button-clear {
     border: 0px solid #ffffff00;
-    background-color: #ffffff00;
+    background-color: transparent;
+    /* overflow: visible;
+    position: relative;
+    z-index: 1; */
   }
   /* .dropdown-forum {
     background-color: white;
