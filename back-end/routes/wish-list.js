@@ -4,6 +4,70 @@ import verifyToken from '../lib/verify-token.js'
 
 const router = express.Router()
 
+router.get('/products', verifyToken, async (req, res) => {
+  const user_id = req.user.id
+
+  if (!user_id) {
+    return res.status(401).json({ message: '未授權使用者' })
+  }
+
+  try {
+    const [wishlist] = await db.execute(
+      `SELECT 
+     w.id AS wishlist_id,
+     w.user_id,
+     w.product_id,
+     w.courses_id,
+     w.courses_experience_id,
+     w.created_at,
+     p.product_id,
+     p.name,
+     p.description,
+     p.usage_instructions,
+     p.base_price,
+     p.sale_price,
+     p.status,
+     CASE 
+       WHEN p.sale_price IS NOT NULL 
+         AND NOW() >= p.sale_start_date
+         AND NOW() <= p.sale_end_date
+       THEN p.sale_price
+       ELSE p.base_price
+     END AS final_price,
+     b.brand_id,
+     b.name AS brand_name,
+     c.category_id,
+     c.name AS category_name,
+     (
+       SELECT JSON_ARRAYAGG(pt.name)
+       FROM product_tag_relations ptr
+       JOIN product_tags pt ON ptr.tag_id = pt.tag_id
+       WHERE ptr.product_id = p.product_id
+     ) AS tag_names,
+     (
+       SELECT JSON_ARRAYAGG(pi.image_url)
+       FROM product_images pi
+       WHERE pi.product_id = p.product_id
+     ) AS images
+
+   FROM wishlist w
+   INNER JOIN products p ON w.product_id = p.product_id
+   LEFT JOIN brands b ON p.brand_id = b.brand_id
+   LEFT JOIN categories c ON p.category_id = c.category_id
+   WHERE w.user_id = ?`,
+      [user_id]
+    )
+
+    res.json({
+      message: '取得收藏清單+商品卡片資料成功',
+      data: wishlist,
+    })
+  } catch (err) {
+    console.error('取得收藏失敗:', err)
+    res.status(500).json({ message: '伺服器錯誤' })
+  }
+})
+
 router.get('/', verifyToken, async (req, res) => {
   const user_id = req.user.id
 
@@ -14,13 +78,13 @@ router.get('/', verifyToken, async (req, res) => {
   try {
     const [wishlist] = await db.execute(
       `SELECT id, user_id, courses_id, courses_experience_id, product_id, created_at
-       FROM wishlist
-       WHERE user_id = ?`,
+   FROM wishlist
+   WHERE user_id = ?`,
       [user_id]
     )
 
     res.json({
-      message: '取得收藏清單成功',
+      message: '取得收藏狀態資料成功',
       data: wishlist,
     })
   } catch (err) {
@@ -132,3 +196,11 @@ router.delete('/', verifyToken, async (req, res) => {
 })
 
 export default router
+
+//備份
+// const [wishlist] = await db.execute(
+//   `SELECT id, user_id, courses_id, courses_experience_id, product_id, created_at
+//    FROM wishlist
+//    WHERE user_id = ?`,
+//   [user_id]
+// )

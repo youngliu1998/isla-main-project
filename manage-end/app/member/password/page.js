@@ -1,8 +1,10 @@
 'use client'
 
 import React, { useState } from 'react'
-import InputPass from '../_component/input-pass'
-import '../_component/_style.css/form.css'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils' // 若有需要 class 合併工具
 
 export default function PasswordPage() {
   const defaultPass = {
@@ -10,14 +12,15 @@ export default function PasswordPage() {
     newPass: '',
     againPass: '',
   }
+
   const [password, setPassword] = useState({ ...defaultPass })
   const [error, setError] = useState({ ...defaultPass })
-  // console.log(password)
-  // ==== 修改密碼(設定) ====
+
   async function changePass() {
     try {
       const token = localStorage?.getItem('jwtToken') || null
       if (!token) return
+
       const response = await fetch(
         'http://localhost:3005/api/member/password',
         {
@@ -31,35 +34,20 @@ export default function PasswordPage() {
       )
 
       const data = await response.json()
-
-      // ==== 清除上次錯誤提示 ====
       setError({ ...defaultPass })
-      // ==== 處理資料 ====
-      if (response.ok) {
-        // ==== 200 status: success ====
-        if (data.status === 'success') {
-          alert('修改密碼成功')
-        }
+
+      if (response.ok && data.status === 'success') {
+        alert('修改密碼成功')
+        setPassword({ ...defaultPass })
       } else {
-        // ==== 404 status: error ====
         let newError = { ...defaultPass }
         const serverErrors = data.errors
         if (Array.isArray(serverErrors)) {
-          // console.log('Errors: ', serverErrors)
-          serverErrors.forEach((serverError) => {
-            switch (serverError.path) {
-              case 'oriPass':
-                newError = { ...newError, ['oriPass']: serverError.msg }
-                break
-              case 'newPass':
-                newError = { ...newError, ['newPass']: serverError.msg }
-                break
-              case 'againPass':
-                newError = { ...newError, ['againPass']: serverError.msg }
-                break
+          serverErrors.forEach((err) => {
+            if (err.path && defaultPass.hasOwnProperty(err.path)) {
+              newError[err.path] = err.msg
             }
           })
-
           setError(newError)
         } else {
           console.log('未知錯誤')
@@ -69,48 +57,80 @@ export default function PasswordPage() {
       console.log(err)
     }
   }
-  // ==== END 修改密碼(設定) ====
-  // ==== 提交表單(設定)
+
   const handleSubmit = (e) => {
     e.preventDefault()
     changePass()
   }
-  // ==== END 提交表單(設定)
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setPassword((prev) => ({ ...prev, [name]: value }))
+  }
+
   return (
-    <>
-      <form onSubmit={handleSubmit}>
-        <div className="user-content">
-          <h3>密碼變更</h3>
-          <div className="row row-cols-1 gy-4">
-            <InputPass
-              password={password}
-              title="當前密碼"
-              name="oriPass"
-              value={password.oriPass}
-              setPassword={setPassword}
-              errorMsg={error.oriPass}
-            />
-            <div className="bottom-line"></div>
-            <InputPass
-              password={password}
-              title="新密碼"
-              name="newPass"
-              value={password.newPass}
-              setPassword={setPassword}
-              errorMsg={error.newPass}
-            />
-            <InputPass
-              password={password}
-              title="再輸入一次"
-              name="againPass"
-              value={password.againPass}
-              setPassword={setPassword}
-              errorMsg={error.againPass}
-            />
-          </div>
-          <button className="btn btn-primary">修改</button>
-        </div>
-      </form>
-    </>
+    <form
+      onSubmit={handleSubmit}
+      className="max-w-md mx-auto px-4 py-8 space-y-6 my-18 bg-white shadow-md rounded-lg flex gap-3 flex-col"
+    >
+      <h3 className="text-xl font-semibold text-center">密碼變更</h3>
+
+      {/* 當前密碼 */}
+      <div>
+        <Label className="pb-3" htmlFor="oriPass">
+          當前密碼
+        </Label>
+        <Input
+          id="oriPass"
+          type="password"
+          name="oriPass"
+          value={password.oriPass}
+          onChange={handleChange}
+        />
+        {error.oriPass && (
+          <p className="text-sm text-red-500 mt-1">{error.oriPass}</p>
+        )}
+      </div>
+
+      <div className="h-px bg-gray-200" />
+
+      {/* 新密碼 */}
+      <div>
+        <Label className="pb-3" htmlFor="newPass">
+          新密碼
+        </Label>
+        <Input
+          id="newPass"
+          type="password"
+          name="newPass"
+          value={password.newPass}
+          onChange={handleChange}
+        />
+        {error.newPass && (
+          <p className="text-sm text-red-500 mt-1">{error.newPass}</p>
+        )}
+      </div>
+
+      {/* 再輸入一次 */}
+      <div>
+        <Label className="pb-3" htmlFor="againPass">
+          再輸入一次
+        </Label>
+        <Input
+          id="againPass"
+          type="password"
+          name="againPass"
+          value={password.againPass}
+          onChange={handleChange}
+        />
+        {error.againPass && (
+          <p className="text-sm text-red-500 mt-1">{error.againPass}</p>
+        )}
+      </div>
+
+      <Button type="submit" className="w-full">
+        修改
+      </Button>
+    </form>
   )
 }

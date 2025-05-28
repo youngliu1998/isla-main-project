@@ -2,11 +2,10 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import './globals.css'
 import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer } from 'react-toastify'
-import Header from './_components/header/header'
-import Footer from './_components/footer/footer'
 import '@/app/_styles/globals.scss'
 import Provider from './provider'
 import AdminPanelLayout from '@/components/admin-panel/admin-panel-layout'
+import { ContentLayout } from '@/components/admin-panel/content-layout'
 
 export const metadata = {
   title: 'ISLA project',
@@ -33,7 +32,11 @@ export default function RootLayout({ children }) {
         <body>
           {/* <Header /> */}
           <AdminPanelLayout>
-            <div>{children}</div>
+            <ContentLayout title="ISLA 管理">
+              <div className="p-6">
+                <>{children}</>
+              </div>
+            </ContentLayout>
           </AdminPanelLayout>
           <ToastContainer />
         </body>

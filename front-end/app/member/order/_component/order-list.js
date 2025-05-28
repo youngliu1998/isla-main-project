@@ -4,15 +4,37 @@ import React, { useState } from 'react'
 import OrderProdList from './_component/order-prod-list'
 import './_style/order-list.css'
 
-export default function OrderList(props) {
-  const [orderTable, setOrderTable] = useState({
-    訂單編號: '12345',
-    購買日期: '2015-01-01',
-    訂單狀態: '',
-    結帳金額: '',
-    付款方式: '',
-    發票號碼: '',
-  })
+export default function OrderList({
+  order_number,
+  created_at = '',
+  status = '',
+  total_price = '',
+  shipping_method = '',
+  payment_method = '',
+  order_id = 0,
+}) {
+  if (total_price) {
+    total_price = total_price.split('.')[0]
+  }
+  if (status) {
+    switch (status) {
+      case 'pending':
+        status = '請等待'
+        break
+      case 'completed':
+        status = '已完成'
+        break
+    }
+    total_price = total_price.split('.')[0]
+  }
+  const orderTable = {
+    訂單編號: order_number,
+    購買日期: created_at,
+    訂單狀態: status,
+    結帳金額: total_price,
+    取貨方式: shipping_method,
+    付款方式: payment_method,
+  }
   const [openOrder, setOpenOrder] = useState(false)
   const btnOrderContent = openOrder ? '闔上' : '展開'
   const orderOpenClass = openOrder ? '' : 'close-order'
@@ -32,13 +54,13 @@ export default function OrderList(props) {
             return (
               <div className="order-col" key={i}>
                 <div className="order-index">{key}</div>
-                <div className="order-content">{orderTable.key}</div>
+                <div className="order-content">{orderTable[`${key}`]}</div>
               </div>
             )
           })}
         </div>
 
-        <OrderProdList />
+        <OrderProdList order_id={order_id} />
         {/* button control open */}
         <button
           className="d-md-none d-block btn-order"
