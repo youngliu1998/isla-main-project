@@ -2,14 +2,17 @@
 
 import React, { useState, useEffect } from 'react'
 import './_style/forum.css'
+import Componentstab from '../../tab'
 import MainForum from './main-forum'
 import SubForum from './sub-forum'
+import { useRouter } from 'next/navigation'
 import useSWR from 'swr'
-import { useAuth } from '../../../../hook/use-auth'
+import { useAuth } from '@/hook/use-auth'
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
 
 export default function ForumSection(props) {
+  const router = useRouter()
   const userID = useAuth().user.id
   const { data, isLoading, error, mutate } = useSWR(
     `http://localhost:3005/api/forum/homePage`,
@@ -38,6 +41,12 @@ export default function ForumSection(props) {
 
   return (
     <>
+      <h3>Top 文章</h3>
+      <Componentstab
+        cates={['熱門', '最新']}
+        height={52}
+        // handleTabChange={handleForumTab} FIXME
+      />
       <div className="row row-cols-lg-2 row-cols-1 gx-5 w-100">
         <MainForum
           number={1}
@@ -71,6 +80,15 @@ export default function ForumSection(props) {
           })}
         </div>
       </div>
+
+      <button
+        className="btn btn-primary"
+        onClick={() => {
+          router.push('/forum')
+        }}
+      >
+        查看更多
+      </button>
     </>
   )
 }

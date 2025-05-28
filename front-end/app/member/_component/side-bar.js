@@ -87,9 +87,9 @@ export default function SideBar() {
             登出
           </Link>
         </div>
-        {/* panel */}
+        {/* ==== user-nav-bar ==== */}
         <OpneNav OpenMenu={OpenMenu} setOpenMenu={setOpenMenu} />
-        <MemberNav OpenMenu={OpenMenu} />
+        <MemberNav OpenMenu={OpenMenu} setOpenMenu={setOpenMenu} />
       </aside>
     </>
   )

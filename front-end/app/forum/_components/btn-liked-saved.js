@@ -4,6 +4,7 @@ import React, { useState, useEffect, act } from 'react'
 import { useAuth } from '../../../hook/use-auth'
 import { ClimbingBoxLoader } from 'react-spinners'
 import { useParams, useRouter } from 'next/navigation'
+import { UseDirectToLogin } from '../_hooks/useDirectToLogin'
 
 // FIXME 讚數是否前端修改即可？
 // FIXME 點擊後被告知確認，但取消後仍然加上資料
@@ -13,6 +14,7 @@ export default function ComponentsBtnLikedSaved({
   active = Boolean,
   count = '',
   postID = '',
+  commentID = '',
   // userID = '',
   mutate = () => {},
   color = '',
@@ -20,6 +22,8 @@ export default function ComponentsBtnLikedSaved({
   const router = useRouter()
   const { user } = useAuth()
   const userID = user.id
+  const isAuth = user.id !== 0
+  const handleDirectToLogin = UseDirectToLogin({ isAuth })
   const iconClass =
     type === 'liked'
       ? active
@@ -35,9 +39,8 @@ export default function ComponentsBtnLikedSaved({
         onClick={async (e) => {
           e.preventDefault()
           e.stopPropagation()
-          if (userID === 0) {
-            if (confirm('請先登入會員')) router.push('/member/login')
-          } else {
+          handleDirectToLogin('/forum')
+          if (isAuth) {
             const method = active ? 'DELETE' : 'POST'
             const res = await fetch(
               `http://localhost:3005/api/forum/liked-saved/${type}`,
@@ -47,14 +50,13 @@ export default function ComponentsBtnLikedSaved({
                   Accept: 'application/json',
                   'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ userID, postID }),
+                body: JSON.stringify({ userID, postID, commentID }),
               }
             )
             const json = await res.json()
             if (json.status === 'success') {
               mutate()
             }
-            console.log(userID)
           }
         }}
       >

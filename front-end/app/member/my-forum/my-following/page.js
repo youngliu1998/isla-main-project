@@ -13,40 +13,6 @@ import ComponentsButtonFollowingChat from '@/app/forum/_components/btn-following
 const fetcher = (url) => fetch(url).then((res) => res.json())
 
 export default function MyPostPage(props) {
-  // const router = useRouter()
-  // const userID = 1
-  // const fetcher = (...arg) => fetch(...arg).then((res) => res.json())
-  // const postsAPI = 'http://localhost:3005/api/forum/posts/my-following'
-  // const { data, isLoading, error, mutate } = useSWR(postsAPI, fetcher)
-  // if (error) {
-  //   console.log(error)
-  //   return (
-  //     <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center">
-  //       連線錯誤
-  //     </main>
-  //   )
-  // }
-  // // console.log(data)
-  // const posts = data?.status === 'success' ? data?.data : []
-  // if (isLoading) {
-  //   return (
-  //     <>
-  //       <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center">
-  //         isLoading
-  //       </main>
-  //     </>
-  //   )
-  // }
-  // if (posts.length === 0) {
-  //   return (
-  //     <>
-  //       <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center">
-  //         無文章資料
-  //       </main>
-  //     </>
-  //   )
-  // }
-
   const { data, isLoading, error, mutate } = useSWR(
     `http://localhost:3005/api/forum/posts/my-following`,
     fetcher
@@ -76,16 +42,14 @@ export default function MyPostPage(props) {
           <div className="my-following-main d-flex flex-lg-column flex-row flex-wrap gap-3">
             {followings.map((f, i) => {
               return (
-                <>
-                  <FollowingCard
-                    key={i}
-                    cardHref={`/forum/profile/${f.id}`}
-                    imgSrc={f.ava_url}
-                    imgAlt={f.nick}
-                    imgClassWidth="50"
-                    nick={f.nickname}
-                  />
-                </>
+                <FollowingCard
+                  key={i}
+                  cardHref={`/forum/profile/${f.id}`}
+                  imgSrc={f.ava_url}
+                  imgAlt={f.nick}
+                  imgClassWidth="50"
+                  nick={f.nickname}
+                />
               )
             })}
           </div>
