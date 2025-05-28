@@ -45,9 +45,23 @@ export function getMenuList(pathname) {
           icon: MessageCircleHeart,
         },
         {
-          href: '/tags',
+          href: '/coupons',
           label: '優惠卷管理',
           icon: WalletCards,
+          submenus: [
+            {
+              href: '/coupons/products',
+              label: '商品優惠券',
+            },
+            {
+              href: '/coupons/courses',
+              label: '課程優惠券',
+            },
+            {
+              href: '/coupon/new',
+              label: '新增優惠券',
+            },
+          ],
         },
       ],
     },
