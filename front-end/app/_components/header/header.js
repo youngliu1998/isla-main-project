@@ -37,7 +37,7 @@ export default function Header() {
   let loginAva = isAuth ? (
     <div
       className="
-    overflow-hidden rounded-pill"
+    overflow-hidden rounded-pill shadow"
     >
       <Image
         src={

@@ -38,9 +38,9 @@ router.get('/course', verifyToken, async (req, res) => {
 
   // set query here
   try {
-    const query = `SELECT * FROM course WHERE id=?`
+    const query = `SELECT * FROM users WHERE id =2`
     const course = await db
-      .execute(query, [id])
+      .execute(query)
       .then((data) => data[0][0])
       .catch((err) => {
         error = err
