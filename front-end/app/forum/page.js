@@ -2,8 +2,7 @@
 
 import ComponentsSearchBar from './_components/search-bar'
 import useSWR from 'swr'
-import { useState } from 'react'
-// import EditPostModal from './_components/edit-post-modal'
+import { useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import ComponentsPostCard from './_components/post-card'
 import Componentstab from '../_components/tab'
@@ -11,6 +10,11 @@ import ComponentsSearchButton from './_components/search-button'
 import { useAuth } from '../../hook/use-auth'
 import { useFilter } from './_context/filterContext'
 import EditPostModal from './_components/edit-post-modal'
+import PostLoader from './_components/post-loader'
+// import dynamic from 'next/dynamic'
+// const PostLoader = dynamic(() => import('./_components/post-loader'), {
+//   ssr: false,
+// })
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
 
@@ -60,40 +64,20 @@ export default function ForumPage() {
     ? `http://localhost:3005/api/forum/posts/home?${params}`
     : `http://localhost:3005/api/forum/posts/home`
   const { data, isLoading, error, mutate } = useSWR(postsAPI, fetcher)
-  // console.log(`http://localhost:3005/api/forum/posts/home?${params}`)
 
-  if (error) {
-    console.log(error)
-    return (
-      <>
-        <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center">
-          <div className="posts d-flex flex-column gap-3 w-100">
-            <div className="tabs d-flex">
-              <Componentstab
-                items={['熱門', '最新', '測試']}
-                height={'40'}
-                // setTab={setTab}
-                mutate={mutate}
-                handleTabChange={handleTabChange}
-              />
-              <ComponentsSearchButton />
-            </div>
-            連線錯誤
-          </div>
-        </main>
-        <ComponentsSearchBar
-          // setKeyword={setKeyword}
-          // setTab={setTab}
-          // setProductCate={setProductCate}
-          // setPostCate={setPostCate}
-          postCateItems={postCateItems}
-          productCateItems={productCateItems}
-          handleAsideSearchChange={handleAsideSearchChange}
-        />
-        <EditPostModal />
-      </>
-    )
-  }
+  // 新增 minimum loading 狀態
+  const [showLoading, setShowLoading] = useState(true)
+  useEffect(() => {
+    if (!isLoading) {
+      // 至少顯示 600ms
+      const timer = setTimeout(() => setShowLoading(false), 400)
+      return () => clearTimeout(timer)
+    } else {
+      setShowLoading(true)
+    }
+  }, [isLoading])
+
+  // 整理posts內的liked_user_ids和saved_user_ids
   let posts = data?.data
   if (Array.isArray(posts)) {
     posts = posts.map((post) => {
@@ -107,65 +91,6 @@ export default function ForumPage() {
           : [],
       }
     })
-  }
-  if (isLoading) {
-    return (
-      <>
-        <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center">
-          <div className="posts d-flex flex-column gap-3 w-100">
-            <div className="tabs d-flex">
-              <Componentstab
-                items={['熱門', '最新']}
-                height={'40'}
-                // setTab={setTab}
-                mutate={mutate}
-                handleTabChange={handleTabChange}
-              />
-              <ComponentsSearchButton />
-            </div>
-            loading
-          </div>
-        </main>
-        <ComponentsSearchBar
-          // setKeyword={setKeyword}
-          // setTab={setTab}
-          // setProductCate={setProductCate}
-          // setPostCate={setPostCate}
-          postCateItems={postCateItems}
-          productCateItems={productCateItems}
-          // handleAsideSearchChange={handleAsideSearchChange}
-        />
-        <EditPostModal />
-      </>
-    )
-  }
-  if (posts?.length === 0) {
-    return (
-      <>
-        <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center">
-          <div className="posts d-flex flex-column gap-3 w-100">
-            <div className="tabs d-flex">
-              <Componentstab
-                items={['熱門', '最新']}
-                height={'40'}
-                // setTab={setTab}
-                mutate={mutate}
-                handleTabChange={handleTabChange}
-              />
-              <ComponentsSearchButton />
-            </div>
-            查無文章，請稍後再試
-          </div>
-        </main>
-        <ComponentsSearchBar
-          postCateItems={postCateItems}
-          productCateItems={productCateItems}
-          // handleAsideSearchChange={handleAsideSearchChange}
-        />
-        <EditPostModal />
-        {/* <ComponentsSearchBar /> */}
-      </>
-    )
   }
 
   return (
@@ -181,31 +106,40 @@ export default function ForumPage() {
           <ComponentsSearchButton />
         </div>
         <div className="posts d-flex flex-column gap-3 pt-5 pb-5 mt-1 w-100 overflow-auto">
-          {posts?.map((post) => {
-            return (
-              <ComponentsPostCard
-                key={post.id}
-                postID={post.id}
-                postTitle={post.title}
-                postCateName={post.cate_name}
-                postContent={post.content}
-                authorID={post.user_id}
-                width="21"
-                src={post.user_img}
-                alt={post.user_name}
-                fontSize="14"
-                color="var(--sub-text)"
-                updatedAt={post.updated_at.toString()}
-                authorName={post.user_nick}
-                btnLikedActive={post.liked_user_ids.includes(userID)}
-                btnSavedActive={post.saved_user_ids.includes(userID)}
-                btnLikedCount={post.liked_user_ids.length}
-                btnSavedCount={post.saved_user_ids.length}
-                userID={userID}
-                mutate={mutate}
-              />
-            )
-          })}
+          {/* <PostLoader /> */}
+          {error
+            ? '連線錯誤'
+            : showLoading
+              ? Array(5)
+                  .fill(1)
+                  .map((v, i) => <PostLoader key={i} />)
+              : posts?.length === 0
+                ? '無文章資料'
+                : posts?.map((post) => {
+                    return (
+                      <ComponentsPostCard
+                        key={post.id}
+                        postID={post.id}
+                        postTitle={post.title}
+                        postCateName={post.cate_name}
+                        postContent={post.content}
+                        authorID={post.user_id}
+                        width="21"
+                        src={post.user_img}
+                        alt={post.user_name}
+                        fontSize="14"
+                        color="var(--sub-text)"
+                        updatedAt={post.updated_at.toString()}
+                        authorName={post.user_nick}
+                        btnLikedActive={post.liked_user_ids.includes(userID)}
+                        btnSavedActive={post.saved_user_ids.includes(userID)}
+                        btnLikedCount={post.liked_user_ids.length}
+                        btnSavedCount={post.saved_user_ids.length}
+                        userID={userID}
+                        mutate={mutate}
+                      />
+                    )
+                  })}
         </div>
       </main>
       <ComponentsSearchBar

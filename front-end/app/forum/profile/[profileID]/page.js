@@ -1,18 +1,14 @@
 'use client'
 
-import ComponentsSearchBar from '../../_components/search-bar'
-import Link from 'next/link'
 import ComponentsAvatar from '../../_components/avatar'
-import Image from 'next/image'
-import ComponentsAuthorInfo from '../../_components/author-info'
 import useSWR from 'swr'
 import { useEffect, useState, useRef } from 'react'
 import EditPostModal from '../../_components/edit-post-modal'
-import { ClientPageRoot } from 'next/dist/client/components/client-page'
 import { useParams, useRouter } from 'next/navigation'
-import ComponentsButtonFollowingChat from '../../_components/btn-following-chat'
 import ComponentsPostCard from '../../_components/post-card'
 import { useAuth } from '../../../../hook/use-auth'
+import ComponentsButtonFollowing from '../../_components/btn-follow'
+import ComponentsButtonChat from '../../_components/btn-chat'
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
 
@@ -22,7 +18,9 @@ export default function ForumPage(props) {
 
   const authorID = useParams().profileID
   const { user } = useAuth()
-  const userID = user.id
+  const userID = parseInt(user.id, 10)
+  const followID = parseInt(useParams().profileID, 10)
+  const isOwnProfile = userID === followID
 
   // fetch每篇文章的資料
   const postsAPI = `http://localhost:3005/api/forum/posts/profile?authorID=${authorID}`
@@ -61,9 +59,9 @@ export default function ForumPage(props) {
       <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center">
         {/* author-card-sm */}
         <div className="author-card d-block d-xl-none position-relative px-0 mb-3 w-100">
-          <aside className="aside d-flex flex-column gap-3 position-sticky">
-            <div className="d-flex flex-wrap justify-content-center align-items-center gap-3 px-2">
-              <div className="author-info d-flex align-items-center gap-2 me-auto">
+          <aside className="aside d-flex flex-column flex-md-row gap-3 position-sticky">
+            <div className="d-flex flex-row flex-wrap justify-content-center align-items-center gap-3 px-2 me-md-auto">
+              <div className="author-info d-flex align-items-center gap-2 me-sm-auto">
                 <ComponentsAvatar
                   src={posts[0].user_img}
                   alt={posts[0].user_nick}
@@ -82,11 +80,29 @@ export default function ForumPage(props) {
                 </div>
               </div>
             </div>
-            <ComponentsButtonFollowingChat />
+            {!isOwnProfile ? (
+              <div className="following-button d-flex gap-2 my-auto flex-grow-0 fs14">
+                <ComponentsButtonFollowing followID={followID} type="follow" />
+                <ComponentsButtonChat />
+              </div>
+            ) : (
+              <button
+                className={`button-triggerable default-sub px-3 py-1 my-auto  color-isla-white rounded-3 text-nowrap fw-medium fs14`}
+                onClick={() => {
+                  router.push('/member/profile')
+                }}
+              >
+                編輯個人資料
+                <i className="bi bi-arrow-up-right ms-2"></i>
+              </button>
+            )}
           </aside>
         </div>
         <div className="posts d-flex flex-column gap-3 w-100">
           {posts.map((post) => {
+            {
+              /* FIXME 無法點擊愛心 */
+            }
             return (
               <ComponentsPostCard
                 key={post.id}
@@ -125,18 +141,37 @@ export default function ForumPage(props) {
               />
               <span className="fs24 fw-medium">{posts[0].user_nick}</span>
             </div>
-            <div className="d-flex justify-content-end gap-3 text-nowrap">
-              <div className="d-flex align-items-center gap-2 w-50">
+            <div className="d-flex w-100 text-nowrap">
+              <div className="d-flex flex-column align-items-center justify-content-center w-50">
                 <span className="fs24 main-color">430</span>
                 <span className="fs14 main-text-color">粉絲</span>
               </div>
-              <div className="d-flex align-items-center gap-2 w-50">
+              <div className="d-flex flex-column align-items-center justify-content-center w-50">
                 <span className="fs24 main-color">45</span>
                 <span className="fs14 main-text-color">文章</span>
               </div>
             </div>
           </div>
-          <ComponentsButtonFollowingChat />
+          {!isOwnProfile ? (
+            <div className="following-button d-flex gap-2 w-100 fs14">
+              <ComponentsButtonFollowing
+                followID={followID}
+                type="follow"
+                followMutate={mutate}
+              />
+              <ComponentsButtonChat />
+            </div>
+          ) : (
+            <button
+              className={`button-triggerable default-sub px-3 py-1 my-auto  color-isla-white rounded-3 text-nowrap fw-medium fs14`}
+              onClick={() => {
+                router.push('/member/profile')
+              }}
+            >
+              編輯個人資料
+              <i className="bi bi-arrow-up-right ms-2"></i>
+            </button>
+          )}
         </aside>
       </div>
       <EditPostModal />
