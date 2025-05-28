@@ -293,7 +293,9 @@ export async function getProductDetail(productId) {
       products.description, 
       products.usage_instructions,
       products.base_price, 
+      products.sale_start_date,
       products.sale_price, 
+      products.sale_end_date,
       products.status,
       brands.brand_id, 
       brands.name AS brand_name,
@@ -346,18 +348,6 @@ export async function getProductDetail(productId) {
   `,
     [productId]
   )
-
-  // // 成分
-  // const [ingredients] = await db.query(
-  //   `
-  //   SELECT ingredients.ingredient_id, ingredients.name, ingredients.is_sensitive, ingredients.warning_message
-  //   FROM product_ingredients
-  //   JOIN ingredients ON product_ingredients.ingredient_id = ingredients.ingredient_id
-  //   WHERE product_ingredients.product_id = ?
-  // `,
-  //   [productId]
-  // )
-
   // 平均評分
   const [avgResult] = await db.query(
     `
@@ -383,6 +373,10 @@ export async function getProductDetail(productId) {
     name: product.name,
     description: product.description,
     usage_instructions: product.usage_instructions,
+    base_price: product.base_price,
+    sale_start_date: product.sale_start_date,
+    sale_price: product.sale_price,
+    sale_end_date: product.sale_end_date,
     final_price: product.final_price,
     status: product.status,
     brand: {
@@ -556,6 +550,153 @@ export async function saveOrUpdateReview({
     console.error('saveOrUpdateReview error:', error)
     await conn.rollback()
     throw error
+  } finally {
+    conn.release()
+  }
+}
+
+//整合資料for後台編輯器
+export async function getProductById(productId) {
+  try {
+    const product = await getProductDetail(productId)
+    const ingredients = await getProductIngredient(productId)
+
+    return {
+      product,
+      ingredients,
+    }
+  } catch (error) {
+    console.error(error)
+    if (error.message === '找不到商品') {
+      return res.status(404).json({ success: false, message: error.message })
+    }
+    return res.status(500).json({ success: false, message: '伺服器錯誤' })
+  }
+}
+
+// PUT /products/:id
+export async function updateProduct(req, res) {
+  const productId = parseInt(req.params.id, 10)
+  const {
+    name,
+    description,
+    usage_instructions,
+    ingredients_text,
+    brand_id,
+    category_id,
+    base_price,
+    sale_price,
+    sale_start_date,
+    sale_end_date,
+    status,
+    is_featured,
+    color_stocks = [],
+    images = [],
+  } = req.body
+
+  const conn = await db.getConnection()
+  try {
+    await conn.beginTransaction()
+
+    await conn.query(
+      `
+      UPDATE products SET
+        name = ?, description = ?, usage_instructions = ?, ingredients_text = ?,
+        brand_id = ?, category_id = ?, base_price = ?, sale_price = ?, 
+        sale_start_date = ?, sale_end_date = ?, status = ?, is_featured = ?
+      WHERE product_id = ?
+    `,
+      [
+        name,
+        description || '',
+        usage_instructions || '',
+        ingredients_text || '',
+        brand_id || null,
+        category_id || null,
+        base_price,
+        sale_price || null,
+        sale_start_date || null,
+        sale_end_date || null,
+        status,
+        is_featured ? 1 : 0,
+        productId,
+      ]
+    )
+
+    // color_stocks upsert
+    for (const cs of color_stocks) {
+      const [existing] = await conn.query(
+        `
+        SELECT 1 FROM product_color_stocks WHERE product_id = ? AND color_id = ?
+      `,
+        [productId, cs.color_id]
+      )
+
+      if (existing.length > 0) {
+        await conn.query(
+          `
+          UPDATE product_color_stocks SET
+            price = ?, stock_quantity = ?, image_url = ?, status = ?
+          WHERE product_id = ? AND color_id = ?
+        `,
+          [
+            cs.price || null,
+            cs.stock_quantity || 0,
+            cs.image_url || null,
+            cs.status || 'in_stock',
+            productId,
+            cs.color_id,
+          ]
+        )
+      } else {
+        await conn.query(
+          `
+          INSERT INTO product_color_stocks 
+            (product_id, color_id, price, stock_quantity, image_url, status)
+          VALUES (?, ?, ?, ?, ?, ?)
+        `,
+          [
+            productId,
+            cs.color_id,
+            cs.price || null,
+            cs.stock_quantity || 0,
+            cs.image_url || null,
+            cs.status || 'in_stock',
+          ]
+        )
+      }
+    }
+
+    // 清除原本圖片
+    await conn.query(`DELETE FROM product_images WHERE product_id = ?`, [
+      productId,
+    ])
+
+    // 插入新圖片
+    for (const img of images) {
+      await conn.query(
+        `
+        INSERT INTO product_images 
+          (product_id, stock_id, image_url, alt_text, sort_order, is_primary)
+        VALUES (?, ?, ?, ?, ?, ?)
+      `,
+        [
+          productId,
+          img.stock_id || null,
+          img.image_url,
+          img.alt_text || '',
+          img.sort_order || 0,
+          img.is_primary ? 1 : 0,
+        ]
+      )
+    }
+
+    await conn.commit()
+    res.json({ success: true, message: '商品更新成功' })
+  } catch (err) {
+    await conn.rollback()
+    console.error('更新商品失敗', err)
+    res.status(500).json({ success: false, message: '伺服器錯誤' })
   } finally {
     conn.release()
   }

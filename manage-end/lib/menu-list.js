@@ -31,24 +31,12 @@ export function getMenuList(pathname) {
               label: '商品列表',
             },
             {
-              href: '/product/new',
-              label: '新增商品',
-            },
-            {
-              href: '/product/brands',
-              label: '品牌管理',
-            },
-            {
               href: '/product/categories',
               label: '分類管理',
             },
             {
               href: '/product/tags',
               label: '標籤管理',
-            },
-            {
-              href: '/product/colors',
-              label: '顏色管理?',
             },
           ],
         },
