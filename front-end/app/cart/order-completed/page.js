@@ -3,6 +3,7 @@
 import StepProgress from '../_component/step-progress/step-progress'
 import { Accordion, Spinner } from 'react-bootstrap'
 import { useRouter } from 'next/navigation'
+import { useCartContext } from '../context/cart-context'
 import cartApi from '../utils/axios'
 import { useState, useEffect } from 'react'
 
@@ -14,6 +15,7 @@ function formatCurrency(num) {
 }
 
 export default function OrderCompletedPage() {
+  const { setCartItems } = useCartContext()
   const [orderData, setOrderData] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
@@ -50,7 +52,8 @@ export default function OrderCompletedPage() {
     // 清除 localStorage
     localStorage.removeItem('orderSummary')
     localStorage.removeItem('cartItems')
-  }, [orderNumber])
+    setCartItems([])
+  }, [orderNumber, setCartItems])
 
   if (isLoading) {
     return (
@@ -139,8 +142,8 @@ export default function OrderCompletedPage() {
                   <p>收件地址：{recipient.address}</p>
                 ) : (
                   <>
-                    <p>取貨門市：{recipient.name}</p>
-                    <p>門市地址：{recipient.address}</p>
+                    <p>取貨門市：{orderData.pickupStoreName || '—'}</p>
+                    <p>門市地址：{orderData.pickupStoreAddress || '—'}</p>
                   </>
                 )}
               </Accordion.Body>

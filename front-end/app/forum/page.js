@@ -22,9 +22,9 @@ export default function ForumPage() {
   const [asideParams, setAsideParams] = useState(new URLSearchParams())
   const { productCateItems, postCateItems } = useFilter()
 
-  const handleTabChange = (newTab) => {
+  const handleTabChange = (tabNumber) => {
     const params = new URLSearchParams()
-    params.append('tab', newTab)
+    params.append('tab', tabNumber)
     setTabParams(params)
     const mergedParams = new URLSearchParams([
       ...asideParams.entries(),
@@ -60,7 +60,7 @@ export default function ForumPage() {
     ? `http://localhost:3005/api/forum/posts/home?${params}`
     : `http://localhost:3005/api/forum/posts/home`
   const { data, isLoading, error, mutate } = useSWR(postsAPI, fetcher)
-  console.log(`http://localhost:3005/api/forum/posts/home?${params}`)
+  // console.log(`http://localhost:3005/api/forum/posts/home?${params}`)
 
   if (error) {
     console.log(error)

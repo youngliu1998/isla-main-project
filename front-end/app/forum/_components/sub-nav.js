@@ -8,6 +8,8 @@ import { useEffect, useRef, useState } from 'react'
 import ComponentsAuthorInfo from './author-info'
 import EditPostModal from './edit-post-modal'
 import Ripples from 'react-ripples'
+import { UseDirectToLogin } from '../_hooks/useDirectToLogin'
+import { useAuth } from '../../../hook/use-auth'
 
 export default function ComponentsSubNav() {
   const modalRef = useRef()
@@ -28,6 +30,8 @@ export default function ComponentsSubNav() {
   }, [])
 
   const url = usePathname()
+  const isAuth = useAuth().user.id !== 0
+  const handleDirectToLogin = UseDirectToLogin({ isAuth })
 
   return (
     <>
@@ -39,10 +43,14 @@ export default function ComponentsSubNav() {
                 href="/"
                 className={`sub-nav-item d-flex px-3 py-3 gap-2 rounded-3 text-decoration-none fw-medium main-color`}
                 type="button"
-                data-bs-toggle="modal"
-                data-bs-target="#editPostModal"
+                data-bs-toggle={isAuth && 'modal'}
+                data-bs-target={isAuth && '#editPostModal'}
                 onMouseUp={(e) => {
                   e.currentTarget.blur()
+                }}
+                onClick={(e) => {
+                  !isAuth && e.preventDefault()
+                  handleDirectToLogin('/forum')
                 }}
               >
                 <i className="bi bi-plus-lg" />
@@ -70,6 +78,10 @@ export default function ComponentsSubNav() {
                 onMouseUp={(e) => {
                   e.currentTarget.blur()
                 }}
+                onClick={(e) => {
+                  !isAuth && e.preventDefault()
+                  handleDirectToLogin('/forum')
+                }}
               >
                 <i
                   className={`bi ${url === '/forum/chat' ? 'bi-chat-dots-fill' : 'bi-chat-dots'}`}
@@ -77,78 +89,98 @@ export default function ComponentsSubNav() {
                 <span className="">我的訊息</span>
               </Link>
             </Ripples>
+            {/* FIXME 改成modal提示後，確認ripple是否還慢半拍 */}
             <Ripples className="rounded-3 d-block">
-              <div
-                className={`sub-nav-item d-flex px-3 py-3 gap-2 rounded-3 text-decoration-none fw-medium main-text-color fs16`}
+              <button
+                className={`sub-nav-item button-clear d-flex px-3 py-3 gap-2 w-100 rounded-3 text-decoration-none fw-medium main-text-color fs16`}
                 data-bs-toggle="collapse"
                 data-bs-target="#panelsStayOpen-collapseOne"
                 aria-expanded="true"
                 aria-controls="panelsStayOpen-collapseOne"
-                role="button"
+                onMouseUp={(e) => {
+                  e.currentTarget.blur()
+                }}
+                onClick={(e) => {
+                  !isAuth && e.preventDefault()
+                  handleDirectToLogin('/forum')
+                }}
               >
                 <i className="bi bi-people" />
                 <span className="">追蹤對象</span>
-              </div>
+              </button>
             </Ripples>
-            <div
-              id="panelsStayOpen-collapseOne"
-              className="accordion-collapse collapse show"
-            >
-              <div className="followings fs14 d-flex flex-column px-3 py-1 gap-2">
-                <Link
-                  href={`/forum/profile/1`}
-                  className="followings-link main-text-color py-1"
-                >
-                  <ComponentsAuthorInfo
-                    authorID="1"
-                    width="20"
-                    src="/default-avatar.jpg"
-                    alt="userName"
-                    fontSize="14"
-                    color="var(--main-text)"
-                    authorName="lilly"
-                  />
-                </Link>
-                <Link
-                  href={`/forum/profile/userID`}
-                  className="followings-link main-text-color py-1"
-                >
-                  <ComponentsAuthorInfo
-                    authorID="2"
-                    width="20"
-                    src="/default-avatar.jpg"
-                    alt="userName"
-                    fontSize="14"
-                    color="var(--main-text)"
-                    authorName="Meggy"
-                  />
-                </Link>
-                <Link
-                  href={`/forum/profile/userID`}
-                  className="followings-link main-text-color py-1"
-                >
-                  <ComponentsAuthorInfo
-                    authorID="3"
-                    width="20"
-                    src="/default-avatar.jpg"
-                    alt="userName"
-                    fontSize="14"
-                    color="var(--main-text)"
-                    authorName="Chloe"
-                  />
-                </Link>
-                <Link
-                  href={'/member/my-forum/my-following'}
-                  className="more-followings-link main-color text-center rounded-pill px-0 py-1 w-auto"
-                >
-                  查看全部<i className="bi bi-arrow-up-right"></i>
-                </Link>
+            {isAuth && (
+              <div
+                id="panelsStayOpen-collapseOne"
+                className="accordion-collapse collapse show"
+              >
+                <div className="followings fs14 d-flex flex-column px-3 py-1 gap-2">
+                  <Link
+                    href={`/forum/profile/1`}
+                    className="followings-link main-text-color py-1"
+                  >
+                    <ComponentsAuthorInfo
+                      authorID="1"
+                      width="20"
+                      src="/default-avatar.jpg"
+                      alt="userName"
+                      fontSize="14"
+                      color="var(--main-text)"
+                      authorName="lilly"
+                    />
+                  </Link>
+                  <Link
+                    href={`/forum/profile/userID`}
+                    className="followings-link main-text-color py-1"
+                  >
+                    <ComponentsAuthorInfo
+                      authorID="2"
+                      width="20"
+                      src="/default-avatar.jpg"
+                      alt="userName"
+                      fontSize="14"
+                      color="var(--main-text)"
+                      authorName="Meggy"
+                    />
+                  </Link>
+                  <Link
+                    href={`/forum/profile/userID`}
+                    className="followings-link main-text-color py-1"
+                  >
+                    <ComponentsAuthorInfo
+                      authorID="3"
+                      width="20"
+                      src="/default-avatar.jpg"
+                      alt="userName"
+                      fontSize="14"
+                      color="var(--main-text)"
+                      authorName="Chloe"
+                    />
+                  </Link>
+                  <Link
+                    href={'/member/my-forum/my-following'}
+                    className="more-followings-link main-color text-center rounded-pill px-0 py-1 w-auto"
+                    onClick={(e) => {
+                      if (!isAuth) e.preventDefault()
+                      handleDirectToLogin('/member/my-forum/my-following')
+                    }}
+                  >
+                    查看全部<i className="bi bi-arrow-up-right"></i>
+                  </Link>
+                </div>
               </div>
-            </div>
+            )}
             <Ripples className="rounded-3 d-block">
               <Link
                 href="/member/my-forum/my-post"
                 className={`sub-nav-item d-flex px-3 py-3 gap-2 rounded-3 text-decoration-none fw-medium main-text-color`}
+                onMouseUp={(e) => {
+                  e.currentTarget.blur()
+                }}
+                onClick={(e) => {
+                  !isAuth && e.preventDefault()
+                  handleDirectToLogin('/member/my-forum/my-post')
+                }}
               >
                 <i className="bi bi-file-earmark-text" />
                 <span className="">我的文章</span>
@@ -159,6 +191,13 @@ export default function ComponentsSubNav() {
               <Link
                 href="/member/my-forum/saved-post"
                 className={`sub-nav-item d-flex px-3 py-3 gap-2 rounded-3 text-decoration-none fw-medium main-text-color`}
+                onMouseUp={(e) => {
+                  e.currentTarget.blur()
+                }}
+                onClick={(e) => {
+                  !isAuth && e.preventDefault()
+                  handleDirectToLogin('/member/my-forum/saved-post')
+                }}
               >
                 <i className="bi bi-bookmark" />
                 <span className="">文章收藏</span>
@@ -194,6 +233,10 @@ export default function ComponentsSubNav() {
               onMouseUp={(e) => {
                 e.currentTarget.blur()
               }}
+              onClick={(e) => {
+                !isAuth && e.preventDefault()
+                handleDirectToLogin('/forum')
+              }}
             >
               <i
                 className={`bi ${url === '/forum' ? 'bi-house-door-fill' : 'bi-house-door'}`}
@@ -208,6 +251,10 @@ export default function ComponentsSubNav() {
               onMouseUp={(e) => {
                 e.currentTarget.blur()
               }}
+              onClick={(e) => {
+                !isAuth && e.preventDefault()
+                handleDirectToLogin('/forum/chat')
+              }}
             >
               <i
                 className={`bi ${url.includes('/forum/chat') ? 'bi-chat-dots-fill' : 'bi-chat-dots'}`}
@@ -219,6 +266,13 @@ export default function ComponentsSubNav() {
               data-bs-toggle="tooltip"
               data-bs-placement="right"
               title="追蹤對象"
+              onMouseUp={(e) => {
+                e.currentTarget.blur()
+              }}
+              onClick={(e) => {
+                !isAuth && e.preventDefault()
+                handleDirectToLogin('/member/my-forum/my-following')
+              }}
             >
               <i className="bi bi-people" />
             </Link>
@@ -228,6 +282,13 @@ export default function ComponentsSubNav() {
               data-bs-toggle="tooltip"
               data-bs-placement="right"
               title="我的文章"
+              onMouseUp={(e) => {
+                e.currentTarget.blur()
+              }}
+              onClick={(e) => {
+                !isAuth && e.preventDefault()
+                handleDirectToLogin('/member/my-forum/my-post')
+              }}
             >
               <i className="bi bi-file-earmark-text" />
             </Link>
@@ -237,6 +298,13 @@ export default function ComponentsSubNav() {
               data-bs-toggle="tooltip"
               data-bs-placement="right"
               title="文章收藏"
+              onMouseUp={(e) => {
+                e.currentTarget.blur()
+              }}
+              onClick={(e) => {
+                !isAuth && e.preventDefault()
+                handleDirectToLogin('/member/my-forum/saved-post')
+              }}
             >
               <i className="bi bi-bookmark" />
             </Link>
