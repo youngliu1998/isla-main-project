@@ -68,7 +68,7 @@ router.post('/', verifyToken, async (req, res) => {
 
       await connection.execute(
         `INSERT INTO order_items 
-          (order_id, product_id, course_id, course_experience_id, quantity, price, item_type )
+          (order_id, product_id, course_id, course_experience_id, quantity, price, item_type)
           VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [
           orderId,
@@ -78,8 +78,11 @@ router.post('/', verifyToken, async (req, res) => {
           item.quantity,
           price,
           item_type,
+<<<<<<< HEAD
           // pickup_store_name,
           // pickup_store_address,
+=======
+>>>>>>> 4a83346 (cart/0529/fix cart-icon bug)
         ]
       )
     }

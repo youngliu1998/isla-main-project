@@ -64,112 +64,6 @@ export default function PaymentPage() {
   // 綠界付款流程
   const [isLoading, setIsLoading] = useState(false)
 
-  // const handleCheckout = async () => {
-  //   const cartItems = orderData?.cartItems || []
-
-  //   if (cartItems.length === 0) {
-  //     toast.error('購物車是空的喔！')
-  //     return
-  //   }
-
-  //   // 驗證基本資料
-  //   if (shippingInfo.shippingMethod === '宅配') {
-  //     if (
-  //       !shippingInfo.recipientName ||
-  //       !shippingInfo.recipientPhone ||
-  //       !shippingInfo.recipientAddress
-  //     ) {
-  //       toast.error('請填寫完整宅配收件人資料')
-  //       return
-  //     }
-  //   } else if (shippingInfo.shippingMethod === '超商取貨') {
-  //     if (!shippingInfo.pickupStoreName || !shippingInfo.pickupStoreAddress) {
-  //       toast.error('請選擇超商門市')
-  //       return
-  //     }
-  //   }
-
-  //   setIsLoading(true)
-
-  //   try {
-  //     // 組裝優惠券資料
-  //     const selecProdCoup = orderData?.selecProdCoup || null
-  //     const selecCourCoup = orderData?.selecCourCoup || null
-  //     const selecGloCoup = orderData?.selecGloCoup || null
-  //     const discountTotal = orderData?.discountTotal || 0
-  //     // 建立訂單送進資料庫
-  //     const res = await cartApi.post('/order/create', {
-  //       cartItems,
-  //       discountTotal,
-  //       selecProdCoup,
-  //       selecCourCoup,
-  //       selecGloCoup,
-  //       paymentMethod: paymentMethod,
-  //       // 配送資訊
-  //       shippingMethod: shippingInfo.shippingMethod,
-  //       shippingAddress: shippingInfo.recipientAddress,
-  //       recipientName: shippingInfo.recipientName,
-  //       recipientPhone: shippingInfo.recipientPhone,
-  //       pickupStoreName: shippingInfo.pickupStoreName,
-  //       pickupStoreAddress: shippingInfo.pickupStoreAddress,
-  //     })
-
-  //     const { orderId, orderNumber, totalAmount } = res.data
-  //     if (!orderNumber) {
-  //       toast.error('訂單建立失敗，無法取得訂單編號')
-  //       return
-  //     }
-  //     // 更新購物車：移除已結帳商品，保留未結帳的
-  //     const allItems = JSON.parse(localStorage.getItem('cartItems')) || []
-  //     const purchasedIds = cartItems.map((item) => item.id)
-  //     const remaining = allItems.filter(
-  //       (item) => !purchasedIds.includes(item.id)
-  //     )
-
-  //     setCartItems(remaining)
-  //     localStorage.setItem('cartItems', JSON.stringify(remaining))
-
-  //     // 把訂單編號存起來（之後 order-completed 頁面可以用）
-  //     localStorage.setItem('lastOrderNumber', orderNumber)
-
-  //     // 判斷是否要導向綠界
-  //     if (paymentMethod === '信用卡') {
-  //       const items = cartItems.map((item) => ({
-  //         name: item.name,
-  //         quantity: item.quantity,
-  //       }))
-
-  //       const ecpayRes = await cartApi.post('cart-items/ecpay', {
-  //         amount: totalAmount,
-  //         items,
-  //         orderNumber,
-  //       })
-
-  //       const html = ecpayRes.data
-
-  //       // 插入表單並自動送出
-  //       const container = document.querySelector('#ecpay-form-container')
-  //       if (!container) {
-  //         toast.error('找不到表單容器')
-  //         return
-  //       }
-  //       container.innerHTML = html
-  //       //手動送出綠界表單
-  //       const form = container.querySelector('form')
-  //       if (form) {
-  //         form.submit()
-  //       } else {
-  //         toast.error('綠界表單產生失敗')
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.error(error)
-  //     toast.error('發生錯誤，無法導向綠界付款')
-  //   } finally {
-  //     setIsLoading(false)
-  //   }
-  // }
-
   const handleCheckout = async () => {
     const cartItems = orderData?.cartItems || []
 
@@ -269,13 +163,16 @@ export default function PaymentPage() {
         (item) => !purchasedIds.includes(item.id)
       )
 
+      // 呼叫後端清空購物車
+      await cartApi.post('/cart-items/clear')
+      // 重建前端購物車資料
       setCartItems(remaining)
       localStorage.setItem('cartItems', JSON.stringify(remaining))
 
       // 存訂單編號
       localStorage.setItem('lastOrderNumber', orderNumber)
 
-      // ✅ 如果是綠界才導轉跳
+      // 如果是綠界才導轉跳
       if (paymentMethod === '信用卡') {
         const items = cartItems.map((item) => ({
           name: item.name,

@@ -53,6 +53,8 @@ export default function Header() {
   ) : (
     <i className="bi bi-person-circle" />
   )
+  console.log('🛒 Header totalCount:', totalCount)
+
   // ==== END 使用者按鈕路徑、圖像定義 ====
   if (
     pathname.includes('login') ||
