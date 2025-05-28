@@ -3,8 +3,10 @@
 import styles from './order-summary.module.scss'
 import Link from 'next/link'
 import { Collapse } from 'react-bootstrap'
-// import { useCartContext } from '../../context/cart-context'
 import { usePathname } from 'next/navigation'
+import { filterGlobalCoupons } from '../../utils/coupon-helper'
+import { BRAND_MAP } from '../../utils/coupon-helper'
+
 import { useState } from 'react'
 
 //數字轉千分位，防止 null/undefined
@@ -20,12 +22,14 @@ export default function OrderSummary({
   selecCourCoup,
   selecGloCoup,
   setSelecGloCoup,
-  filterGloCoups = [],
   onCheckout,
   isLoading = false,
-  // filterCourCoups = [],
-  // filterProdCoups = [],
+  universalCoupon = [],
+  shippingCoupons = [],
 }) {
+  // console.log('🧾 全站券 filterGloCoups:', universalCoupon)
+  // console.log('🧾 免運券 shippingCoupons:', shippingCoupons)
+
   const [openProdList, setOpenProdList] = useState(false)
   const [openCourList, setOpenCourList] = useState(false)
   const pathname = usePathname()
@@ -46,7 +50,7 @@ export default function OrderSummary({
   const courseTotal = totalByCategory(courseItems)
   const addOnTotal = totalByCategory(addOnItems) //目前沒有做加購
 
-  const shippingBase = 100
+  const shippingBase = 200
   // 優惠券折抵金額判斷
   let globalDiscount = 0
   let globalCouponTitle = ''
@@ -82,20 +86,14 @@ export default function OrderSummary({
     return 0
   }
 
-  console.log('makeupCoupon:', makeupCoupon)
-  console.log('courseCoupon:', courseCoupon)
+  // console.log('makeupCoupon:', makeupCoupon)
+  // console.log('courseCoupon:', courseCoupon)
 
   const makeupDiscount = getDiscount(makeupCoupon, makeupTotal)
   const courseDiscount = getDiscount(courseCoupon, courseTotal)
   const totalDiscount = makeupDiscount + courseDiscount
   const subtotal = makeupTotal + courseTotal + addOnTotal + shippingBase
   const finalTotal = subtotal - totalDiscount - globalDiscount
-  console.log(
-    `finalTotal：${finalTotal}`,
-    `subtotal：${subtotal}`,
-    `totalDiscount：${totalDiscount}`,
-    `globalDiscount：${globalDiscount}`
-  )
 
   return (
     <div className={`${styles.orderSummary} card-style mb-3`}>
@@ -221,36 +219,42 @@ export default function OrderSummary({
         ></div>
         <span className="badge bg-elem">700 ml</span>
       </div> */}
-      {filterGloCoups.length > 0 && (
+      {shippingCoupons.length > 0 ? (
         <div className="mb-3">
-          <label htmlFor="global-coupon-select" className="form-label fw-bold">
-            選擇全站優惠券
+          <label
+            htmlFor="global-coupon-select"
+            className="form-label text-subtext"
+          >
+            選擇運費折抵券
           </label>
           <select
             id="global-coupon-select"
-            className="form-select"
+            className={styles.customSelect}
             value={selecGloCoup?.id || ''}
             onChange={(e) => {
-              const selected = filterGloCoups.find(
+              const selected = shippingCoupons.find(
                 (c) => c.id === Number(e.target.value)
               )
               setSelecGloCoup(selected || null)
             }}
           >
             <option value="">請選擇優惠券</option>
-            {filterGloCoups.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.title} {c.condition}
+            {shippingCoupons.map((c) => (
+              <option key={c.id} value={c.id} disabled={!c.is_applicable}>
+                {c.title}（{BRAND_MAP[c.brand_id] || '未知品牌'} /
+                {c.is_applicable ? '可用' : c.block_reason}）
               </option>
             ))}
           </select>
         </div>
-      )}
+      ) : pathname === '/cart' ? (
+        <p className="text-muted mb-3">目前無可用的全站優惠券</p>
+      ) : null}
 
       {/* 運費與優惠 */}
       <div className="d-flex justify-content-between text-subtext mb-2">
         <p>運費</p>
-        <p>NT$100</p>
+        <p>NT$200</p>
       </div>
       {selecGloCoup && (
         <div className="d-flex justify-content-between text-secondary mb-2">

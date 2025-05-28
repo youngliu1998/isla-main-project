@@ -35,6 +35,12 @@ export function CartProvider({ children }) {
     }
   }, [isAuth, user.id]) // 只要是登入狀態或id變化就執行
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('cartItems', JSON.stringify(cartItems))
+    }
+  }, [cartItems])
+
   return (
     <CartContext.Provider
       value={{ cartItems, setCartItems, totalCount, orderData, setOrderData }}

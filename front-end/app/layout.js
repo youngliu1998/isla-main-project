@@ -38,8 +38,8 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
       </head>
-      <Provider>
-        <body>
+      <body>
+        <Provider>
           <Header />
           <ToastContainer
             position="top-right"
@@ -56,8 +56,10 @@ export default function RootLayout({ children }) {
           />
           <div style={{ marginTop: '80px' }}>{children}</div>
           <Footer />
-        </body>
-      </Provider>
+          {/* <ToastContainer /> */}
+          <Chat />
+        </Provider>
+      </body>
     </html>
   )
 }

@@ -37,7 +37,7 @@ export default function Header() {
   let loginAva = isAuth ? (
     <div
       className="
-    overflow-hidden rounded-pill"
+    overflow-hidden rounded-pill shadow"
     >
       <Image
         src={
@@ -53,6 +53,8 @@ export default function Header() {
   ) : (
     <i className="bi bi-person-circle" />
   )
+  console.log('🛒 Header totalCount:', totalCount)
+
   // ==== END 使用者按鈕路徑、圖像定義 ====
   if (
     pathname.includes('login') ||

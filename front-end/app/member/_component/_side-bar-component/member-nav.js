@@ -2,7 +2,10 @@
 
 import Link from 'next/link'
 
-export default function MemberNav({ OpenMenu = false }) {
+export default function MemberNav({
+  OpenMenu = false,
+  setOpenMenu = () => {},
+}) {
   let open = ''
   if (OpenMenu) {
     open = 'open'
@@ -11,7 +14,15 @@ export default function MemberNav({ OpenMenu = false }) {
   }
   return (
     <>
-      <div className={'user-nav' + ' ' + open}>
+      <button
+        className={'user-nav' + ' ' + open}
+        onClick={(e) => {
+          e.preventDefault()
+          if (e.target.matches('li')) {
+            setOpenMenu(false)
+          }
+        }}
+      >
         <ul>
           <li className="title">個人</li>
           <Link href="/member/profile">
@@ -54,7 +65,7 @@ export default function MemberNav({ OpenMenu = false }) {
             <li>收藏文章</li>
           </Link>
         </ul>
-      </div>
+      </button>
     </>
   )
 }

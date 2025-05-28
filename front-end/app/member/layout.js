@@ -8,7 +8,7 @@ export default function MemberLayout({ children }) {
           {/* siderBar also check is there user login */}
           <SideBar />
           {/* main-content */}
-          <div className="col">{children}</div>
+          <div className="col col-lg-9">{children}</div>
         </div>
       </div>
     </>

@@ -18,7 +18,7 @@ import { useRouter } from 'next/navigation'
 export default function PaymentPage() {
   const router = useRouter()
   const isMobile = useIsMobile()
-  const { orderData, setOrderData } = useCartContext()
+  const { orderData, setOrderData, setCartItems } = useCartContext()
   const { user } = useAuth()
 
   const defaultMemberInfo = {
@@ -72,7 +72,7 @@ export default function PaymentPage() {
       return
     }
 
-    // 驗證基本資料
+    // 驗證收件資料
     if (shippingInfo.shippingMethod === '宅配') {
       if (
         !shippingInfo.recipientName ||
@@ -96,16 +96,52 @@ export default function PaymentPage() {
       const selecProdCoup = orderData?.selecProdCoup || null
       const selecCourCoup = orderData?.selecCourCoup || null
       const selecGloCoup = orderData?.selecGloCoup || null
-      const discountTotal = orderData?.discountTotal || 0
+
+      // 計算金額
+      const makeupItems = cartItems.filter(
+        (item) => item.item_type === 'product'
+      )
+      const courseItems = cartItems.filter(
+        (item) => item.item_type === 'course' || item.item_type === 'experience'
+      )
+
+      const totalByCategory = (items) =>
+        items.reduce((sum, item) => {
+          const price = parseInt(item.sale_price ?? item.base_price)
+          return sum + price * item.quantity
+        }, 0)
+
+      const makeupTotal = totalByCategory(makeupItems)
+      const courseTotal = totalByCategory(courseItems)
+      const subtotal = makeupTotal + courseTotal + 200 // 運費
+
+      const getDiscount = (coupon, base) => {
+        if (!coupon) return 0
+        if (coupon.discount_rate && Number(coupon.discount_rate) < 1) {
+          return Math.round(base * (1 - Number(coupon.discount_rate)))
+        }
+        if (coupon.amount && Number(coupon.amount) > 0) {
+          return Number(coupon.amount)
+        }
+        return 0
+      }
+
+      const makeupDiscount = getDiscount(selecProdCoup, makeupTotal)
+      const courseDiscount = getDiscount(selecCourCoup, courseTotal)
+      const globalDiscount =
+        selecGloCoup?.free === 1 ? 200 : Number(selecGloCoup?.amount || 0)
+
+      const finalTotal =
+        subtotal - makeupDiscount - courseDiscount - globalDiscount
+
       // 建立訂單送進資料庫
       const res = await cartApi.post('/order/create', {
         cartItems,
-        discountTotal,
+        discountTotal: makeupDiscount + courseDiscount + globalDiscount,
         selecProdCoup,
         selecCourCoup,
         selecGloCoup,
-        paymentMethod: paymentMethod,
-        // 配送資訊
+        paymentMethod,
         shippingMethod: shippingInfo.shippingMethod,
         shippingAddress: shippingInfo.recipientAddress,
         recipientName: shippingInfo.recipientName,
@@ -114,42 +150,54 @@ export default function PaymentPage() {
         pickupStoreAddress: shippingInfo.pickupStoreAddress,
       })
 
-      const { orderId, orderNumber, totalAmount } = res.data
+      const { orderId, orderNumber } = res.data
       if (!orderNumber) {
         toast.error('訂單建立失敗，無法取得訂單編號')
         return
       }
 
-      // 把訂單編號存起來（之後 order-completed 頁面可以用）
+      // 更新購物車：移除已結帳商品，保留未結帳的
+      const allItems = JSON.parse(localStorage.getItem('cartItems')) || []
+      const purchasedIds = cartItems.map((item) => item.id)
+      const remaining = allItems.filter(
+        (item) => !purchasedIds.includes(item.id)
+      )
+
+      // 呼叫後端清空購物車
+      await cartApi.post('/cart-items/clear')
+      // 重建前端購物車資料
+      setCartItems(remaining)
+      localStorage.setItem('cartItems', JSON.stringify(remaining))
+
+      // 存訂單編號
       localStorage.setItem('lastOrderNumber', orderNumber)
 
-      // 準備綠界資料
-      const items = cartItems.map((item) => ({
-        name: item.name,
-        quantity: item.quantity,
-      }))
+      // 如果是綠界才導轉跳
+      if (paymentMethod === '信用卡') {
+        const items = cartItems.map((item) => ({
+          name: item.name,
+          quantity: item.quantity,
+        }))
 
-      const ecpayRes = await cartApi.post('cart-items/ecpay', {
-        amount: totalAmount,
-        items,
-        orderNumber,
-      })
+        const ecpayRes = await cartApi.post('cart-items/ecpay', {
+          amount: finalTotal,
+          items,
+          orderNumber,
+        })
 
-      const html = ecpayRes.data
-
-      // 插入表單並自動送出
-      const container = document.querySelector('#ecpay-form-container')
-      if (!container) {
-        toast.error('找不到表單容器')
-        return
-      }
-      container.innerHTML = html
-      //手動送出綠界表單
-      const form = container.querySelector('form')
-      if (form) {
-        form.submit()
-      } else {
-        toast.error('綠界表單產生失敗')
+        const html = ecpayRes.data
+        const container = document.querySelector('#ecpay-form-container')
+        if (!container) {
+          toast.error('找不到表單容器')
+          return
+        }
+        container.innerHTML = html
+        const form = container.querySelector('form')
+        if (form) {
+          form.submit()
+        } else {
+          toast.error('綠界表單產生失敗')
+        }
       }
     } catch (error) {
       console.error(error)
@@ -217,7 +265,6 @@ export default function PaymentPage() {
                 selecCourCoup={orderData?.selecCourCoup}
                 selecGloCoup={orderData?.selecGloCoup}
                 setSelecGloCoup={() => {}}
-                filterGloCoups={orderData?.filterGloCoups || []}
                 filterCourCoups={orderData?.filterCourCoups || []}
                 filterProdCoups={orderData?.filterProdCoups || []}
                 onCheckout={handleCheckout} // ecpay

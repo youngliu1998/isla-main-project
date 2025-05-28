@@ -3,7 +3,6 @@
 }
 // === 共用 Mixin ===
 @mixin card-shadow($card-border-radius) {
-  border-radius: $card-border-radius;
   background: linear-gradient(
     180deg,
     rgba(255, 255, 255, 0.18) 0%,
@@ -15,28 +14,15 @@
 .couponShadow {
   @include card-shadow(0.5rem);
 }
-
-// .accordion .accordion-item .accordion-collapse .accordion-body {
-//   padding: 0 !important;
-// }
 .accordionButton {
-  background: var(--coupon-linear);
   font-weight: bold;
-  border-radius: 0;
   box-shadow: none;
   color: #fff;
-  padding: 1rem;
-
-  // 把原本的黑色箭頭icon反轉成白色
-  &::after {
-    filter: brightness(0) invert(1);
-  }
 
   // 展開狀態
   &:not(.collapsed) {
     background: var(--coupon-linear);
     color: #fff;
-    border-radius: 0 0 0.5rem 0.5rem !important;
   }
 
   &:focus {
