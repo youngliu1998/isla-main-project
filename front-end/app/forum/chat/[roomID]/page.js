@@ -19,14 +19,6 @@ export default function ChatRoom() {
   const [messages, setMessages] = useState([])
   const messagesRef = useRef()
 
-  // useEffect(() => {
-  //   if (userID === 0) {
-  //     confirm('請先登入')
-  //     router.push('/member/login')
-  //     return null
-  //   }
-  // }, [userID, router])
-
   const { data, isLoading, error } = useSWR(
     `http://localhost:3005/api/forum/chat?userID=${userID}&roomID=${roomID}`,
     fetcher

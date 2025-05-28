@@ -16,6 +16,8 @@ import { useAuth } from '../../../hook/use-auth'
 import DeleteConfirmModal from './_components/deleteConfirmModal'
 import CommentSection from './comment-section'
 import CommentInput from './comment-input'
+import { ClimbingBoxLoader } from 'react-spinners'
+import { last } from 'lodash'
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
 
@@ -25,6 +27,9 @@ export default function PostIDPage(props) {
   const userID = user.id
   const userNick = user.nickname
   const postID = useParams().postID
+  const [commentMutate, setCommentMutate] = useState()
+  const [lastCommentRef, setLastCommentRef] = useState()
+  if (commentMutate) console.log(commentMutate)
 
   const postAPI = `http://localhost:3005/api/forum/posts/post-detail?postID=${postID}`
   const { data, isLoading, error, mutate } = useSWR(postAPI, fetcher)
@@ -114,7 +119,7 @@ export default function PostIDPage(props) {
   return (
     <>
       <main className="main col col-10 d-flex flex-column align-items-start">
-        <div className="posts d-flex flex-column gap16 w-100">
+        <div className="posts d-flex flex-column gap16 pb-0 w-100">
           <div className="post d-flex flex-column gap-2 rounded-top-4 shadow-forum bg-pure-white pt-4 card-border position-relative">
             <div className="post-header d-flex  align-items-start mx-4">
               <div className="post-title flex-grow-1 me-3 fs24 fw-medium">
@@ -236,8 +241,14 @@ export default function PostIDPage(props) {
                   })}
               </div>
             </div>
-            <CommentSection />
-            <CommentInput />
+            <CommentSection
+              setCommentMutate={setCommentMutate}
+              setLastCommentRef={setLastCommentRef}
+            />
+            <CommentInput
+              mutate={commentMutate}
+              lastCommentRef={lastCommentRef}
+            />
           </div>
         </div>
       </main>

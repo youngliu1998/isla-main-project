@@ -345,7 +345,7 @@
   background-color: #fafafa;
   /* background: linear-gradient(0deg, #fafafa6e, #fafafa 100%); */
   /* backdrop-filter: blur(5px); */
-  z-index: 999;
+  z-index: 99;
 }
 .posts {
   max-width: 800px;

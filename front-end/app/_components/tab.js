@@ -19,13 +19,13 @@ export default function Componentstab({
   // }
   // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-  // const router = useRouter()
   const [activeIndex, setActiveIndex] = useState(0)
   const containerRef = useRef(null)
   const [underlineStyle, setUnderlineStyle] = useState({ left: 0, width: 0 })
-  // const [enableTransition, setEnableTransition] = useState(false)
+  const [enableTransition, setEnableTransition] = useState(false) //載入時無動畫
 
   // 把更新 underline 的邏輯抽成函式
+  // 功能：將underline移到點擊處
   const updateUnderline = (index) => {
     const btn = containerRef.current?.children[index]
     if (btn) {
@@ -40,19 +40,18 @@ export default function Componentstab({
   console.log(tabParam)
 
   // 首次載入就定位，並開啟 transition
-  // useLayoutEffect(() => {
-  // updateUnderline()
-  // 下一個 tick 才啟用動畫，避免一進來就看到位移動畫
-  // setTimeout(() => setEnableTransition(true), 0)
-  // setTimeout(() => console.log('setTimeout'), 0)
-  // }, []) // 只跑一次
-
-  // activeIndex 或容器 ref 換了就重新計算位置
   useEffect(() => {
-    // if (!enableTransition) return
-    updateUnderline(activeIndex)
-    console.log(underlineStyle)
-  }, [activeIndex])
+    updateUnderline()
+    // 下一個事件循環（next tick）才啟用動畫，避免一進來就看到位移動畫
+    setTimeout(() => setEnableTransition(true), 0)
+  }, []) // 只跑一次
+
+  // // activeIndex 或容器 ref 換了就重新計算位置
+  // useEffect(() => {
+  //   // if (!enableTransition) return
+  //   updateUnderline(activeIndex)
+  //   console.log(underlineStyle)
+  // }, [activeIndex])
 
   // // 監聽 resize，並在元件卸載時移除 listener
   // useEffect(() => {
@@ -95,7 +94,7 @@ export default function Componentstab({
 
       {/* 這條底線 */}
       <div
-        className={`category-underline ${edgeClass} ${'with-transition'}`}
+        className={`category-underline ${edgeClass} ${enableTransition ? '' : 'no-transition'}`}
         style={{
           left: underlineStyle.left,
           width: underlineStyle.width,
