@@ -55,6 +55,7 @@ router.get('/:id', async (req, res) => {
       u.name AS teacher_name,
       u.email AS teacher_email,
       u.ava_url,
+      u.id,
       COALESCE(AVG(cc.star), 0) AS avg_star,
       COUNT(cc.id) AS comment_count
     FROM courses c

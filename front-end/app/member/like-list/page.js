@@ -51,7 +51,7 @@ export default function LikeListPage(props) {
     const token = localStorage.getItem('jwtToken')
     if (!token) return
     const response = await fetch(
-      'http://localhost:3005/api/member/likeList/product',
+      'http://localhost:3005/api/wish-list/products',
       {
         method: 'GET',
         headers: {
