@@ -25,6 +25,31 @@
   border-radius: 999px;
 }
 
+.customSelect {
+  appearance: none;
+  background-color: #fff;
+  border: 1px solid #ff7a59;
+  border-radius: 8px;
+  padding: 3px 5px;
+  font-size: 14px;
+  color: #333;
+  width: 75%;
+  transition: border-color 0.5s ease;
+
+  &:focus {
+    border-color: #e95420;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(233, 84, 32, 0.2);
+  }
+}
+
+.customSelect option:disabled {
+  color: #bbb;
+  cursor: not-allowed;
+  background-color: #f0f0f0;
+  font-style: italic;
+}
+
 // @media (max-width: 991.98px) {
 //   .orderSummary {
 //     position: fixed;

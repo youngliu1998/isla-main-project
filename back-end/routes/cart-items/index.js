@@ -4,7 +4,7 @@ import verifyToken from '../../lib/verify-token.js'
 
 const router = express.Router()
 
-// http://localhost:3005/api/cart-items/read
+// http://localhost:3005/api/cart-items
 router.get('/', verifyToken, async (req, res) => {
   const user_id = req.user.id
   console.log('req.user:', req.user)
@@ -84,7 +84,7 @@ router.get('/', verifyToken, async (req, res) => {
       const placeholders = courseIds.map(() => '?').join(',')
       const [courseRows] = await db.execute(
         `
-        SELECT c.id, c.title, c.price, c.discount, c.picture, cat.name AS category_name
+        SELECT c.id, c.title, c.price, c.discount, c.picture, c.categories_id AS course_categories_id, cat.name AS category_name
         FROM courses c
         LEFT JOIN courses_categories cat ON c.categories_id = cat.id
         WHERE c.id IN (${placeholders})
@@ -99,7 +99,14 @@ router.get('/', verifyToken, async (req, res) => {
       const placeholders = expIds.map(() => '?').join(',')
       const [expRows] = await db.execute(
         `
-        SELECT e.id, e.title, e.price, e.discount, cat.name AS category_name, e.images
+        SELECT 
+        e.id, 
+        e.title, 
+        e.price, 
+        e.discount, 
+        e.categories_id AS course_categories_id, 
+        cat.name AS category_name, 
+        e.images
         FROM courses_experience e
         LEFT JOIN courses_categories cat ON e.categories_id = cat.id
         WHERE e.id IN (${placeholders})
@@ -142,6 +149,7 @@ router.get('/', verifyToken, async (req, res) => {
             base_price: course?.price,
             sale_price: course?.discount,
             category: course?.category_name,
+            course_categories_id: course?.course_categories_id,
             quantity: item.quantity,
             image_url: `images/course/bannerall/${course?.picture}`,
           }
