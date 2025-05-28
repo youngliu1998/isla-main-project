@@ -58,16 +58,16 @@ router.get('/:orderNumber', async (req, res) => {
         name = prod?.name || name
       } else if (item.item_type === 'course' && item.course_id) {
         const [[course]] = await db.execute(
-          'SELECT name FROM courses WHERE id = ?',
+          'SELECT title FROM courses WHERE id = ?',
           [item.course_id]
         )
-        name = course?.name || name
+        name = course?.title || name
       } else if (item.item_type === 'experience' && item.course_experience_id) {
         const [[exp]] = await db.execute(
-          'SELECT name FROM course_experiences WHERE id = ?',
+          'SELECT title FROM courses_experience WHERE id = ?',
           [item.course_experience_id]
         )
-        name = exp?.name || name
+        name = exp?.title || name
       }
 
       products.push({
@@ -95,6 +95,9 @@ router.get('/:orderNumber', async (req, res) => {
       paymentMethod: order.payment_method,
       paymentStatus: order.status === 'completed' ? '已付款' : '未付款',
       recipient,
+      shippingMethod: order.shipping_method,
+      pickupStoreName: order.pickup_store_name,
+      pickupStoreAddress: order.pickup_store_address,
       products,
     })
   } catch (err) {
