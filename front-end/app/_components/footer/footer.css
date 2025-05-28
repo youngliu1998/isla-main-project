@@ -46,9 +46,10 @@ footer {
   color: white;
 }
 .footer-body .footer-header-left ul .list-title {
-  font-weight: 300;
-  font-size: 2rem;
-  margin-bottom: 22px;
+  font-weight: 500;
+  font-size: 1.1rem;
+  color: white;
+  margin-bottom: 20px;
 }
 .footer-body .footer-header-left .blank {
   background: linear-gradient(270deg, #ffa69c 0%, #fa8e83 100%);
@@ -62,6 +63,30 @@ footer {
   padding-block: 3.5rem;
   background-image: var(--footer-block-color);
 }
+.items {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.logo {
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+.contact-info-block {
+  .contact-info {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 300;
+    font-size: 18px;
+    font-style: normal;
+    color: white;
+  }
+  .contact-info-title {
+    font-weight: 400;
+    font-size: 26px;
+    color: white;
+    margin-bottom: 0.5rem;
+  }
+}
 .footer-body .footer-header-right .contact-info-block {
   height: 6rem;
   display: flex;
@@ -69,6 +94,7 @@ footer {
   padding-inline: 0.5rem;
   padding-block: 1rem;
   background-image: var(--footer-contact-bg);
+  border-radius: 12px;
 }
 .footer-body .footer-header-right .contact-info-block h3 {
   font-size: 1.5rem;
@@ -106,6 +132,19 @@ footer {
   font-style: normal;
   font-size: 1.5rem;
   color: var(--MainColor);
+}
+
+.footer-body .source-media-block .icons {
+  display: flex;
+  button {
+    display: block;
+    background-color: transparent;
+    border: 0;
+    /* text */
+    font-size: 1.5rem;
+    text-align: center;
+    color: var(--main-color);
+  }
 }
 .footer-bottom-band {
   background: #d67065;

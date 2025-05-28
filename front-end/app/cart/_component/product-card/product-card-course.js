@@ -12,6 +12,7 @@ export default function ProductCardCourse({
   salePrice,
   basePrice,
   category,
+  course_categories_id,
   onDelete,
   isChecked = false,
   onCheckChange = () => {},

@@ -11,6 +11,8 @@ import OrderSummary from './_component/order-summary/order-summary'
 import MobileOrderBar from './_component/mobile-order-bar/mobile-order-bar'
 import EmptyCart from './_component/cart-empty/empty-cart'
 import CartLoading from './_component/cart-Loading/cart-loading'
+import { filterGlobalCoupons } from '../cart/utils/coupon-helper'
+
 // coustom-hook
 import { useAuth } from '@/hook/use-auth'
 import useIsMobile from './hook/useIsMobile'
@@ -28,6 +30,7 @@ export default function CartPage() {
   const [checkedItems, setCheckedItems] = useState({}) // 以 id 為 key 儲存是否勾選
   const [couponDataProd, setCouponDataProd] = useState([])
   const [couponDataCour, setCouponDataCour] = useState([])
+  const [couponDataGlob, setcouponDataGlob] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [selecProdCoup, setSelecProdCoup] = useState(null)
   const [selecCourCoup, setSelecCourCoup] = useState(null)
@@ -53,10 +56,13 @@ export default function CartPage() {
           } else if (item.color_options?.length > 1) {
             type = 'colorDots'
           }
+          console.log('🧪 item.course:', item.course)
 
           return {
             ...item,
             type,
+            course_categories_id:
+              item.course?.category_id ?? item.course_categories_id ?? 0,
           }
         })
 
@@ -75,10 +81,12 @@ export default function CartPage() {
         const rawCouponItems = res.data.data
         console.log('會員已領取的優惠券', rawCouponItems)
 
-        localStorage.setItem('member-coupons', JSON.stringify(rawCouponItems))
-        console.log('會員已領取的優惠券存到token')
         setCouponDataProd(rawCouponItems.productCoupons || [])
         setCouponDataCour(rawCouponItems.courseCoupons || [])
+        setcouponDataGlob(rawCouponItems.globCoupons || [])
+
+        localStorage.setItem('member-coupons', JSON.stringify(rawCouponItems))
+        console.log('會員已領取的優惠券存到token')
       } catch (error) {
         console.error('會員已領取的優惠券資料抓取失敗', error.message)
       }
@@ -131,6 +139,27 @@ export default function CartPage() {
     (sum, item) => sum + (item.sale_price ?? item.base_price) * item.quantity,
     0
   )
+
+  // 找出一張全站通用券
+  const universalCoupon = couponDataGlob[0] ?? null
+
+  // useEffect(() => {
+  //   const selectedItems = cartItems.filter((item) => checkedItems[item.id])
+  //   const relatedAmount = selectedItems.reduce(
+  //     (sum, item) => sum + (item.sale_price ?? item.base_price) * item.quantity,
+  //     0
+  //   )
+
+  //   if (
+  //     universalCoupon &&
+  //     universalCoupon.is_applicable &&
+  //     relatedAmount >= Number(universalCoupon.min_amount) &&
+  //     !autoAppliedOnce
+  //   ) {
+  //     setSelecGloCoup(universalCoupon)
+  //     setAutoAppliedOnce(true)
+  //   }
+  // }, [checkedItems, universalCoupon, cartItems])
 
   // 處理 商品-優惠券 是否可用
   const processedCouponsProd = useProcesCoups(
@@ -205,17 +234,21 @@ export default function CartPage() {
     )
   }
   // 過濾 area=1 商品券
-  const filterProdCoups = processedCouponsProd.filter(
-    (coupon) => coupon.area === 1
-  )
+  const filterProdCoups = processedCouponsProd
+    .filter((coupon) => coupon.area === 1 && coupon.free !== 1)
+    .sort((a, b) => {
+      // 原地排序方法，可用的往前排
+      if (a.is_applicable === b.is_applicable) return 0
+      return a.is_applicable ? -1 : 1
+    })
   // 過濾 area=2 課程券
-  const filterCourCoups = processedCouponsCourse.filter(
-    (coupon) => coupon.area === 2
-  )
-  // 過濾 area=0 全站券
-  const filterGloCoups = processedCouponsProd.filter(
-    (coupon) => coupon.area === 0
-  )
+  const filterCourCoups = processedCouponsCourse
+    .filter((coupon) => coupon.area === 2 && coupon.free !== 1)
+    .sort((a, b) => (a.is_applicable ? -1 : 1))
+
+  // 過濾 free=1 免運券
+  const selectedItems = cartItems.filter((item) => checkedItems[item.id])
+  const shippingCoupons = filterGlobalCoupons(couponDataProd, selectedItems)
 
   function handleCheckout() {
     // 組合要傳到下一步的明細
@@ -224,10 +257,11 @@ export default function CartPage() {
       selecProdCoup,
       selecCourCoup,
       selecGloCoup,
-      setSelecGloCoup,
-      filterGloCoups,
+      // setSelecGloCoup,
       filterCourCoups,
       filterProdCoups,
+      shippingCoupons,
+      universalCoupon,
     }
     setOrderData(orderSummaryData)
     localStorage.setItem('orderSummary', JSON.stringify(orderSummaryData))
@@ -351,6 +385,7 @@ export default function CartPage() {
                       basePrice={item.base_price}
                       quantity={item.quantity}
                       category={item.category}
+                      course_categories_id={item.course_categories_id}
                       onDelete={() => handleDeleteItem(item.id)}
                       onQuantityChange={(newQty) => {
                         const updated = cartItems.map((p) =>
@@ -385,9 +420,10 @@ export default function CartPage() {
                     selecProdCoup={selecProdCoup}
                     selecCourCoup={selecCourCoup}
                     selecGloCoup={selecGloCoup}
+                    universalCoupon={universalCoupon}
+                    shippingCoupons={shippingCoupons}
                     setSelecGloCoup={setSelecGloCoup}
-                    filterGloCoups={filterGloCoups}
-                    filterCourCoups={filterProdCoups}
+                    filterCourCoups={filterCourCoups}
                     filterProdCoups={filterProdCoups}
                     onCheckout={handleCheckout}
                   />

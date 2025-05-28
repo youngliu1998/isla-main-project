@@ -100,7 +100,7 @@ router.post('/', verifyToken, (req, res) => {
     TradeDesc: 'beauty_products_checkout',
     // TradeDesc: '購買美妝相關產品'.replace(/[^a-zA-Z0-9_\s]/g, ''),
     ItemName: getItemName(items),
-    ReturnURL: 'http://localhost:3005/api/order/ecpay-return',
+    ReturnURL: 'https://www.ecpay.com.tw',
     ClientBackURL: `http://localhost:3000/cart/order-completed`,
     ChoosePayment: 'Credit',
     EncryptType: 1,
