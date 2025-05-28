@@ -64,7 +64,7 @@ router.get('/:orderNumber', async (req, res) => {
         name = course?.title || name
       } else if (item.item_type === 'experience' && item.course_experience_id) {
         const [[exp]] = await db.execute(
-          'SELECT title FROM course_experiences WHERE id = ?',
+          'SELECT title FROM courses_experience WHERE id = ?',
           [item.course_experience_id]
         )
         name = exp?.title || name

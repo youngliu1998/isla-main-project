@@ -94,14 +94,6 @@ export default function OrderSummary({
   const totalDiscount = makeupDiscount + courseDiscount
   const subtotal = makeupTotal + courseTotal + addOnTotal + shippingBase
   const finalTotal = subtotal - totalDiscount - globalDiscount
-  // console.log(
-  //   `finalTotal：${finalTotal}`,
-  //   `subtotal：${subtotal}`,
-  //   `totalDiscount：${totalDiscount}`,
-  //   `globalDiscount：${globalDiscount}`
-  // )
-
-  const universal = universalCoupon
 
   return (
     <div className={`${styles.orderSummary} card-style mb-3`}>
@@ -255,9 +247,9 @@ export default function OrderSummary({
             ))}
           </select>
         </div>
-      ) : (
+      ) : pathname === '/cart' ? (
         <p className="text-muted mb-3">目前無可用的全站優惠券</p>
-      )}
+      ) : null}
 
       {/* 運費與優惠 */}
       <div className="d-flex justify-content-between text-subtext mb-2">
