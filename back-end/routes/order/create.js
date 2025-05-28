@@ -63,23 +63,13 @@ router.post('/', verifyToken, async (req, res) => {
       const experience_id = item.course_experience_id ?? null
       const item_type = item.item_type ?? null
       const price = parseInt(item.sale_price ?? item.base_price) || 0
-<<<<<<< HEAD
-      const pickup_store_name = item.pickup_store_name ?? null
-      const pickup_store_address = item.pickup_store_address ?? null
-
-      await connection.execute(
-        `INSERT INTO order_items 
-          (order_id, product_id, course_id, course_experience_id, quantity, price, item_type, pickup_store_name, pickup_store_address)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-=======
       // const pickup_store_name = item.pickup_store_name ?? null
       // const pickup_store_address = item.pickup_store_address ?? null
 
       await connection.execute(
         `INSERT INTO order_items 
-          (order_id, product_id, course_id, course_experience_id, quantity, price, item_type )
+          (order_id, product_id, course_id, course_experience_id, quantity, price, item_type)
           VALUES (?, ?, ?, ?, ?, ?, ?)`,
->>>>>>> 1224533eff72af1dd8cc4e62b775ee42f9115fdc
         [
           orderId,
           product_id,
@@ -88,13 +78,6 @@ router.post('/', verifyToken, async (req, res) => {
           item.quantity,
           price,
           item_type,
-<<<<<<< HEAD
-          pickup_store_name,
-          pickup_store_address,
-=======
-          // pickup_store_name,
-          // pickup_store_address,
->>>>>>> 1224533eff72af1dd8cc4e62b775ee42f9115fdc
         ]
       )
     }
