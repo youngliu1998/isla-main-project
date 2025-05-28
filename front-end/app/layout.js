@@ -28,21 +28,25 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
         <link
           href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+TC:wght@100..900&display=swap"
           rel="stylesheet"
         />
       </head>
-      <Provider>
-        <body>
+      <body>
+        <Provider>
           <Header />
           <div style={{ marginTop: '80px' }}>{children}</div>
           <Footer />
           <ToastContainer />
           <Chat />
-        </body>
-      </Provider>
+        </Provider>
+      </body>
     </html>
   )
 }
