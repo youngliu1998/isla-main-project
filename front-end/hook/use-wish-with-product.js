@@ -4,7 +4,7 @@ import axios from 'axios'
 // 讀取收藏列表
 export const useWishProduct = (token) => {
   return useQuery({
-    queryKey: ['wishlist'],
+    queryKey: ['wishlist-product'],
     queryFn: async () => {
       const res = await axios.get(
         'http://localhost:3005/api/wish-list/products',
