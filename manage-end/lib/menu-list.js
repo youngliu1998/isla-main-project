@@ -46,9 +46,19 @@ export function getMenuList(pathname) {
           icon: MessageCircleHeart,
         },
         {
-          href: '/coupon',
+          href: '/coupons',
           label: '優惠卷管理',
           icon: WalletCards,
+        },
+      ],
+    },
+    {
+      groupLabel: 'Settings',
+      menus: [
+        {
+          href: '/users',
+          label: 'Users',
+          icon: Users,
         },
       ],
     },

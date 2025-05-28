@@ -47,7 +47,7 @@ footer {
 }
 .footer-body .footer-header-left ul .list-title {
   font-weight: 500;
-  font-size: 22px;
+  font-size: 1.1rem;
   color: white;
   margin-bottom: 20px;
 }
@@ -132,6 +132,19 @@ footer {
   font-style: normal;
   font-size: 1.5rem;
   color: var(--MainColor);
+}
+
+.footer-body .source-media-block .icons {
+  display: flex;
+  button {
+    display: block;
+    background-color: transparent;
+    border: 0;
+    /* text */
+    font-size: 1.5rem;
+    text-align: center;
+    color: var(--main-color);
+  }
 }
 .footer-bottom-band {
   background: #d67065;

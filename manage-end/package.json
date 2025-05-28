@@ -30,6 +30,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "dayjs": "^1.11.13",
     "immer": "^10.1.1",
     "lodash": "^4.17.21",
     "lottie-react": "^2.4.1",

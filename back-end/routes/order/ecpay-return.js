@@ -56,12 +56,11 @@ router.post('/', express.urlencoded({ extended: false }), async (req, res) => {
   }
 
   // 驗證 CheckMacValue
-  const check = generateCheckMacValue(data)
-  if (check !== CheckMacValue) {
-    console.warn('CheckMacValue 錯誤')
-    return res.send('0|ERR')
-  }
-
+  // const check = generateCheckMacValue(data)
+  // if (check !== CheckMacValue) {
+  //   console.warn('CheckMacValue 錯誤')
+  //   return res.send('0|ERR')
+  // }
   // ✅ 成功付款代碼：1
   if (RtnCode === '1') {
     try {

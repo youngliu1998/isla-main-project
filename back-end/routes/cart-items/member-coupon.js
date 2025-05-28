@@ -51,6 +51,7 @@ router.get('/', verifyToken, async (req, res) => {
 
     const productCoupons = []
     const courseCoupons = []
+    const globCoupons = []
 
     couReceived.forEach((coup) => {
       // 計算符合此張 coupon 的商品總數量
@@ -134,12 +135,10 @@ router.get('/', verifyToken, async (req, res) => {
       }
 
       // area = 1商品, 2課程, 0全站
-      if (coup.area === 1 || coup.area === 0) {
-        productCoupons.push(formatted)
-      }
-      if (coup.area === 2 || coup.area === 0) {
-        courseCoupons.push(formatted)
-      }
+      if (coup.area === 1 || coup.area === 0) productCoupons.push(formatted)
+      if (coup.area === 2 || coup.area === 0) courseCoupons.push(formatted)
+      if (coup.area === 0 && coup.brand_id === 0 && coup.category_id === 0)
+        globCoupons.push(formatted)
     })
 
     return res.json({
@@ -147,6 +146,7 @@ router.get('/', verifyToken, async (req, res) => {
       data: {
         productCoupons,
         courseCoupons,
+        globCoupons,
       },
     })
   } catch (error) {
