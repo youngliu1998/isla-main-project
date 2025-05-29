@@ -18,12 +18,14 @@ import React, { useState, useMemo, useEffect, useCallback } from 'react'
 import Zoom from 'react-medium-image-zoom'
 import 'react-medium-image-zoom/dist/styles.css'
 import { useAuth } from '@/hook/use-auth.js'
+import {toast} from "react-toastify";
+
 import ProductInfoAccrodion from './_component/product-info-accordion/product-info-accordion.js'
 import Image from 'next/image.js'
 import Link from 'next/link'
-import {toast} from "react-toastify";
 import LoadingLottie from "../_components/loading/lottie-loading.js";
 import LoadingErrorLottie from "../_components/loading-error/lottie-error.js";
+import ReactViewShare from './_component/recent-view-and-share/recent-view-and-share'
 
 export default function page({ params }) {
   // i don't know what is this shit, but it's warning
@@ -186,6 +188,7 @@ export default function page({ params }) {
   }
   return (
     <>
+      <ReactViewShare product={product} />
       <section className="product-main">
         <div className="product-main-container container d-flex justify-content-center align-items-center">
           <div className="product d-flex align-items-center justify-content-center">
