@@ -5,7 +5,8 @@ import React, { useState, useEffect } from 'react'
 
 export default function Path(props) {
   const pathname = usePathname()
-  const router = useRouter()
+  console.log('pathname ', pathname)
+  // const router = useRouter()
   const pathArr = pathname.split('/')
   const getPath = (thisPath) => {
     let address = ''
@@ -17,6 +18,9 @@ export default function Path(props) {
     console.log('address: ', address)
     return address
     // router.push(address)
+  }
+  if (pathname === '/') {
+    return <></>
   }
   return (
     <>

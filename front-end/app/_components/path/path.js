@@ -1,13 +1,14 @@
 'use client'
 
 import { useRouter, usePathname } from 'next/navigation'
-import React, { useState, useEffect } from 'react'
+// import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 // ==== css ====
 import './_style/path.css'
 
-export default function Path(props) {
+export default function Path() {
   const pathname = usePathname()
+  console.log('pathname', pathname)
   const router = useRouter()
   let pathArr = []
   if (router === '/') {
@@ -25,7 +26,11 @@ export default function Path(props) {
     }
     console.log('address: ', address)
     return address
-    // router.push(address)
+    // route
+    // r.push(address)
+  }
+  if (pathname === '/') {
+    return <></>
   }
   return (
     <>
@@ -36,7 +41,7 @@ export default function Path(props) {
               <Link href={getPath(path)} className="path-link">
                 {path !== '' ? path : 'home'}
               </Link>
-              <span className="path-link">/</span>
+              {i < pathArr.length - 1 && <span className="path-link">/</span>}
             </div>
           )
         })}

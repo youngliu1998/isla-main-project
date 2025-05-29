@@ -88,7 +88,7 @@ export default function HamMeunNav({
                   if (isAuth) logout()
                   setHamMenuOpen(false)
                 }}
-                href={isAuth ? '/' : '/member/login'}
+                href={'/member/login'}
               >
                 {isAuth ? '登出' : '登入'}
               </Link>
