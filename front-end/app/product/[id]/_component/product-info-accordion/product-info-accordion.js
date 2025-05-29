@@ -16,16 +16,15 @@ function ProductInfoAccordion({ ingredients, usage }) {
               return (
                 <OverlayTrigger
                   key={ing.ingredient_id}
-                  placement="top"
+                  placement="bottom"
                   overlay={
                     <Tooltip>
-                      ⚠ {ing.warning_message || '本成分可能引起敏感反應'}
+                       {ing.warning_message || '本成分可能引起敏感反應'}
                     </Tooltip>
                   }
                 >
                   <span
                     className="text-danger fw-semibold"
-                    style={{ cursor: 'help' }}
                   >
                     {displayText}
                   </span>

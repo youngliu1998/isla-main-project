@@ -1,13 +1,13 @@
 // custom-checkbox.scss
 .form-check-input[type='checkbox'] {
-  border-radius: 0px;
   box-shadow: none;
+  border-radius: 4px;
 }
 // 使用自訂 class，也可以用原生 bs 類別覆蓋 .form-check-input
 .form-check-input {
   width: 1.25rem;
   height: 1.25rem;
-  border: 2px solid #bebebe;
+  border: 1px solid #bebebe76;
   background-color: transparent;
   transition: all 0.2s ease-in-out;
   position: relative;
@@ -15,28 +15,27 @@
   cursor: pointer;
 
   &:hover {
-    border-radius: none;
-
-    border-color: #505050;
-    background-color: rgba(185, 185, 185, 0.05);
+    // border-radius: 8px;
+    border-color: #a1a1a1;
+    background-color: #d2d2d2;
+    // background-color: rgba(185, 185, 185, 0.05);
   }
 
   &:checked {
-    border-radius: 0px;
+    // border-radius: 8px;
 
     background-color: #505050;
-    border-color: #505050;
+    border-color: #6d6d6d;
     // background-image: url("data:image/svg+xml,%3Csvg width='16' height='16' fill='white' viewBox='0 0 16 16'%3E%3Cpath d='M13.485 1.929a.75.75 0 0 1 0 1.06L6.56 9.915 3.03 6.384a.75.75 0 1 1 1.06-1.06l2.47 2.47 6.364-6.364a.75.75 0 0 1 1.06 0z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: center;
-    background-size: 110%;
+    background-size: 100%;
+    box-shadow: 0 0 8px #22222258;
   }
 
   &:focus {
-    border-radius: 0px;
-    border-color: #505050;
-    outline: none;
-    box-shadow: none;
+    border-color: #a1a1a1;
+    background-color: #a1a1a1;
   }
 }
 
@@ -341,10 +340,10 @@ $form-radio-disabled-bg: #eee;
   box-shadow: 0 0 0.2rem rgba(0, 0, 0, 0);
 }
 .form-check-input:focus {
-  background-color: #d35b5b;
+  background-color: #4e4e4e00;
 }
 .form-check-input:checked {
-  background-color: #d35b5b;
+  background-color: #4e4e4e;
 }
 /* 當 switch 被打開（checked） */
 .form-check.form-switch .form-check-input:checked {

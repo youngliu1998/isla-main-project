@@ -48,6 +48,7 @@ export async function getFilteredProducts(filters) {
       products.sale_price,
       products.sale_start_date,
       products.sale_end_date,
+      brand.brand_id AS brand_id,
       brand.name AS brand_name,
       category.name AS category_name,
       primary_image.image_url AS primary_image_url,

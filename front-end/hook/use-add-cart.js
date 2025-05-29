@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
-
+import { toast } from 'react-toastify'
 //這是加入購物車的函式(by chai)
 //範例：
 // addToCart({
@@ -24,8 +24,8 @@ export const useAddCart = (token) => {
         const res = await axios.post(
           `http://localhost:3005/api/cart-items/create`,
           {
-            product_id,
-            quantity,
+            product_id: Number(product_id),
+            quantity: Number(quantity),
             color_id,
           },
           {
@@ -35,9 +35,11 @@ export const useAddCart = (token) => {
             },
           }
         )
+        toast.success("加入購物車成功")
         return res.data
       } catch (error) {
-        console.error('API 錯誤細節:', error.response?.data || error.message)
+        // toast.error("加入購物車失敗，請稍後再試")
+        // console.error('API 錯誤細節:', error.response?.data || error.message)
         throw error
       }
     },

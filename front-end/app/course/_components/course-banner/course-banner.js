@@ -16,9 +16,9 @@ export default function CourseBanner() {
   // 自動輪播
   useEffect(() => {
     const intervalId = setInterval(() => {
-      setImgFirst((prev) => (prev % 35) + 1)
-      setImgMid((prev) => (prev % 35) + 1)
-      setImgLast((prev) => (prev % 35) + 1)
+      setImgFirst((prev) => (prev % 6) + 1)
+      setImgMid((prev) => (prev % 6) + 1)
+      setImgLast((prev) => (prev % 6) + 1)
     }, 3000)
     return () => clearInterval(intervalId)
   }, [])
@@ -26,22 +26,25 @@ export default function CourseBanner() {
   return (
     <section className="banner align-content-center justify-content-center py-sm-5 py-0">
       <div className="d-flex">
+        {/* 左：上一張 */}
         <button
           className="carousel-button prev"
           onClick={() => {
-            setImgFirst((prev) => (prev % 35) + 1)
-            setImgMid((prev) => (prev % 35) + 1)
-            setImgLast((prev) => (prev % 35) + 1)
+            setImgFirst((prev) => (prev === 1 ? 6 : prev - 1))
+            setImgMid((prev) => (prev === 1 ? 6 : prev - 1))
+            setImgLast((prev) => (prev === 1 ? 6 : prev - 1))
           }}
         >
           ‹
         </button>
+
+        {/* 右：下一張 */}
         <button
           className="carousel-button next"
           onClick={() => {
-            setImgFirst((prev) => (prev === 1 ? 35 : prev - 1))
-            setImgMid((prev) => (prev === 1 ? 35 : prev - 1))
-            setImgLast((prev) => (prev === 1 ? 35 : prev - 1))
+            setImgFirst((prev) => (prev % 6) + 1)
+            setImgMid((prev) => (prev % 6) + 1)
+            setImgLast((prev) => (prev % 6) + 1)
           }}
         >
           ›
@@ -73,14 +76,14 @@ export default function CourseBanner() {
       </div>
 
       <div className="justify-content-center d-lg-flex d-none">
-        {[...Array(35)].map((_, i) => (
+        {[...Array(6)].map((_, i) => (
           <button
             key={i}
             className={`box1-dot${i + 1 === imgMid ? ' active' : ''}`}
             onClick={() => {
               const selected = i + 1
-              const prev = selected === 1 ? 35 : selected - 1
-              const next = selected === 35 ? 1 : selected + 1
+              const prev = selected === 1 ? 6 : selected - 1
+              const next = selected === 6 ? 1 : selected + 1
               setImgFirst(prev)
               setImgMid(selected)
               setImgLast(next)

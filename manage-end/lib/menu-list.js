@@ -52,15 +52,5 @@ export function getMenuList(pathname) {
         },
       ],
     },
-    {
-      groupLabel: 'Settings',
-      menus: [
-        {
-          href: '/users',
-          label: 'Users',
-          icon: Users,
-        },
-      ],
-    },
   ]
 }

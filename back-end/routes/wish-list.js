@@ -38,17 +38,17 @@ router.get('/products', verifyToken, async (req, res) => {
      b.name AS brand_name,
      c.category_id,
      c.name AS category_name,
-     (
-       SELECT JSON_ARRAYAGG(pt.name)
-       FROM product_tag_relations ptr
-       JOIN product_tags pt ON ptr.tag_id = pt.tag_id
-       WHERE ptr.product_id = p.product_id
-     ) AS tag_names,
-     (
-       SELECT JSON_ARRAYAGG(pi.image_url)
-       FROM product_images pi
-       WHERE pi.product_id = p.product_id
-     ) AS images
+      (
+        SELECT GROUP_CONCAT(pt.name)
+        FROM product_tag_relations ptr
+        JOIN product_tags pt ON ptr.tag_id = pt.tag_id
+        WHERE ptr.product_id = p.product_id
+      ) AS tag_names,
+      (
+        SELECT GROUP_CONCAT(pi.image_url)
+        FROM product_images pi
+        WHERE pi.product_id = p.product_id
+      ) AS images
 
    FROM wishlist w
    INNER JOIN products p ON w.product_id = p.product_id
@@ -57,10 +57,15 @@ router.get('/products', verifyToken, async (req, res) => {
    WHERE w.user_id = ?`,
       [user_id]
     )
+    const result = wishlist.map((row) => ({
+      ...row,
+      tag_names: row.tag_names ? row.tag_names.split(',') : [],
+      images: row.images ? row.images.split(',') : [],
+    }))
 
     res.json({
       message: '取得收藏清單+商品卡片資料成功',
-      data: wishlist,
+      data: result,
     })
   } catch (err) {
     console.error('取得收藏失敗:', err)

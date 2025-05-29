@@ -8,6 +8,8 @@ import BrandSelect from './_component/brand-select'
 import ProductCard from '@/app/product/_components/product-card-s'
 // ==== hooks ====
 import { useProducts } from '@/hook/use-products'
+import './_style/product-card-s.css'
+import './_style/product-section.css'
 
 export default function ProductSectionNew() {
   // ==== 取得商品資料 ====
@@ -65,7 +67,7 @@ export default function ProductSectionNew() {
     <>
       <div className="d-flex flex-column align-items-center gap-4">
         <div className="d-flex flex-column align-items-center gap-4">
-          <h3>新進商品</h3>
+          <h3 className="main-product-section-title">新進商品</h3>
           <div className="d-lg-block d-none">
             <Componentstab cates={navBrands} handleTabChange={setTabSwitch} />
           </div>
@@ -78,7 +80,6 @@ export default function ProductSectionNew() {
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-lg-4 g-4 p-0 m-0 mt-4">
           {
             <div className="d-flex gap-4 product-list">
-              {console.log('products in page', products)}
               {products.slice(0, 4).map((p) => (
                 <div key={p.product_id} className="product-card-container">
                   <ProductCard
@@ -101,8 +102,8 @@ export default function ProductSectionNew() {
           }
           {tabSwitch === 2}
         </div>
-        <Link href="/course" className="mt-4">
-          <button className="btn btn-primary">查看更多</button>
+        <Link href="/product" className="mt-4 pt-4">
+          <button className="btn btn-primary">查看更多商品</button>
         </Link>
       </div>
     </>
