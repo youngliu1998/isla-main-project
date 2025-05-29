@@ -18,14 +18,6 @@ import React, { useState, useMemo, useEffect, useCallback } from 'react'
 import Zoom from 'react-medium-image-zoom'
 import 'react-medium-image-zoom/dist/styles.css'
 import { useAuth } from '@/hook/use-auth.js'
-<<<<<<< HEAD
-import ProductInfoAccrodion from './_component/product-info-accordion/product-info-accordion.js'
-import Image from 'next/image.js'
-import Link from 'next/link'
-import {toast} from "react-toastify";
-import LoadingLottie from "../_components/loading/lottie-loading.js";
-import LoadingErrorLottie from "../_components/loading-error/lottie-error.js";
-=======
 import { toast } from 'react-toastify'
 
 import ProductInfoAccrodion from './_component/product-info-accordion/product-info-accordion.js'
@@ -34,7 +26,6 @@ import Link from 'next/link'
 import LoadingLottie from '../_components/loading/lottie-loading.js'
 import LoadingErrorLottie from '../_components/loading-error/lottie-error.js'
 import ReactViewShare from './_component/recent-view-and-share/recent-view-and-share'
->>>>>>> 7d09691 (cart/0529/02)
 
 export default function page({ params }) {
   // i don't know what is this shit, but it's warning
