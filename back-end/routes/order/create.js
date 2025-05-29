@@ -78,11 +78,6 @@ router.post('/', verifyToken, async (req, res) => {
           item.quantity,
           price,
           item_type,
-<<<<<<< HEAD
-          // pickup_store_name,
-          // pickup_store_address,
-=======
->>>>>>> 4a83346 (cart/0529/fix cart-icon bug)
         ]
       )
     }

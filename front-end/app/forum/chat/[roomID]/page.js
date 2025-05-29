@@ -27,7 +27,8 @@ export default function ChatRoom() {
   //FIXME 需要更好的方法處理聊天室名稱
   // roomDetail.map((detail)=>(...detail, ))
   useEffect(() => {
-    if (data) {
+    if (data?.data?.[0].msg) {
+      // console.log(data?.data?.[0].msg)
       setMessages(JSON.parse(data?.data?.[0].msg))
     } //QU 沒if data的話會無限迴圈
   }, [data])
@@ -72,7 +73,7 @@ export default function ChatRoom() {
   }
   return (
     <>
-      <div className="chat-main d-flex flex-column h-100 bg-pure-white rounded-3 ms-md-3 shadow-forum">
+      <div className="chat-main d-flex flex-column h-100 bg-pure-white rounded-end-3 shadow-forum">
         <div className="chat-main-header bg-pure-white d-flex gap-2 px-3 py-2 align-items-center shadow-sm fs20 fw-bold rounded-top-3">
           <button
             className="chat-main-return d-block d-md-none rounded-circle border-0 p-2"

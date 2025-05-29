@@ -125,13 +125,14 @@ export default function PostIDPage(props) {
       <main className="main col col-10 d-flex flex-column align-items-start">
         {!posts || posts.length === 0 ? (
           <div className="fs32 d-flex flex-column align-items-center mx-auto mt-3 gap-2">
-            <div>查無此文章</div>
+            {/* FIXME */}
+            {/* <div>查無此文章</div>
             <Link
               href={'/forum'}
               className="main-color fs24 text-decoration-underline"
             >
               回到論壇首頁
-            </Link>
+            </Link> */}
           </div>
         ) : (
           <div className="posts d-flex flex-column gap16 pb-0 w-100">
