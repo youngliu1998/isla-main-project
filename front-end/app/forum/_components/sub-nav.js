@@ -159,13 +159,13 @@ export default function ComponentsSubNav() {
                   </Link>
                   <Link
                     href={'/member/my-forum/my-following'}
-                    className="more-followings-link main-color text-center rounded-pill px-0 py-1 w-auto"
+                    className="more-followings-link main-text-color text-center rounded-pill px-0 py-1 w-auto"
                     onClick={(e) => {
                       if (!isAuth) e.preventDefault()
                       handleDirectToLogin('/member/my-forum/my-following')
                     }}
                   >
-                    查看全部<i className="bi bi-arrow-up-right"></i>
+                    查看全部 <i className="bi bi-arrow-up-right"></i>
                   </Link>
                 </div>
               </div>
@@ -210,10 +210,17 @@ export default function ComponentsSubNav() {
       <div className="sub-nav-container-sm col col-2 d-block d-lg-none px-0 position-relative">
         <aside className="sub-nav position-sticky d-flex flex-column gap-3 w-100">
           <div className="sub-nav-items">
-            <div
-              data-bs-toggle="modal"
-              data-bs-target="#editPostModal"
-              role="button"
+            <button
+              className="button-clear w-100"
+              data-bs-toggle={isAuth && 'modal'}
+              data-bs-target={isAuth && '#editPostModal'}
+              onMouseUp={(e) => {
+                e.currentTarget.blur()
+              }}
+              onClick={(e) => {
+                !isAuth && e.preventDefault()
+                handleDirectToLogin('/forum')
+              }}
             >
               <div
                 className="sub-nav-item d-flex px-3 py-3 gap-2 rounded-3 text-decoration-none fw-medium main-color"
@@ -223,7 +230,7 @@ export default function ComponentsSubNav() {
               >
                 <i className="bi bi-plus-lg" />
               </div>
-            </div>
+            </button>
             <Link
               href="/forum"
               className="sub-nav-item d-flex px-3 py-3 gap-2 rounded-3 text-decoration-none fw-medium main-text-color"
@@ -232,10 +239,6 @@ export default function ComponentsSubNav() {
               title="論壇首頁"
               onMouseUp={(e) => {
                 e.currentTarget.blur()
-              }}
-              onClick={(e) => {
-                !isAuth && e.preventDefault()
-                handleDirectToLogin('/forum')
               }}
             >
               <i
