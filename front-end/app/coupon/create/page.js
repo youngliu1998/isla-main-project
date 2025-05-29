@@ -38,11 +38,11 @@ const questions = [
     title: '近日想購買的產品？',
     type: 'single',
     options: [
-      { label: '眼部彩妝', image: '/images/eye.jpg' },
-      { label: '唇部彩妝', image: '/images/lipstick.jpg' },
-      { label: '臉頰彩妝', image: '/images/gloss.jpg' },
-      { label: '眉部彩妝', image: '/images/foundation.jpg' },
-      { label: '底妝', image: '/images/cushion.jpg' },
+      { label: '眼部彩妝', image: '/images/coupon/eye.jpg' },
+      { label: '唇部彩妝', image: '/images/coupon/lipstick.jpg' },
+      { label: '臉頰彩妝', image: '/images/coupon/gloss.jpg' },
+      { label: '眉部彩妝', image: '/images/coupon/foundation.jpg' },
+      { label: '底妝', image: '/images/coupon/cushion.jpg' },
     ],
   },
 ]

@@ -1,30 +1,27 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import ComponentsAuthorInfo from '@/app/forum/_components/author-info'
 import useSWR from 'swr'
-import { useRouter } from 'next/navigation'
 import '@/app/forum/_components/forum.css'
 import Link from 'next/link'
-import ComponentsAvatar from '@/app/forum/_components/avatar'
 import FollowingCard from './following-card'
-import ComponentsButtonFollowingChat from '@/app/forum/_components/btn-following-chat'
+import { useAuth } from '../../../../hook/use-auth'
 
-const fetcher = (url) => fetch(url).then((res) => res.json())
+const fetcher = ([url, body]) =>
+  fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  }).then((res) => res.json())
 
-export default function MyPostPage(props) {
+export default function MyPostPage() {
+  const userID = useAuth().user.id
   const { data, isLoading, error, mutate } = useSWR(
-    `http://localhost:3005/api/forum/posts/my-following`,
+    [`http://localhost:3005/api/forum/follow/get-follow-list`, { userID }],
     fetcher
   )
-  if (error) {
-    return <></>
-  }
-  if (isLoading) {
-    return <></>
-  }
-  const followings = data.data
+  const followings = data?.data
   console.log(followings)
+
   return (
     <>
       <div className="body">
@@ -36,22 +33,31 @@ export default function MyPostPage(props) {
               href={'/forum'}
             >
               <i className="bi bi-box-arrow-left me-2"></i>
-              回到社群
+              回到論壇
             </Link>
           </div>
-          <div className="my-following-main d-flex flex-lg-column flex-row flex-wrap gap-3">
-            {followings.map((f, i) => {
-              return (
-                <FollowingCard
-                  key={i}
-                  cardHref={`/forum/profile/${f.id}`}
-                  imgSrc={f.ava_url}
-                  imgAlt={f.nick}
-                  imgClassWidth="50"
-                  nick={f.nickname}
-                />
-              )
-            })}
+          <div className="my-following-main row flex-wrap">
+            {error
+              ? '連線失敗，請稍後再試'
+              : isLoading
+                ? '載入中'
+                : followings.map((f, i) => {
+                    return (
+                      <div
+                        key={i}
+                        className="col col-12 col-sm-4 col-lg-6 pb-3"
+                      >
+                        <FollowingCard
+                          followID={f.follow_id}
+                          nick={f.userNick}
+                          cardHref={`/forum/profile/${f.follow_id}`}
+                          imgSrc={f.userImg}
+                          imgClassWidth="50"
+                          followMutate={mutate}
+                        />
+                      </div>
+                    )
+                  })}
           </div>
         </div>
       </div>

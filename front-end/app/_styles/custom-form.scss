@@ -341,10 +341,10 @@ $form-radio-disabled-bg: #eee;
   box-shadow: 0 0 0.2rem rgba(0, 0, 0, 0);
 }
 .form-check-input:focus {
-  background-color: #d35b5b;
+  background-color: #4e4e4e;
 }
 .form-check-input:checked {
-  background-color: #d35b5b;
+  background-color: #4e4e4e;
 }
 /* 當 switch 被打開（checked） */
 .form-check.form-switch .form-check-input:checked {

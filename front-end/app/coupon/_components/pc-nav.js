@@ -1,4 +1,5 @@
 'use client'
+import IslaSwitch from '../../_components/form/switch/form-switch'
 import './coupon.css'
 
 export default function CouponFilterNav({
@@ -34,20 +35,15 @@ export default function CouponFilterNav({
       ))}
 
       {showSwitch && (
-        <div className="form-check form-switch d-flex align-items-center ms-4">
-          <input
-            className="form-check-input switch me-2"
-            type="checkbox"
-            id="switchCheckDefault"
-            checked={isChecked}
-            onChange={onToggleSwitch}
-          />
-          <label
-            className="form-check-label sub-text"
-            htmlFor="switchCheckDefault"
-          >
-            顯示已領取
-          </label>
+        <div className="d-flex align-items-center ms-2">
+          <div className="ms-auto d-flex align-items-center">
+            <IslaSwitch
+              checked={isChecked}
+              onChange={onToggleSwitch}
+              size="medium"
+            />
+            <label className="ps-2">顯示已領取</label>
+          </div>
         </div>
       )}
     </ul>

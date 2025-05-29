@@ -124,13 +124,6 @@ router.get('/:pageName', async function (req, res) {
       )
       break
     }
-    case 'my-following': {
-      postsResult = await db.query(
-        `SELECT id, nickname, ava_url FROM users LIMIT 10`
-      )
-      // FIXME
-      break
-    }
     case 'saved-post': {
       postsResult = await db.query(`${postsQuery} ORDER BY p.updated_at DESC`)
       // console.log(postsResult[0])
@@ -222,7 +215,7 @@ router.put('/', upload.none(), async function (req, res) {
 router.put('/soft-delete/:postID', async function (req, res) {
   try {
     const id = Number(req.params.postID)
-    console.log(id)
+    // console.log(id)
     // const [result] = await db.query(`DELETE FROM post WHERE id=${id}`)
     const [result] = await db.query(`UPDATE post SET valid=0 WHERE id=${id}`)
     if (result.affectedRows === 0) throw new Error('沒有資料被刪除')
