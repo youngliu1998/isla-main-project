@@ -20,7 +20,7 @@
   /* --bg-gray-article: #f2f1ef; */
   --bg-gray-article: #f7f7f7;
   --hover-gray: #dfdfdf;
-  --hover-gray-ripple: #dfdfdfb2;
+  --hover-gray-dark: #d2d2d2;
   --hover-light-gray: #eeeeed;
   --focus-gray: #d2d2d2b9;
   --main-text: #373737;
@@ -32,7 +32,11 @@
   /* overscroll-behavior: none; */
   .button-clear {
     border: 0px solid #ffffff00;
-    background-color: #ffffff00;
+    background-color: transparent;
+    padding: 0;
+    /* overflow: visible;
+    position: relative;
+    z-index: 1; */
   }
   /* .dropdown-forum {
     background-color: white;
@@ -129,12 +133,6 @@
   box-shadow: 0 0 12px 0 #0000000a;
 }
 
-/* btn */
-.ripples-container {
-  /* border-radius: 50px; */
-  /* overflow: hidden; */
-}
-
 /* font */
 .fs56 {
   font-size: 56px;
@@ -180,10 +178,22 @@
     background-color: var(--main-color);
     border: 1px solid var(--main-color);
   }
+
   &.active {
-    color: var(--main-color);
-    background-color: #00000000;
-    border: 1px solid var(--main-color);
+    color: var(--main-text);
+    background-color: var(--hover-gray);
+    border: 1px solid var(--hover-gray);
+  }
+  &.default-sub {
+    color: var(--isla-white);
+    background-color: var(--sub-color);
+    border: 1px solid var(--sub-color);
+  }
+  &.btn-follow {
+    min-width: 75px;
+    &:hover {
+      background-color: var(--hover-gray-dark);
+    }
   }
 }
 .button-bounce {
@@ -353,7 +363,7 @@
   background-color: #fafafa;
   /* background: linear-gradient(0deg, #fafafa6e, #fafafa 100%); */
   /* backdrop-filter: blur(5px); */
-  z-index: 999;
+  z-index: 99;
 }
 .posts {
   max-width: 800px;

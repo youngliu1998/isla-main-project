@@ -1,7 +1,4 @@
 import {
-  Tag,
-  Users,
-  Settings,
   LayoutGrid,
   WalletCards,
   Warehouse,
@@ -25,27 +22,31 @@ export function getMenuList(pathname) {
       groupLabel: '管理',
       menus: [
         {
-          href: '',
+          href: '/products',
           label: '商品',
           icon: Warehouse,
           submenus: [
             {
-              href: '/posts',
-              label: '商品上架',
+              href: '/products',
+              label: '商品列表',
             },
             {
-              href: '/posts/new',
-              label: '商品維護',
+              href: '/product/categories',
+              label: '分類管理',
+            },
+            {
+              href: '/product/tags',
+              label: '標籤管理',
             },
           ],
         },
         {
-          href: '/categories',
+          href: '/product/reviews',
           label: '商品評論管理',
           icon: MessageCircleHeart,
         },
         {
-          href: '/tags',
+          href: '/coupons',
           label: '優惠卷管理',
           icon: WalletCards,
         },

@@ -1,10 +1,14 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import ComponentsAvatar from '../../_components/avatar'
 import ComponentsBtnLikedSaved from '../../_components/btn-liked-saved'
 import ComponentsSubCommentToggle from './subCommentToggle'
+import { useAuth } from '../../../../hook/use-auth'
+import { useParams, usePathname } from 'next/navigation'
+import { UseCommentSubmit } from '../../_hooks/useCommentSubmit'
+import { UseDirectToLogin } from '../../_hooks/useDirectToLogin'
 
 export default function RecursiveComment({
   commentID = '',
@@ -13,11 +17,32 @@ export default function RecursiveComment({
   content = '',
   updatedAt,
   btnActive = Boolean,
-  btnCount = Number,
+  btnCount = 0,
   editActive = Boolean,
   mutate = () => {},
   subComments = [],
+  subCount = 0,
 }) {
+  const path = usePathname()
+  const postID = useParams().postID
+  const lastSubCommentRef = useRef()
+  const { user } = useAuth()
+  const isAuth = user.id !== 0
+  const userIDMe = user.id
+  const userNickMe = isAuth ? user.nickname : '訪客'
+  const userImgMe = isAuth ? user.ava_url : 'default-avatar.jpg'
+  const [isSubCommentShow, setSubCommentShow] = useState(false)
+  const [isSubInputShow, setSubInputShow] = useState(false)
+
+  const handleCommentSubmit = UseCommentSubmit({
+    postID,
+    mutate,
+  })
+
+  const handleDirectToLogin = UseDirectToLogin({ isAuth })
+
+  const handleCommentDelete = () => {}
+
   return (
     <>
       <div className="comment-content d-flex gap10">
@@ -51,21 +76,38 @@ export default function RecursiveComment({
           <div className="comment-info d-flex gap-2 align-content-center fs14 sub-text-color">
             {/* <div className="comment-date">3 月 26 日 16:07</div> */}
             <div className="comment-date">{updatedAt}</div>
-            <Link href="/" role="button" className="reply text-decoration-none">
+            <button
+              href="/"
+              className="reply button-clear text-decoration-none"
+              onClick={() => {
+                setSubInputShow((v) => !v)
+                handleDirectToLogin(path)
+              }}
+            >
               <span className="fs14 sub-text-color fw-light">回覆</span>
-            </Link>
+            </button>
             <button
               className={`button-clear main-text-color ${editActive ? 'd-block' : 'd-none'} px-0`}
-              type="button"
+              onClick={handleCommentDelete}
             >
               <span className="fs14 sub-text-color fw-light">刪除</span>
             </button>
           </div>
         </div>
       </div>
-      {subComments.length !== 0 && <ComponentsSubCommentToggle />}
+      {subComments.length !== 0 && (
+        <ComponentsSubCommentToggle
+          isSubCommentShow={isSubCommentShow}
+          setSubCommentShow={setSubCommentShow}
+          subCommentsLength={subCount}
+        />
+      )}
       {subComments.map((subComment, i) => (
-        <div key={i} className="sub-margin d-flex flex-column gap-3">
+        <div
+          key={i}
+          className={`sub-margin ${isSubCommentShow ? 'd-flex' : 'd-none'} flex-column gap-3`}
+          ref={i === subComments.length - 1 ? lastSubCommentRef : null}
+        >
           {/* comment-card d-flex flex-column gap-3 py-3 bottom-stroke */}
           <RecursiveComment
             commentID={subComment.id}
@@ -78,9 +120,31 @@ export default function RecursiveComment({
             editActive={subComment.editActive}
             mutate={mutate}
             subComments={subComment.subComments}
+            subCount={subComment.subCount}
           />
         </div>
       ))}
+      <div
+        className={`sub-input-block ${isSubInputShow ? 'd-flex' : 'd-none'}  gap-2 sub-margin`}
+      >
+        <ComponentsAvatar classWidth="32" src={userImgMe} alt={userNickMe} />
+        <input
+          className="sub-input bg-gray-article border-0 rounded-pill px-3 w-100"
+          placeholder={`回覆 ${userNick}`}
+          type="text"
+          onKeyDown={(e) => {
+            if (
+              e.key === 'Enter' &&
+              e.target.value !== '' &&
+              !e.nativeEvent.isComposing
+            ) {
+              handleCommentSubmit(e, userIDMe, commentID, lastSubCommentRef)
+              mutate()
+              setSubCommentShow(true)
+            }
+          }}
+        />
+      </div>
     </>
   )
 }

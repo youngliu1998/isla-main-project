@@ -341,10 +341,10 @@ $form-radio-disabled-bg: #eee;
   box-shadow: 0 0 0.2rem rgba(0, 0, 0, 0);
 }
 .form-check-input:focus {
-  background-color: #d35b5b;
+  background-color: #4e4e4e;
 }
 .form-check-input:checked {
-  background-color: #d35b5b;
+  background-color: #4e4e4e;
 }
 /* 當 switch 被打開（checked） */
 .form-check.form-switch .form-check-input:checked {
@@ -379,9 +379,9 @@ $form-radio-disabled-bg: #eee;
   background-color: rgba(250, 236, 236, 0.6) !important;
   color: #414141 !important;
   font-size: 16px !important;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.2) !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2) !important;
   backdrop-filter: blur(10px);
-  border-radius: 12px !important;     /* 圓角 */
+  border-radius: 12px !important; /* 圓角 */
 }
 
 /* 修改不同類型 toast 的顏色 */
@@ -404,8 +404,38 @@ $form-radio-disabled-bg: #eee;
 }
 
 .Toastify__progress-bar {
-  background: rgba(143, 143, 143, 0.41) !important;    /* 進度條顏色 */
-  height: 3px !important;            /* 高度 */
-  border-radius: 8px !important;     /* 圓角 */
+  background: rgba(143, 143, 143, 0.41) !important; /* 進度條顏色 */
+  height: 3px !important; /* 高度 */
+  border-radius: 8px !important; /* 圓角 */
 }
 
+/* 覆蓋背景透明度 */
+.yarl__slide {
+  // backdrop-filter: blur(10px) !important; /* 玻璃擬態效果 */
+}
+.yarl__root {
+  transition: all 0.3s ease-in-out !important;
+  background-color: rgba(255, 255, 255, 0.3) !important;
+  backdrop-filter: blur(10px) !important; /* 玻璃擬態效果 */
+}
+.yarl__container {
+  background: none !important;
+  // backdrop-filter: blur(10px) !important; /* 玻璃擬態效果 */
+}
+
+/* 調整圖片大小或樣式 */
+.yarl__slide_image {
+  object-fit: contain;
+  border-radius: 10px;
+}
+
+/* 隱藏導航箭頭 */
+.yarl__button_prev,
+.yarl__button_next {
+  // display: none;
+}
+
+/* 自訂 loading 樣式 */
+.yarl__spinner {
+  color: rgb(233, 92, 73);
+}

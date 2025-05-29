@@ -35,7 +35,19 @@ router.get('/', async function (req, res) {
   return res.json({ status: 'success', data: data })
 })
 
-// 展開子留言
-router.get('/sub-comment', async function (req, res) {})
+router.post('/', async function (req, res) {
+  const { content, userID, postID, parentID } = req.body
+  console.log({ content, userID, postID, parentID })
+  const [result] = await db.query(
+    `INSERT INTO comment (content, user_id, post_id, parent_id) VALUES (?, ?, ?, ?)`,
+    [content, userID, postID, parentID]
+  )
+
+  if (result.affectedRows === 0) {
+    throw new Error('未修改資料')
+  }
+
+  return res.json({ status: 'success', data: null })
+})
 
 export default router
