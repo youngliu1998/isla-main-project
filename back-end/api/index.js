@@ -24,22 +24,31 @@ import 'dotenv/config.js'
 import { request } from 'http'
 import wishlistRouter from '../routes/course/wishlist.js'
 
-
 // 建立 Express 應用程式
 const app = express()
 
 // cors設定，參數為必要，注意不要只寫`app.use(cors())`
 // 設定白名單，只允許特定網址存取
-const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000'
-const whiteList = frontendUrl.split(',')
+const whitelist = [
+  process.env.FRONTEND_URL,
+  'http://localhost:3000',
+  'http://localhost:3001',
+].filter(Boolean)
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || whitelist.includes(origin)) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+}
+
 // 設定CORS
-app.use(
-  cors({
-    origin: whiteList,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-    credentials: true,
-  })
-)
+app.use(cors(corsOptions))
 
 // 視圖引擎設定(使用pug)，不使用視圖引擎，所以註解掉
 // res.render()會找views資料夾中的pug檔案
@@ -211,6 +220,5 @@ const port = process.env.PORT || 3000
 app.listen(port, () => console.log(`Server ready on port ${port}`))
 
 app.use('/api/course/wishlist', wishlistRouter)
-
 
 export default app
