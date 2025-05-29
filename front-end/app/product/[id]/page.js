@@ -18,12 +18,23 @@ import React, { useState, useMemo, useEffect, useCallback } from 'react'
 import Zoom from 'react-medium-image-zoom'
 import 'react-medium-image-zoom/dist/styles.css'
 import { useAuth } from '@/hook/use-auth.js'
+<<<<<<< HEAD
 import ProductInfoAccrodion from './_component/product-info-accordion/product-info-accordion.js'
 import Image from 'next/image.js'
 import Link from 'next/link'
 import {toast} from "react-toastify";
 import LoadingLottie from "../_components/loading/lottie-loading.js";
 import LoadingErrorLottie from "../_components/loading-error/lottie-error.js";
+=======
+import { toast } from 'react-toastify'
+
+import ProductInfoAccrodion from './_component/product-info-accordion/product-info-accordion.js'
+import Image from 'next/image.js'
+import Link from 'next/link'
+import LoadingLottie from '../_components/loading/lottie-loading.js'
+import LoadingErrorLottie from '../_components/loading-error/lottie-error.js'
+import ReactViewShare from './_component/recent-view-and-share/recent-view-and-share'
+>>>>>>> 7d09691 (cart/0529/02)
 
 export default function page({ params }) {
   // i don't know what is this shit, but it's warning
@@ -32,7 +43,6 @@ export default function page({ params }) {
   const userId = user?.id
   const correct_nickname = user?.nickname
   const correct_ava_url = user?.ava_url
-
 
   const unwrappedParams = React.use(params)
   const id = unwrappedParams?.id
@@ -117,6 +127,8 @@ export default function page({ params }) {
       {
         onSuccess: (data) => {
           console.log('加入成功：', data)
+          window.dispatchEvent(new Event('cart-updated'))
+          toast.success(data?.message || '成功加入購物車')
         },
         onError: (err) => {
           console.error('加入購物車失敗：', err)
@@ -250,7 +262,9 @@ export default function page({ params }) {
                   />
                 </div>
                 <div className="price-box d-flex align-items-center ">
-                  <div className="price">NT${parseInt(product.final_price)}</div>{' '}
+                  <div className="price">
+                    NT${parseInt(product.final_price)}
+                  </div>{' '}
                   <button
                     className="add-cart"
                     type="button"

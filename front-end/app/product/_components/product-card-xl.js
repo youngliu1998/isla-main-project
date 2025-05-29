@@ -12,13 +12,12 @@ import { useClientToken } from '@/hook/use-client-token.js'
 import { useAuth } from '@/hook/use-auth.js'
 import { useAddCart } from '@/hook/use-add-cart.js'
 import { useToggleWish } from '@/hook/use-toggle-wish.js'
-import WishButton from '../../_components/wish-toggle.js'
 import { toast } from 'react-toastify'
 
 function ProductCard({ product }) {
   if (!product) return <div></div>
   const { user, isLoading: isAuthLoading } = useAuth()
-  if (isAuthLoading) return <div></div>;
+  if (isAuthLoading) return <div></div>
   const token = useClientToken()
   const [isImageLoaded, setIsImageLoaded] = useState(false)
   const { mutate: addToCart } = useAddCart(token)
@@ -44,13 +43,13 @@ function ProductCard({ product }) {
     const quantity = 1
     addToCart(
       {
-        product_id: product.product_id,
+        product_id: product.id,
         quantity,
       },
       {
         onSuccess: (data) => {
           window.dispatchEvent(new Event('cart-updated'))
-          toast.success(data?.message || '成功加入購物車')
+          toast.success('商品加入購物車成功：', data)
           // 可以添加成功提示 UI
         },
         onError: (err) => {

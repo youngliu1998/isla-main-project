@@ -27,6 +27,7 @@ export default function QuantityControler({
     try {
       await cartApi.patch(`/cart-items/update/${id}`, { quantity: newQty })
       console.log('更新商品 ID:', id)
+      window.dispatchEvent(new Event('cart-updated'))
     } catch (error) {
       console.log('更新資料失敗', error)
     }
