@@ -292,6 +292,14 @@
     }
   }
 }
+/* 課程 */
+.author-info {
+  border: 0px solid #ffffff00;
+  background-color: #ffffff00;
+}
+.post-tag {
+  background-color: #eeeeed;
+}
 
 /* VVVV微調！VVVV */
 /* layout */
@@ -425,6 +433,7 @@
       }
     }
   }
+
   .more-followings-link {
     &:hover {
       background-color: var(--hover-gray);
