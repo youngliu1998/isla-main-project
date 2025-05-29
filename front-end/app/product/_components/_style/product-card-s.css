@@ -21,19 +21,18 @@
   background: #ffffff;
   height: 349px;
   width: 230px;
-  padding: 0;
-  border-radius: 8px;
+  padding: 6px 10px;
+  border-radius: 24px;
   overflow: hidden;
-  box-shadow: 0 -1px 0 #ffffff;
+  /* box-shadow: 0 -1px 0 #ffffff; */
   transition: all 0.4s ease-in-out;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
 }
 .product-card-product_card:hover {
   cursor: pointer;
-  box-shadow:
-    0 -2px 0 #dcdcdc,
-    0 3px 10px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.15);
   /*background: #f1f1f1;*/
-  border-radius: 8px;
+  /* border-radius: 8px; */
 }
 
 .product-card-head-top {
@@ -48,6 +47,10 @@
   padding: 4px 10px;
   transition: all 0.3s;
   justify-content: space-between;
+}
+
+.product-card-product_card-info:hover {
+  background: #ffffff;
 }
 
 .product-card-product_card-img {
@@ -199,20 +202,20 @@
 
 .product-card-tag {
   background-image: linear-gradient(
-          45deg,
-          hsl(194deg 34% 73%) 0%,
-          hsl(200deg 41% 74%) 8%,
-          hsl(207deg 46% 76%) 17%,
-          hsl(215deg 48% 78%) 25%,
-          hsl(227deg 47% 80%) 33%,
-          hsl(247deg 42% 82%) 42%,
-          hsl(271deg 40% 80%) 50%,
-          hsl(298deg 35% 78%) 58%,
-          hsl(322deg 50% 79%) 67%,
-          hsl(337deg 67% 81%) 75%,
-          hsl(349deg 80% 82%) 83%,
-          hsl(360deg 87% 82%) 92%,
-          hsl(10deg 88% 80%) 100%
+    45deg,
+    hsl(194deg 34% 73%) 0%,
+    hsl(200deg 41% 74%) 8%,
+    hsl(207deg 46% 76%) 17%,
+    hsl(215deg 48% 78%) 25%,
+    hsl(227deg 47% 80%) 33%,
+    hsl(247deg 42% 82%) 42%,
+    hsl(271deg 40% 80%) 50%,
+    hsl(298deg 35% 78%) 58%,
+    hsl(322deg 50% 79%) 67%,
+    hsl(337deg 67% 81%) 75%,
+    hsl(349deg 80% 82%) 83%,
+    hsl(360deg 87% 82%) 92%,
+    hsl(10deg 88% 80%) 100%
   );
   border-radius: 15px;
   font-size: 12px;
@@ -267,7 +270,6 @@
     background-color: #e0e0e0;
   }
 }
-
 
 @media (max-width: 1400px) {
   .product-card-product_card {

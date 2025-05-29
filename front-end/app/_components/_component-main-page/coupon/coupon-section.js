@@ -49,8 +49,10 @@ export default function CouponSection() {
         <div className="container">
           {/* ==== title ==== */}
           <div className="d-flex justify-content-between align-items-center text-white p-3">
-            <h2>優惠券專區 COUPON</h2>
-            <Link href="/coupon/products">查看更多優惠券 &gt;</Link>
+            <h2 className="show-more-coupon-title">優惠券專區 COUPON</h2>
+            <Link className={'show-more-coupon'} href="/coupon/products">
+              查看更多優惠券 &gt;
+            </Link>
           </div>
           {/* ==== coupon list ==== */}
           <div className="row row-cols-lg-3 row-cols-md-2 row-cols-1 gy-5 justify-content-center py-3">
