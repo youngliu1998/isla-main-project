@@ -6,6 +6,7 @@ const router = express.Router()
 
 // POST http://localhost:3005/api/cart-items/create
 router.post('/', verifyToken, async (req, res) => {
+  console.log('🧾 req.body', req.body)
   const user_id = req.user.id
   const {
     product_id = null,

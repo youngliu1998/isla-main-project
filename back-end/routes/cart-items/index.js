@@ -47,12 +47,8 @@ router.get('/', verifyToken, async (req, res) => {
         FROM products p
         LEFT JOIN categories cat ON p.category_id = cat.category_id
         LEFT JOIN product_images pi ON pi.product_id = p.product_id AND pi.is_primary = 1
-<<<<<<< HEAD
-        WHERE p.product_id IN (${placeholders})`,
-=======
         WHERE p.product_id IN (${placeholders})
         `,
->>>>>>> 4487d19fd45a63c2eb56c9f19e4ff248563ce5fe
         productIds
       )
       products = productRows

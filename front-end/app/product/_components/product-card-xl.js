@@ -43,7 +43,7 @@ function ProductCard({ product }) {
     const quantity = 1
     addToCart(
       {
-        product_id: product.product_id,
+        product_id: product.id,
         quantity,
       },
       {
