@@ -5,11 +5,15 @@ import React, { useState, useEffect } from 'react'
 import Componentstab from '../_component/tab/tab'
 import ProductListContainer from './_component/product-list-container'
 import CourseListContainer from './_component/course-list-container'
+import WishProductListTable from './_component/product-list-table/product-list-table'
+
+
 // ==== style ====
 import '../_styles/style.css'
 
 export default function LikeListPage(props) {
   // ==== ComponentTab ====
+
   const tab = ['商品', '課程']
   const [tabSwitch, setTabSwitch] = useState(1)
   // ==== END ComponentTab ====
@@ -96,6 +100,7 @@ export default function LikeListPage(props) {
               )
             )
           })}
+        <WishProductListTable />
 
         {/* ==== 顯示課程 ==== */}
         {/* {tabSwitch === 2 && <CourseListContainer />} */}
