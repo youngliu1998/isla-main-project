@@ -24,25 +24,29 @@ export default function LoginPage() {
   // 宣告一個非同步的函式 handleSubmit，參數 e 是事件物件（例如表單提交事件）
   const handleSubmit = async (e) => {
     // 阻止表單預設行為（例如頁面重新載入）
+
+    console.log('flag submit')
     e.preventDefault()
 
     await login(memAuth.email, memAuth.password)
-
+    console.log('flag login')
     // 檢查 localStorage 中的 'isAuth' 是否為 'true'（表示使用者已成功登入）
-    const isAuthLocal = localStorage.getItem('isAuth') === 'true'
+    const isAuthLocal = localStorage.getItem('jwtToken')
 
     // 如果使用者成功登入
     if (isAuthLocal) {
+      console.log('flag isAuthLocal')
       // 取得登入前預先儲存的導向路徑（例如使用者原本想進入的頁面）
-      const redirectPath = localStorage.getItem('redirectAfterLogin')
+      const redirectPath = localStorage.getItem('redirectAfterLogin') || false
       // 檢查使用者是否在登入前點擊「立即購買」按鈕
-      const pendingBuyNow = localStorage.getItem('pendingBuyNow')
+      const pendingBuyNow = localStorage.getItem('pendingBuyNow') || false
 
       // 清除已使用過的 redirect path 資料
       localStorage.removeItem('redirectAfterLogin')
 
       // ✅ 若登入前曾點擊立即購買
       if (pendingBuyNow) {
+        console.log('flag buyNow')
         // 清除 pending 購買記錄
         localStorage.removeItem('pendingBuyNow')
         // 導向該課程詳情頁，讓該頁 useEffect 中的購買邏輯自動處理
@@ -52,8 +56,10 @@ export default function LoginPage() {
 
       // 一般情況（未點擊立即購買），若有設定登入後要導向的頁面，就跳轉過去
       if (redirectPath) {
+        console.log('flag redirectPath')
         router.push(redirectPath)
       } else {
+        console.log('flag home')
         // 若無特定導向頁面，預設導回首頁
         router.push('/')
       }
@@ -61,17 +67,6 @@ export default function LoginPage() {
   }
 
   // 跳轉結束
-
-  //無跳轉頁面
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault()
-  //   console.log('account', memAuth.email)
-  //   await login(memAuth.email, memAuth.password)
-  //   const isAuthLocal = localStorage.getItem('isAuth') || false
-  //   if (isAuthLocal) {
-  //     router.push('/')
-  //   }
-  // }
   // ==== google 認證設定 ====
   // course登入後跳回原本畫面並自動執行收藏
   const responseMessage = async (response) => {

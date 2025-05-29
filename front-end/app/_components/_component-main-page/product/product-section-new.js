@@ -80,7 +80,6 @@ export default function ProductSectionNew() {
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-lg-4 g-4 p-0 m-0 mt-4">
           {
             <div className="d-flex gap-4 product-list">
-              {console.log('products in page', products)}
               {products.slice(0, 4).map((p) => (
                 <div key={p.product_id} className="product-card-container">
                   <ProductCard

@@ -8,6 +8,7 @@ import { useAuth } from '@/hook/use-auth'
 import BasicProfile from './_component/basic-profile'
 import InputText from '../_component/input-text'
 import Select from '../_component/select'
+// import Path from '../_component/path/path'
 // ==== data ====
 import { cities } from './data/CityCountyData'
 
@@ -149,6 +150,7 @@ export default function ProfilePage() {
   }, [])
   return (
     <>
+      {/* <Path /> */}
       <form onSubmit={handleSubmit}>
         <div className="user-content">
           <h3>會員資料</h3>
