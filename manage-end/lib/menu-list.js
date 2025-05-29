@@ -3,6 +3,7 @@ import {
   WalletCards,
   Warehouse,
   MessageCircleHeart,
+  Users,
 } from 'lucide-react'
 
 export function getMenuList(pathname) {
