@@ -3,26 +3,16 @@
 import React, { useState, useEffect } from 'react'
 // ==== component ====
 import Componentstab from '../_component/tab/tab'
-import ProductListContainer from './_component/product-list-container'
-import CourseListContainer from './_component/course-list-container'
-<<<<<<< HEAD
-import { useWishProduct } from '@/hook/use-wish-with-product'
-=======
+// import ProductListContainer from './_component/product-list-container'
+// import CourseListContainer from './_component/course-list-container'
 import WishProductListTable from './_component/product-list-table/product-list-table'
-
-
->>>>>>> dev
+import WishCourseListTable from './_component/course-list-table/course-list-table'
 // ==== style ====
 import '../_styles/style.css'
 
 export default function LikeListPage(props) {
-<<<<<<< HEAD
-  // const token = localStorage.getItem('jwtToken')
-  // // ==== ComponentTab ====
-=======
   // ==== ComponentTab ====
 
->>>>>>> dev
   const tab = ['商品', '課程']
   const [tabSwitch, setTabSwitch] = useState(1)
   // // ==== END ComponentTab ====
@@ -41,24 +31,7 @@ export default function LikeListPage(props) {
   //   { name: '日式彩妝', data: [] },
   //   { name: '彩妝體驗', data: [] },
   // ])
-  // const getCourse = async () => {
-  //   if (!token) return
-  //   const response = await fetch(
-  //     'http://localhost:3005/api/member/likeList/course',
-  //     {
-  //       method: 'GET',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     }
-  //   )
 
-  //   const data = await response.json()
-  //   if (response.ok) {
-  //     setCourseList(data)
-  //   }
-  // }
   // const { data } = useWishProduct(token)
   // console.log(data)
   // const getProduct = async () => {
@@ -86,6 +59,10 @@ export default function LikeListPage(props) {
         <div>
           <Componentstab cates={tab} handleTabChange={setTabSwitch} />
         </div>
+
+        {tabSwitch === 1 && <WishProductListTable />}
+        {tabSwitch === 2 && <WishCourseListTable />}
+
         {/* ==== 顯示商品 ==== */}
         {/* {tabSwitch === 1 && <ProductListContainer />} */}
         {/* {tabSwitch === 1 &&
@@ -99,12 +76,7 @@ export default function LikeListPage(props) {
                 />
               )
             )
-<<<<<<< HEAD
-          })} */}
-=======
           })}
-        <WishProductListTable />
->>>>>>> dev
 
         {/* ==== 顯示課程 ==== */}
         {/* {tabSwitch === 2 && <CourseListContainer />} */}
