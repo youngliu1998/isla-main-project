@@ -189,6 +189,7 @@ export default function page({ params }) {
   }
   return (
     <>
+      <ReactViewShare product={product} />
       <section className="product-main">
         <div className="product-main-container container d-flex justify-content-center align-items-center">
           <div className="product d-flex align-items-center justify-content-center">

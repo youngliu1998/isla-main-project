@@ -68,7 +68,7 @@ export default function MyPostPage(props) {
           <div className="me-auto fs32 fw-bold">我的文章</div>
           <Link className="text-main px-3 py-2 rounded-pill" href={'/forum'}>
             <i className="bi bi-box-arrow-left me-2"></i>
-            回到社群
+            回到論壇
           </Link>
         </div>
         <div className="posts d-flex flex-column gap-3 w-100">

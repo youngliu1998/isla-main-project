@@ -82,7 +82,7 @@ export default function SideBar() {
             onClick={() => {
               logout()
             }}
-            href="/"
+            href="/member/login"
           >
             登出
           </Link>

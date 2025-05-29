@@ -16,9 +16,7 @@ import WishButton from '../../_components/wish-toggle.js'
 import { toast } from 'react-toastify'
 
 function ProductCard({ product }) {
-  if (!product) return <div></div>
   const { user, isLoading: isAuthLoading } = useAuth()
-  if (isAuthLoading) return <div></div>;
   const token = useClientToken()
   const [isImageLoaded, setIsImageLoaded] = useState(false)
   const { mutate: addToCart } = useAddCart(token)
@@ -44,7 +42,7 @@ function ProductCard({ product }) {
     const quantity = 1
     addToCart(
       {
-        product_id: product.product_id,
+        product_id: product.id,
         quantity,
       },
       {
@@ -84,6 +82,10 @@ function ProductCard({ product }) {
   const IMAGE_PREFIX = 'https://isla-image.chris142852145.workers.dev/'
   const fullImageUrl = `${IMAGE_PREFIX}${imageUrl}`
   const productUrl = `http://localhost:3000/product/${id}`
+
+  if (!product || isAuthLoading) {
+    return null
+  }
 
   return (
     <Link href={productUrl} passHref>
