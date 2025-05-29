@@ -10,6 +10,7 @@ import { courseUrl } from '../../_route/courseUrl' // API 路由常數
 import '../course/_components/course.css' // 課程區塊樣式
 import { MdSearch } from 'react-icons/md' // 搜尋 icon
 import MobileFilterBar from '../course/_components/mobile-filter-bar/mobile-filter-bar' // 手機版篩選欄元件（目前未使用）
+import IslaSwitch from '../_components/form/switch/form-switch'
 
 export default function CoursePage() {
   // ====== 狀態定義 ======
@@ -170,21 +171,13 @@ export default function CoursePage() {
                 </li>
               ))}
               <li className="nav-item" role="presentation">
-                <div className="form-check form-switch d-flex justify-content-center">
-                  <input
-                    className="form-check-input rounded-pill me-2 search-btn1"
-                    type="checkbox"
-                    role="switch"
-                    id="flexSwitchCheckDefault"
+                <div className="d-flex justify-content-center">
+                  <IslaSwitch
                     checked={!!showExperienceOnly}
                     onChange={() => setShowExperienceOnly((prev) => !prev)}
+                    size="medium"
                   />
-                  <label
-                    className="form-check-label search-btntext"
-                    htmlFor="flexSwitchCheckDefault"
-                  >
-                    彩妝體驗
-                  </label>
+                  <label className="ps-2 search-btntext">彩妝體驗</label>
                 </div>
               </li>
             </ul>
@@ -289,20 +282,13 @@ export default function CoursePage() {
               <hr />
               <p className="mb-1 fw-bold">狀態</p>
 
-              <div className="form-check form-switch py-2 d-flex align-items-center">
-                <input
-                  className="form-check-input rounded-pill  search-btn1"
-                  type="checkbox"
-                  id="mobileExperienceSwitch"
+              <div className=" py-2 d-flex align-items-center">
+                <IslaSwitch
                   checked={!!showExperienceOnly}
                   onChange={() => setShowExperienceOnly((prev) => !prev)}
+                  size="medium"
                 />
-                <label
-                  className="form-check-label search-btntext ps-1"
-                  htmlFor="mobileExperienceSwitch"
-                >
-                  只顯示彩妝體驗
-                </label>
+                <label className="ps-2 search-btntext">彩妝體驗</label>
               </div>
               <div className="mb-1 fw-bold">類別</div>
               <section className="d-lg-none my-1">

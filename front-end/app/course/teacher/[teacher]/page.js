@@ -8,6 +8,10 @@ import DOMPurify from 'dompurify'
 import { useRef } from 'react'
 import CourseCard from '../../../course/_components/course-card/course-card'
 import { courseUrl } from '../../../../_route/courseUrl'
+import ComponentsPostCard from '../../../forum/_components/post-card'
+import '../../../forum/_components/forum.css'
+import Link from 'next/link'
+import PurchasedCourseCard from '../../../course/_components/purchased-course-card/purchased-course-card'
 
 export default function TeacherPage() {
   const [data, setData] = useState(null) // 講師資料
@@ -19,6 +23,8 @@ export default function TeacherPage() {
   const id = params.teacher
 
   console.log(params.teacher)
+  const [articles, setArticles] = useState([])
+  const [purchasedCourses, setPurchasedCourses] = useState([]) // 老師購買的課程
 
   useEffect(() => {
     async function getTeacherData() {
@@ -52,7 +58,7 @@ export default function TeacherPage() {
       const token = localStorage.getItem('jwtToken')
       try {
         const res = await fetch(
-          `http://localhost:3005/api/course/teacher-list/teacher-course/7`,
+          `http://localhost:3005/api/course/teacher-list/teacher-course/${id - 72}`,
           {
             method: 'GET',
             headers: token
@@ -83,10 +89,37 @@ export default function TeacherPage() {
         console.error('撈取講師課程失敗:', err)
       }
     }
+    async function fetchTeacherArticles() {
+      const res = await fetch(
+        `http://localhost:3005/api/course/teacher-post/user/${id}`
+      )
+      const json = await res.json()
+      if (json.status === 'success') {
+        console.log(json.data)
+        setArticles(json.data)
+      }
+    }
+    async function fetchTeacherPurchases() {
+      try {
+        const res = await fetch(
+          `http://localhost:3005/api/course/teacher-purchases/${id}`
+        )
+        const result = await res.json()
+        if (result.status === 'success') {
+          setPurchasedCourses(result.data || [])
+        } else {
+          console.warn('購買課程資料非 success:', result)
+        }
+      } catch (err) {
+        console.error('撈取購買課程失敗:', err)
+      }
+    }
 
     if (id) {
       getTeacherData() // ✅ 恢復這個 function 的定義
       getTeacherCourses()
+      fetchTeacherArticles()
+      fetchTeacherPurchases()
     }
   }, [id])
 
@@ -94,7 +127,6 @@ export default function TeacherPage() {
     return (
       <div className="text-center">
         <p>資料載入中...</p>
-        <p className="text-danger">⚠ 無法取得講師資料，請確認 ID 是否正確</p>
       </div>
     )
   }
@@ -152,15 +184,27 @@ export default function TeacherPage() {
                 <div className="row row-cols-2 justify-content-evenly align-items-center">
                   <div className="col text-center">
                     <div className="text-center card-text my-1">已參加</div>
-                    <div className="fs-4">2堂課</div>
+                    <div className="fs-4">
+                      {Array.isArray(purchasedCourses)
+                        ? purchasedCourses.length
+                        : 0}{' '}
+                      堂課
+                    </div>
                   </div>
                   <div className="col text-center">
                     <div className="text-center card-text my-1">已開設</div>
-                    <div className="fs-4">3堂課</div>
+                    <div className="fs-4">
+                      {Array.isArray(courseCard)
+                        ? courseCard.filter(
+                            (v) => v.status != 0 && v.status != '0'
+                          ).length
+                        : 0}
+                      堂課
+                    </div>
                   </div>
                 </div>
                 <hr />
-                <h5 className="card-title">關於我</h5>
+                <h5 className="my-3">關於我</h5>
                 <div
                   className="card-text"
                   dangerouslySetInnerHTML={{
@@ -285,7 +329,6 @@ export default function TeacherPage() {
           <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 p-0 m-0 my-4">
             {courseCard
               .filter((v) => v.status != 0 && v.status != '0')
-              .slice(0, 4)
               .map((v) => (
                 <CourseCard
                   key={v.id}
@@ -293,7 +336,7 @@ export default function TeacherPage() {
                   picture={`/images/course/bannerall/${v.picture}`}
                   tag={v.tag}
                   title={v.title}
-                  teacher={v.teacher}
+                  teacher_name={v.teacher_name}
                   student={v.student}
                   price={v.price}
                   discount={v.discount}
@@ -310,138 +353,16 @@ export default function TeacherPage() {
             </div>
           </div>
           <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 p-0 m-0 my-4">
-            <div className="col mb-5">
-              <div
-                className="card h-100 card-hover-course"
-                data-course-id="course123"
-              >
-                <div className="card-img-container-course">
-                  <Image
-                    src="/images/course/bannerall/banner1.jpg"
-                    alt="課程圖片"
-                    width={800}
-                    height={450}
-                    className="card-img-top-course"
-                  />
-                  <div className="heart-icon-course">
-                    <i className="bx bx-heart" />
-                  </div>
-                </div>
-                <div className="card-body">
-                  <button className="btn card-btn-course mb-2">課程</button>
-                  <h5 className="card-title mb-2">
-                    臉部撥筋Ｘ耳穴按摩Ｘ芳療活絡｜現代人的 10 分鐘舒壓養顏術
-                  </h5>
-                  <p className="card-teacher-course mb-2">李郁文</p>
-                  <div className="d-flex align-content-center">
-                    <div className="mb-2 me-3 card-score-course">
-                      3.5
-                      <i className="bx bxs-star" />
-                      <i className="bx bxs-star" />
-                      <i className="bx bxs-star" />
-                      <i className="bx bxs-star-half" />
-                      <i className="bx bx-star" />
-                    </div>
-                    <div className="d-flex">
-                      <i className="bi bi-people me-2" />
-                      <div className="card-people-course">3,550</div>
-                    </div>
-                  </div>
-                  <div className="d-flex align-items-end text-end">
-                    <h5 className="card-text me-3">NT 5,808</h5>
-                    <p className="card-text-discount m-0">NT 7,808</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="col mb-5">
-              <div
-                className="card h-100 card-hover-course"
-                data-course-id="course123"
-              >
-                <div className="card-img-container-course">
-                  <Image
-                    src="/images/course/bannerall/banner1.jpg"
-                    alt="課程圖片"
-                    width={800}
-                    height={450}
-                    className="card-img-top-course"
-                  />
-                  <div className="heart-icon-course">
-                    <i className="bx bx-heart" />
-                  </div>
-                </div>
-                <div className="card-body">
-                  <button className="btn card-btn-course mb-2">課程</button>
-                  <h5 className="card-title mb-2">
-                    臉部撥筋Ｘ耳穴按摩Ｘ芳療活絡｜現代人的 10 分鐘舒壓養顏術
-                  </h5>
-                  <p className="card-teacher-course mb-2">李郁文</p>
-                  <div className="d-flex align-content-center">
-                    <div className="mb-2 me-3 card-score-course">
-                      3.5
-                      <i className="bx bxs-star" />
-                      <i className="bx bxs-star" />
-                      <i className="bx bxs-star" />
-                      <i className="bx bxs-star-half" />
-                      <i className="bx bx-star" />
-                    </div>
-                    <div className="d-flex">
-                      <i className="bi bi-people me-2" />
-                      <div className="card-people-course">3,550</div>
-                    </div>
-                  </div>
-                  <div className="d-flex align-items-end text-end">
-                    <h5 className="card-text me-3">NT 5,808</h5>
-                    <p className="card-text-discount m-0">NT 7,808</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="col mb-5">
-              <div
-                className="card h-100 card-hover-course"
-                data-course-id="course123"
-              >
-                <div className="card-img-container-course">
-                  <Image
-                    src="/images/course/bannerall/banner1.jpg"
-                    alt="課程圖片"
-                    width={800}
-                    height={450}
-                    className="card-img-top-course"
-                  />
-                  <div className="heart-icon-course">
-                    <i className="bx bx-heart" />
-                  </div>
-                </div>
-                <div className="card-body">
-                  <button className="btn card-btn-course mb-2">課程</button>
-                  <h5 className="card-title mb-2">
-                    臉部撥筋Ｘ耳穴按摩Ｘ芳療活絡｜現代人的 10 分鐘舒壓養顏術
-                  </h5>
-                  <p className="card-teacher-course mb-2">李郁文</p>
-                  <div className="d-flex align-content-center">
-                    <div className="mb-2 me-3 card-score-course">
-                      3.5
-                      <i className="bx bxs-star" />
-                      <i className="bx bxs-star" />
-                      <i className="bx bxs-star" />
-                      <i className="bx bxs-star-half" />
-                      <i className="bx bx-star" />
-                    </div>
-                    <div className="d-flex">
-                      <i className="bi bi-people me-2" />
-                      <div className="card-people-course">3,550</div>
-                    </div>
-                  </div>
-                  <div className="d-flex align-items-end text-end">
-                    <h5 className="card-text me-3">NT 5,808</h5>
-                    <p className="card-text-discount m-0">NT 7,808</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+            {purchasedCourses.length === 0 ? (
+              <p className="text-center ">尚未購買課程</p>
+            ) : (
+              purchasedCourses.map((course) => (
+                <PurchasedCourseCard
+                  key={course.order_item_id}
+                  course={course}
+                />
+              ))
+            )}
           </div>
           {/* box5*/}
           <div className="px-0 my-5">
@@ -449,140 +370,35 @@ export default function TeacherPage() {
               <h3>{data.users_name} 發佈過的文章</h3>
             </div>
           </div>
-          <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 p-0 m-0 my-4">
-            <div className="col mb-5">
-              <div
-                className="card h-100 card-hover-course"
-                data-course-id="course123"
-              >
-                <div className="card-img-container-course">
-                  <Image
-                    src="/images/course/bannerall/banner1.jpg"
-                    alt="課程圖片"
-                    width={800}
-                    height={450}
-                    className="card-img-top-course"
+          {/*  */}
+          <div className="">
+            {articles.length === 0 ? (
+              <p className="text-center">尚未發佈文章</p>
+            ) : (
+              articles.map((article) => (
+                <div className="col mb-5" key={article.id}>
+                  <ComponentsPostCard
+                    postID={article.id}
+                    postTitle={article.title}
+                    postCateName={article.product_cate_name || '分類'}
+                    postContent={article.content}
+                    updatedAt={article.updated_at}
+                    authorID={article.user_id}
+                    authorName={article.author_name}
+                    src={article.avatar_url}
+                    alt={article.author_name}
+                    width="20"
+                    btnLikedActive={false}
+                    btnSavedActive={false}
+                    btnLikedCount={0}
+                    btnSavedCount={0}
                   />
-                  <div className="heart-icon-course">
-                    <i className="bx bx-heart" />
-                  </div>
                 </div>
-                <div className="card-body">
-                  <button className="btn card-btn-course mb-2">課程</button>
-                  <h5 className="card-title mb-2">
-                    臉部撥筋Ｘ耳穴按摩Ｘ芳療活絡｜現代人的 10 分鐘舒壓養顏術
-                  </h5>
-                  <p className="card-teacher-course mb-2">李郁文</p>
-                  <div className="d-flex align-content-center">
-                    <div className="mb-2 me-3 card-score-course">
-                      3.5
-                      <i className="bx bxs-star" />
-                      <i className="bx bxs-star" />
-                      <i className="bx bxs-star" />
-                      <i className="bx bxs-star-half" />
-                      <i className="bx bx-star" />
-                    </div>
-                    <div className="d-flex">
-                      <i className="bi bi-people me-2" />
-                      <div className="card-people-course">3,550</div>
-                    </div>
-                  </div>
-                  <div className="d-flex align-items-end text-end">
-                    <h5 className="card-text me-3">NT 5,808</h5>
-                    <p className="card-text-discount m-0">NT 7,808</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="col mb-5">
-              <div
-                className="card h-100 card-hover-course"
-                data-course-id="course123"
-              >
-                <div className="card-img-container-course">
-                  <Image
-                    src="/images/course/bannerall/banner1.jpg"
-                    alt="課程圖片"
-                    width={800}
-                    height={450}
-                    className="card-img-top-course"
-                  />
-                  <div className="heart-icon-course">
-                    <i className="bx bx-heart" />
-                  </div>
-                </div>
-                <div className="card-body">
-                  <button className="btn card-btn-course mb-2">課程</button>
-                  <h5 className="card-title mb-2">
-                    臉部撥筋Ｘ耳穴按摩Ｘ芳療活絡｜現代人的 10 分鐘舒壓養顏術
-                  </h5>
-                  <p className="card-teacher-course mb-2">李郁文</p>
-                  <div className="d-flex align-content-center">
-                    <div className="mb-2 me-3 card-score-course">
-                      3.5
-                      <i className="bx bxs-star" />
-                      <i className="bx bxs-star" />
-                      <i className="bx bxs-star" />
-                      <i className="bx bxs-star-half" />
-                      <i className="bx bx-star" />
-                    </div>
-                    <div className="d-flex">
-                      <i className="bi bi-people me-2" />
-                      <div className="card-people-course">3,550</div>
-                    </div>
-                  </div>
-                  <div className="d-flex align-items-end text-end">
-                    <h5 className="card-text me-3">NT 5,808</h5>
-                    <p className="card-text-discount m-0">NT 7,808</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="col mb-5">
-              <div
-                className="card h-100 card-hover-course"
-                data-course-id="course123"
-              >
-                <div className="card-img-container-course">
-                  <Image
-                    src="/images/course/bannerall/banner1.jpg"
-                    alt="課程圖片"
-                    width={800}
-                    height={450}
-                    className="card-img-top-course"
-                  />
-                  <div className="heart-icon-course">
-                    <i className="bx bx-heart" />
-                  </div>
-                </div>
-                <div className="card-body">
-                  <button className="btn card-btn-course mb-2">課程</button>
-                  <h5 className="card-title mb-2">
-                    臉部撥筋Ｘ耳穴按摩Ｘ芳療活絡｜現代人的 10 分鐘舒壓養顏術
-                  </h5>
-                  <p className="card-teacher-course mb-2">李郁文</p>
-                  <div className="d-flex align-content-center">
-                    <div className="mb-2 me-3 card-score-course">
-                      3.5
-                      <i className="bx bxs-star" />
-                      <i className="bx bxs-star" />
-                      <i className="bx bxs-star" />
-                      <i className="bx bxs-star-half" />
-                      <i className="bx bx-star" />
-                    </div>
-                    <div className="d-flex">
-                      <i className="bi bi-people me-2" />
-                      <div className="card-people-course">3,550</div>
-                    </div>
-                  </div>
-                  <div className="d-flex align-items-end text-end">
-                    <h5 className="card-text me-3">NT 5,808</h5>
-                    <p className="card-text-discount m-0">NT 7,808</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+              ))
+            )}
           </div>
+
+          {/*  */}
         </div>
       </div>
     </section>

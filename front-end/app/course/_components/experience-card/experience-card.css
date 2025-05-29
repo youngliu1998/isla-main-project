@@ -104,3 +104,12 @@
   background-color: #faf3ff !important;
   color: #c183fa !important;
 }
+.card-title {
+  height: 3em; /* 約兩行文字的高度，依字體大小可微調 */
+  line-height: 1.5em;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* 限制顯示兩行 */
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
+}

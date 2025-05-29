@@ -2,6 +2,7 @@
 import { Modal } from 'react-bootstrap'
 import Link from 'next/link'
 
+
 export default function LoginModal({ show, onClose }) {
   return (
     <Modal show={show} onHide={onClose} centered>
