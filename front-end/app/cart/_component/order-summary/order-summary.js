@@ -223,7 +223,7 @@ export default function OrderSummary({
         <div className="mb-3">
           <label
             htmlFor="global-coupon-select"
-            className="form-label text-subtext"
+            className="form-label text-subtext me-4"
           >
             選擇運費折抵券
           </label>

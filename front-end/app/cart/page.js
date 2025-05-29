@@ -271,7 +271,7 @@ export default function CartPage() {
   return (
     <>
       <section className="container text-center text-lg-start mt-2">
-        <h1 className="text-subtext h2 m-5">購物袋</h1>
+        <h1 className="text-subtext h2 m-5">購物車</h1>
       </section>
 
       {/* <section className="container d-none d-lg-block mb-4">
@@ -312,7 +312,7 @@ export default function CartPage() {
             </div>
 
             <div className="row gy-5">
-              <div className="col-lg-8 col-12 gy-5">
+              <div className="col-lg-7 col-12 gy-5">
                 <div className="card-style mb-4 p-4">
                   <div className="mb-3 d-flex align-items-center text-primary">
                     <i className="bi bi-cart4 fs-6 mb-1 me-1"></i>
@@ -413,7 +413,7 @@ export default function CartPage() {
                   />
                 </CouponAccordionCourse>
               </div>
-              <div className="col-lg-4 col-12">
+              <div className="col-lg-5 col-12">
                 {!isMobile && (
                   <OrderSummary
                     cartItems={cartItems.filter((i) => checkedItems[i.id])}
