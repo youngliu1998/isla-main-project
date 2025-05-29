@@ -44,8 +44,9 @@ export default function SubForum({
             active={btnLikedActive}
             count={btnLikedCount}
             postID={postID}
-            // userID={userID}
+            commentID={null}
             mutate={mutate}
+            color=""
           />
           <button className="evaluate comment px-2 py-1 border-0 rounded-3 d-flex align-items-center bg-pure-white">
             <i className="bi bi-chat-left me-1" />8
@@ -55,8 +56,9 @@ export default function SubForum({
             active={btnSavedActive}
             count={btnSavedCount}
             postID={postID}
-            // userID={userID}
+            commentID={null}
             mutate={mutate}
+            color=""
           />
         </div>
       </div>

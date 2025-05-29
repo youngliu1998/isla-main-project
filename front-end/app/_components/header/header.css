@@ -48,10 +48,30 @@ header {
   gap: 1rem;
   height: 100%;
   li {
+    position: relative;
     padding-inline: 10px;
     padding-block: 6px;
     color: white;
     cursor: pointer;
+  }
+  li a:hover {
+    color: #efefef;
+    /* &::after {
+      content: '';
+      position: absolute;
+      bottom: 5px;
+      left: 0;
+      background-image: linear-gradient(
+        to top,
+        #33333343,
+        #33333300 50%,
+        #eeeeee00 75%,
+        #ffffff00 75%
+      );
+      width: 100%;
+      height: 30px;
+      transition: 0.3s ease;
+    } */
   }
 }
 /* icons */

@@ -51,7 +51,7 @@ export default function HamMeunNav({
                 setHamMenuOpen(false)
               }}
             >
-              美妝社群
+              美妝論壇
             </Link>
           </li>
         </ul>

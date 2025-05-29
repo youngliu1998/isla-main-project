@@ -14,13 +14,13 @@ export default function HeaderNav() {
             <Link href="">品牌總覽</Link>
           </li>
           <li>
-            <Link href="">優惠券專區</Link>
+            <Link href="/coupon/products">優惠券專區</Link>
           </li>
           <li>
             <Link href="/course">美妝教室</Link>
           </li>
           <li>
-            <Link href="/forum">美妝社群</Link>
+            <Link href="/forum">美妝論壇</Link>
           </li>
         </ul>
       </nav>
