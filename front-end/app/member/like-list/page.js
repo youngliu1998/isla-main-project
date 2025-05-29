@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react'
 import Componentstab from '../_component/tab/tab'
 import ProductListContainer from './_component/product-list-container'
 import CourseListContainer from './_component/course-list-container'
+import { useWishProduct } from '@/hook/use-wish-with-product'
 // ==== style ====
 import '../_styles/style.css'
 
@@ -47,6 +48,9 @@ export default function LikeListPage(props) {
       setCourseList(data)
     }
   }
+  const token = localStorage.getItem('jwtToken')
+  const { data } = useWishProduct(token)
+  console.log(data)
   const getProduct = async () => {
     const token = localStorage.getItem('jwtToken')
     if (!token) return
