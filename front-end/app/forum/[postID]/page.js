@@ -2,7 +2,7 @@
 
 import './post.css'
 import { useParams, useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import EditPostModal from '../_components/edit-post-modal'
 import useSWR from 'swr'
 import ComponentsBtnLikedSaved from '../_components/btn-liked-saved'
@@ -13,6 +13,7 @@ import ConfirmModal from '../_components/confirmModal'
 import CommentSection from './comment-section'
 import CommentInput from './comment-input'
 import Link from 'next/link'
+import PostLoader from '../_components/post-loader'
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
 
@@ -31,14 +32,31 @@ export default function PostIDPage(props) {
   let posts = data?.data?.posts
   let post = {}
   let morePosts = data?.data?.morePosts
-  if (error) {
-    console.log(error)
+
+  // 新增 minimum loading 狀態
+  const [showLoading, setShowLoading] = useState(true)
+  useEffect(() => {
+    if (!isLoading) {
+      // 至少顯示 600ms
+      const timer = setTimeout(() => setShowLoading(false), 400)
+      return () => clearTimeout(timer)
+    } else {
+      setShowLoading(true)
+    }
+  }, [isLoading])
+
+  // FIXME 載入中動畫
+  if (showLoading) {
+    console.log(showLoading)
     return (
-      <main className="main col col-10 d-flex flex-column align-items-start">
-        連線錯誤
-      </main>
+      <div className="posts d-flex flex-column gap16 pb-0 w-100">
+        <div className="post d-flex flex-column gap-2 rounded-top-4 shadow-forum bg-pure-white pt-4 card-border position-relative">
+          <PostLoader />
+        </div>
+      </div>
     )
   }
+
   if (Array.isArray(posts)) {
     posts = posts.map((post) => {
       return {
@@ -63,21 +81,6 @@ export default function PostIDPage(props) {
       }
     })
   }
-  // console.log(morePosts)
-  // FIXME 載入中動畫
-  // if (isLoading) {
-  //   console.log(isLoading)
-  //   return (
-  //     <main className="main col col-10 d-flex flex-column align-items-start">
-  //       載入中
-  //     </main>
-  //   )
-  // }
-
-  // if (!posts || posts.length === 0) {
-  //   // router.push('/forum') //FIXME 要回到上一頁
-  //   return <div>查無文章</div>
-  // }
 
   // 日期格式
   const date = new Date(post?.updated_at)
@@ -123,7 +126,17 @@ export default function PostIDPage(props) {
   return (
     <>
       <main className="main col col-10 d-flex flex-column align-items-start">
-        {!posts || posts.length === 0 ? (
+        {error ? (
+          <div className="fs32 d-flex flex-column align-items-center mx-auto mt-3 gap-2">
+            <div>連線錯誤，試試重新整理</div>
+            <Link
+              href={'/forum'}
+              className="main-color fs24 text-decoration-underline"
+            >
+              回到論壇首頁
+            </Link>
+          </div>
+        ) : !posts || posts.length === 0 ? (
           <div className="fs32 d-flex flex-column align-items-center mx-auto mt-3 gap-2">
             {/* FIXME */}
             {/* <div>查無此文章</div>
