@@ -87,9 +87,20 @@ router.get('/teacher-course/:id', async (req, res) => {
         c.updated,
         c.remove,
         c.content,
-        c.teacher_id
+        c.teacher_id,
+        u.name AS teacher_name,
+        COALESCE(AVG(cc.star), 0) AS avg_star,
+        COUNT(cc.id) AS comment_count
       FROM courses c
+       LEFT JOIN courses_comments cc ON c.id = cc.courses_id
+      LEFT JOIN courses_categories cat ON c.categories_id = cat.id
+      LEFT JOIN teachers t ON c.teacher_id=t.id
+      LEFT JOIN users u ON t.users_id = u.id
       WHERE c.teacher_id = ?
+      GROUP BY
+        c.id, c.picture, c.title, c.student, c.price, c.discount, c.status,
+        c.tag, c.created, c.categories_id, c.teacher_id, cat.name
+      
       ORDER BY c.created DESC
     `,
       [id]

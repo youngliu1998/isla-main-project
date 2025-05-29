@@ -5,13 +5,24 @@ import React, { useState, useEffect } from 'react'
 import Componentstab from '../_component/tab/tab'
 import ProductListContainer from './_component/product-list-container'
 import CourseListContainer from './_component/course-list-container'
+<<<<<<< HEAD
 import { useWishProduct } from '@/hook/use-wish-with-product'
+=======
+import WishProductListTable from './_component/product-list-table/product-list-table'
+
+
+>>>>>>> dev
 // ==== style ====
 import '../_styles/style.css'
 
 export default function LikeListPage(props) {
+<<<<<<< HEAD
   // const token = localStorage.getItem('jwtToken')
   // // ==== ComponentTab ====
+=======
+  // ==== ComponentTab ====
+
+>>>>>>> dev
   const tab = ['商品', '課程']
   const [tabSwitch, setTabSwitch] = useState(1)
   // // ==== END ComponentTab ====
@@ -88,7 +99,12 @@ export default function LikeListPage(props) {
                 />
               )
             )
+<<<<<<< HEAD
           })} */}
+=======
+          })}
+        <WishProductListTable />
+>>>>>>> dev
 
         {/* ==== 顯示課程 ==== */}
         {/* {tabSwitch === 2 && <CourseListContainer />} */}
