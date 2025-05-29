@@ -106,7 +106,7 @@ export default function ForumPage() {
           <ComponentsSearchButton />
         </div>
         <div className="posts d-flex flex-column gap-3 pt-5 pb-5 mt-1 w-100 overflow-auto">
-          {/* <PostLoader /> */}
+          <PostLoader />
           {error
             ? '連線錯誤'
             : showLoading
