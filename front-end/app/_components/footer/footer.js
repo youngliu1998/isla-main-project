@@ -5,6 +5,8 @@ import Link from 'next/link'
 import './footer.css'
 import { usePathname } from 'next/navigation'
 import CartFooter from './_component/cart-footer'
+// ==== icons ====
+import { FaFacebook, FaInstagramSquare , FaYoutube } from 'react-icons/fa'
 
 export default function Footer() {
   const pathname = usePathname()
@@ -83,9 +85,15 @@ export default function Footer() {
                     <div className="band">
                       <div className="logo">ISLA</div>
                       <div className="icons">
-                        <button />
-                        <button />
-                        <button />
+                        <button>
+                          <FaFacebook />
+                        </button>
+                        <button>
+                          <FaInstagramSquare  />
+                        </button>
+                        <button>
+                          <FaYoutube />
+                        </button>
                       </div>
                     </div>
                   </div>

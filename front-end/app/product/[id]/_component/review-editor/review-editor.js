@@ -3,16 +3,21 @@ import { useEffect, useState, useCallback, useMemo } from 'react'
 import style from './review-editor.module.css'
 import { Modal, Button, Form } from 'react-bootstrap'
 import clsx from 'clsx'
-import { toast } from 'react-toastify'
+import { useClientToken } from '@/hook/use-client-token.js'
+import { useAuth } from '@/hook/use-auth.js'
+import {toast} from "react-toastify";
 import { useChrisR2ImageUrlDuo } from '@/hook/use-chris-r2image-url.js'
+import './editor.css'
 
 export default function ReviewEditor({
   product_Id,
-  user_id,
   edit = null,
   editImages = [],
   onSubmit,
 }) {
+  const { user, isLoading: isAuthLoading } = useAuth()
+  const token = useClientToken()
+  const user_id = user?.id
   // console.log('review-editor')
   const [showModal, setShowModal] = useState(false)
   const [reviewID, setReviewId] = useState(null)
@@ -32,8 +37,13 @@ export default function ReviewEditor({
   }, [])
 
   const handleShow = useCallback(() => {
+    if ( !user_id && !token ) {
+      toast.warning('請先登入')
+      setShowModal(false)
+      return
+    }
     setShowModal(true)
-  }, [])
+  }, [user_id, token])
 
   // 重置表單狀態
   useEffect(() => {
@@ -120,6 +130,7 @@ export default function ReviewEditor({
     [imagePreview]
   )
 
+  //引擎
   const handleSubmit = useCallback(
     async (e) => {
       e.preventDefault()
@@ -163,6 +174,7 @@ export default function ReviewEditor({
     ]
   )
 
+
   //img 檔名轉網址
   const existingImages_images = useMemo(
     () => existingImages.map((img) => img.url),
@@ -178,7 +190,7 @@ export default function ReviewEditor({
         {edit ? '編輯評論' : '撰寫評論'}
       </button>
 
-      <Modal show={showModal} onHide={handleClose} size="lg" centered>
+      <Modal show={showModal} onHide={handleClose} size="lg" centered dialogClassName="review-modal">
         <Modal.Header closeButton>
           <Modal.Title>{edit ? '編輯評論' : '撰寫評論'}</Modal.Title>
         </Modal.Header>

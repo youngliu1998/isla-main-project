@@ -1,7 +1,6 @@
 'use client'
 
-import { SearchParamsContext } from 'next/dist/shared/lib/hooks-client-context.shared-runtime'
-import React, { useState, useEffect, createContext, useContext } from 'react'
+import React, { useState, createContext, useContext } from 'react'
 
 const FilterContext = createContext()
 

@@ -14,6 +14,9 @@
 }
 
 .heart-icon-course i {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
   color: rgba(0, 0, 0, 0.5);
   transition: color 0.3s ease;
 }
@@ -119,4 +122,13 @@
 .card-btn-course:visited {
   background-color: #fff4f3 !important;
   color: var(--main-color) !important;
+}
+.card-title {
+  height: 3em; /* 約兩行文字的高度，依字體大小可微調 */
+  line-height: 1.5em;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* 限制顯示兩行 */
+  -webkit-box-orient: vertical;
+  text-overflow: ellipsis;
 }

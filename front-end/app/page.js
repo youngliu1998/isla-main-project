@@ -4,16 +4,21 @@ import Image from 'next/image'
 import Link from 'next/link'
 import Componentstab from './_components/tab'
 // ==== section component ====
+// import ImageSlider from '@/app/_components/_component-main-page/banner-2/image-slider'
+import MainBanner from './_components/_component-main-page/banner/main-banner'
 import CourseSection from '@/app/_components/_component-main-page/course/course-section'
 import ForumSection from '@/app/_components/_component-main-page/forum/forum-section'
+import MainCouponSection from '@/app/_components/_component-main-page/coupon/main-coupon-section'
 import CouponSection from '@/app/_components/_component-main-page/coupon/coupon-section'
 import ProductSectionBrand from '@/app/_components/_component-main-page/product/product-section-brand'
 import ProductSectionNew from '@/app/_components/_component-main-page/product/product-section-new'
 // ==== END section component ====
+// ==== css ====
 import './_styles/main-page.css'
+// ==== react hooks ====
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 // ==== home animation by song ====
-import { useEffect, useState } from 'react'
 import HomeAnimationSplash from './home-animation/splash'
 
 export default function Home() {
@@ -29,47 +34,36 @@ export default function Home() {
     <>
       <div>
         {/* banner */}
-        <div className="banner-main-page" />
+        <MainBanner />
+        {/* <ImageSlider /> */}
         {/* main page */}
         <section className="section-main-page">
           {/* ---- START product ---- */}
-          <section className="subsectoin-main-page">
+          <section className="subsection-main-page">
             <ProductSectionBrand />
           </section>
-          <section className="subsectoin-main-page">
+          <section className="subsection-main-page">
             <ProductSectionNew />
           </section>
           {/* ---- END product ---- */}
           {/* ---- START main coupon ---- */}
-          <section></section>
+          <section className="subsection-main-page">
+            <MainCouponSection />
+          </section>
           {/* ---- END main coupon ---- */}
           {/* ---- START course ---- */}
-          <section className="container subsectoin-main-page">
+          <section className="container subsection-main-page">
             <CourseSection />
           </section>
           {/* ==== END course ==== */}
           {/* ==== START coupons ==== */}
-          <section className="subsectoin-main-page bg-primary">
+          <section className="subsection-main-page">
             <CouponSection />
           </section>
           {/* ==== END coupons ==== */}
           {/* ==== START forum ==== */}
-          <section className="container subsectoin-main-page">
-            <h3>Top 文章</h3>
-            <Componentstab
-              cates={['熱門', '最新']}
-              height={52}
-              // handleTabChange={handleForumTab} FIXME
-            />
+          <section className="container subsection-main-page">
             <ForumSection />
-            <button
-              className="btn btn-primary"
-              onClick={() => {
-                router.push('/forum')
-              }}
-            >
-              查看更多
-            </button>
           </section>
           {/* ---- END forum ---- */}
         </section>

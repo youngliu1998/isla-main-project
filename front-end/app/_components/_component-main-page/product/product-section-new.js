@@ -101,7 +101,7 @@ export default function ProductSectionNew() {
           }
           {tabSwitch === 2}
         </div>
-        <Link href="/course">
+        <Link href="/course" className="mt-4">
           <button className="btn btn-primary">查看更多</button>
         </Link>
       </div>

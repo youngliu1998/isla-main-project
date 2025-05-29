@@ -3,6 +3,7 @@ import {
   WalletCards,
   Warehouse,
   MessageCircleHeart,
+  Users,
 } from 'lucide-react'
 
 export function getMenuList(pathname) {
@@ -31,24 +32,12 @@ export function getMenuList(pathname) {
               label: '商品列表',
             },
             {
-              href: '/product/new',
-              label: '新增商品',
-            },
-            {
-              href: '/product/brands',
-              label: '品牌管理',
-            },
-            {
               href: '/product/categories',
               label: '分類管理',
             },
             {
               href: '/product/tags',
               label: '標籤管理',
-            },
-            {
-              href: '/product/colors',
-              label: '顏色管理?',
             },
           ],
         },
@@ -58,9 +47,19 @@ export function getMenuList(pathname) {
           icon: MessageCircleHeart,
         },
         {
-          href: '/coupon',
+          href: '/coupons',
           label: '優惠卷管理',
           icon: WalletCards,
+        },
+      ],
+    },
+    {
+      groupLabel: 'Settings',
+      menus: [
+        {
+          href: '/users',
+          label: 'Users',
+          icon: Users,
         },
       ],
     },

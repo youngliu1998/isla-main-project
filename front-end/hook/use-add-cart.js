@@ -24,8 +24,8 @@ export const useAddCart = (token) => {
         const res = await axios.post(
           `http://localhost:3005/api/cart-items/create`,
           {
-            product_id,
-            quantity,
+            product_id: Number(product_id),
+            quantity: Number(quantity),
             color_id,
           },
           {
