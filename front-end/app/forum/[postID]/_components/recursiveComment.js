@@ -17,11 +17,11 @@ export default function RecursiveComment({
   content = '',
   updatedAt,
   btnActive = Boolean,
-  btnCount = Number,
+  btnCount = 0,
   editActive = Boolean,
   mutate = () => {},
   subComments = [],
-  subCount = Number,
+  subCount = 0,
 }) {
   const path = usePathname()
   const postID = useParams().postID
