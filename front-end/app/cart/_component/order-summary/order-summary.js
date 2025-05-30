@@ -102,7 +102,7 @@ export default function OrderSummary({
       <h5 className="fw-bold mb-5 text-maintext text-center">訂單明細</h5>
 
       {/* 彩妝商品區 */}
-      <div className="d-flex justify-content-between text-subtext mb-2">
+      <div className="d-flex justify-content-between text-maintext mb-2">
         <div className="d-flex align-items-center">
           <p className="me-2">彩妝商品</p>
           <button
@@ -124,7 +124,7 @@ export default function OrderSummary({
             makeupItems.map((item, index) => (
               <div
                 key={index}
-                className="d-flex justify-content-between align-items-center mb-2"
+                className="d-flex justify-content-between align-items-center mb-2 text-subtext"
                 style={{ fontSize: '14px' }}
               >
                 <div className="d-flex align-items-center flex-grow-1 me-2">
@@ -163,7 +163,7 @@ export default function OrderSummary({
       )}
 
       {/* 彩妝課程區 */}
-      <div className="d-flex justify-content-between text-subtext mb-2">
+      <div className="d-flex justify-content-between text-maintext mb-2">
         <div className="d-flex align-items-center">
           <p className="me-2">彩妝課程</p>
           <button
@@ -185,25 +185,20 @@ export default function OrderSummary({
             courseItems.map((item) => (
               <div
                 key={item.id}
-                className="d-flex justify-content-between align-items-center mb-2"
+                className="d-flex justify-content-between align-items-center mb-2 text-subtext"
                 style={{ fontSize: '14px' }}
               >
-                {/* 圖＋名 */}
                 <div className="d-flex align-items-center flex-grow-1 me-2">
                   <Image
                     src={item.image_url}
                     alt={item.name}
                     width={55}
                     height={40}
-                    className="me-2 rounded"
+                    className="me-2"
                   />
-                  <span className={`${styles.ellipsis}`}>{item.name}</span>
+                  <span className={`${styles.ellipsis} me-2`}>{item.name}</span>
+                  <div className="me-3 text-nowrap">x{item.quantity}</div>
                 </div>
-
-                {/* 數量 */}
-                <div className="me-3 text-nowrap">x{item.quantity}</div>
-
-                {/* 價格 */}
                 <div className="fw-bold text-nowrap">
                   NT$
                   {formatCurrency(

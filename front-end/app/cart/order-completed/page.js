@@ -165,7 +165,7 @@ export default function OrderCompletedPage() {
             <button
               className="btn btn-outline-secondary px-5"
               type="button"
-              onClick={() => router.push('/member/orders')}
+              onClick={() => router.push('/member/order')}
             >
               查看訂單
             </button>

@@ -109,6 +109,7 @@ export default function CartPage() {
           autoClose: 1000,
           hideProgressBar: false,
         })
+        window.dispatchEvent(new Event('cart-updated'))
         console.log('toast 要跑囉')
       } else {
         console.error(res.data.message)

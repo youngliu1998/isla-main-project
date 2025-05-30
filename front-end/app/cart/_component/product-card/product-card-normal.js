@@ -57,7 +57,7 @@ export default function ProductCardNormal({
                   {title}
                 </h5>
                 {category && (
-                  <span className="badge bg-secondary mb-1">{category}</span>
+                  <div className="badge bg-secondary mb-1">{category}</div>
                 )}
               </div>
               <button

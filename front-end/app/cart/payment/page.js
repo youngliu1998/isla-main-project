@@ -232,7 +232,7 @@ export default function PaymentPage() {
               <h5 className="fw-bold mb-5 text-maintext">付款方式</h5>
 
               {[
-                { id: '信用卡', label: '信用卡一次付清(綠界科技)' },
+                { id: '信用卡', label: '信用卡一次付清' },
                 { id: '超商付款', label: '超商取貨付款' },
                 { id: 'LINE Pay', label: 'LINE Pay' },
               ].map((option) => (

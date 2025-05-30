@@ -86,7 +86,7 @@ export default function ProductCardColorDots({
               <div className="d-flex d-flex align-items-center gap-2">
                 <h5 className="card-title fw-normal">{title}</h5>
                 {category && (
-                  <span className="badge bg-secondary mb-1">{category}</span>
+                  <div className="badge bg-secondary mb-1">{category}</div>
                 )}
               </div>
               <button

@@ -54,7 +54,7 @@ export default function ProductCardCourse({
                   {title}
                 </h5>
                 {category && (
-                  <span className="badge bg-secondary ">{category}</span>
+                  <div className="badge bg-secondary ">{category}</div>
                 )}
               </div>
               <button
