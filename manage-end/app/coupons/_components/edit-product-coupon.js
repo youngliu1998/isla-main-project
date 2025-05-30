@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { DialogFooter } from '@/components/ui/dialog'
 import dayjs from 'dayjs'
 
-export default function EditCouponForm({
+export default function EditProductCoupon({
   coupon,
   onChange,
   onCancel,
@@ -13,6 +13,7 @@ export default function EditCouponForm({
   brands = [],
   categories = [],
 }) {
+  // console.log('正在編輯的 coupon:', coupon)
   return (
     <div className="space-y-4">
       {/* 名稱 */}
@@ -38,10 +39,15 @@ export default function EditCouponForm({
         <label className="block mb-1">品牌</label>
         <select
           className="w-full border rounded px-3 py-2"
-          value={coupon.brand_id != null ? String(coupon.brand_id) : '0'}
-          onChange={(e) => onChange('brand_id', Number(e.target.value))}
+          value={String(coupon.brand_id ?? '')}
+          onChange={(e) =>
+            onChange(
+              'brand_id',
+              e.target.value === '' ? null : parseInt(e.target.value)
+            )
+          }
         >
-          <option value="0">無限制</option>
+          <option value="">無限制</option>
           {brands?.map((b) => (
             <option key={b.id} value={String(b.id)}>
               {b.name}
@@ -56,7 +62,7 @@ export default function EditCouponForm({
         <select
           className="w-full border rounded px-3 py-2"
           value={coupon.category_id != null ? String(coupon.category_id) : '0'}
-          onChange={(e) => onChange('category_id', Number(e.target.value))}
+          onChange={(e) => onChange('category_id', parseInt(e.target.value))}
         >
           <option value="0">無限制</option>
           {categories?.map((c) => (
@@ -69,11 +75,15 @@ export default function EditCouponForm({
 
       {/* 金額 */}
       <div>
-        <label className="block mb-1">金額</label>
+        <label className="block mb-1">折扣金額</label>
         <Input
           type="number"
-          value={coupon.amount ?? ''}
-          onChange={(e) => onChange('amount', Number(e.target.value))}
+          value={
+            coupon.amount !== undefined && coupon.amount !== null
+              ? parseInt(coupon.amount)
+              : ''
+          }
+          onChange={(e) => onChange('amount', parseInt(e.target.value))}
         />
       </div>
 
@@ -86,7 +96,7 @@ export default function EditCouponForm({
           min="0"
           max="1"
           value={coupon.discount_rate ?? ''}
-          onChange={(e) => onChange('discount_rate', Number(e.target.value))}
+          onChange={(e) => onChange('discount_rate', parseInt(e.target.value))}
         />
       </div>
 
@@ -96,7 +106,7 @@ export default function EditCouponForm({
         <select
           className="w-full border rounded px-3 py-2"
           value={coupon.free ?? 0}
-          onChange={(e) => onChange('free', Number(e.target.value))}
+          onChange={(e) => onChange('free', parseInt(e.target.value))}
         >
           <option value={0}>否</option>
           <option value={1}>是</option>
@@ -109,7 +119,7 @@ export default function EditCouponForm({
         <Input
           type="number"
           value={coupon.min_amount ?? ''}
-          onChange={(e) => onChange('min_amount', Number(e.target.value))}
+          onChange={(e) => onChange('min_amount', parseInt(e.target.value))}
         />
       </div>
 
@@ -118,7 +128,7 @@ export default function EditCouponForm({
         <Input
           type="number"
           value={coupon.min_quantity ?? ''}
-          onChange={(e) => onChange('min_quantity', Number(e.target.value))}
+          onChange={(e) => onChange('min_quantity', parseInt(e.target.value))}
         />
       </div>
 

@@ -3,7 +3,7 @@ import db from '../../config/mysql.js'
 
 const router = express.Router()
 
-// 取得所有優惠券（)
+// 取得所有優惠券
 router.get('/', async (req, res) => {
   try {
     const [coupons] = await db.query(`
@@ -53,6 +53,19 @@ router.get('/category', async (req, res) => {
     res.json({ status: 'success', data: rows })
   } catch (err) {
     console.error('取得種類失敗:', err)
+    res.status(500).json({ status: 'false', message: '資料庫錯誤' })
+  }
+})
+
+// 取得課程分類
+router.get('/course-category', async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      `SELECT id, name FROM courses_categories ORDER BY id ASC`
+    )
+    res.json({ status: 'success', data: rows })
+  } catch (err) {
+    console.error('取得課程分類失敗:', err)
     res.status(500).json({ status: 'false', message: '資料庫錯誤' })
   }
 })
