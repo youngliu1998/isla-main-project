@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react'
 import InputText from '../_component/input-text'
 import InputPass from '../_component/input-pass'
 import '../_styles/login.css'
-import { courseUrl } from '../../../_route/courseUrl'
+// import { courseUrl } from '../../../_route/courseUrl'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -109,8 +109,6 @@ export default function LoginPage() {
     const isAuthLocal = localStorage.getItem('jwtToken') || false
     // if get auth, go to main page
     if (isAuthLocal) router.push('/')
-    // console.log('login-page-user: ', user)
-    // console.log('login-page-isAuth: ', isAuth)
   }, [])
 
   return (
@@ -170,7 +168,7 @@ export default function LoginPage() {
                 value={memAuth.password}
                 setPassword={setMemAuth}
               />
-              <Link href="">忘記密碼?</Link>
+              <Link href="/member/forget-password">忘記密碼?</Link>
             </div>
             {/* submit */}
             <button className="btn btn-primary">登入</button>

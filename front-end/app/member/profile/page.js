@@ -8,13 +8,14 @@ import { useAuth } from '@/hook/use-auth'
 import BasicProfile from './_component/basic-profile'
 import InputText from '../_component/input-text'
 import Select from '../_component/select'
-// import Path from '../_component/path/path'
+// ==== method ====
+import { getProfile } from './_method/method'
 // ==== data ====
 import { cities } from './data/CityCountyData'
 
 export default function ProfilePage() {
   // const router = useRouter()
-  const { user } = useAuth()
+  const { user, initAuth } = useAuth()
   const defaultProfile = {
     name: '',
     nickname: '',
@@ -70,6 +71,7 @@ export default function ProfilePage() {
         // ==== 200 status: success ====
         if (data.status === 'success') {
           alert('更新個人資料成功', data)
+          initAuth()
         }
       } else {
         // ==== 404 status: error ====
@@ -109,44 +111,7 @@ export default function ProfilePage() {
   }
 
   useEffect(() => {
-    const token = localStorage.getItem('jwtToken') || null
-    if (!token) return
-    // if get auth, fetch profile data
-    let profileData = {}
-    async function getProfile() {
-      try {
-        const token = localStorage.getItem('jwtToken')
-
-        const response = await fetch(
-          'http://localhost:3005/api/member/profile',
-          {
-            method: 'GET',
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        )
-        const data = await response.json()
-
-        if (response.ok && data?.data) {
-          profileData = await data['data']
-          // console.log('profileData: ', profileData)
-          setText({
-            name: profileData?.name || '',
-            nickname: profileData?.nickname || '',
-            birthday: profileData?.birthday || '',
-            gender: profileData?.gender || '',
-            tel: profileData?.tel || '',
-            skinType: profileData?.skin_type || '',
-            CityName: profileData?.city || '',
-            AreaName: profileData?.area || '',
-            ZipCode: profileData?.postcode || '',
-            address: profileData?.address || '',
-          })
-        }
-      } catch (err) {
-        console.log(err)
-      }
-    }
-    getProfile()
+    getProfile(setText)
   }, [])
   return (
     <>
@@ -193,6 +158,7 @@ export default function ProfilePage() {
                       onChange={(e) => {
                         setText({ ...text, ['skinType']: e.target.value })
                       }}
+                      checked={text.skinType === '中性'}
                     />
                     中性
                   </label>
@@ -204,6 +170,7 @@ export default function ProfilePage() {
                       onChange={(e) => {
                         setText({ ...text, ['skinType']: e.target.value })
                       }}
+                      checked={text.skinType === '乾性'}
                     />
                     乾性
                   </label>
@@ -217,6 +184,7 @@ export default function ProfilePage() {
                       onChange={(e) => {
                         setText({ ...text, ['skinType']: e.target.value })
                       }}
+                      checked={text.skinType === '敏感性'}
                     />
                     敏感性
                   </label>
@@ -228,6 +196,7 @@ export default function ProfilePage() {
                       onChange={(e) => {
                         setText({ ...text, ['skinType']: e.target.value })
                       }}
+                      checked={text.skinType === ''}
                     />
                     不確定
                   </label>
