@@ -60,7 +60,7 @@ export function getMenuList(pathname) {
               label: '課程優惠券',
             },
             {
-              href: '/coupons/new',
+              href: '/coupons/add',
               label: '新增優惠券',
             },
           ],

@@ -40,13 +40,15 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import useCouponOption from '@/hook/use-coupon-options'
+import CouponDetailDialog from '../_components/coupon-detail-dialog'
 import EditCourseCouponForm from '../_components/edit-course-coupon'
 
 export default function CourseCouponListPage() {
   const [coupons, setCoupons] = useState([])
   const [globalFilter, setGlobalFilter] = useState('')
   const [editCoupon, setEditCoupon] = useState(null)
-  const { courseCategories } = useCouponOption()
+  const [originalCoupon, setOriginalCoupon] = useState(null)
+  const { courseCategories, types } = useCouponOption()
   const [refresh, setRefresh] = useState(false)
   const [selectedCouponForDialog, setSelectedCouponForDialog] = useState(null)
 
@@ -63,8 +65,10 @@ export default function CourseCouponListPage() {
             id: c.id,
             title: c.title,
             description: c.description,
+            category_id: c.category_id,
             course_categories_id: c.course_categories_id,
             course_category_name: c.course_category_name,
+            type_id: c.type_id,
             type: c.type_name,
             amount: parseInt(c.amount),
             discount_rate: parseInt(c.discount_rate),
@@ -239,7 +243,10 @@ export default function CourseCouponListPage() {
                 查看詳情
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => setEditCoupon(row.original)}
+                onClick={() => {
+                  setEditCoupon(row.original)
+                  setOriginalCoupon(row.original)
+                }}
                 className="cursor-pointer"
               >
                 <Edit2 className="mr-2 h-4 w-4" />
@@ -344,13 +351,13 @@ export default function CourseCouponListPage() {
           </div>
           <div className="flex items-center justify-between mt-4">
             <div className="text-sm text-gray-600">
-              顯示第{' '}
+              第{' '}
               {coupons.length > 0
                 ? table.getState().pagination.pageIndex *
                     table.getState().pagination.pageSize +
                   1
                 : 0}{' '}
-              到{' '}
+              ~{' '}
               {Math.min(
                 (table.getState().pagination.pageIndex + 1) *
                   table.getState().pagination.pageSize,
@@ -386,28 +393,43 @@ export default function CourseCouponListPage() {
 
       {/* 編輯 Dialog */}
       <Dialog open={!!editCoupon} onOpenChange={() => setEditCoupon(null)}>
-        <DialogContent>
+        <DialogContent className="max-h-[80vh] flex flex-col">
           <DialogHeader>
             <DialogTitle>編輯優惠券</DialogTitle>
           </DialogHeader>
 
-          {editCoupon && (
-            <EditCourseCouponForm
-              coupon={editCoupon}
-              onChange={(field, value) =>
-                setEditCoupon((prev) => ({ ...prev, [field]: value }))
-              }
-              onCancel={() => setEditCoupon(null)}
-              onSave={async () => {
-                await handleEdit(editCoupon)
-                setRefresh((prev) => !prev)
-                setEditCoupon(null)
-              }}
-              courseCategories={courseCategories}
-            />
-          )}
+          {/* 滾動內容區塊 */}
+          <div className="overflow-y-auto pr-2 flex-1">
+            {editCoupon && (
+              <EditCourseCouponForm
+                coupon={editCoupon}
+                onChange={(field, value) =>
+                  setEditCoupon((prev) => ({ ...prev, [field]: value }))
+                }
+                onCancel={() => setEditCoupon(null)}
+                onSave={async () => {
+                  const merged = {
+                    category_id: 0,
+                    ...originalCoupon,
+                    ...editCoupon,
+                  } // 合併防止欄位從0變成null
+                  await handleEdit(merged)
+                  setRefresh((prev) => !prev) // 重新抓資料
+                  setEditCoupon(null)
+                }}
+                courseCategories={courseCategories}
+                types={types}
+              />
+            )}
+          </div>
         </DialogContent>
       </Dialog>
+      {/* 查看詳情 */}
+      <CouponDetailDialog
+        coupon={selectedCouponForDialog}
+        open={!!selectedCouponForDialog}
+        onClose={() => setSelectedCouponForDialog(null)}
+      />
     </div>
   )
 }

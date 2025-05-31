@@ -11,6 +11,7 @@ export default function EditCourseCouponForm({
   onCancel,
   onSave,
   courseCategories = [],
+  types = [],
 }) {
   return (
     <div className="space-y-4">
@@ -22,20 +23,49 @@ export default function EditCourseCouponForm({
           onChange={(e) => onChange('title', e.target.value)}
         />
       </div>
+      {/* 優惠券類別 */}
+      <div>
+        <label className="block mb-1">優惠券類型</label>
+        <select
+          className="w-full border rounded px-3 py-2"
+          value={coupon.type_id ?? ''}
+          onChange={(e) =>
+            onChange(
+              'type_id',
+              e.target.value ? parseInt(e.target.value) : null
+            )
+          }
+        >
+          <option value="">請選擇</option>
+          {types?.map((t) => (
+            <option key={t.id} value={String(t.id)}>
+              {t.name}
+            </option>
+          ))}
+        </select>
+      </div>
 
       {/* 課程分類 */}
       <div>
         <label className="block mb-1">課程分類</label>
         <select
           className="w-full border rounded px-3 py-2"
-          value={coupon.course_categories_id ?? ''}
+          value={
+            coupon.course_categories_id !== undefined &&
+            coupon.course_categories_id !== null
+              ? String(coupon.course_categories_id)
+              : ''
+          }
           onChange={(e) =>
-            onChange('course_categories_id', parseInt(e.target.value))
+            onChange(
+              'course_categories_id',
+              e.target.value === '' ? null : parseInt(e.target.value)
+            )
           }
         >
           <option value="">無限制</option>
           {courseCategories.map((cat) => (
-            <option key={cat.id} value={cat.id}>
+            <option key={cat.id} value={String(cat.id)}>
               {cat.name}
             </option>
           ))}
@@ -56,8 +86,17 @@ export default function EditCourseCouponForm({
         <label className="block mb-1">折扣金額</label>
         <Input
           type="number"
-          value={coupon.amount ?? ''}
-          onChange={(e) => onChange('amount', parseInt(e.target.value))}
+          value={
+            coupon.amount === null || coupon.amount === undefined
+              ? ''
+              : coupon.amount
+          }
+          onChange={(e) =>
+            onChange(
+              'amount',
+              e.target.value === '' ? '' : parseInt(e.target.value)
+            )
+          }
         />
       </div>
 
@@ -71,7 +110,10 @@ export default function EditCourseCouponForm({
           max="1"
           value={coupon.discount_rate ?? ''}
           onChange={(e) =>
-            onChange('discount_rate', parseFloat(e.target.value))
+            onChange(
+              'discount_rate',
+              e.target.value === '' ? '' : parseFloat(e.target.value)
+            )
           }
         />
       </div>
@@ -122,7 +164,7 @@ export default function EditCourseCouponForm({
       </div>
 
       {/* 按鈕 */}
-      <DialogFooter>
+      <DialogFooter className="sticky bottom-0 bg-white pt-4">
         <Button variant="outline" onClick={onCancel}>
           取消
         </Button>

@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
     const [coupons] = await db.query(`
     SELECT 
         coupons.*, 
-        brands.name AS brand_name, 
+        brands.name AS brand_name,
         categories.name AS category_name,
         courses_categories.name AS course_category_name,
         coupons_area.name AS area_name,
@@ -27,6 +27,19 @@ router.get('/', async (req, res) => {
     res.json({ status: 'success', data: coupons })
   } catch (err) {
     console.error('查詢優惠券錯誤:', err)
+    res.status(500).json({ status: 'false', message: '資料庫錯誤' })
+  }
+})
+
+// 取得優惠券類型
+router.get('/type', async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      `SELECT * FROM coupons_categories ORDER BY id ASC`
+    )
+    res.json({ status: 'success', data: rows })
+  } catch (err) {
+    console.error('取得優惠券類型失敗:', err)
     res.status(500).json({ status: 'false', message: '資料庫錯誤' })
   }
 })
@@ -70,6 +83,55 @@ router.get('/course-category', async (req, res) => {
   }
 })
 
+// 新增優惠券
+router.post('/', async (req, res) => {
+  const {
+    title,
+    description,
+    type_id,
+    brand_id,
+    category_id,
+    course_categories_id,
+    amount,
+    discount_rate,
+    free,
+    min_amount,
+    min_quantity,
+    valid_from,
+    valid_to,
+    area,
+  } = req.body
+
+  try {
+    const [result] = await db.query(
+      `INSERT INTO coupons 
+        (title, description, type_id, brand_id, category_id, course_categories_id, amount, discount_rate, free, min_amount, min_quantity, valid_from, valid_to, area, valid) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`,
+      [
+        title,
+        description,
+        type_id,
+        brand_id || null,
+        category_id || null,
+        course_categories_id || null,
+        amount,
+        discount_rate,
+        free,
+        min_amount,
+        min_quantity || 0,
+        valid_from,
+        valid_to,
+        area,
+      ]
+    )
+
+    res.json({ status: 'success', insertId: result.insertId })
+  } catch (err) {
+    console.error('新增優惠券失敗:', err)
+    res.status(500).json({ status: 'error', message: '新增失敗' })
+  }
+})
+
 // 編輯優惠券
 router.put('/:id', async (req, res) => {
   const { id } = req.params
@@ -84,9 +146,11 @@ router.put('/:id', async (req, res) => {
     free,
     min_amount,
     min_quantity,
-    valid_from,
     valid_to,
+    type_id,
   } = req.body
+
+  console.log('接收到的 req.body:', req.body)
 
   try {
     await db.execute(
@@ -97,27 +161,29 @@ router.put('/:id', async (req, res) => {
         brand_id = ?, 
         category_id = ?, 
         course_categories_id = ?, 
+        type_id = ?, 
         amount = ?, 
         discount_rate = ?, 
         free = ?, 
         min_amount = ?, 
         min_quantity = ?, 
-        valid_from = ?, 
         valid_to = ?
       WHERE id = ?
     `,
       [
         title,
         description,
-        brand_id || null,
-        category_id || null,
-        course_categories_id || null,
+        brand_id === null || brand_id === undefined ? null : brand_id,
+        category_id === null || category_id === undefined ? null : category_id,
+        course_categories_id === null || course_categories_id === undefined
+          ? null
+          : course_categories_id,
+        type_id === null || type_id === undefined ? null : type_id,
         amount || 0,
         discount_rate || 0,
         free || 0,
         min_amount || 0,
         min_quantity || 0,
-        valid_from || null,
         valid_to || null,
         id,
       ]
