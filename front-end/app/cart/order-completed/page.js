@@ -4,6 +4,7 @@ import StepProgress from '../_component/step-progress/step-progress'
 import { Accordion, Spinner } from 'react-bootstrap'
 import { useRouter } from 'next/navigation'
 import { useCartContext } from '../context/cart-context'
+import Image from 'next/image'
 import cartApi from '../utils/axios'
 import { useState, useEffect } from 'react'
 
@@ -26,7 +27,7 @@ export default function OrderCompletedPage() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedOrderNumber = localStorage.getItem('lastOrderNumber')
-      console.log('🔍 從 localStorage 拿到的 orderNumber:', savedOrderNumber)
+      console.log('從 localStorage 拿到的 orderNumber:', savedOrderNumber)
       setOrderNumber(savedOrderNumber)
     }
   }, [])
@@ -37,9 +38,9 @@ export default function OrderCompletedPage() {
     const fetchData = async () => {
       try {
         const res = await cartApi.get(`/order/order-number/${orderNumber}`)
-        console.log('✅ 成功取得訂單資料:', res.data)
+        console.log('成功取得訂單資料:', res.data)
         setOrderData(res.data)
-        console.log('📦 嘗試取得訂單資料，orderNumber:', orderNumber)
+        console.log('嘗試取得訂單資料，orderNumber:', orderNumber)
         setIsLoading(false)
       } catch (err) {
         console.error('取得訂單資料失敗', err)
@@ -77,11 +78,19 @@ export default function OrderCompletedPage() {
     orderDate,
     orderStatus,
     paymentMethod,
-    paymentStatus,
+    paymentStatus: originalPaymentStatus,
+    //把 orderData.paymentStatus取出來，另外取名叫originalPaymentStatus
     recipient,
     shippingMethod,
     products = [],
   } = orderData
+
+  // 根據付款方式決定顯示的付款狀態
+  let paymentStatus = '未付款'
+
+  if (paymentMethod !== '超商付款' && orderStatus === 'completed') {
+    paymentStatus = '已付款'
+  }
 
   return (
     <>
@@ -127,7 +136,13 @@ export default function OrderCompletedPage() {
             </div>
             <div className="col-6 col-md-3 mb-2">
               <div className="fw-bold">付款狀態</div>
-              <div style={{ color: 'green' }}>{paymentStatus}</div>
+              <div
+                className={
+                  paymentStatus === '已付款' ? 'text-success' : 'text-danger'
+                }
+              >
+                {paymentStatus}
+              </div>
             </div>
           </div>
 
@@ -152,9 +167,37 @@ export default function OrderCompletedPage() {
               <Accordion.Header>商品</Accordion.Header>
               <Accordion.Body>
                 {products.map((item, index) => (
-                  <p key={index}>
-                    {item.name} x{item.quantity} - {formatCurrency(item.price)}
-                  </p>
+                  <div
+                    key={index}
+                    className="d-flex align-items-center justify-content-between mb-3"
+                  >
+                    {/* 左邊：圖片 + 名稱 + 數量 */}
+                    <div className="d-flex align-items-center gap-2">
+                      <Image
+                        src={item.image || '/images/default.jpg'}
+                        alt={item.name}
+                        width={50}
+                        height={50}
+                        style={{ objectFit: 'cover' }}
+                      />
+                      <div>
+                        <div
+                          className="fw-semibold ms-5"
+                          style={{ maxWidth: '100%' }}
+                        >
+                          {item.name}
+                        </div>
+                        <div className="text-muted small ms-5">
+                          x{item.quantity}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 右邊：單價 or 小計 */}
+                    <div className="fw-bold text-end">
+                      {formatCurrency(item.price * item.quantity)}
+                    </div>
+                  </div>
                 ))}
               </Accordion.Body>
             </Accordion.Item>

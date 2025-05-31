@@ -83,10 +83,18 @@ export default function ProductCardColorDots({
           <div className="card-body d-flex flex-column gap-1 gap-lg-2">
             {/* title + trash */}
             <div className="d-flex justify-content-between align-items-start">
-              <div className="d-flex d-flex align-items-center gap-2">
-                <h5 className="card-title fw-normal">{title}</h5>
+              <div className="d-flex d-flex align-items-center gap-2 flex-wrap">
+                <h5
+                  className={`${styles.ellipsis} card-title fw-normal mb-0`}
+                  style={{ maxWidth: '100%' }}
+                  title={title}
+                >
+                  {title}
+                </h5>
                 {category && (
-                  <div className="badge bg-secondary mb-1">{category}</div>
+                  <span className="badge bg-secondary flex-shrink-0">
+                    {category}
+                  </span>
                 )}
               </div>
               <button
