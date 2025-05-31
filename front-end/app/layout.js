@@ -2,13 +2,13 @@
 import '@fontsource/plaster'
 import '@fontsource/noto-sans-tc'
 import 'react-toastify/dist/ReactToastify.css'
-import { ToastContainer } from 'react-toastify'
 import Header from './_components/header/header'
 import Footer from './_components/footer/footer'
 import Path from './_components/path/path'
 import '@/app/_styles/globals.scss'
 import Provider from './provider'
-import Chat from './_components/service-chat/chat'
+import Chat from './service-chat/chat'
+import ToastClient from './_components/toast-client'
 
 export const metadata = {
   title: 'ISLA project',
@@ -42,19 +42,8 @@ export default function RootLayout({ children }) {
       <body>
         <Provider>
           <Header />
-          <ToastContainer
-            position="top-right"
-            autoClose={3000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            toastClassName="custom-toast"
-            style={{ marginTop: '70px', zIndex: 9999 }} // 根據 header 高度調整 marginTop
-          />
+          {/* ToastContainer由客戶端元件引入，避免hydration */}
+          <ToastClient />
           <div style={{ marginTop: '80px' }}>
             <Path />
             {children}

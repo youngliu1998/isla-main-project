@@ -15,11 +15,11 @@
   border-radius: 32px;
   /* background */
   background: url('/images/main-page/discount-info.jpg');
-  .title{
+  .title {
     color: rgb(199, 199, 199);
   }
 }
-.main-coupon-content{
+.main-coupon-content {
   letter-spacing: 8px;
 }
 /* ==== coupon section ==== */
@@ -52,4 +52,22 @@
   background-size: cover;
   filter: blur(5px);
   z-index: -1;
+}
+
+.show-more-coupon {
+  font-size: 18px;
+  color: rgb(218, 63, 81);
+  transition: all 0.6s;
+}
+
+.show-more-coupon:hover {
+  font-size: 20px;
+  color: rgb(241, 89, 107);
+}
+
+.show-more-coupon-title {
+  text-shadow: 0 0 15px #6765652d;
+  font-size: 48px;
+  color: #ffffff;
+  font-weight: 400;
 }

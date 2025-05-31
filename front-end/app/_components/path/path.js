@@ -8,7 +8,6 @@ import './_style/path.css'
 
 export default function Path() {
   const pathname = usePathname()
-  console.log('pathname', pathname)
   const router = useRouter()
   let pathArr = []
   if (router === '/') {
@@ -19,12 +18,10 @@ export default function Path() {
 
   const getPath = (thisPath) => {
     let address = ''
-    console.log(thisPath)
     for (let path of pathArr) {
       address += path + '/'
       if (path === thisPath) break
     }
-    console.log('address: ', address)
     return address
     // route
     // r.push(address)
