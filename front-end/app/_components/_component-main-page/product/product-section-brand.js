@@ -7,6 +7,7 @@ import Componentstab from '@/app/_components/tab'
 import BrandSelect from './_component/brand-select'
 import ProductCard from '@/app/product/_components/product-card-s'
 import SwiperProduct from './_component/swiper-product.js'
+import './_style/product-section.css'
 // ==== hooks ====
 import { useProducts } from '@/hook/use-products'
 // ==== css ====
@@ -72,7 +73,7 @@ export default function ProductSectionBrand() {
       {/* <SwiperProduct /> */}
       <div className="d-flex flex-column align-items-center gap-4">
         <div className="d-flex flex-column align-items-center gap-4">
-          <h3>品牌暢銷商品</h3>
+          <h3 className="main-product-section-title">品牌暢銷商品</h3>
           <div className="d-lg-block d-none">
             <Componentstab cates={navBrands} handleTabChange={setTabSwitch} />
           </div>
@@ -104,8 +105,10 @@ export default function ProductSectionBrand() {
             ))}
           </div>
         </div>
-        <Link href="/course" className="mt-4">
-          <button className="btn btn-primary">查看更多</button>
+        <Link href={`/product?brandIds=${tabSwitch}`} className="mt-4 pt-4">
+          <button className="btn btn-primary">
+            查看更多 {navBrands[tabSwitch - 1]} 商品
+          </button>
         </Link>
       </div>
     </>

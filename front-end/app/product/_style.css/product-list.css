@@ -5,11 +5,12 @@
   gap: 32px;
 }
 
-.infinite-scroll-layout{
+.infinite-scroll-layout {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
   gap: 20px;
+  padding: 12px 0;
   .product-card-container {
     /*background: #000;*/
     display: flex;
@@ -42,7 +43,8 @@
   min-height: 100vh;
 }
 
-.no-product-container {  /*background: #ffffff;*/
+.no-product-container {
+  /*background: #ffffff;*/
   /*box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);*/
   /*border-radius: 18px;*/
   display: flex;
@@ -69,5 +71,4 @@
 
 .no-products-image {
   object-fit: contain;
-
 }
