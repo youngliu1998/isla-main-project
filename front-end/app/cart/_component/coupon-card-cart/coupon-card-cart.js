@@ -78,51 +78,58 @@ export default function CouponCardCart({ coupon, onSelect, selected }) {
     .join(' ')
 
   return (
-    <div
-      className={`${cardClass} d-flex align-items-center justify-content-between`}
-    >
-      {/* 品牌圖示 */}
-      <div className={styles.brandLogo}>
-        <Image src={imageSrc} alt="brand" width={80} height={80} />
-      </div>
-
-      {/* 文字 + Tooltip */}
-      <div className="ms-4 text-danger">
-        <h5 className="m-0 pt-2">
-          {title}
-          {/* 顯示 block_reason 的 Tooltip */}
-          {!is_applicable && block_reason && (
-            <OverlayTrigger
-              placement="top"
-              overlay={
-                <Tooltip id={`tooltip-${coupon.id}`}>
-                  {brand_id >= 1 && brandMap[brand_id]
-                    ? `限定 ${brandMap[brand_id]} 品牌，${block_reason}`
-                    : block_reason}
-                </Tooltip>
-              }
+    <>
+      <div className="position-relative">
+        {/* Tooltip-icon*/}
+        {!is_applicable && block_reason && (
+          <OverlayTrigger
+            placement="top"
+            overlay={
+              <Tooltip id={`tooltip-${coupon.id}`}>
+                {brand_id >= 1 && brandMap[brand_id]
+                  ? `限定 ${brandMap[brand_id]} 品牌，${block_reason}`
+                  : block_reason}
+              </Tooltip>
+            }
+          >
+            <div
+              className={`${styles.warningIcon} text-warning`}
+              style={{ cursor: 'pointer' }}
             >
-              <span className="ms-2 text-warning" style={{ cursor: 'pointer' }}>
-                <FaExclamationTriangle />
-              </span>
-            </OverlayTrigger>
-          )}
-        </h5>
-        <p className="m-0">{condition}</p>
-        {area === 1 && category_id !== 0 && (
-          <p className="m-0">適用類別：{prodMap[category_id]}</p>
+              <FaExclamationTriangle style={{ fontSize: '32px' }} />
+            </div>
+          </OverlayTrigger>
         )}
-      </div>
 
-      <div>
-        <button
-          className={`${styles.circleBtn} ${selected ? styles.active : ''}`}
-          disabled={!is_applicable}
-          onClick={handleClick}
+        {/* coupon */}
+        <div
+          className={`${cardClass} d-flex align-items-center justify-content-between`}
         >
-          {selected && <FaCheck className={styles.checkIcon} />}
-        </button>
+          {/* 品牌圖示 */}
+          <div className={styles.brandLogo}>
+            <Image src={imageSrc} alt="brand" width={80} height={80} />
+          </div>
+
+          {/* 文字 */}
+          <div className="ms-4 text-danger">
+            <h5 className="m-0 pt-2">{title}</h5>
+            <p className="m-0">{condition}</p>
+            {area === 1 && category_id !== 0 && (
+              <p className="m-0">適用類別：{prodMap[category_id]}</p>
+            )}
+          </div>
+
+          <div>
+            <button
+              className={`${styles.circleBtn} ${selected ? styles.active : ''}`}
+              disabled={!is_applicable}
+              onClick={handleClick}
+            >
+              {selected && <FaCheck className={styles.checkIcon} />}
+            </button>
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   )
 }

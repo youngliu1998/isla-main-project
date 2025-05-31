@@ -34,25 +34,6 @@ button:disabled {
   width: 20rem;
 }
 
-// checkbox style  ok
-.checkboxInput {
-  appearance: none;
-  width: 1.2rem;
-  height: 1.2rem;
-  border-radius: 0.25rem !important;
-  background-color: #fff;
-  transition: all 0.2s ease-in-out;
-}
-
-.checkboxInput:checked {
-  background-color: var(--bs-secondary);
-  border-color: var(--bs-primary);
-}
-
-.checkboxInput:focus {
-  box-shadow: none;
-}
-
 // ===加購商品區===
 // nav-tab-underline
 .nav-underline .nav-link {
