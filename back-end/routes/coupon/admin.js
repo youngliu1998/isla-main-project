@@ -102,18 +102,27 @@ router.post('/', async (req, res) => {
     area,
   } = req.body
 
+  // 避免 0 被轉為 null
+  const safeBrandId = brand_id === null || brand_id === undefined ? 0 : brand_id
+  const safeCategoryId =
+    category_id === null || category_id === undefined ? 0 : category_id
+  const safeCourseCategoryId =
+    course_categories_id === null || course_categories_id === undefined
+      ? 0
+      : course_categories_id
+
   try {
     const [result] = await db.query(
       `INSERT INTO coupons 
         (title, description, type_id, brand_id, category_id, course_categories_id, amount, discount_rate, free, min_amount, min_quantity, valid_from, valid_to, area, valid) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`,
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         title,
         description,
         type_id,
-        brand_id || null,
-        category_id || null,
-        course_categories_id || null,
+        safeBrandId,
+        safeCategoryId,
+        safeCourseCategoryId,
         amount,
         discount_rate,
         free,
@@ -122,6 +131,7 @@ router.post('/', async (req, res) => {
         valid_from,
         valid_to,
         area,
+        1,
       ]
     )
 

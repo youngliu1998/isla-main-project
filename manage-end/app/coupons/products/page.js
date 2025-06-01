@@ -26,6 +26,7 @@ import {
   Trash2,
   MoreHorizontal,
   Eye,
+  CheckCircle,
 } from 'lucide-react'
 import {
   DropdownMenu,
@@ -35,6 +36,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import dayjs from 'dayjs'
 import { useEffect, useMemo, useState } from 'react'
+import { Alert } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -49,8 +51,10 @@ export default function CouponListPage() {
   const [editCoupon, setEditCoupon] = useState(null) // 編輯優惠券
   const { brands, categories, types } = useCouponOption() // 獲取品牌跟種類跟優惠券類型
   const [originalCoupon, setOriginalCoupon] = useState(null)
-  const [refresh, setRefresh] = useState(false)
+  const [refresh, setRefresh] = useState(false) // 重新抓取資料
   const [selectedCouponForDialog, setSelectedCouponForDialog] = useState(null)
+  const [deleteTarget, setDeleteTarget] = useState(null)
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false)
 
   useEffect(() => {
     const token = localStorage.getItem('jwtToken')
@@ -146,13 +150,15 @@ export default function CouponListPage() {
   const handleDelete = async (id) => {
     const token = localStorage.getItem('jwtToken')
     try {
-      const res = await fetch(`http://localhost:3005/api/coupon/${id}`, {
+      const res = await fetch(`http://localhost:3005/api/coupon/admin/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       })
       if (!res.ok) throw new Error('刪除失敗')
       setCoupons((prev) => prev.filter((c) => c.id !== id))
-      alert('已刪除')
+      // 刪除動畫
+      setShowSuccessAlert(true)
+      setTimeout(() => setShowSuccessAlert(false), 3000)
     } catch (err) {
       console.error('刪除失敗', err)
       alert('刪除失敗')
@@ -270,8 +276,8 @@ export default function CouponListPage() {
                 編輯優惠券
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => handleDelete(row.original.id)}
-                className="cursor-pointer text-red-600 hover:!text-red-600 hover:!bg-red-50" // Fixed hover style
+                onClick={() => setDeleteTarget(row.original)}
+                className="cursor-pointer text-red-600 hover:!text-red-600 hover:!bg-red-50"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
                 刪除優惠券
@@ -299,12 +305,22 @@ export default function CouponListPage() {
 
   return (
     <div className="container mx-auto py-8 px-4">
+      {/* 顯示刪除成功提示框 */}
+      {showSuccessAlert && (
+        <Alert
+          variant="default"
+          className="mb-4 flex items-center gap-2 border-green-300 bg-green-50 text-green-800"
+        >
+          <CheckCircle className="w-4 h-4 text-green-600" />
+          <span>優惠券已成功刪除</span>
+        </Alert>
+      )}
       <Card>
         <CardHeader className="flex justify-between items-center">
           <CardTitle className="text-2xl">商品優惠券管理</CardTitle>
-          <Button className="bg-blue-600 hover:bg-blue-700">
+          {/* <Button className="bg-blue-600 hover:bg-blue-700">
             <Plus className="mr-2 h-4 w-4" /> 新增優惠券
-          </Button>
+          </Button> */}
         </CardHeader>
         <CardContent>
           <div className="flex items-center space-x-2 mb-6">
@@ -450,6 +466,34 @@ export default function CouponListPage() {
         open={!!selectedCouponForDialog}
         onClose={() => setSelectedCouponForDialog(null)}
       />
+      {/* 刪除優惠券 */}
+      <Dialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>確定要刪除優惠券？</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p>
+              優惠名稱：<strong>{deleteTarget?.title}</strong>
+            </p>
+            <p>刪除後將無法復原，請確認是否刪除？</p>
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setDeleteTarget(null)}>
+                取消
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={async () => {
+                  await handleDelete(deleteTarget.id)
+                  setDeleteTarget(null)
+                }}
+              >
+                確定刪除
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

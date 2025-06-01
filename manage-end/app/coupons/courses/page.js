@@ -26,6 +26,7 @@ import {
   Trash2,
   MoreHorizontal,
   Eye,
+  CheckCircle,
 } from 'lucide-react'
 import {
   DropdownMenu,
@@ -35,6 +36,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import dayjs from 'dayjs'
 import { useEffect, useMemo, useState } from 'react'
+import { Alert } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -51,6 +53,8 @@ export default function CourseCouponListPage() {
   const { courseCategories, types } = useCouponOption()
   const [refresh, setRefresh] = useState(false)
   const [selectedCouponForDialog, setSelectedCouponForDialog] = useState(null)
+  const [deleteTarget, setDeleteTarget] = useState(null)
+  const [showSuccessAlert, setShowSuccessAlert] = useState(false)
 
   useEffect(() => {
     const token = localStorage.getItem('jwtToken')
@@ -80,7 +84,7 @@ export default function CourseCouponListPage() {
         setCoupons(formatted)
       })
   }, [refresh])
-
+  // 優惠券種類區分(加上顏色)
   const getTypeStyle = (typeName) => {
     switch (typeName) {
       case '折扣券':
@@ -93,18 +97,18 @@ export default function CourseCouponListPage() {
         return 'bg-gray-100 text-gray-800'
     }
   }
-
+  // 剩幾天過期
   const getDaysLeft = (validTo) => {
     const diff = dayjs(validTo).diff(dayjs(), 'day')
     return diff >= 0 ? `剩 ${diff} 天` : '已過期'
   }
-
-  const getTargetScope = (coupon) => {
-    const { brand, area } = coupon
-    if (!brand && area === 0) return '全站通用'
-    if (brand) return brand
-  }
-
+  // 使用對象
+  // const getTargetScope = (coupon) => {
+  //   const { brand, area } = coupon
+  //   if (!brand && area === 0) return '全站通用'
+  //   if (brand) return brand
+  // }
+  // 更新優惠券
   const handleEdit = async (updatedCoupon) => {
     const token = localStorage.getItem('jwtToken')
     try {
@@ -130,17 +134,19 @@ export default function CourseCouponListPage() {
       alert('更新失敗')
     }
   }
-
+  // 刪除優惠券
   const handleDelete = async (id) => {
     const token = localStorage.getItem('jwtToken')
     try {
-      const res = await fetch(`http://localhost:3005/api/coupon/${id}`, {
+      const res = await fetch(`http://localhost:3005/api/coupon/admin/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       })
       if (!res.ok) throw new Error('刪除失敗')
       setCoupons((prev) => prev.filter((c) => c.id !== id))
-      alert('已刪除')
+      // 刪除動畫
+      setShowSuccessAlert(true)
+      setTimeout(() => setShowSuccessAlert(false), 3000)
     } catch (err) {
       console.error('刪除失敗', err)
       alert('刪除失敗')
@@ -253,7 +259,7 @@ export default function CourseCouponListPage() {
                 編輯優惠券
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => handleDelete(row.original.id)}
+                onClick={() => setDeleteTarget(row.original)}
                 className="cursor-pointer text-red-600 hover:!text-red-600 hover:!bg-red-50"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
@@ -282,19 +288,29 @@ export default function CourseCouponListPage() {
 
   return (
     <div className="container mx-auto py-8 px-4">
+      {/* 顯示刪除成功提示框 */}
+      {showSuccessAlert && (
+        <Alert
+          variant="default"
+          className="mb-4 flex items-center gap-2 border-green-300 bg-green-50 text-green-800"
+        >
+          <CheckCircle className="w-4 h-4 text-green-600" />
+          <span>優惠券已成功刪除</span>
+        </Alert>
+      )}
       <Card>
         <CardHeader className="flex justify-between items-center">
           <CardTitle className="text-2xl">課程優惠券管理</CardTitle>
-          <Button className="bg-blue-600 hover:bg-blue-700">
+          {/* <Button className="bg-blue-600 hover:bg-blue-700">
             <Plus className="mr-2 h-4 w-4" /> 新增優惠券
-          </Button>
+          </Button> */}
         </CardHeader>
         <CardContent>
           <div className="flex items-center space-x-2 mb-6">
             <div className="relative flex-1 max-w-sm">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
-                placeholder="搜尋優惠名稱、品牌..."
+                placeholder="搜尋優惠名稱、課程分類..."
                 value={globalFilter ?? ''}
                 onChange={(e) => setGlobalFilter(e.target.value)}
                 className="pl-10"
@@ -430,6 +446,34 @@ export default function CourseCouponListPage() {
         open={!!selectedCouponForDialog}
         onClose={() => setSelectedCouponForDialog(null)}
       />
+      {/* 刪除優惠券 */}
+      <Dialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>確定要刪除優惠券？</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p>
+              優惠名稱：<strong>{deleteTarget?.title}</strong>
+            </p>
+            <p>刪除後將無法復原，請確認是否刪除？</p>
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setDeleteTarget(null)}>
+                取消
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={async () => {
+                  await handleDelete(deleteTarget.id)
+                  setDeleteTarget(null)
+                }}
+              >
+                確定刪除
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

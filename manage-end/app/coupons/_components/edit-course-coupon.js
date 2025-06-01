@@ -3,6 +3,12 @@
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { DialogFooter } from '@/components/ui/dialog'
+import {
+  Checkbox,
+  CheckboxField,
+  CheckboxGroup,
+  Description,
+} from '@/components/ui/checkbox'
 import dayjs from 'dayjs'
 
 export default function EditCourseCouponForm({
@@ -23,6 +29,7 @@ export default function EditCourseCouponForm({
           onChange={(e) => onChange('title', e.target.value)}
         />
       </div>
+
       {/* 優惠券類別 */}
       <div>
         <label className="block mb-1">優惠券類型</label>
@@ -81,55 +88,65 @@ export default function EditCourseCouponForm({
         />
       </div>
 
-      {/* 折扣金額 */}
-      <div>
-        <label className="block mb-1">折扣金額</label>
-        <Input
-          type="number"
-          value={
-            coupon.amount === null || coupon.amount === undefined
-              ? ''
-              : coupon.amount
-          }
-          onChange={(e) =>
-            onChange(
-              'amount',
-              e.target.value === '' ? '' : parseInt(e.target.value)
-            )
-          }
-        />
-      </div>
+      {/* 滿減券（type_id === 1） */}
+      {coupon.type_id === 1 && (
+        <div>
+          <label className="block mb-1">折扣金額</label>
+          <Input
+            type="number"
+            value={coupon.amount ?? ''}
+            onChange={(e) =>
+              onChange(
+                'amount',
+                e.target.value === '' ? '' : parseInt(e.target.value)
+              )
+            }
+          />
+        </div>
+      )}
 
-      {/* 折扣率 */}
-      <div>
-        <label className="block mb-1">折扣率 (0 ~ 1)</label>
-        <Input
-          type="number"
-          step="0.01"
-          min="0"
-          max="1"
-          value={coupon.discount_rate ?? ''}
-          onChange={(e) =>
-            onChange(
-              'discount_rate',
-              e.target.value === '' ? '' : parseFloat(e.target.value)
-            )
-          }
-        />
-      </div>
+      {/* 折扣券（type_id === 2） */}
+      {coupon.type_id === 2 && (
+        <div>
+          <label className="block mb-1">折扣率 (0 ~ 1)</label>
+          <Input
+            type="number"
+            step="0.01"
+            min="0"
+            max="1"
+            value={coupon.discount_rate ?? ''}
+            onChange={(e) =>
+              onChange(
+                'discount_rate',
+                e.target.value === '' ? '' : parseFloat(e.target.value)
+              )
+            }
+          />
+        </div>
+      )}
 
-      {/* 免運 */}
-      <div>
-        <label className="block mb-1">免運</label>
-        <select
-          className="w-full border rounded px-3 py-2"
-          value={coupon.free ?? 0}
-          onChange={(e) => onChange('free', parseInt(e.target.value))}
-        >
-          <option value={0}>否</option>
-          <option value={1}>是</option>
-        </select>
-      </div>
+      {/* 免運券（type_id === 3） */}
+      {coupon.type_id === 3 && (
+        <CheckboxGroup>
+          <CheckboxField>
+            <div className="flex items-start gap-3">
+              <Checkbox
+                className="mt-[2px]"
+                checked={coupon.free === 1}
+                onCheckedChange={(checked) => onChange('free', checked ? 1 : 0)}
+                name="free_shipping"
+                value="1"
+              />
+              <div className="leading-tight">
+                <label className="text-sm font-medium">免運</label>
+              </div>
+            </div>
+            <Description className="text-muted-foreground text-sm">
+              優惠券將可享免運服務
+            </Description>
+          </CheckboxField>
+        </CheckboxGroup>
+      )}
 
       {/* 最低金額 */}
       <div>
