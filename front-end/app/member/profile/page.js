@@ -8,6 +8,7 @@ import { useAuth } from '@/hook/use-auth'
 import BasicProfile from './_component/basic-profile'
 import InputText from '../_component/input-text'
 import Select from '../_component/select'
+import { toast } from 'react-toastify'
 // import Path from '../_component/path/path'
 // ==== data ====
 import { cities } from './data/CityCountyData'
@@ -69,7 +70,11 @@ export default function ProfilePage() {
       if (response.ok) {
         // ==== 200 status: success ====
         if (data.status === 'success') {
-          alert('更新個人資料成功', data)
+          toast.success('更新個人資料成功', {
+            position: 'top-right',
+            autoClose: 1000,
+            hideProgressBar: false,
+          })
         }
       } else {
         // ==== 404 status: error ====
@@ -97,14 +102,25 @@ export default function ProfilePage() {
             }
           })
           setError(newError)
+
+          toast.error('欄位不合規定', {
+            position: 'top-right',
+            autoClose: 1000,
+            hideProgressBar: false,
+          })
         } else {
-          console.log('未知錯誤')
+          console.log('資料庫問題')
         }
         // ==== END 404 status: error ====
       }
       // ====  END 處理資料 ====
     } catch (error) {
-      console.error('錯誤：', error)
+      console.log('資料庫問題: ', error)
+      toast.error('更新失敗', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+      })
     }
   }
 

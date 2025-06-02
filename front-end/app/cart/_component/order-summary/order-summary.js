@@ -2,6 +2,7 @@
 
 import styles from './order-summary.module.scss'
 import Link from 'next/link'
+import Image from 'next/image'
 import { Collapse } from 'react-bootstrap'
 import { usePathname } from 'next/navigation'
 import { filterGlobalCoupons } from '../../utils/coupon-helper'
@@ -94,13 +95,14 @@ export default function OrderSummary({
   const totalDiscount = makeupDiscount + courseDiscount
   const subtotal = makeupTotal + courseTotal + addOnTotal + shippingBase
   const finalTotal = subtotal - totalDiscount - globalDiscount
+  console.log(makeupItems)
 
   return (
     <div className={`${styles.orderSummary} card-style mb-3`}>
       <h5 className="fw-bold mb-5 text-maintext text-center">訂單明細</h5>
 
       {/* 彩妝商品區 */}
-      <div className="d-flex justify-content-between text-subtext mb-2">
+      <div className="d-flex justify-content-between text-maintext mb-2">
         <div className="d-flex align-items-center">
           <p className="me-2">彩妝商品</p>
           <button
@@ -118,30 +120,32 @@ export default function OrderSummary({
       </div>
       <Collapse in={openProdList}>
         <div>
-          {Array.isArray(makeupItems) && makeupItems.length > 0 ? (
+          {makeupItems.length > 0 ? (
             makeupItems.map((item, index) => (
               <div
-                className="d-flex justify-content-between text-elem"
                 key={index}
+                className="d-flex justify-content-between align-items-center mb-2 text-subtext"
+                style={{ fontSize: '14px' }}
               >
-                <p
-                  className={`${styles.ellipsis}`}
-                  title={item.name}
-                  style={{ fontSize: '14px' }}
-                >
-                  {item.name}
-                </p>
-                <div
-                  className="d-flex align-items-center"
-                  style={{ fontSize: '14px' }}
-                >
-                  {/* <p className="me-2">數量：{item.quantity}</p> */}
-                  <p>
-                    NT$
-                    {formatCurrency(
-                      item.quantity * (item.sale_price ?? item.base_price)
-                    )}
-                  </p>
+                <div className="d-flex align-items-center flex-grow-1 me-2">
+                  <Image
+                    src={item.image_url}
+                    alt={item.name}
+                    width={48}
+                    height={48}
+                    className="me-2 rounded"
+                  />
+                  <span className={`${styles.ellipsis} me-2`} title={item.name}>
+                    {item.name}
+                  </span>
+                  <div className="me-3 text-nowrap">x{item.quantity}</div>
+                </div>
+
+                <div className="fw-bold text-nowrap">
+                  NT$
+                  {formatCurrency(
+                    item.quantity * (item.sale_price ?? item.base_price)
+                  )}
                 </div>
               </div>
             ))
@@ -159,7 +163,7 @@ export default function OrderSummary({
       )}
 
       {/* 彩妝課程區 */}
-      <div className="d-flex justify-content-between text-subtext mb-2">
+      <div className="d-flex justify-content-between text-maintext mb-2">
         <div className="d-flex align-items-center">
           <p className="me-2">彩妝課程</p>
           <button
@@ -177,17 +181,30 @@ export default function OrderSummary({
       </div>
       <Collapse in={openCourList}>
         <div>
-          {Array.isArray(courseItems) && courseItems.length > 0 ? (
+          {courseItems.length > 0 ? (
             courseItems.map((item) => (
               <div
                 key={item.id}
-                className="d-flex justify-content-between text-elem"
+                className="d-flex justify-content-between align-items-center mb-2 text-subtext"
                 style={{ fontSize: '14px' }}
               >
-                <p className={`${styles.ellipsis}`} title={item.name}>
-                  {item.name}
-                </p>
-                <p>NT${formatCurrency(item.sale_price ?? item.base_price)}</p>
+                <div className="d-flex align-items-center flex-grow-1 me-2">
+                  <Image
+                    src={item.image_url}
+                    alt={item.name}
+                    width={55}
+                    height={40}
+                    className="me-2"
+                  />
+                  <span className={`${styles.ellipsis} me-2`}>{item.name}</span>
+                  <div className="me-3 text-nowrap">x{item.quantity}</div>
+                </div>
+                <div className="fw-bold text-nowrap">
+                  NT$
+                  {formatCurrency(
+                    item.quantity * (item.sale_price ?? item.base_price)
+                  )}
+                </div>
               </div>
             ))
           ) : (

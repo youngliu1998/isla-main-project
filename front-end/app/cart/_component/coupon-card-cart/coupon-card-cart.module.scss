@@ -7,8 +7,6 @@
   background:
     radial-gradient(circle at 100px top, #fff, #fff 10px, transparent 11px),
     radial-gradient(circle at 100px bottom, #fff, #fff 10px, transparent 11px);
-  // radial-gradient(circle at 100px right, #fff, #fff 10px, transparent 11px),
-  // radial-gradient(circle at 100px left, #fff, #fff 10px, transparent 11px);
   background-color: #d0c4c4;
 
   border-radius: 5px;
@@ -24,8 +22,8 @@
   }
 
   &.disabled {
-    background-color: #000000;
-    opacity: 0.1;
+    background-color: #d0c4c44e;
+    filter: grayscale(1);
   }
 }
 
@@ -65,7 +63,7 @@
   cursor: pointer;
 
   &:disabled {
-    background-color: #999;
+    background-color: #99999900;
     cursor: not-allowed;
   }
 }
@@ -88,4 +86,12 @@
 .active .checkIcon {
   opacity: 1;
   transform: scale(1);
+}
+
+.warningIcon {
+  position: absolute;
+  top: 2.8rem;
+  right: 0.7rem;
+  z-index: 10;
+  opacity: 1 !important; // 不想吃到 disabled 的 opacity
 }

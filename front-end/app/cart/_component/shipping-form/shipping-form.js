@@ -77,7 +77,7 @@ export default function ShippingForm({
           </label>
         </div>
         <small>
-          <del className="me-2 text-subtext">運費 NT$100</del>
+          <del className="me-2 text-subtext">運費 NT$200</del>
           <span className="text-secondary">達免運門檻</span>
         </small>
       </div>
@@ -175,7 +175,7 @@ export default function ShippingForm({
           </label>
         </div>
         <small>
-          <del className="me-2 text-subtext">運費 NT$100</del>
+          <del className="me-2 text-subtext">運費 NT$200</del>
           <span className="text-secondary">達免運門檻</span>
         </small>
       </div>
