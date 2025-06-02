@@ -69,7 +69,8 @@ export default function CommentInput({
               !e.nativeEvent.isComposing
             ) {
               // setContent(e.target.value)
-              handleDirectToLogin(path)
+              console.log(isAuth)
+              !isAuth && handleDirectToLogin(path)
               handleCommentSubmit(e, userID, null, lastCommentRef)
             }
           }}

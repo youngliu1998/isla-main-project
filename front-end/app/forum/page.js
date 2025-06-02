@@ -10,7 +10,7 @@ import ComponentsSearchButton from './_components/search-button'
 import { useAuth } from '../../hook/use-auth'
 import { useFilter } from './_context/filterContext'
 import EditPostModal from './_components/edit-post-modal'
-import PostLoader from './_components/post-loader'
+import PostLoader from './_components/loader-post'
 // import dynamic from 'next/dynamic'
 // const PostLoader = dynamic(() => import('./_components/post-loader'), {
 //   ssr: false,

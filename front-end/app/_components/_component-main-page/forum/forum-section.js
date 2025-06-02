@@ -41,54 +41,53 @@ export default function ForumSection(props) {
 
   return (
     <>
-      <h3>Top 文章</h3>
-      <Componentstab
-        cates={['熱門', '最新']}
-        height={52}
-        // handleTabChange={handleForumTab} FIXME
-      />
-      <div className="row row-cols-lg-2 row-cols-1 gx-5 w-100">
-        <MainForum
-          number={1}
-          forumTitle={postsFormat[0].title}
-          forumContent={postsFormat[0].content}
-          img_url={firstImg}
-          btnLikedActive={postsFormat[0].liked_user_ids.includes(userID)}
-          btnLikedCount={postsFormat[0].liked_user_ids.split(',').length}
-          btnSavedActive={postsFormat[0].saved_user_ids.includes(userID)}
-          btnSavedCount={postsFormat[0].saved_user_ids.split(',').length}
-          postID={postsFormat[0].id}
-          mutate={mutate}
-        />
-        <div className="col">
-          {postsFormat.map((post, i) => {
-            return (
-              <div key={i} className={`${i === 0 && 'd-lg-none'}`}>
-                <SubForum
-                  number={i + 1}
-                  postID={post.id}
-                  forumTitle={post.title}
-                  forumContent={post.content}
-                  btnLikedActive={post.liked_user_ids.includes(userID)}
-                  btnLikedCount={post.liked_user_ids.split(',').length}
-                  btnSavedActive={post.saved_user_ids.includes(userID)}
-                  btnSavedCount={post.saved_user_ids.split(',').length}
-                  mutate={mutate}
-                />
-              </div>
-            )
-          })}
+      <div className="d-flex flex-column align-items-center gap-5">
+        <div className="d-flex flex-column align-items-center gap-4">
+          <h3>Top 文章</h3>
+          <Componentstab cates={['熱門', '最新']} />
         </div>
+        <div className="row row-cols-lg-2 row-cols-1 gx-5 w-100">
+          <MainForum
+            number={1}
+            forumTitle={postsFormat[0].title}
+            forumContent={postsFormat[0].content}
+            img_url={firstImg}
+            btnLikedActive={postsFormat[0].liked_user_ids.includes(userID)}
+            btnLikedCount={postsFormat[0].liked_user_ids.split(',').length}
+            btnSavedActive={postsFormat[0].saved_user_ids.includes(userID)}
+            btnSavedCount={postsFormat[0].saved_user_ids.split(',').length}
+            postID={postsFormat[0].id}
+            mutate={mutate}
+          />
+          <div className="col">
+            {postsFormat.map((post, i) => {
+              return (
+                <div key={i} className={`${i === 0 && 'd-lg-none'} sub-block`}>
+                  <SubForum
+                    number={i + 1}
+                    postID={post.id}
+                    forumTitle={post.title}
+                    forumContent={post.content}
+                    btnLikedActive={post.liked_user_ids.includes(userID)}
+                    btnLikedCount={post.liked_user_ids.split(',').length}
+                    btnSavedActive={post.saved_user_ids.includes(userID)}
+                    btnSavedCount={post.saved_user_ids.split(',').length}
+                    mutate={mutate}
+                  />
+                </div>
+              )
+            })}
+          </div>
+        </div>
+        <button
+          className="btn btn-primary"
+          onClick={() => {
+            router.push('/forum')
+          }}
+        >
+          查看更多
+        </button>
       </div>
-
-      <button
-        className="btn btn-primary"
-        onClick={() => {
-          router.push('/forum')
-        }}
-      >
-        查看更多
-      </button>
     </>
   )
 }
