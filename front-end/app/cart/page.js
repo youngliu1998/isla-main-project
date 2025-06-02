@@ -32,6 +32,7 @@ export default function CartPage() {
   const [couponDataCour, setCouponDataCour] = useState([])
   const [couponDataGlob, setcouponDataGlob] = useState([])
   const [isLoading, setIsLoading] = useState(true)
+  const [isCheckingOut, setIsCheckingOut] = useState(false)
   const [selecProdCoup, setSelecProdCoup] = useState(null)
   const [selecCourCoup, setSelecCourCoup] = useState(null)
   const [selecGloCoup, setSelecGloCoup] = useState(null)
@@ -47,7 +48,6 @@ export default function CartPage() {
         const rawCartItems = res.data.data.cartItems
 
         console.log('前端抓到的購物車資料：', rawCartItems)
-        // toast.success('頁面載入成功！')
         const typedItems = rawCartItems.map((item) => {
           let type = 'normal'
 
@@ -56,7 +56,7 @@ export default function CartPage() {
           } else if (item.color_options?.length > 1) {
             type = 'colorDots'
           }
-          console.log('🧪 item.course:', item.course)
+          console.log('item.course:', item.course)
 
           return {
             ...item,
@@ -251,26 +251,44 @@ export default function CartPage() {
   const selectedItems = cartItems.filter((item) => checkedItems[item.id])
   const shippingCoupons = filterGlobalCoupons(couponDataProd, selectedItems)
 
-  function handleCheckout() {
-    // 組合要傳到下一步的明細
-    const orderSummaryData = {
-      cartItems: cartItems.filter((i) => checkedItems[i.id]),
-      selecProdCoup,
-      selecCourCoup,
-      selecGloCoup,
-      // setSelecGloCoup,
-      filterCourCoups,
-      filterProdCoups,
-      shippingCoupons,
-      universalCoupon,
+  async function handleCheckout() {
+    try {
+      setIsCheckingOut(true)
+
+      // 組合要傳到下一步的明細
+      const orderSummaryData = {
+        cartItems: cartItems.filter((i) => checkedItems[i.id]),
+        selecProdCoup,
+        selecCourCoup,
+        selecGloCoup,
+        // setSelecGloCoup,
+        filterCourCoups,
+        filterProdCoups,
+        shippingCoupons,
+        universalCoupon,
+      }
+      setOrderData(orderSummaryData)
+      localStorage.setItem('orderSummary', JSON.stringify(orderSummaryData))
+      router.push('/cart/payment')
+    } catch (err) {
+      console.log(err.message)
+      toast.error('結帳發生錯誤')
+    } finally {
+      setIsCheckingOut(false)
     }
-    setOrderData(orderSummaryData)
-    localStorage.setItem('orderSummary', JSON.stringify(orderSummaryData))
-    router.push('/cart/payment')
   }
 
   return (
     <>
+      {isCheckingOut && (
+        <section
+          className="position-fixed top-0 start-0 w-100 h-100 bg-white d-flex justify-content-center align-items-center"
+          style={{ zIndex: 9999 }}
+        >
+          <CartLoading />
+        </section>
+      )}
+
       <section className="container text-center text-lg-start mt-2">
         <h1 className="text-subtext h2 m-5">購物車</h1>
       </section>
@@ -319,36 +337,41 @@ export default function CartPage() {
                     <i className="bi bi-cart4 fs-6 mb-1 me-1"></i>
                     <div>彩妝商品</div>
                   </div>
-                  {productItems.map((item) => (
-                    <ProductCard
-                      key={item.id}
-                      type={item.type}
-                      id={item.id}
-                      title={item.name}
-                      image={item.image_url}
-                      salePrice={item.sale_price ?? item.base_price}
-                      basePrice={item.base_price}
-                      quantity={item.quantity}
-                      color={item.color}
-                      colorOptions={item.color_options}
-                      category={item.category}
-                      onDelete={() => handleDeleteItem(item.id)}
-                      onQuantityChange={(newQty) => {
-                        const updated = cartItems.map((p) =>
-                          p.id === item.id ? { ...p, quantity: newQty } : p
-                        )
-                        setCartItems(updated)
-                        localStorage.setItem(
-                          'cartItems',
-                          JSON.stringify(updated)
-                        )
-                      }}
-                      isChecked={checkedItems[item.id] || false}
-                      onCheckChange={(checked) =>
-                        handleItemCheckChange(item.id, checked)
-                      }
-                    />
-                  ))}
+                  {productItems.length === 0 ? (
+                    <div className="text-subtext">尚未加入任何彩妝商品</div>
+                  ) : (
+                    productItems.map((item) => (
+                      <ProductCard
+                        key={item.id}
+                        type={item.type}
+                        id={item.id}
+                        title={item.name}
+                        image={item.image_url}
+                        salePrice={item.sale_price ?? item.base_price}
+                        basePrice={item.base_price}
+                        quantity={item.quantity}
+                        color={item.color}
+                        colorOptions={item.color_options}
+                        category={item.category}
+                        onDelete={() => handleDeleteItem(item.id)}
+                        onQuantityChange={(newQty) => {
+                          const updated = cartItems.map((p) =>
+                            p.id === item.id ? { ...p, quantity: newQty } : p
+                          )
+                          setCartItems(updated)
+                          localStorage.setItem(
+                            'cartItems',
+                            JSON.stringify(updated)
+                          )
+                        }}
+                        isChecked={checkedItems[item.id] || false}
+                        onCheckChange={(checked) =>
+                          handleItemCheckChange(item.id, checked)
+                        }
+                      />
+                    ))
+                  )}
+                  {}
 
                   {/* add-on-divider */}
                   <div
@@ -375,35 +398,39 @@ export default function CartPage() {
                       <div>彩妝課程</div>
                     </div>
                   </div>
-                  {courseItems.map((item) => (
-                    <ProductCard
-                      key={item.id}
-                      type={item.type}
-                      id={item.id}
-                      title={item.name}
-                      image={item.image_url}
-                      salePrice={item.sale_price ?? item.base_price}
-                      basePrice={item.base_price}
-                      quantity={item.quantity}
-                      category={item.category}
-                      course_categories_id={item.course_categories_id}
-                      onDelete={() => handleDeleteItem(item.id)}
-                      onQuantityChange={(newQty) => {
-                        const updated = cartItems.map((p) =>
-                          p.id === item.id ? { ...p, quantity: newQty } : p
-                        )
-                        setCartItems(updated)
-                        localStorage.setItem(
-                          'cartItems',
-                          JSON.stringify(updated)
-                        )
-                      }}
-                      isChecked={checkedItems[item.id] || false}
-                      onCheckChange={(checked) =>
-                        handleItemCheckChange(item.id, checked)
-                      }
-                    />
-                  ))}
+                  {courseItems.length === 0 ? (
+                    <div className="text-subtext">尚未加入任何課程商品</div>
+                  ) : (
+                    courseItems.map((item) => (
+                      <ProductCard
+                        key={item.id}
+                        type={item.type}
+                        id={item.id}
+                        title={item.name}
+                        image={item.image_url}
+                        salePrice={item.sale_price ?? item.base_price}
+                        basePrice={item.base_price}
+                        quantity={item.quantity}
+                        category={item.category}
+                        course_categories_id={item.course_categories_id}
+                        onDelete={() => handleDeleteItem(item.id)}
+                        onQuantityChange={(newQty) => {
+                          const updated = cartItems.map((p) =>
+                            p.id === item.id ? { ...p, quantity: newQty } : p
+                          )
+                          setCartItems(updated)
+                          localStorage.setItem(
+                            'cartItems',
+                            JSON.stringify(updated)
+                          )
+                        }}
+                        isChecked={checkedItems[item.id] || false}
+                        onCheckChange={(checked) =>
+                          handleItemCheckChange(item.id, checked)
+                        }
+                      />
+                    ))
+                  )}
                 </div>
 
                 <CouponAccordionCourse>
@@ -430,7 +457,29 @@ export default function CartPage() {
                   />
                 )}
               </div>
-              {isMobile && <MobileOrderBar />}
+              {isMobile && (
+                <MobileOrderBar
+                  // cartItems={cartItems.filter((i) => checkedItems[i.id])}
+                  // checkedItems={checkedItems}
+                  // selecProdCoup={selecProdCoup}
+                  // selecCourCoup={selecCourCoup}
+                  // selecGloCoup={selecGloCoup}
+                  // universalCoupon={universalCoupon}
+                  // shippingCoupons={shippingCoupons}
+                  // setSelecGloCoup={setSelecGloCoup}
+                  // filterCourCoups={filterCourCoups}
+                  // filterProdCoups={filterProdCoups}
+                  // onCheckout={handleCheckout}
+                  cartItems={cartItems}
+                  checkedItems={checkedItems}
+                  selecProdCoup={selecProdCoup}
+                  selecCourCoup={selecCourCoup}
+                  selecGloCoup={selecGloCoup}
+                  setSelecGloCoup={setSelecGloCoup}
+                  shippingCoupons={shippingCoupons}
+                  onCheckout={handleCheckout}
+                />
+              )}
             </div>
           </section>
         </>
