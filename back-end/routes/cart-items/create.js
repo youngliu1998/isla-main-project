@@ -6,6 +6,7 @@ const router = express.Router()
 
 // POST http://localhost:3005/api/cart-items/create
 router.post('/', verifyToken, async (req, res) => {
+  console.log('🧾 req.body', req.body)
   const user_id = req.user.id
   const {
     product_id = null,
@@ -38,7 +39,15 @@ router.post('/', verifyToken, async (req, res) => {
     )
 
     if (existing.length > 0) {
-      // 已存在：更新數量
+      // 課程，禁止重複加入
+      if (course_id || course_experience_id) {
+        return res.status(400).json({
+          status: 'fail',
+          message: '此課程已加入購物車，無法重複加入',
+        })
+      }
+
+      // 商品已在購物車，累加數量
       const newQty = existing[0].quantity + quantity
       await db.query(`UPDATE cart_items SET quantity = ? WHERE id = ?`, [
         newQty,
