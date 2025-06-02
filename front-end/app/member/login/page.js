@@ -199,7 +199,10 @@ export default function LoginPage() {
           {/* ==== Google 登入按鈕 ==== */}
           <GoogleOAuthProvider clientId="104246971541-iteifad48ud3h6dp85k6qoqgqta9flir.apps.googleusercontent.com">
             <div className="w-100">
-              <GoogleLogin onSuccess={responseMessage} onError={errorMessage} />
+              <button onSuccess={responseMessage} onError={errorMessage}>
+                Google登入
+              </button>
+              {/* <GoogleLogin onSuccess={responseMessage} onError={errorMessage} /> */}
             </div>
           </GoogleOAuthProvider>
         </div>
