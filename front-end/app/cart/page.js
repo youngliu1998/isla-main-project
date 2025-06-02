@@ -459,17 +459,6 @@ export default function CartPage() {
               </div>
               {isMobile && (
                 <MobileOrderBar
-                  // cartItems={cartItems.filter((i) => checkedItems[i.id])}
-                  // checkedItems={checkedItems}
-                  // selecProdCoup={selecProdCoup}
-                  // selecCourCoup={selecCourCoup}
-                  // selecGloCoup={selecGloCoup}
-                  // universalCoupon={universalCoupon}
-                  // shippingCoupons={shippingCoupons}
-                  // setSelecGloCoup={setSelecGloCoup}
-                  // filterCourCoups={filterCourCoups}
-                  // filterProdCoups={filterProdCoups}
-                  // onCheckout={handleCheckout}
                   cartItems={cartItems}
                   checkedItems={checkedItems}
                   selecProdCoup={selecProdCoup}
