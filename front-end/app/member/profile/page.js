@@ -8,13 +8,9 @@ import { useAuth } from '@/hook/use-auth'
 import BasicProfile from './_component/basic-profile'
 import InputText from '../_component/input-text'
 import Select from '../_component/select'
-<<<<<<< HEAD
-// ==== method ====
-import { getProfile } from './_method/method'
-=======
 import { toast } from 'react-toastify'
 // import Path from '../_component/path/path'
->>>>>>> fc48108 (member toast)
+import { getProfile } from './_method/method'
 // ==== data ====
 import { cities } from './data/CityCountyData'
 
@@ -75,16 +71,11 @@ export default function ProfilePage() {
       if (response.ok) {
         // ==== 200 status: success ====
         if (data.status === 'success') {
-<<<<<<< HEAD
-          alert('更新個人資料成功', data)
-          initAuth()
-=======
           toast.success('更新個人資料成功', {
             position: 'top-right',
             autoClose: 1000,
             hideProgressBar: false,
           })
->>>>>>> fc48108 (member toast)
         }
       } else {
         // ==== 404 status: error ====
