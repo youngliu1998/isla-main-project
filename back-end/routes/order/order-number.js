@@ -49,31 +49,44 @@ router.get('/:orderNumber', async (req, res) => {
 
     for (const item of items) {
       let name = '未知商品'
+      let image = null
 
       if (item.item_type === 'product' && item.product_id) {
         const [[prod]] = await db.execute(
           'SELECT name FROM products WHERE product_id = ?',
           [item.product_id]
         )
+        const [[img]] = await db.execute(
+          'SELECT image_url FROM product_images WHERE product_id = ? AND is_primary = 1 LIMIT 1',
+          [item.product_id]
+        )
+
         name = prod?.name || name
+        const imgBaseUrl = 'https://isla-image.chris142852145.workers.dev/'
+        image = img?.image_url ? imgBaseUrl + img.image_url : null
       } else if (item.item_type === 'course' && item.course_id) {
         const [[course]] = await db.execute(
-          'SELECT title FROM courses WHERE id = ?',
+          'SELECT title, picture FROM courses WHERE id = ?',
           [item.course_id]
         )
         name = course?.title || name
+        image = course?.picture
+          ? `/images/course/bannerall/${course.picture}`
+          : null
       } else if (item.item_type === 'experience' && item.course_experience_id) {
         const [[exp]] = await db.execute(
-          'SELECT title FROM courses_experience WHERE id = ?',
+          'SELECT title, picture FROM courses_experience WHERE id = ?',
           [item.course_experience_id]
         )
         name = exp?.title || name
+        image = exp?.picture ? `/images/course/bannerall/${exp.picture}` : null
       }
 
       products.push({
         name,
         quantity: item.quantity,
         price: item.price,
+        image: image || null,
       })
     }
 

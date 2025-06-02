@@ -3,7 +3,6 @@ import {
   WalletCards,
   Warehouse,
   MessageCircleHeart,
-  Users,
 } from 'lucide-react'
 
 export function getMenuList(pathname) {
@@ -64,16 +63,6 @@ export function getMenuList(pathname) {
               label: '新增優惠券',
             },
           ],
-        },
-      ],
-    },
-    {
-      groupLabel: 'Settings',
-      menus: [
-        {
-          href: '/users',
-          label: 'Users',
-          icon: Users,
         },
       ],
     },

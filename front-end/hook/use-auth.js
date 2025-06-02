@@ -1,12 +1,14 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect } from 'react'
+// import { useRouter } from 'next/navigation'
 
 const AuthContext = createContext(null)
 AuthContext.displayName = 'AuthContext'
 // ==== 清除 localstorage 的function ====
 
 export function AuthProvider({ children }) {
+  // const router = useRouter()
   // set user default status
   const defaultUser = {
     id: 0,
@@ -71,8 +73,8 @@ export function AuthProvider({ children }) {
 
       if (response.ok) {
         if (!data || !data.data || !data.data.token) {
-          console.log('沒有取得token，登入失敗', data);
-          return;
+          console.log('沒有取得token，登入失敗', data)
+          return
         }
         // set token to localStorage
         localStorage.setItem('jwtToken', data['data']['token'])
@@ -93,6 +95,7 @@ export function AuthProvider({ children }) {
     setUser(defaultUser)
     cleanStorage()
     // setIsAuth(false)
+    // router.push('/member/login')
   }
   // 初始讀取 jwtToken 並取得使用者資料
   useEffect(() => {

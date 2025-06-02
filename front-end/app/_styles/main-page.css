@@ -21,3 +21,12 @@
 }
 /* section css */
 /* subsction css */
+.main-page-main-swiper .swiper-pagination-bullet {
+  background-color: #e0e0e0;
+  opacity: 0.6;
+}
+
+.main-page-main-swiper .swiper-pagination-bullet-active {
+  background-color: #ff4f67;
+  opacity: 1;
+}
