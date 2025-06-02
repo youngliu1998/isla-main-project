@@ -49,7 +49,7 @@ function ProductCard({ product }) {
       {
         onSuccess: (data) => {
           window.dispatchEvent(new Event('cart-updated'))
-          toast.success('商品加入購物車成功：', data)
+          // toast.success('商品加入購物車成功：', data)
           // 可以添加成功提示 UI
         },
         onError: (err) => {

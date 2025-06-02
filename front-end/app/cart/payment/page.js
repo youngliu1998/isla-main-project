@@ -207,6 +207,7 @@ export default function PaymentPage() {
         const form = container.querySelector('form')
         if (form) {
           form.submit()
+          toast.success('即將跳轉至綠界付款')
         } else {
           toast.error('綠界表單產生失敗')
         }
@@ -214,7 +215,7 @@ export default function PaymentPage() {
         toast.success('訂單完成，即將跳轉至完成頁')
         setTimeout(() => {
           router.push('/cart/order-completed')
-        }, 1500)
+        }, 1000)
       } else if (paymentMethod === 'LinePay') {
         // router.push('/cart/order-completed')
       }
@@ -291,7 +292,21 @@ export default function PaymentPage() {
               />
             )}
           </div>
-          {isMobile && <MobileOrderBar />}
+          {isMobile && (
+            <MobileOrderBar
+              cartItems={orderData?.cartItems || []}
+              checkedItems={orderData?.cartItems?.reduce((acc, item) => {
+                acc[item.id] = true
+                return acc
+              }, {})}
+              selecProdCoup={orderData?.selecProdCoup}
+              selecCourCoup={orderData?.selecCourCoup}
+              selecGloCoup={orderData?.selecGloCoup}
+              setSelecGloCoup={() => {}}
+              shippingCoupons={orderData?.shippingCoupons || []}
+              onCheckout={handleCheckout}
+            />
+          )}
         </div>
       </section>
 
