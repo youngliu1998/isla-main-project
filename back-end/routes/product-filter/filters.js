@@ -23,4 +23,24 @@ router.get('/', async (req, res) => {
   }
 })
 
+// For 後台 react select格式
+router.get('/manage', async (req, res) => {
+  try {
+    const [brands] = await db.query(
+      `SELECT brand_id AS value, name AS label FROM brands WHERE status = 'active'`
+    )
+    const [tags] = await db.query(
+      `SELECT tag_id AS value, name AS label FROM product_tags WHERE status = 'active'`
+    )
+    const [categories] = await db.query(
+      `SELECT category_id AS value, name AS label FROM categories WHERE status = 'active'`
+    )
+
+    res.json({ brands, categories, tags })
+  } catch (error) {
+    console.error('filter篩選項截取錯誤:', error)
+    res.status(500).json({ error: '篩選項截取錯誤' })
+  }
+})
+
 export default router
