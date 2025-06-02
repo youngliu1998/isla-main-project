@@ -1,5 +1,5 @@
 import db from '../config/mysql.js'
-import { updateImageAndGetUrl } from './product-picture-update-service.js'
+import { uploadImageAndGetUrl } from './product-picture-upload-service.js'
 
 import express from 'express'
 const app = express()

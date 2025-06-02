@@ -11,34 +11,37 @@ const fetchProductDetail = async (id) => {
   return res.data.data
 }
 
-export const updateProduct = async (productData) => {
-  const { product_id } = productData
-
-  if (!product_id) {
-    throw new Error('呼叫 API 時缺少 product_id')
-  }
-
+const updateProductAPI = async (productData) => {
   try {
     const res = await axios.put(
-      `http://localhost:3005/api/product/edit/${product_id}`,
+      `http://localhost:3005/api/product/edit/${productData.product_id}`,
       productData
     )
-
-    // 即使 status 是 200，後端也可能回傳 { success: false }
-    if (res.data?.success === false) {
+    if (res.status !== 200 || res.data?.success !== true) {
       throw new Error(res.data?.message || '商品更新失敗')
     }
+    return response.ok
+  } catch {
+    console.error('API call failed:', error)
+    return false
+  }
+}
 
-    // 成功時，回傳後端給的資料
-    return res.data
+const updateProduct = async (formData) => {
+  try {
+    const response = await fetch(
+      `http://localhost:3005/api/product/edit/${productId}`,
+      {
+        method: 'PUT', // 或 'POST'
+        body: formData, // 直接傳入 FormData 物件
+        // 不要設定 'Content-Type': 'multipart/form-data'，瀏覽器會自動加上正確的 boundary
+      }
+    )
+
+    return response.ok
   } catch (error) {
-    // 當 axios 請求失敗 (如 4xx, 5xx 錯誤) 或發生其他錯誤時
-    // 從 axios 的 error 物件中提取更詳細的錯誤訊息
-    const errorMessage =
-      error.response?.data?.message || error.message || '發生未知的網路錯誤'
-
-    // 將錯誤再次拋出，讓 React Query 的 onError 回呼可以接收到
-    throw new Error(errorMessage)
+    console.error('API call failed:', error)
+    return false
   }
 }
 

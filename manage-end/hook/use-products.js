@@ -126,83 +126,83 @@ export const UseProductEditDetail = (id) => {
   }
 }
 
-// export const UseProductReviews = (id) => {
-//   return useQuery({
-//     queryKey: ['product-reviews', id],
-//     queryFn: async () => {
-//       const res = await axios.get(
-//         `http://localhost:3005/api/product-reviews/${id}`
-//       )
-//       if (res.status !== 200 || res.data.success !== true) {
-//         throw new Error('Failed to fetch product reviews')
-//       }
-//       return res.data.data
-//     },
-//     enabled: !!id,
-//     staleTime: 1000 * 60 * 600,
-//   })
-// }
+export const UseProductReviews = (id) => {
+  return useQuery({
+    queryKey: ['product-reviews', id],
+    queryFn: async () => {
+      const res = await axios.get(
+        `http://localhost:3005/api/product-reviews/${id}`
+      )
+      if (res.status !== 200 || res.data.success !== true) {
+        throw new Error('Failed to fetch product reviews')
+      }
+      return res.data.data
+    },
+    enabled: !!id,
+    staleTime: 1000 * 60 * 600,
+  })
+}
 
 //userID
-// export const UseUserReview = (product_id, user_id) => {
-//   return useQuery({
-//     queryKey: ['product-reviews', product_id, user_id],
-//     queryFn: async () => {
-//       try {
-//         const res = await axios.get(
-//           `http://localhost:3005/api/product-reviews/user/check?product_id=${product_id}&user_id=${user_id}`
-//         )
-//         if (res.data.success !== true) {
-//           console.error('API 錯誤回傳:', res.data)
-//           throw new Error('Failed to fetch product reviews')
-//         }
-//         console.log('取得村民的評論資料:', res.data)
-//         return res.data.data
-//       } catch (error) {
-//         console.error(error)
-//       }
-//     },
-//     enabled: !!user_id && !!product_id,
-//     staleTime: 1000 * 60 * 600,
-//   })
-// }
+export const UseUserReview = (product_id, user_id) => {
+  return useQuery({
+    queryKey: ['product-reviews', product_id, user_id],
+    queryFn: async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:3005/api/product-reviews/user/check?product_id=${product_id}&user_id=${user_id}`
+        )
+        if (res.data.success !== true) {
+          console.error('API 錯誤回傳:', res.data)
+          throw new Error('Failed to fetch product reviews')
+        }
+        console.log('取得村民的評論資料:', res.data)
+        return res.data.data
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    enabled: !!user_id && !!product_id,
+    staleTime: 1000 * 60 * 600,
+  })
+}
 
-// export function UseSaveOrUpdateReview() {
-//   const queryClient = useQueryClient()
-//
-//   return useMutation({
-//     mutationFn: async (formData) => {
-//       const res = await axios.post(
-//         'http://localhost:3005/api/product-reviews/save',
-//         formData,
-//         {
-//           headers: { 'Content-Type': 'multipart/form-data' },
-//         }
-//       )
-//       return res.data
-//     },
-//     onSuccess: (data) => {
-//       queryClient.invalidateQueries(['product-reviews', data.user_id])
-//     },
-//     onError: (error) => {
-//       console.error('送出失敗:', error.response?.data?.message || error.message)
-//     },
-//   })
-// }
+export function UseSaveOrUpdateReview() {
+  const queryClient = useQueryClient()
 
-// export const UseProductIngredient = (id) => {
-//   return useQuery({
-//     queryKey: ['product-ingredient', id],
-//     queryFn: async () => {
-//       const res = await axios.get(
-//         `http://localhost:3005/api/product-ingredient/${id}`
-//       )
-//       if (res.status !== 200 || res.data.success !== true) {
-//         throw new Error('Failed to fetch product reviews')
-//       }
-//       return res.data.data
-//     },
-//     enabled: !!id, // 確保 id 存在才執行
-//     staleTime: 1000 * 60 * 10, // 10 分鐘快取
-//   })
-// }
+  return useMutation({
+    mutationFn: async (formData) => {
+      const res = await axios.post(
+        'http://localhost:3005/api/product-reviews/save',
+        formData,
+        {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        }
+      )
+      return res.data
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(['product-reviews', data.user_id])
+    },
+    onError: (error) => {
+      console.error('送出失敗:', error.response?.data?.message || error.message)
+    },
+  })
+}
+
+export const UseProductIngredient = (id) => {
+  return useQuery({
+    queryKey: ['product-ingredient', id],
+    queryFn: async () => {
+      const res = await axios.get(
+        `http://localhost:3005/api/product-ingredient/${id}`
+      )
+      if (res.status !== 200 || res.data.success !== true) {
+        throw new Error('Failed to fetch product reviews')
+      }
+      return res.data.data
+    },
+    enabled: !!id, // 確保 id 存在才執行
+    staleTime: 1000 * 60 * 10, // 10 分鐘快取
+  })
+}
