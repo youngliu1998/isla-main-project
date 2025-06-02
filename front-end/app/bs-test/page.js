@@ -8,9 +8,7 @@ export default function BootstrapTestPage() {
   }, [])
 
   return (
-    <div
-      className="container py-5"
-    >
+    <div className="container py-5">
       <h1 className="mb-4">🔧 Bootstrap Component Showcase</h1>
 
       {/* Buttons */}
@@ -18,7 +16,7 @@ export default function BootstrapTestPage() {
         <h2>Buttons</h2>
         <button className="btn btn-primary me-2">查看更多</button>
         <button className="btn btn-secondary me-2">查看更多</button>
-        <button className="btn btn-add-cart me-2">加入購物袋</button>
+        <button className="btn btn-add-cart me-2">加入購物車</button>
         <button className="btn btn-logout me-2">登出</button>
         <button className="btn btn-success me-2">Success</button>
         <button className="btn btn-danger me-2">Danger</button>
@@ -283,7 +281,8 @@ export default function BootstrapTestPage() {
             </h2>
             <div id="collapseOne" className="accordion-collapse collapse show">
               <div className="accordion-body">
-                異十二烷、環五聚二甲基矽氧烷、三甲基矽烷氧基矽酸酯、微晶蠟、氫化聚異丁烯、VP/二十碳烯共聚物、二甲基甲矽烷基化矽石、二氧化矽、二硬脂基二甲基胺鋰皂石、三羥基硬脂精、纖維素、碳酸丙烯酯、硬脂醯菊粉、三乙氧基辛基矽烷、乙基己基甘油、丁羥甲苯、印度簕竹莖粉、透明質酸鈉、乙醇、泛醇、生育酚、絲胺基酸、苯氧乙醇、鐵氧化物 (ci 77499)、人工絲、黑 2 (ci 77266)。
+                異十二烷、環五聚二甲基矽氧烷、三甲基矽烷氧基矽酸酯、微晶蠟、氫化聚異丁烯、VP/二十碳烯共聚物、二甲基甲矽烷基化矽石、二氧化矽、二硬脂基二甲基胺鋰皂石、三羥基硬脂精、纖維素、碳酸丙烯酯、硬脂醯菊粉、三乙氧基辛基矽烷、乙基己基甘油、丁羥甲苯、印度簕竹莖粉、透明質酸鈉、乙醇、泛醇、生育酚、絲胺基酸、苯氧乙醇、鐵氧化物
+                (ci 77499)、人工絲、黑 2 (ci 77266)。
               </div>
             </div>
           </div>
@@ -292,17 +291,21 @@ export default function BootstrapTestPage() {
           <div className="accordion-item">
             <h2 className="accordion-header" id="headingOne">
               <button
-                  className="accordion-button"
-                  type="button"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#collapseOne"
+                className="accordion-button"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#collapseOne"
               >
                 免責聲明
               </button>
             </h2>
             <div id="collapseOne" className="accordion-collapse collapse show">
               <div className="accordion-body">
-                ISLA 一直努力確保其商品圖像和信息的準確性，但制造商對包裝和/或配料的一些變更，我們網站也需要時間來更新。所以您在購買某款商品的時候， 可能有時候正遇到信息在更新等待隊列中。雖然產品可能會偶爾發貨替代包裝，但正品品質和新鮮度始終有保證。我們建議您在使用產品前閱讀所有的產品標簽、警告和說明，而不是僅依賴 ISLA 網站提供的信息。本網站銷售的商品或相關陳述，未經美國食品與藥品管理局認證，不具有預防疾病或治療功能，不能代替藥物，不被用於診斷、治療、治愈、支持或緩解任何疾病。本網站銷售的商品從生產到規格均為國際標準，可能與買家所在地標準不同，購買前請務必知悉。
+                ISLA
+                一直努力確保其商品圖像和信息的準確性，但制造商對包裝和/或配料的一些變更，我們網站也需要時間來更新。所以您在購買某款商品的時候，
+                可能有時候正遇到信息在更新等待隊列中。雖然產品可能會偶爾發貨替代包裝，但正品品質和新鮮度始終有保證。我們建議您在使用產品前閱讀所有的產品標簽、警告和說明，而不是僅依賴
+                ISLA
+                網站提供的信息。本網站銷售的商品或相關陳述，未經美國食品與藥品管理局認證，不具有預防疾病或治療功能，不能代替藥物，不被用於診斷、治療、治愈、支持或緩解任何疾病。本網站銷售的商品從生產到規格均為國際標準，可能與買家所在地標準不同，購買前請務必知悉。
               </div>
             </div>
           </div>

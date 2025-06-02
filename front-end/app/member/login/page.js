@@ -30,10 +30,7 @@ export default function LoginPage() {
       // 檢查使用者是否在登入前點擊「立即購買」按鈕
       const pendingBuyNow = localStorage.getItem('pendingBuyNow') || false
 
-      // 清除已使用過的 redirect path 資料
-      localStorage.removeItem('redirectAfterLogin')
-
-      // ✅ 若登入前曾點擊立即購買
+      // ✅【情境一】使用者登入前有點擊「立即購買」
       if (pendingBuyNow) {
         toast.success('登入成功，將導回購買頁', {
           position: 'top-right',
@@ -48,7 +45,7 @@ export default function LoginPage() {
         return
       }
 
-      // 一般情況（未點擊立即購買），若有設定登入後要導向的頁面，就跳轉過去
+      // ✅【情境二】使用者登入前只瀏覽某頁，未點擊立即購買
       if (redirectPath) {
         toast.success('登入成功', {
           position: 'top-right',

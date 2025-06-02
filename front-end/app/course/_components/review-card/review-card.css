@@ -19,3 +19,17 @@
 .box5-comment-like {
   color: var(--main-color);
 }
+/* review-card.css */
+.highlight-border {
+  animation: borderFlash 1s ease-in-out 0s 3;
+}
+
+@keyframes borderFlash {
+  0%,
+  100% {
+    box-shadow: 0 0 0px transparent;
+  }
+  50% {
+    box-shadow: 0 0 8px 4px var(--main-color);
+  }
+}
