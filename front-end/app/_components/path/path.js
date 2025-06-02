@@ -26,7 +26,7 @@ export default function Path() {
     // route
     // r.push(address)
   }
-  if (pathname === '/') {
+  if (pathname === '/' || pathname.includes('/forum')) {
     return <></>
   }
   return (

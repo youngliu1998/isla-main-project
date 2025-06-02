@@ -21,9 +21,12 @@ router.get('/', async function (req, res) {
 })
 
 router.post('/get-follow-list', async function (req, res) {
-  const { userID } = req.body
-
-  console.log('hi', userID)
+  const { userID, pageName } = req.body
+  let limitClause = ''
+  if (pageName === 'subNav') {
+    limitClause = 'LIMIT 4'
+  }
+  // console.log('hi', userID)
 
   const [result] = await db.query(
     `SELECT follow.*,
@@ -31,7 +34,7 @@ router.post('/get-follow-list', async function (req, res) {
     u.nickname AS userNick
     FROM user_follow AS follow
     JOIN users AS u ON follow.follow_id = u.id
-    WHERE user_id = ?`,
+    WHERE user_id = ? ${limitClause}`,
     [userID]
   )
   return res.json({ status: 'success', data: result })

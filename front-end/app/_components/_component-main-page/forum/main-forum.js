@@ -21,7 +21,7 @@ export default function MainForum({
   return (
     <>
       <div
-        className="col d-lg-block d-none py-0 px-2"
+        className="col d-lg-block d-none sub-block p-4"
         onClick={(e) => {
           e.preventDefault()
           e.stopPropagation()
@@ -34,18 +34,17 @@ export default function MainForum({
         tabIndex={0} //可被tab鍵聚焦
         style={{ cursor: 'pointer' }}
       >
-        <div className="row row-cols-2 main-forum h-100">
-          <div
-            className="col bg-secondary overflow-hidden p-0"
-            dangerouslySetInnerHTML={{ __html: img_url }}
-          />
-          <div className="d-flex flex-column justify-content-between p-2">
-            <div className="d-flex align-items-center p-2 text-primary h2">
-              {number}
-            </div>
-            <div className="h2 text-primary forum-title">{forumTitle}</div>
-            <div className="h4 forum-content">{forumContent}</div>
-            <div className="evaluates d-flex fs14 ms-n4 px-4">
+        <div className="row row-cols-2 main-forum w-100 h-100">
+          <div className="img-container p-0 rounded-3 overflow-hidden">
+            <div
+              className="col overflow-hidden rounded-3 h-100 img-html"
+              dangerouslySetInnerHTML={{ __html: img_url }}
+            />
+          </div>
+          <div className="d-flex flex-column justify-content-center ps-4 gap-3">
+            <div className="h4 text-primary forum-title">{forumTitle}</div>
+            <div className="h6 fw-normal forum-content">{forumContent}</div>
+            <div className="evaluates d-flex fs14 ms-n1">
               <ComponentsBtnLikedSaved
                 type={'liked'}
                 active={btnLikedActive}
