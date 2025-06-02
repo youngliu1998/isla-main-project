@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react'
 import InputText from '../_component/input-text'
 import InputPass from '../_component/input-pass'
 import '../_styles/login.css'
-import { courseUrl } from '../../../_route/courseUrl'
+// import { courseUrl } from '../../../_route/courseUrl'
 
 export default function LoginPage() {
   const router = useRouter()
