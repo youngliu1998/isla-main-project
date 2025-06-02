@@ -31,8 +31,8 @@ export default function RegisterInput({
           onChange={(e) => {
             setText({ ...text, [name]: e.target.value })
           }}
-          placeholder={errorMsg}
         />
+        <div className="error-message">{errorMsg}</div>
       </div>
     </>
   )

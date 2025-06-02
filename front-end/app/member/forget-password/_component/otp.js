@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import InputText from '../../_component/input-text'
 import InputPass from '../../_component/input-pass'
+import { toast } from 'react-toastify'
 
 export default function Otp({ email }) {
   const router = useRouter()
@@ -34,7 +35,11 @@ export default function Otp({ email }) {
       })
       const data = await response.json()
       if (response.ok) {
-        alert('修改成功，返回登入')
+        toast.success('修改成功，返回登入', {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+        })
         router.push('/member/login')
       } else {
         // ==== 404 status: error ====
@@ -56,7 +61,11 @@ export default function Otp({ email }) {
                 break
             }
           })
-
+          toast.error('欄位不符規定', {
+            position: 'top-right',
+            autoClose: 1000,
+            hideProgressBar: false,
+          })
           setError(newError)
         }
       }

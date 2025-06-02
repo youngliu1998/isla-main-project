@@ -1,8 +1,9 @@
 'use client'
 
 // import React, { useState } from 'react'
-
 import InputText from '../../_component/input-text'
+import { toast } from 'react-toastify'
+
 export default function Email({
   email = {},
   setEmail = () => {},
@@ -29,6 +30,11 @@ export default function Email({
       const data = await response.json()
       if (response.ok) {
         setStep((prev) => prev + 1)
+        toast.success('認證成功，請準備修改密碼', {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+        })
       } else {
         // ==== 404 status: error ====
         let newError = { ...defaultEmail }
@@ -45,9 +51,19 @@ export default function Email({
           })
 
           setError(newError)
+          toast.error('欄位不符格式', {
+            position: 'top-right',
+            autoClose: 1000,
+            hideProgressBar: false,
+          })
         }
       }
     } catch (err) {
+      toast.error('認證失敗', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+      })
       console.log(err)
     }
   }

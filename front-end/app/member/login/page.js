@@ -2,7 +2,7 @@
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import { GoogleLogin } from '@react-oauth/google'
 import { useAuth } from '@/hook/use-auth'
-import { useCartContext } from '../../cart/context/cart-context'
+// import { useCartContext } from '../../cart/context/cart-context'
 // import { signIn, signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -185,26 +185,32 @@ export default function LoginPage() {
               />
               <Link href="/member/forget-password">忘記密碼?</Link>
             </div>
-            {/* submit */}
-            <button className="btn btn-primary">登入</button>
+            <div className="d-flex flex-column align-items-center gap-3 w-100">
+              {/* submit */}
+              <button className="btn btn-primary">登入</button>
+              <Link href="register">註冊</Link>
+            </div>
           </form>
           {/* ==== login form end ==== */}
           {/* ==== register ==== */}
-          <Link href="register">註冊</Link>
-          <div className="d-flex justify-content-center align-items-center gap-2 w-100">
-            <div className="gray-line" />
-            <div>或者</div>
-            <div className="gray-line" />
-          </div>
-          {/* ==== Google 登入按鈕 ==== */}
-          <GoogleOAuthProvider clientId="104246971541-iteifad48ud3h6dp85k6qoqgqta9flir.apps.googleusercontent.com">
-            <div className="w-100">
-              <button onSuccess={responseMessage} onError={errorMessage}>
-                Google登入
-              </button>
-              {/* <GoogleLogin onSuccess={responseMessage} onError={errorMessage} /> */}
+
+          <div className="d-flex flex-column align-items-center gap-2 w-100">
+            {/* ==== 分隔線 ==== */}
+            <div className="d-flex justify-content-center align-items-center gap-2 w-100">
+              <div className="gray-line" />
+              <div>或者</div>
+              <div className="gray-line" />
             </div>
-          </GoogleOAuthProvider>
+            {/* ==== Google 登入按鈕 ==== */}
+            <GoogleOAuthProvider clientId="104246971541-iteifad48ud3h6dp85k6qoqgqta9flir.apps.googleusercontent.com">
+              <div className="w-100">
+                <GoogleLogin
+                  onSuccess={responseMessage}
+                  onError={errorMessage}
+                />
+              </div>
+            </GoogleOAuthProvider>
+          </div>
         </div>
       </div>
     </>

@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Email from './_component/email'
 import Otp from './_component/otp'
+import { toast } from 'react-toastify'
 // ==== css ====
 import '../_component/_style.css/form.css'
 import './_style/forget-password.css'

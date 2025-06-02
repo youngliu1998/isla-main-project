@@ -1,10 +1,30 @@
+.regiBlock {
+  @media (max-width: 460) {
+    margin-inline: -40px;
+  }
+}
 .register-input-block {
   display: flex;
   align-items: center;
   gap: 1.5rem;
   width: 100%;
+  margin-bottom: 0.5rem;
   margin-inline: 1rem;
+  position: relative;
+  .error-message {
+    display: none;
+    position: absolute;
+    top: 50px;
+    left: 120px;
+    color: var(--strong-color);
+  }
   &.user-error {
+    input {
+      border-color: var(--strong-color);
+    }
+    .error-message {
+      display: block;
+    }
     > input::placeholder {
       color: var(--strong-color);
     }
@@ -15,6 +35,14 @@
     font-size: 1rem;
     color: var(--main-text);
     font-weight: 500;
+  }
+  @media (max-width: 992px) {
+    flex-direction: column;
+    align-items: start;
+    .error-message {
+      top: 100px;
+      left: 0;
+    }
   }
 }
 .regiTitle {
