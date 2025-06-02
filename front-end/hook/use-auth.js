@@ -20,6 +20,7 @@ export function AuthProvider({ children }) {
     tel: '',
     address: '',
     mem_cpon: 0,
+    token: '',
   }
   const [user, setUser] = useState(defaultUser)
   const isAuth = Boolean(user.id)
@@ -48,7 +49,8 @@ export function AuthProvider({ children }) {
       const data = await response.json()
       if (response.ok && data?.data) {
         console.log('useAuth: ', data.data)
-        setUser(data.data)
+        setUser({ ...data.data, token }) // ✅ token 傳進 user 確保可以從 localStorage取得
+        // setUser(data.data)
         // setIsAuth(true)
       } else {
         cleanStorage()
@@ -71,8 +73,8 @@ export function AuthProvider({ children }) {
 
       if (response.ok) {
         if (!data || !data.data || !data.data.token) {
-          console.log('沒有取得token，登入失敗', data);
-          return;
+          console.log('沒有取得token，登入失敗', data)
+          return
         }
         // set token to localStorage
         localStorage.setItem('jwtToken', data['data']['token'])

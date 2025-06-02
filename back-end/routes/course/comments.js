@@ -14,10 +14,18 @@ router.get('/', async (req, res) => {
   // 排序邏輯
   let orderByClause = 'cc.is_helpful DESC'
   switch (sort) {
-    case '2': orderByClause = 'cc.star DESC'; break
-    case '3': orderByClause = 'cc.star ASC'; break
-    case '4': orderByClause = 'cc.created DESC'; break
-    case '5': orderByClause = 'cc.created ASC'; break
+    case '2':
+      orderByClause = 'cc.star DESC'
+      break
+    case '3':
+      orderByClause = 'cc.star ASC'
+      break
+    case '4':
+      orderByClause = 'cc.created DESC'
+      break
+    case '5':
+      orderByClause = 'cc.created ASC'
+      break
   }
 
   try {
@@ -49,10 +57,11 @@ router.get('/', async (req, res) => {
 })
 
 // ✅ 新增留言
-router.post('/', async (req, res) => {
-  const { course_id, star, content, member_id } = req.body
+router.post('/', verifyToken, async (req, res) => {
+  const userId = req.user.id
+  const { course_id, star, content } = req.body
 
-  if (!course_id || !star || !content || !member_id) {
+  if (!course_id || !star || !content) {
     return res.status(400).json({ status: 'false', message: '缺少必要欄位' })
   }
 
@@ -62,7 +71,7 @@ router.post('/', async (req, res) => {
       INSERT INTO courses_comments (courses_id, member_id, star, content, created)
       VALUES (?, ?, ?, ?, NOW())
     `,
-      [course_id, member_id, star, content]
+      [course_id, userId, star, content]
     )
 
     const comment_id = insertResult.insertId
@@ -71,6 +80,7 @@ router.post('/', async (req, res) => {
       `
       SELECT
         cc.id AS comment_id,
+        cc.member_id,
         u.name AS member_name,
         u.ava_url,
         cc.star,

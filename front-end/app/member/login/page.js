@@ -21,40 +21,51 @@ export default function LoginPage() {
   })
   // ==== handle login form ====
   // course登入後跳回原本畫面並自動執行收藏
-  // 宣告一個非同步的函式 handleSubmit，參數 e 是事件物件（例如表單提交事件）
+  // 定義非同步函式，用來處理使用者登入表單的提交
   const handleSubmit = async (e) => {
-    // 阻止表單預設行為（例如頁面重新載入）
-    e.preventDefault()
+    e.preventDefault() // 阻止表單預設行為（例如刷新頁面）
 
+    // 執行登入邏輯，使用 email 和 password 驗證身份
     await login(memAuth.email, memAuth.password)
 
-    // 檢查 localStorage 中的 'isAuth' 是否為 'true'（表示使用者已成功登入）
+    // 檢查 localStorage 中的登入狀態標記是否為 true（登入成功）
     const isAuthLocal = localStorage.getItem('isAuth') === 'true'
 
-    // 如果使用者成功登入
+    // 若登入成功，才進行後續導頁邏輯
     if (isAuthLocal) {
-      // 取得登入前預先儲存的導向路徑（例如使用者原本想進入的頁面）
+      // 嘗試取得登入前的目標頁面（例如從收藏或購買行為跳轉來此頁）
       const redirectPath = localStorage.getItem('redirectAfterLogin')
-      // 檢查使用者是否在登入前點擊「立即購買」按鈕
+
+      // 檢查是否在登入前點擊過「立即購買」按鈕
       const pendingBuyNow = localStorage.getItem('pendingBuyNow')
 
-      // 清除已使用過的 redirect path 資料
-      localStorage.removeItem('redirectAfterLogin')
-
-      // ✅ 若登入前曾點擊立即購買
+      // ✅【情境一】使用者登入前有點擊「立即購買」
       if (pendingBuyNow) {
-        // 清除 pending 購買記錄
+        // 使用過後即清除，避免重複執行
         localStorage.removeItem('pendingBuyNow')
-        // 導向該課程詳情頁，讓該頁 useEffect 中的購買邏輯自動處理
-        router.push(`/course/course-list/${pendingBuyNow}`)
-        return // 結束函式，不繼續往下執行
+
+        // 進一步判斷購買的是「課程」還是「體驗」
+        const pendingType = localStorage.getItem('pendingBuyNowType')
+        localStorage.removeItem('pendingBuyNowType') // 同樣使用後清除
+
+        // 🔁 根據類型導向對應的詳細頁
+        if (pendingType === 'experience') {
+          // 體驗頁：跳轉至 /course/experience/:id
+          router.push(`/course/experience/${pendingBuyNow}`)
+        } else {
+          // 課程頁（預設）：跳轉至 /course/course-list/:id
+          router.push(`/course/course-list/${pendingBuyNow}`)
+        }
+
+        return // ✅ 結束函式，避免後續導頁重複執行
       }
 
-      // 一般情況（未點擊立即購買），若有設定登入後要導向的頁面，就跳轉過去
+      // ✅【情境二】使用者登入前只瀏覽某頁，未點擊立即購買
       if (redirectPath) {
-        router.push(redirectPath)
+        localStorage.removeItem('redirectAfterLogin') // 清除導回紀錄
+        router.push(redirectPath) // 導回原頁
       } else {
-        // 若無特定導向頁面，預設導回首頁
+        // ✅【情境三】未記錄任何導向頁，預設導向首頁
         router.push('/')
       }
     }
