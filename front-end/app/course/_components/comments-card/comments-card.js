@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import React, { useState } from 'react'
 import Image from 'next/image'
 import LikeButton from '../like-button/like-button'
@@ -67,6 +68,7 @@ export default function CommentsCard({
   onOpenModal = () => {},
   onUpdate = () => {},
   onDelete = () => {},
+  highlighted = false,
 }) {
   const { user } = useAuth()
   const image = ava_url
@@ -78,6 +80,12 @@ export default function CommentsCard({
   const [editStar, setEditStar] = useState(star)
   const [renderedContent, setRenderedContent] = useState(content)
   const [renderedStar, setRenderedStar] = useState(star)
+
+  // ⭐ 關鍵：當 props.content / star 改變時，自動更新內部狀態
+  useEffect(() => {
+    setRenderedContent(content)
+    setRenderedStar(star)
+  }, [content, star])
 
   const handleSave = async () => {
     if (!editContent.trim()) {
@@ -133,7 +141,9 @@ export default function CommentsCard({
 
   return (
     <div className="col">
-      <div className="card box5-comment-p comments-card">
+      <div
+        className={`card box5-comment-p comments-card ${highlighted ? 'highlight-animate' : ''}`}
+      >
         <div className="card-body">
           {/* 頭像與星等 */}
           <div className="d-flex justify-content-between align-items-center">

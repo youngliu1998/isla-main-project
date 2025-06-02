@@ -43,41 +43,41 @@ import {
 } from 'lucide-react'
 import Image from 'next/image'
 
-// Import from your data module
-import { getProducts } from './data-controller.js' // Adjust path if needed
+import {useProductManageList} from '@/hook/use-product-manage.js'
+// import { getProducts } from './data-controller.js'
 
 export default function ProductListPage() {
-  // Renamed for clarity
-  const [data, setProducts] = useState([])
+  // const [data, setProducts] = useState([])
   const [globalFilter, setGlobalFilter] = useState('')
   const [selectedProductForDialog, setSelectedProductForDialog] = useState(null) // For the Eye icon dialog
   const router = useRouter() // Initialize router
+  const {products, loading, productError} = useProductManageList()
+  const [data, setData] = useState([])
 
   useEffect(() => {
-    setProducts(getProducts())
-  }, [])
+    if (products) {
+      setData(products)
+    }
+  }, [products])
 
-  const handleEditProduct = (productId) => {
-    router.push(`/products/edit/${productId}`)
+
+  const handleEditProduct = (product_id) => {
+    router.push(`/products/edit/${product_id}`)
   }
 
-  // Add Product (Conceptual - if you add this button's functionality)
-  const handleAddProduct = () => {
-    // For a separate add page:
-    router.push('/products/add')
+  const handleAddProduct = (product_id) => {
+    router.push(`/products/add/${product_id}`)
     // Or open a modal, then use addProduct from data.js
     console.log('Add product functionality to be implemented')
   }
 
-  // Delete Product (Conceptual - needs AlertDialog for confirmation)
   const handleDeleteProduct = (productId) => {
-    // Example:
-    // if (confirm('Are you sure you want to delete this product?')) {
-    //     const success = deleteProduct(productId); // You'd need to add deleteProduct to data.js
-    //     if (success) {
-    //         setProducts(getProducts()); // Refresh list
-    //     }
-    // }
+    if (confirm('你確定要刪除嗎?')) {
+        const success = deleteProduct(productId);
+        if (success) {
+          setData(useProductManageList());
+        }
+    }
     console.log(
       `Delete product ${productId} - to be implemented with confirmation`
     )
@@ -120,19 +120,40 @@ export default function ProductListPage() {
   const columns = useMemo(
     () => [
       {
+        accessorKey: 'id',
+        header: ({ column }) => (
+            <Button
+                variant="ghost"
+                onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+                className="hover:bg-transparent p-0 font-medium text-left"
+            >
+              商品ID
+              {column.getIsSorted() === 'asc' ? (
+                  <ArrowUp className="ml-2 h-4 w-4" />
+              ) : column.getIsSorted() === 'desc' ? (
+                  <ArrowDown className="ml-2 h-4 w-4" />
+              ) : (
+                  <ArrowUpDown className="ml-2 h-4 w-4" />
+              )}
+            </Button>
+        ),
+        cell: ({ row }) => (
+            <div>
+              <div className="font-medium">{row.original.product_id}</div>
+            </div>
+        ),
+      },
+      {
         accessorKey: 'image',
         header: '商品圖片',
         cell: ({ row }) => (
-          // Using DialogTrigger for the Eye icon will be better here to avoid nested Dialogs.
-          // The existing code uses Dialog for image click.
-          // For quick view, let's keep existing, but for "查看詳情" menu item, it will set selectedProductForDialog.
           <Image
-            src={row.original.image}
+            src={`https://isla-image.chris142852145.workers.dev/${row.original.primary_image_url}`}
             alt={row.original.name}
             width={48} // explicit width for Next/Image
             height={48} // explicit height for Next/Image
             className="w-12 h-12 rounded-lg object-cover group-hover:scale-105 transition-transform cursor-pointer"
-            onClick={() => setSelectedProductForDialog(row.original)} // Open dialog on image click
+            onClick={() => setSelectedProductForDialog(row.original)}
           />
         ),
       },
@@ -156,7 +177,9 @@ export default function ProductListPage() {
         ),
         cell: ({ row }) => (
           <div>
-            <div className="font-medium">{row.original.name}</div>
+            <div className="font-medium cursor-pointer"
+                 onClick={() => setSelectedProductForDialog(row.original)}
+            >{row.original.name}</div>
             <div className="text-sm text-gray-500">{row.original.category}</div>
           </div>
         ),
@@ -180,7 +203,7 @@ export default function ProductListPage() {
           </Button>
         ),
         cell: ({ row }) => (
-          <div className="font-medium">{row.original.brand}</div>
+          <div className="font-medium">{row.original.brand_name}</div>
         ),
       },
       {
@@ -203,7 +226,7 @@ export default function ProductListPage() {
         ),
         cell: ({ row }) => (
           <div className="font-medium">
-            NT$ {row.original.price.toLocaleString()}
+            NT$ {row.original.base_price.toLocaleString()}
           </div>
         ),
       },
@@ -227,8 +250,8 @@ export default function ProductListPage() {
         ),
         cell: ({ row }) => (
           <div className="space-y-1">
-            <div className="font-medium">{row.original.stock} 件</div>
-            {getStockTag(row.original.stock)}
+            <div className="font-medium">{row.original.total_stock} 件</div>
+            {getStockTag(row.original.total_stock)}
           </div>
         ),
       },
@@ -236,28 +259,6 @@ export default function ProductListPage() {
         accessorKey: 'status',
         header: '狀態',
         cell: ({ row }) => getStatusTag(row.original.status),
-      },
-      {
-        accessorKey: 'updatedAt',
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-            className="hover:bg-transparent p-0 font-medium text-left"
-          >
-            更新時間
-            {column.getIsSorted() === 'asc' ? (
-              <ArrowUp className="ml-2 h-4 w-4" />
-            ) : column.getIsSorted() === 'desc' ? (
-              <ArrowDown className="ml-2 h-4 w-4" />
-            ) : (
-              <ArrowUpDown className="ml-2 h-4 w-4" />
-            )}
-          </Button>
-        ),
-        cell: ({ row }) => (
-          <div className="text-sm text-gray-600">{row.original.updatedAt}</div>
-        ),
       },
       {
         id: 'actions',
@@ -278,14 +279,14 @@ export default function ProductListPage() {
                 查看詳情
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => handleEditProduct(row.original.id)} // Updated
+                onClick={() => handleEditProduct(row.original.product_id)} // Updated
                 className="cursor-pointer"
               >
                 <Edit2 className="mr-2 h-4 w-4" />
                 編輯商品
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => handleDeleteProduct(row.original.id)} // Updated
+                onClick={() => handleDeleteProduct(row.original.product_id)} // Updated
                 className="cursor-pointer text-red-600 hover:!text-red-600 hover:!bg-red-50" // Fixed hover style
               >
                 <Trash2 className="mr-2 h-4 w-4" />
@@ -298,7 +299,6 @@ export default function ProductListPage() {
     ],
     [router]
   ) // Added router to dependencies if handleEditProduct is memoized with it
-
   const table = useReactTable({
     data: data ?? [],
     columns,
@@ -309,8 +309,24 @@ export default function ProductListPage() {
     globalFilterFn: 'includesString',
     state: { globalFilter },
     onGlobalFilterChange: setGlobalFilter,
-    initialState: { pagination: { pageSize: 10 } }, // Adjusted pageSize
+    initialState: { pagination: { pageSize: 10 } },
   })
+
+
+  if (loading) {
+    return (
+        <>
+          <h1>載入中</h1>
+        </>
+    )
+  }
+  if (productError) {
+    return (
+        <>
+          <h1>ERROR: {productError.message}</h1>
+        </>
+    )
+  }
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -429,21 +445,6 @@ export default function ProductListPage() {
                 第 {table.getState().pagination.pageIndex + 1} /{' '}
                 {table.getPageCount() || 1} 頁
               </span>
-              {/* Optional: Numbered pagination buttons from your original code
-                            <div className="flex items-center space-x-1">
-                                {Array.from({ length: table.getPageCount() }, (_, i) => (
-                                    <Button
-                                        key={i}
-                                        variant={table.getState().pagination.pageIndex === i ? "default" : "outline"}
-                                        size="sm"
-                                        onClick={() => table.setPageIndex(i)}
-                                        className="w-8 h-8 p-0" // Adjusted for size
-                                    >
-                                        {i + 1}
-                                    </Button>
-                                ))}
-                            </div>
-                            */}
               <Button
                 variant="outline"
                 size="sm"
@@ -457,7 +458,7 @@ export default function ProductListPage() {
         </CardContent>
       </Card>
 
-      {/* Dialog for "查看詳情" */}
+      {/* 查看詳情 */}
       {selectedProductForDialog && (
         <Dialog
           open={!!selectedProductForDialog}
@@ -470,7 +471,7 @@ export default function ProductListPage() {
             <div className="space-y-4 mt-4">
               <div className="flex justify-center">
                 <Image
-                  src={selectedProductForDialog.image}
+                  src={`https://isla-image.chris142852145.workers.dev/${selectedProductForDialog.primary_image_url}`}
                   alt={selectedProductForDialog.name}
                   width={200} // Adjust as needed
                   height={200} // Adjust as needed
@@ -480,20 +481,20 @@ export default function ProductListPage() {
               <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
                 <div>
                   <span className="font-medium">品牌：</span>{' '}
-                  {selectedProductForDialog.brand}
+                  {selectedProductForDialog.brand_name}
                 </div>
                 <div>
                   <span className="font-medium">分類：</span>{' '}
-                  {selectedProductForDialog.category}
+                  {selectedProductForDialog.category_name}
                 </div>
                 <div>
                   <span className="font-medium">價格：</span> NT${' '}
-                  {selectedProductForDialog.price.toLocaleString()}
+                  {selectedProductForDialog.base_price.toLocaleString()}
                 </div>
                 <div>
                   <span className="font-medium">庫存：</span>{' '}
-                  {selectedProductForDialog.stock} 件{' '}
-                  {getStockTag(selectedProductForDialog.stock)}
+                  {selectedProductForDialog.total_stock} 件{' '}
+                  {getStockTag(selectedProductForDialog.total_stock)}
                 </div>
                 <div className="col-span-2">
                   <span className="font-medium">狀態：</span>{' '}
@@ -506,8 +507,8 @@ export default function ProductListPage() {
                   </p>
                 </div>
                 <div className="col-span-2 text-xs text-gray-500">
-                  <span className="font-medium">最後更新：</span>{' '}
-                  {selectedProductForDialog.updatedAt}
+                  <span className="font-medium">上次更新：</span>{' '}
+                  {selectedProductForDialog.updated_at}
                 </div>
               </div>
             </div>

@@ -8,13 +8,15 @@ import { useAuth } from '@/hook/use-auth'
 import BasicProfile from './_component/basic-profile'
 import InputText from '../_component/input-text'
 import Select from '../_component/select'
+import { toast } from 'react-toastify'
 // import Path from '../_component/path/path'
+import { getProfile } from './_method/method'
 // ==== data ====
 import { cities } from './data/CityCountyData'
 
 export default function ProfilePage() {
   // const router = useRouter()
-  const { user } = useAuth()
+  const { user, initAuth } = useAuth()
   const defaultProfile = {
     name: '',
     nickname: '',
@@ -69,7 +71,11 @@ export default function ProfilePage() {
       if (response.ok) {
         // ==== 200 status: success ====
         if (data.status === 'success') {
-          alert('更新個人資料成功', data)
+          toast.success('更新個人資料成功', {
+            position: 'top-right',
+            autoClose: 1000,
+            hideProgressBar: false,
+          })
         }
       } else {
         // ==== 404 status: error ====
@@ -97,56 +103,30 @@ export default function ProfilePage() {
             }
           })
           setError(newError)
+
+          toast.error('欄位不合規定', {
+            position: 'top-right',
+            autoClose: 1000,
+            hideProgressBar: false,
+          })
         } else {
-          console.log('未知錯誤')
+          console.log('資料庫問題')
         }
         // ==== END 404 status: error ====
       }
       // ====  END 處理資料 ====
     } catch (error) {
-      console.error('錯誤：', error)
+      console.log('資料庫問題: ', error)
+      toast.error('更新失敗', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+      })
     }
   }
 
   useEffect(() => {
-    const token = localStorage.getItem('jwtToken') || null
-    if (!token) return
-    // if get auth, fetch profile data
-    let profileData = {}
-    async function getProfile() {
-      try {
-        const token = localStorage.getItem('jwtToken')
-
-        const response = await fetch(
-          'http://localhost:3005/api/member/profile',
-          {
-            method: 'GET',
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        )
-        const data = await response.json()
-
-        if (response.ok && data?.data) {
-          profileData = await data['data']
-          // console.log('profileData: ', profileData)
-          setText({
-            name: profileData?.name || '',
-            nickname: profileData?.nickname || '',
-            birthday: profileData?.birthday || '',
-            gender: profileData?.gender || '',
-            tel: profileData?.tel || '',
-            skinType: profileData?.skin_type || '',
-            CityName: profileData?.city || '',
-            AreaName: profileData?.area || '',
-            ZipCode: profileData?.postcode || '',
-            address: profileData?.address || '',
-          })
-        }
-      } catch (err) {
-        console.log(err)
-      }
-    }
-    getProfile()
+    getProfile(setText)
   }, [])
   return (
     <>
@@ -193,6 +173,7 @@ export default function ProfilePage() {
                       onChange={(e) => {
                         setText({ ...text, ['skinType']: e.target.value })
                       }}
+                      checked={text.skinType === '中性'}
                     />
                     中性
                   </label>
@@ -204,6 +185,7 @@ export default function ProfilePage() {
                       onChange={(e) => {
                         setText({ ...text, ['skinType']: e.target.value })
                       }}
+                      checked={text.skinType === '乾性'}
                     />
                     乾性
                   </label>
@@ -217,6 +199,7 @@ export default function ProfilePage() {
                       onChange={(e) => {
                         setText({ ...text, ['skinType']: e.target.value })
                       }}
+                      checked={text.skinType === '敏感性'}
                     />
                     敏感性
                   </label>
@@ -228,6 +211,7 @@ export default function ProfilePage() {
                       onChange={(e) => {
                         setText({ ...text, ['skinType']: e.target.value })
                       }}
+                      checked={text.skinType === ''}
                     />
                     不確定
                   </label>

@@ -53,12 +53,12 @@ router.get('/:pageName', async function (req, res) {
         AND p.id != ${postID} ORDER BY likes DESC LIMIT 4`
       )
       // QU 為什麼likes不能是p.likes？
-      if (morePostsResult) {
-        return res.json({
-          status: 'success',
-          data: { posts: postsResult[0], morePosts: morePostsResult[0] },
-        })
-      }
+      // if (postsResult || morePostsResult) {
+      return res.json({
+        status: 'success',
+        data: { posts: postsResult[0], morePosts: morePostsResult[0] },
+      })
+      // }
       break
     }
     case 'home': {

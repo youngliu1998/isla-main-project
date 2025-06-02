@@ -19,8 +19,15 @@
   margin-bottom: 0.5rem;
   background: var(--main-text);
   border-radius: 8px;
+  overflow: hidden;
   /* position */
   position: relative;
+  > img {
+    width: 100%;
+    aspect-ratio: 1/1;
+    position: absolute;
+    top: 0;
+  }
 }
 .user-avatar-cls-btn {
   display: block;
@@ -36,6 +43,7 @@
   position: absolute;
   top: 20px;
   right: 30px;
+  z-index: 999;
   > i {
     font-size: 1.5rem;
   }

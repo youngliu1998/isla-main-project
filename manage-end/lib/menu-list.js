@@ -3,6 +3,8 @@ import {
   WalletCards,
   Warehouse,
   MessageCircleHeart,
+  Users,
+  MonitorPlay,
 } from 'lucide-react'
 
 export function getMenuList(pathname) {
@@ -46,9 +48,52 @@ export function getMenuList(pathname) {
           icon: MessageCircleHeart,
         },
         {
+          href: '/courses',
+          label: '課程',
+          icon: MonitorPlay,
+          submenus: [
+            {
+              href: '/courses',
+              label: '線上課程列表',
+            },
+            {
+              href: '/experiences',
+              label: '彩妝體驗列表',
+            },
+            {
+              href: '/teachers',
+              label: '講師列表',
+            },
+          ],
+        },
+        {
           href: '/coupons',
           label: '優惠卷管理',
           icon: WalletCards,
+          submenus: [
+            {
+              href: '/coupons/products',
+              label: '商品優惠券',
+            },
+            {
+              href: '/coupons/courses',
+              label: '課程優惠券',
+            },
+            {
+              href: '/coupons/add',
+              label: '新增優惠券',
+            },
+          ],
+        },
+      ],
+    },
+    {
+      groupLabel: 'Settings',
+      menus: [
+        {
+          href: '/users',
+          label: 'Users',
+          icon: Users,
         },
       ],
     },

@@ -46,10 +46,13 @@ router.post('/item', verifyToken, async (req, res) => {
      oi.item_type,
      c.title AS course_tit,
      c.picture AS course_pic,
+     ce.title AS experience_tit,
+     ce.picture AS experience_pic,
      p.name AS product_tit,
      p.image_url AS product_pic
 FROM order_items AS oi 
 LEFT JOIN courses AS c ON c.id = oi.course_id
+LEFT JOIN courses_experience AS ce ON ce.id = oi.course_experience_id
 LEFT JOIN (SELECT 
     p.product_id,
     p.name,

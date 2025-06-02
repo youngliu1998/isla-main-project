@@ -5,7 +5,11 @@ import Image from 'next/image'
 import Link from 'next/link'
 // ==== route ====
 import { COURSE_BANNER_URL } from '@/_route/img-url'
-import { COURSE_PAGE_URL } from '@/_route/page-url'
+import {
+  COURSE_PAGE_URL,
+  PRODUCT_PAGE_URL,
+  EXPERIENCE_PAGE_URL,
+} from '@/_route/page-url'
 import { PRODUCT_IMG_URL } from '@/_route/img-url'
 
 export default function OrderProdList({ order_id = 0 }) {
@@ -15,7 +19,31 @@ export default function OrderProdList({ order_id = 0 }) {
   // ==== item info ====
   const [item, setItems] = useState([])
   console.log('item: ', item)
-  let itemRead = true
+  // ==== 清單函式 ====
+  const switchItem = (item) => {
+    switch (item?.item_type) {
+      case 'product':
+        return {
+          src: PRODUCT_IMG_URL + item?.product_pic,
+          href: PRODUCT_PAGE_URL + item?.product_id,
+          title: item?.product_tit,
+        }
+      case 'course':
+        return {
+          src: COURSE_BANNER_URL + item?.course_pic,
+          href: COURSE_PAGE_URL + item?.course_id,
+          title: item?.course_tit,
+        }
+      case 'experience':
+        return {
+          src: COURSE_BANNER_URL + item?.experience_pic,
+          href: EXPERIENCE_PAGE_URL + item?.course_experience_id,
+          title: item?.experience_tit,
+        }
+    }
+  }
+  // ==== 取得細項資料 ====
+  let itemRead = true // 只讀取一次，讀取完後變 false
   const getItems = async () => {
     console.log('order_id', order_id)
     if (!itemRead) return console.log('細項已讀取')
@@ -53,46 +81,28 @@ export default function OrderProdList({ order_id = 0 }) {
         }
       >
         {item.map((item, i) => {
+          const { src, href, title } = switchItem(item)
           return (
             <div
               key={i}
               className="row justify-content-start gy-2 ms-3 mb-3 w-100"
             >
               <div className="prodImg">
-                {item.item_type === 'product' && (
-                  <Image
-                    src={PRODUCT_IMG_URL + item.product_pic}
-                    alt={item.product_pic || 'product pic'}
-                    width={'50'}
-                    height={'50'}
-                    style={{ objectFit: 'contain' }}
-                  />
-                )}
-                {item.item_type === 'course' && (
-                  <Image
-                    src={COURSE_BANNER_URL + item.course_pic}
-                    alt={item.course_pic || 'course pic'}
-                    width={'50'}
-                    height={'50'}
-                    style={{ objectFit: 'contain' }}
-                  />
-                )}
+                <Image
+                  src={src}
+                  alt={item.course_pic || 'course pic'}
+                  width={'50'}
+                  height={'50'}
+                  style={{ objectFit: 'contain' }}
+                />
               </div>
               <div className="col p-2 user-item-title">
-                <Link
-                  href={
-                    item.item_type === 'course'
-                      ? COURSE_PAGE_URL + item.course_id
-                      : ''
-                  }
-                >
-                  {item.item_type === 'product'
-                    ? item.product_tit
-                    : item.course_tit}
-                </Link>
+                <Link href={href}>{title}</Link>
               </div>
               <div className="col-2 p-2">
-                {item.item_type === 'product' ? '商品' : '課程'}
+                {item.item_type === 'product' && '商品'}
+                {item.item_type === 'course' && '課程'}
+                {item.item_type === 'experience' && '體驗'}
               </div>
               <div className="col-2 p-2">${item.price}</div>
             </div>

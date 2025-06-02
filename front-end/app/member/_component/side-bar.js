@@ -75,7 +75,11 @@ export default function SideBar() {
               />
             </div>
           </button>
-          <UploadAva openAvatar={openAvatar} setOpenAvatar={setOpenAvatar} />
+          <UploadAva
+            openAvatar={openAvatar}
+            setOpenAvatar={setOpenAvatar}
+            initAuth={initAuth}
+          />
           <h4 className="user-title">{user?.nickname || '訪客'}</h4>
           <p>{user?.email || 'no account'}</p>
           <Link

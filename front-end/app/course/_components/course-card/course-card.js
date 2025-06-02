@@ -161,7 +161,7 @@ export default function CourseCard({
           </div>
           <div className="card-body">
             <button className="btn card-btn-course mb-2">{tagLabel}</button>
-            <h5 className="card-title mb-2">{title}</h5>
+            <h5 className="card-title card-title-box mb-2">{title}</h5>
             <p className="card-teacher-course mb-2">{teacher_name}</p>
 
             <div className="d-flex align-content-center">
