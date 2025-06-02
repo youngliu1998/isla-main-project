@@ -73,7 +73,6 @@ export default function ComponentsPostCard({
 
   return (
     <>
-      {/* FIXME cursor pointer */}
       <div
         className="post-home d-flex flex-column gap-1 py-3 rounded-3 shadow-forum bg-pure-white card-border"
         key={postID}

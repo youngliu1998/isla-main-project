@@ -6,14 +6,14 @@ import React, { useState, useEffect } from 'react'
 import EditPostModal from '../_components/edit-post-modal'
 import useSWR from 'swr'
 import ComponentsBtnLikedSaved from '../_components/btn-liked-saved'
-import ComponentsMorePost from './_components/more-post'
+import ComponentsMorePost from './_components/morePost'
 import ComponentsAuthorInfo from '../_components/author-info'
 import { useAuth } from '../../../hook/use-auth'
 import ConfirmModal from '../_components/confirmModal'
 import CommentSection from './comment-section'
 import CommentInput from './comment-input'
 import Link from 'next/link'
-import PostLoader from '../_components/post-loader'
+import PostDetailLoader from '../_components/loader-detail'
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
 
@@ -25,7 +25,7 @@ export default function PostIDPage(props) {
   const postID = useParams().postID
   const [commentMutate, setCommentMutate] = useState()
   const [lastCommentRef, setLastCommentRef] = useState()
-  if (commentMutate) console.log(commentMutate)
+  // if (commentMutate) console.log(commentMutate)
 
   const postAPI = `http://localhost:3005/api/forum/posts/post-detail?postID=${postID}`
   const { data, isLoading, error, mutate } = useSWR(postAPI, fetcher)
@@ -45,17 +45,11 @@ export default function PostIDPage(props) {
     }
   }, [isLoading])
 
-  // FIXME 載入中動畫
-  if (showLoading) {
-    console.log(showLoading)
-    return (
-      <div className="posts d-flex flex-column gap16 pb-0 w-100">
-        <div className="post d-flex flex-column gap-2 rounded-top-4 shadow-forum bg-pure-white pt-4 card-border position-relative">
-          <PostLoader />
-        </div>
-      </div>
-    )
-  }
+  // // FIXME 載入中動畫
+  // if (showLoading) {
+  //   console.log(showLoading)
+  //   return <PostDetailLoader />
+  // }
 
   if (Array.isArray(posts)) {
     posts = posts.map((post) => {
@@ -125,6 +119,7 @@ export default function PostIDPage(props) {
 
   return (
     <>
+      {/* <PostDetailLoader /> */}
       <main className="main col col-10 d-flex flex-column align-items-start">
         {error ? (
           <div className="fs32 d-flex flex-column align-items-center mx-auto mt-3 gap-2">
@@ -136,16 +131,20 @@ export default function PostIDPage(props) {
               回到論壇首頁
             </Link>
           </div>
+        ) : showLoading ? (
+          <div className="post post-detail-loading d-flex flex-column gap-2 px-4 w-100 rounded-top-4 shadow-forum bg-pure-white pt-4 card-border position-relative">
+            <PostDetailLoader />
+          </div>
         ) : !posts || posts.length === 0 ? (
-          <div className="fs32 d-flex flex-column align-items-center mx-auto mt-3 gap-2">
+          <div className="fs24 d-flex flex-column align-items-center mx-auto mt-3 gap-2">
             {/* FIXME */}
-            {/* <div>查無此文章</div>
+            <div>查無此文章</div>
             <Link
               href={'/forum'}
-              className="main-color fs24 text-decoration-underline"
+              className="main-color fs20 text-decoration-underline"
             >
               回到論壇首頁
-            </Link> */}
+            </Link>
           </div>
         ) : (
           <div className="posts d-flex flex-column gap16 pb-0 w-100">

@@ -10,7 +10,7 @@ import ComponentsSearchButton from './_components/search-button'
 import { useAuth } from '../../hook/use-auth'
 import { useFilter } from './_context/filterContext'
 import EditPostModal from './_components/edit-post-modal'
-import PostLoader from './_components/post-loader'
+import PostLoader from './_components/loader-post'
 // import dynamic from 'next/dynamic'
 // const PostLoader = dynamic(() => import('./_components/post-loader'), {
 //   ssr: false,
@@ -106,7 +106,7 @@ export default function ForumPage() {
           <ComponentsSearchButton />
         </div>
         <div className="posts d-flex flex-column gap-3 pt-5 pb-5 mt-1 w-100 overflow-auto">
-          <PostLoader />
+          {/* <PostLoader /> */}
           {error
             ? '連線錯誤'
             : showLoading

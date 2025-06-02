@@ -73,7 +73,7 @@ export default function ChatRoom() {
   }
   return (
     <>
-      <div className="chat-main d-flex flex-column h-100 bg-pure-white rounded-end-3 shadow-forum">
+      <div className="chat-main d-flex flex-column h-100 bg-pure-white rounded-end-3 bg-pure-white shadow-forum">
         <div className="chat-main-header bg-pure-white d-flex gap-2 px-3 py-2 align-items-center shadow-sm fs20 fw-bold rounded-top-3">
           <button
             className="chat-main-return d-block d-md-none rounded-circle border-0 p-2"
@@ -92,7 +92,7 @@ export default function ChatRoom() {
               )
             })}
           </div>
-          <div className="ms-2">{roomDetail.nicks}</div>
+          <div className="ms-2 text-truncate">{roomDetail.nicks}</div>
         </div>
         <div className="messages-block overflow-hidden pt-3 h-100">
           <div
