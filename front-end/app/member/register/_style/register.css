@@ -1,12 +1,13 @@
-.regiBlock {
+/* .regiBlock {
   @media (max-width: 460) {
     margin-inline: -40px;
   }
-}
+} */
 .register-input-block {
   display: flex;
-  align-items: center;
-  gap: 1.5rem;
+  flex-direction: column;
+  /* align-items: center; */
+  gap: 1rem;
   width: 100%;
   margin-bottom: 0.5rem;
   margin-inline: 1rem;
@@ -14,8 +15,8 @@
   .error-message {
     display: none;
     position: absolute;
-    top: 50px;
-    left: 120px;
+    top: 100px;
+    left: 0;
     color: var(--strong-color);
   }
   &.user-error {
