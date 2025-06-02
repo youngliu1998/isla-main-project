@@ -6,7 +6,7 @@ import {
 } from '@tanstack/react-query'
 import axios from 'axios'
 import qs from 'qs'
-
+import { isValid, format } from 'date-fns'
 //這是取得所有商品資料的函式
 //範例： const { products, productsLoading, productsError, brands, categories, tags } = useProducts(filters)
 //可參考商品列表的使用來參考
@@ -15,6 +15,46 @@ import qs from 'qs'
 //   brandIds: [1, 3],
 //   limit: 12,
 // })
+
+const fetchProductDetail = async (id) => {
+  const res = await axios.get(`http://localhost:3005/api/product/edit/${id}`)
+  if (res.status !== 200 || res.data?.success !== true || !res.data?.data) {
+    throw new Error('資料庫查無商品資料')
+  }
+  return res.data.data
+}
+
+export const updateProduct = async (productData) => {
+  const { product_id } = productData
+
+  if (!product_id) {
+    throw new Error('呼叫 API 時缺少 product_id')
+  }
+
+  try {
+    const res = await axios.put(
+      `http://localhost:3005/api/product/edit/${product_id}`,
+      productData
+    )
+
+    // 即使 status 是 200，後端也可能回傳 { success: false }
+    if (res.data?.success === false) {
+      throw new Error(res.data?.message || '商品更新失敗')
+    }
+
+    // 成功時，回傳後端給的資料
+    return res.data
+  } catch (error) {
+    // 當 axios 請求失敗 (如 4xx, 5xx 錯誤) 或發生其他錯誤時
+    // 從 axios 的 error 物件中提取更詳細的錯誤訊息
+    const errorMessage =
+      error.response?.data?.message || error.message || '發生未知的網路錯誤'
+
+    // 將錯誤再次拋出，讓 React Query 的 onError 回呼可以接收到
+    throw new Error(errorMessage)
+  }
+}
+
 export const useBrandProducts = ({
   brandIds = [],
   limit = 10,
@@ -66,19 +106,24 @@ export const useBrandProducts = ({
   }
 }
 
+const formatDateString = (date) =>
+  date && isValid(new Date(date)) ? format(new Date(date), 'yyyy-MM-dd') : null
+
 export const UseProductEditDetail = (id) => {
-  return useQuery({
+  const queryClient = useQueryClient()
+
+  const { data, isLoading, error, isError, isFetching } = useQuery({
     queryKey: ['product-edit', id],
-    queryFn: async () => {
-      const res = await axios.get(`http://localhost:3005/api/product/edit/${id}`)
-      if (res.status !== 200 || res.data.success !== true) {
-        throw new Error('資料庫查無商品資料')
-      }
-      return res.data.data
-    },
-    enabled: !!id, // 確保 id 存在才執行
-    staleTime: 1000 * 60 * 10, // 10 分鐘快取
+    enabled: !!id,
+    staleTime: 1000 * 60 * 10,
+    queryFn: () => fetchProductDetail(id),
   })
+
+  return {
+    products: data,
+    loading: isLoading || isFetching,
+    error,
+  }
 }
 
 export const UseProductReviews = (id) => {

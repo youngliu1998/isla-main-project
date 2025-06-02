@@ -123,7 +123,7 @@
   background-color: #fff4f3 !important;
   color: var(--main-color) !important;
 }
-.card-title {
+.card-title-box {
   height: 3em; /* 約兩行文字的高度，依字體大小可微調 */
   line-height: 1.5em;
   overflow: hidden;
