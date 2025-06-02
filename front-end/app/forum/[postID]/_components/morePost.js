@@ -1,10 +1,9 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import ComponentsAvatar from '../../_components/avatar'
 import ComponentsBtnLikedSaved from '../../_components/btn-liked-saved'
 import ComponentsAuthorInfo from '../../_components/author-info'
+import { useEffect } from 'react'
 
 export default function ComponentsMorePost({
   postTitle = '',
@@ -22,6 +21,7 @@ export default function ComponentsMorePost({
       <Link
         className="more-card d-flex align-items-center gap-2 px-3 py-2 main-text-color rounded-4"
         href={`/forum/${postID}`}
+        target="_top"
       >
         <div className="more-content d-flex flex-column gap-2 flex-grow-1">
           <div className="more-title text-truncate fw-medium">{postTitle}</div>

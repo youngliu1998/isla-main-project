@@ -27,7 +27,10 @@ export default function ComponentsAuthorInfo({
         onClick={handleNavigate}
       >
         <ComponentsAvatar classWidth={width} src={src} alt={authorName} />
-        <span style={{ fontSize: fontSize + 'px', color: color }}>
+        <span
+          style={{ fontSize: fontSize + 'px', color: color }}
+          className="author-info-name text-truncate"
+        >
           {authorName}
         </span>
       </button>

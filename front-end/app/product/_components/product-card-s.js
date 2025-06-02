@@ -16,7 +16,6 @@ import WishButton from '../../_components/wish-toggle.js'
 import { toast } from 'react-toastify'
 
 function ProductCard({ product }) {
-
   const { user, isLoading: isAuthLoading } = useAuth()
   const token = useClientToken()
   const [isImageLoaded, setIsImageLoaded] = useState(false)
@@ -48,7 +47,8 @@ function ProductCard({ product }) {
       },
       {
         onSuccess: (data) => {
-          // toast.success('加入成功：', data)
+          window.dispatchEvent(new Event('cart-updated'))
+          toast.success(data?.message || '成功加入購物車')
           // 可以添加成功提示 UI
         },
         onError: (err) => {

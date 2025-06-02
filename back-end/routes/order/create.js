@@ -33,6 +33,12 @@ router.post('/', verifyToken, async (req, res) => {
       return sum + price * item.quantity
     }, 0)
 
+    // 判斷訂單狀態
+    let status = 'completed'
+    if (paymentMethod === '超商付款') {
+      status = 'unpaid'
+    }
+
     // #1 寫入order
     const [orderResult] = await connection.execute(
       `INSERT INTO orders 
@@ -40,12 +46,13 @@ router.post('/', verifyToken, async (req, res) => {
         shipping_method, shipping_address, 
         pickup_store_name, pickup_store_address, 
         created_at, updated_at) 
-        VALUES (?, ?, ?, ?, 'completed', ?, ?, ?, ?, ?, NOW(), NOW())`,
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())`,
       [
         userId,
         orderNumber,
         totalPrice,
         discountTotal,
+        status,
         paymentMethod,
         shippingMethod,
         shippingAddress ?? null,

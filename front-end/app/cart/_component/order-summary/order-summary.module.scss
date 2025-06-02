@@ -12,7 +12,7 @@
 }
 
 .ellipsis {
-  width: 12em;
+  width: 15em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -33,7 +33,7 @@
   padding: 3px 5px;
   font-size: 14px;
   color: #333;
-  width: 75%;
+  width: 50%;
   transition: border-color 0.5s ease;
 
   &:focus {

@@ -31,14 +31,14 @@ export default function SubForum({
       tabIndex={0} //可被tab鍵聚焦
       style={{ cursor: 'pointer' }}
     >
-      <div className="d-flex align-items-center p-2 text-primary">{number}</div>
-      <div className="d-flex flex-column gap-2 p-1">
+      {/* <div className="d-flex align-items-center p-2 text-primary">{number}</div> */}
+      <div className="d-flex flex-column gap-2 p-1 forum-text-wrap">
         <div className="forum-title">{forumTitle}</div>
         <div
           className="forum-content d-blok text-nowrap text-truncate"
           dangerouslySetInnerHTML={{ __html: forumContent }}
         />
-        <div className="evaluates d-flex fs14 ms-n4 px-4">
+        <div className="evaluates d-flex fs14 ms-n4">
           <ComponentsBtnLikedSaved
             type={'liked'}
             active={btnLikedActive}
