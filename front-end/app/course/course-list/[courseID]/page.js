@@ -93,6 +93,7 @@ export default function CourseIDPage() {
 
       const result = await res.json()
       if (result.status === 'success') {
+        window.dispatchEvent(new Event('cart-updated')) //洛特加這一行(為了讓加入購物車後icon數字會更新)
         toast.success('已加入購物車！')
       } else {
         toast.error(result.message || '加入購物車失敗')

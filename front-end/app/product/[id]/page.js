@@ -118,6 +118,8 @@ export default function page({ params }) {
       {
         onSuccess: (data) => {
           console.log('加入成功：', data)
+          window.dispatchEvent(new Event('cart-updated'))
+          toast.success(data?.message || '成功加入購物車')
         },
         onError: (err) => {
           console.error('加入購物車失敗：', err)

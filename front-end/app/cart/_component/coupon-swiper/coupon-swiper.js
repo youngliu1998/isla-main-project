@@ -32,12 +32,12 @@ const CouponSwiper = ({
             spaceBetween: 12,
           },
           768: {
-            slidesPerView: 2.5,
+            slidesPerView: 2.3,
             spaceBetween: 14,
           },
           992: {
-            slidesPerView: 1.8,
-            // spaceBetween: 18,
+            slidesPerView: 2.5,
+            spaceBetween: 20,
           },
           1200: {
             slidesPerView: 2.3,

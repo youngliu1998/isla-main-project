@@ -1,5 +1,5 @@
 import db from '../config/mysql.js'
-import { uploadImageAndGetUrl } from './product-picture-upload-service.js'
+import { updateImageAndGetUrl } from './product-picture-update-service.js'
 
 import express from 'express'
 const app = express()
@@ -44,10 +44,15 @@ export async function getFilteredProducts(filters) {
     SELECT 
       products.product_id,
       products.name,
+      products.status,
+      products.description,
       products.base_price,
       products.sale_price,
       products.sale_start_date,
       products.sale_end_date,
+      products.created_at,
+      products.updated_at,
+      brand.brand_id AS brand_id,
       brand.name AS brand_name,
       category.name AS category_name,
       primary_image.image_url AS primary_image_url,
@@ -576,7 +581,14 @@ export async function getProductById(productId) {
 
 // PUT /products/:id
 export async function updateProduct(req, res) {
+  // 資料已經由中介軟體解析和驗證完畢
   const productId = parseInt(req.params.id, 10)
+  const productData = req.body
+
+  console.log('=== updateProduct Controller 開始 ===')
+  console.log('Product ID:', productId)
+  console.log('接收到的產品資料:', productData)
+
   const {
     name,
     description,
@@ -590,114 +602,164 @@ export async function updateProduct(req, res) {
     sale_end_date,
     status,
     is_featured,
-    color_stocks = [],
-    images = [],
-  } = req.body
+    colors: color_stocks = [], // 從 productData 解構
+    images: allImageUrls = [], // 這是要保留的既有圖片 URL 列表
+    tag_ids = [],
+  } = productData
 
-  const conn = await db.getConnection()
+  let conn
   try {
+    conn = await db.getConnection()
     await conn.beginTransaction()
+    console.log('資料庫交易開始')
 
+    // 1. 更新商品基本資料 (與您原本的邏輯相同)
+    console.log('=== 步驟 1: 更新商品基本資料 ===')
     await conn.query(
-      `
-      UPDATE products SET
-        name = ?, description = ?, usage_instructions = ?, ingredients_text = ?,
-        brand_id = ?, category_id = ?, base_price = ?, sale_price = ?, 
-        sale_start_date = ?, sale_end_date = ?, status = ?, is_featured = ?
-      WHERE product_id = ?
-    `,
+      `UPDATE products SET 
+        name = ?, brand_id = ?, category_id = ?, base_price = ?, status = ?, 
+        sale_price = ?, sale_start_date = ?, sale_end_date = ?, description = ?, 
+        usage_instructions = ?, ingredients_text = ?, is_featured = ?, updated_at = ? 
+      WHERE product_id = ?`,
       [
         name,
-        description || '',
-        usage_instructions || '',
-        ingredients_text || '',
-        brand_id || null,
-        category_id || null,
-        base_price,
-        sale_price || null,
+        parseInt(brand_id),
+        parseInt(category_id),
+        parseFloat(base_price),
+        status || 'active',
+        sale_price ? parseFloat(sale_price) : null,
         sale_start_date || null,
         sale_end_date || null,
-        status,
-        is_featured ? 1 : 0,
+        description || null,
+        usage_instructions || null,
+        ingredients_text || null,
+        is_featured === true ? 1 : 0,
+        new Date(),
         productId,
       ]
     )
 
-    // color_stocks upsert
-    for (const cs of color_stocks) {
-      const [existing] = await conn.query(
-        `
-        SELECT 1 FROM product_color_stocks WHERE product_id = ? AND color_id = ?
-      `,
-        [productId, cs.color_id]
-      )
-
-      if (existing.length > 0) {
-        await conn.query(
-          `
-          UPDATE product_color_stocks SET
-            price = ?, stock_quantity = ?, image_url = ?, status = ?
-          WHERE product_id = ? AND color_id = ?
-        `,
-          [
-            cs.price || null,
-            cs.stock_quantity || 0,
-            cs.image_url || null,
-            cs.status || 'in_stock',
-            productId,
-            cs.color_id,
-          ]
-        )
-      } else {
-        await conn.query(
-          `
-          INSERT INTO product_color_stocks 
-            (product_id, color_id, price, stock_quantity, image_url, status)
-          VALUES (?, ?, ?, ?, ?, ?)
-        `,
-          [
-            productId,
-            cs.color_id,
-            cs.price || null,
-            cs.stock_quantity || 0,
-            cs.image_url || null,
-            cs.status || 'in_stock',
-          ]
-        )
-      }
-    }
-
-    // 清除原本圖片
+    // 2. 處理並上傳新圖片
+    console.log('=== 步驟 2: 更新資料庫中的圖片 URL ===')
     await conn.query(`DELETE FROM product_images WHERE product_id = ?`, [
       productId,
     ])
+    console.log(`已刪除 Product ID ${productId} 的所有舊圖片關聯`)
 
-    // 插入新圖片
-    for (const img of images) {
+    if (allImageUrls.length > 0) {
+      const imageInsertData = allImageUrls.map((url, index) => [
+        productId,
+        url,
+        index + 1, // sort_order
+        index === 0 ? 1 : 0, // is_primary
+      ])
       await conn.query(
-        `
-        INSERT INTO product_images 
-          (product_id, stock_id, image_url, alt_text, sort_order, is_primary)
-        VALUES (?, ?, ?, ?, ?, ?)
-      `,
+        `INSERT INTO product_images (product_id, image_url, sort_order, is_primary) VALUES ?`,
+        [imageInsertData]
+      )
+      console.log(`已插入 ${allImageUrls.length} 筆新圖片關聯`)
+    }
+
+    // 4. 更新 color_stocks (您的邏輯很完善，這裡僅作微調以適應新結構)
+    console.log('=== 步驟 3: 更新 Color Stocks ===')
+    await conn.query(`DELETE FROM product_color_stocks WHERE product_id = ?`, [
+      productId,
+    ])
+
+    for (const cs of color_stocks) {
+      console.log(`處理 color_stock:`, cs)
+      let colorId = cs.color_id
+
+      // --- 開始：整合後的「查詢或新增顏色 ID」邏輯 ---
+      if (!colorId && (cs.color_name || cs.color_code)) {
+        console.log('查詢或新增顏色:', {
+          color_name: cs.color_name,
+          color_code: cs.color_code,
+        })
+
+        // 先查詢是否存在該顏色
+        const [existingColor] = await conn.query(
+          `SELECT color_id FROM colors WHERE color_name = ? OR color_code = ?`,
+          [cs.color_name, cs.color_code]
+        )
+
+        if (existingColor.length > 0) {
+          colorId = existingColor[0].color_id
+          console.log('找到現有顏色 ID:', colorId)
+        } else {
+          // 新增顏色
+          console.log('新增新顏色:', {
+            color_name: cs.color_name,
+            color_code: cs.color_code,
+          })
+          const [insertColorResult] = await conn.query(
+            `INSERT INTO colors (color_name, color_code) VALUES (?, ?)`,
+            [cs.color_name, cs.color_code || '#000000']
+          )
+
+          colorId = insertColorResult.insertId
+
+          // 如果 insertId 獲取失敗，嘗試備用方案
+          if (!colorId) {
+            console.log('insertId 獲取失敗，嘗試查詢剛插入的顏色')
+            const [newColor] = await conn.query(
+              `SELECT color_id FROM colors WHERE color_name = ? AND color_code = ? ORDER BY color_id DESC LIMIT 1`,
+              [cs.color_name, cs.color_code || '#000000']
+            )
+            if (newColor.length > 0) {
+              colorId = newColor[0].color_id
+              console.log('通過查詢獲取到 color_id:', colorId)
+            }
+          }
+          console.log('新增顏色完成，最終 color_id:', colorId)
+        }
+      }
+
+      if (!colorId) {
+        console.error(`color_stock 缺少 color_id 且無法新增:`, cs)
+        throw new Error(
+          `顏色項目缺少必要的識別資訊 (color_id, color_name 或 color_code)`
+        )
+      }
+      // --- 結束：查詢或新增顏色 ID 的邏輯 ---
+
+      // 使用找到或新增的 colorId 來插入 product_color_stocks
+      await conn.query(
+        `INSERT INTO product_color_stocks (product_id, color_id, price, stock_quantity, image_url, status) VALUES (?, ?, ?, ?, ?, ?)`,
         [
           productId,
-          img.stock_id || null,
-          img.image_url,
-          img.alt_text || '',
-          img.sort_order || 0,
-          img.is_primary ? 1 : 0,
+          parseInt(colorId),
+          cs.price ? parseFloat(cs.price) : parseFloat(base_price),
+          cs.stock_quantity ? parseInt(cs.stock_quantity, 10) : 0,
+          cs.image_url || null,
+          cs.status || 'in_stock',
         ]
       )
     }
+    console.log('Color Stocks 更新完成')
+
+    // 5. 更新 tags (您的邏輯很完善，直接使用)
+    console.log('=== 步驟 5: 更新標籤 ===')
+    await conn.query(`DELETE FROM product_tag_relations WHERE product_id = ?`, [
+      productId,
+    ])
+    if (tag_ids.length > 0) {
+      const tagInsertData = tag_ids.map((tagId) => [productId, parseInt(tagId)])
+      await conn.query(
+        `INSERT INTO product_tag_relations (product_id, tag_id) VALUES ?`,
+        [tagInsertData]
+      )
+    }
+    console.log('標籤更新完成')
 
     await conn.commit()
+    console.log('=== 交易提交成功 ===')
     res.json({ success: true, message: '商品更新成功' })
   } catch (err) {
-    await conn.rollback()
-    console.error('更新商品失敗', err)
-    res.status(500).json({ success: false, message: '伺服器錯誤' })
+    console.error('=== updateProduct 發生錯誤 ===', err)
+    if (conn) await conn.rollback()
+    res.status(500).json({ success: false, message: '伺服器內部錯誤' })
   } finally {
-    conn.release()
+    if (conn) conn.release()
   }
 }

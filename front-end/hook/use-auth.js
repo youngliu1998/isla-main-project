@@ -1,12 +1,14 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect } from 'react'
+// import { useRouter } from 'next/navigation'
 
 const AuthContext = createContext(null)
 AuthContext.displayName = 'AuthContext'
 // ==== 清除 localstorage 的function ====
 
 export function AuthProvider({ children }) {
+  // const router = useRouter()
   // set user default status
   const defaultUser = {
     id: 0,
@@ -95,6 +97,7 @@ export function AuthProvider({ children }) {
     setUser(defaultUser)
     cleanStorage()
     // setIsAuth(false)
+    // router.push('/member/login')
   }
   // 初始讀取 jwtToken 並取得使用者資料
   useEffect(() => {

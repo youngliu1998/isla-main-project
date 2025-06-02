@@ -10,6 +10,14 @@ import EditPostModal from './edit-post-modal'
 import Ripples from 'react-ripples'
 import { UseDirectToLogin } from '../_hooks/useDirectToLogin'
 import { useAuth } from '../../../hook/use-auth'
+import useSWR from 'swr'
+
+const fetcher = ([url, body]) =>
+  fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  }).then((res) => res.json())
 
 export default function ComponentsSubNav() {
   const modalRef = useRef()
@@ -29,8 +37,19 @@ export default function ComponentsSubNav() {
     })
   }, [])
 
+  const userID = useAuth().user.id
+  const isAuth = userID !== 0
+  const { data, isLoading, error, mutate } = useSWR(
+    [
+      `http://localhost:3005/api/forum/follow/get-follow-list`,
+      { userID, pageName: 'subNav' },
+    ],
+    fetcher
+  )
+  const followings = data?.data
+  // console.log(followings)
+
   const url = usePathname()
-  const isAuth = useAuth().user.id !== 0
   const handleDirectToLogin = UseDirectToLogin({ isAuth })
 
   return (
@@ -109,67 +128,91 @@ export default function ComponentsSubNav() {
                 <span className="">追蹤對象</span>
               </button>
             </Ripples>
-            {isAuth && (
-              <div
-                id="panelsStayOpen-collapseOne"
-                className="accordion-collapse collapse show"
-              >
-                <div className="followings fs14 d-flex flex-column px-3 py-1 gap-2">
-                  <Link
-                    href={`/forum/profile/1`}
-                    className="followings-link main-text-color py-1"
-                  >
-                    <ComponentsAuthorInfo
-                      authorID="1"
-                      width="20"
-                      src="/default-avatar.jpg"
-                      alt="userName"
-                      fontSize="14"
-                      color="var(--main-text)"
-                      authorName="lilly"
-                    />
-                  </Link>
-                  <Link
-                    href={`/forum/profile/userID`}
-                    className="followings-link main-text-color py-1"
-                  >
-                    <ComponentsAuthorInfo
-                      authorID="2"
-                      width="20"
-                      src="/default-avatar.jpg"
-                      alt="userName"
-                      fontSize="14"
-                      color="var(--main-text)"
-                      authorName="Meggy"
-                    />
-                  </Link>
-                  <Link
-                    href={`/forum/profile/userID`}
-                    className="followings-link main-text-color py-1"
-                  >
-                    <ComponentsAuthorInfo
-                      authorID="3"
-                      width="20"
-                      src="/default-avatar.jpg"
-                      alt="userName"
-                      fontSize="14"
-                      color="var(--main-text)"
-                      authorName="Chloe"
-                    />
-                  </Link>
-                  <Link
-                    href={'/member/my-forum/my-following'}
-                    className="more-followings-link main-text-color text-center rounded-pill px-0 py-1 w-auto"
-                    onClick={(e) => {
-                      if (!isAuth) e.preventDefault()
-                      handleDirectToLogin('/member/my-forum/my-following')
-                    }}
-                  >
-                    查看全部 <i className="bi bi-arrow-up-right"></i>
-                  </Link>
-                </div>
+            <div
+              id="panelsStayOpen-collapseOne"
+              className="accordion-collapse collapse show"
+            >
+              <div className="followings fs14 d-flex flex-column px-4 py-1 gap-2">
+                {
+                  isAuth &&
+                    Array.isArray(followings) &&
+                    followings.map((v, i) => {
+                      return (
+                        <Link
+                          href={`/forum/profile/1`}
+                          className="followings-link main-text-color py-1 text-truncate"
+                          key={i}
+                        >
+                          <ComponentsAuthorInfo
+                            authorID={v.follow_id}
+                            width="20"
+                            src={v.userImg}
+                            alt={v.userNick}
+                            fontSize="16"
+                            color="var(--main-text)"
+                            authorName={v.userNick}
+                          />
+                        </Link>
+                      )
+                    })
+                  /* <Link
+                      href={`/forum/profile/1`}
+                      className="followings-link main-text-color py-1"
+                    >
+                      <ComponentsAuthorInfo
+                        authorID="1"
+                        width="20"
+                        src="/default-avatar.jpg"
+                        alt="userName"
+                        fontSize="14"
+                        color="var(--main-text)"
+                        authorName="lilly"
+                      />
+                    </Link>
+                    <Link
+                      href={`/forum/profile/userID`}
+                      className="followings-link main-text-color py-1"
+                    >
+                      <ComponentsAuthorInfo
+                        authorID="2"
+                        width="20"
+                        src="/default-avatar.jpg"
+                        alt="userName"
+                        fontSize="14"
+                        color="var(--main-text)"
+                        authorName="Meggy"
+                      />
+                    </Link>
+                    <Link
+                      href={`/forum/profile/userID`}
+                      className="followings-link main-text-color py-1"
+                    >
+                      <ComponentsAuthorInfo
+                        authorID="3"
+                        width="20"
+                        src="/default-avatar.jpg"
+                        alt="userName"
+                        fontSize="14"
+                        color="var(--main-text)"
+                        authorName="Chloe"
+                      />
+                    </Link>
+                     */
+                }
               </div>
-            )}
+              <div className="d-flex text-center fs14 pt-2">
+                <Link
+                  href={'/member/my-forum/my-following'}
+                  className="more-followings-link sub-text-color text-center rounded-pill px-0 py-1 mx-auto w-75"
+                  onClick={(e) => {
+                    if (!isAuth) e.preventDefault()
+                    handleDirectToLogin('/member/my-forum/my-following')
+                  }}
+                >
+                  查看全部 <i className="bi bi-arrow-up-right"></i>
+                </Link>
+              </div>
+            </div>
             <Ripples className="rounded-3 d-block">
               <Link
                 href="/member/my-forum/my-post"

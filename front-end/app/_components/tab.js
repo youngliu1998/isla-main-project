@@ -60,8 +60,9 @@ export default function Componentstab({
   }, [activeIndex, updateUnderline])
 
   useEffect(() => {
-    const timer = setTimeout(() => setEnableTransition(true), 0)
-    return () => clearTimeout(timer)
+    setEnableTransition(true)
+    // const timer = setTimeout(() => setEnableTransition(true), 0)
+    // return () => clearTimeout(timer)
   }, [])
 
   return (

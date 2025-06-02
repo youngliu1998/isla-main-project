@@ -65,6 +65,10 @@ export default function PaymentPage() {
   const [isLoading, setIsLoading] = useState(false)
 
   const handleCheckout = async () => {
+    console.log('🧾 結帳流程開始')
+    console.log('付款方式:', paymentMethod)
+    console.log('配送方式:', shippingInfo.shippingMethod)
+
     const cartItems = orderData?.cartItems || []
 
     if (cartItems.length === 0) {
@@ -156,6 +160,14 @@ export default function PaymentPage() {
         return
       }
 
+      // 更新優惠券狀態 state = 2
+      if (selecProdCoup || selecCourCoup || selecGloCoup) {
+        await cartApi.post('/coupon/products/use', {
+          user_id: user.id,
+          order_id: orderId,
+        })
+      }
+
       // 更新購物車：移除已結帳商品，保留未結帳的
       const allItems = JSON.parse(localStorage.getItem('cartItems')) || []
       const purchasedIds = cartItems.map((item) => item.id)
@@ -179,7 +191,7 @@ export default function PaymentPage() {
           quantity: item.quantity,
         }))
 
-        const ecpayRes = await cartApi.post('cart-items/ecpay', {
+        const ecpayRes = await cartApi.post('/cart-items/ecpay', {
           amount: finalTotal,
           items,
           orderNumber,
@@ -198,6 +210,13 @@ export default function PaymentPage() {
         } else {
           toast.error('綠界表單產生失敗')
         }
+      } else if (paymentMethod === '超商付款') {
+        toast.success('訂單完成，即將跳轉至完成頁')
+        setTimeout(() => {
+          router.push('/cart/order-completed')
+        }, 1500)
+      } else if (paymentMethod === 'LinePay') {
+        // router.push('/cart/order-completed')
       }
     } catch (error) {
       console.error(error)
@@ -232,9 +251,9 @@ export default function PaymentPage() {
               <h5 className="fw-bold mb-5 text-maintext">付款方式</h5>
 
               {[
-                { id: '信用卡', label: '信用卡一次付清(綠界科技)' },
+                { id: '信用卡', label: '信用卡一次付清' },
                 { id: '超商付款', label: '超商取貨付款' },
-                { id: 'LINE Pay', label: 'LINE Pay' },
+                { id: 'LinePay', label: 'LINE Pay' },
               ].map((option) => (
                 <div className="form-check mb-3" key={option.id}>
                   <input
