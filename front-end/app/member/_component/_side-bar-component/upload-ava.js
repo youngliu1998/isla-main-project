@@ -7,6 +7,7 @@ import './_style/user-upload-ava.css'
 export default function UploadAva({
   openAvatar = false,
   setOpenAvatar = () => {},
+  initAuth = () => {},
 }) {
   const [image, setImage] = useState(null) // input control for avatar
   const [preview, setPreview] = useState(null) // preview avatar
@@ -33,8 +34,13 @@ export default function UploadAva({
         },
         body: formData,
       })
+
+      alert('成功更新頭像')
+      initAuth()
+      setOpenAvatar(!openAvatar)
     } catch (err) {
       console.log(err)
+      alert('更新頭像失敗')
     }
   }
   return (
@@ -63,7 +69,7 @@ export default function UploadAva({
             <input type="file" name="avatar" onChange={handleFileChange} />
             <button className="btn btn-primary">傳送</button>
           </form>
-
+          {/* 關閉按鈕(右上) */}
           <button
             className="user-avatar-cls-btn"
             type="button"

@@ -23,7 +23,7 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import dayjs from 'dayjs'
 import { useState } from 'react'
-import EditCouponForm from './editcouponform'
+import EditCouponForm from './edit-product-coupon'
 
 export default function CouponTable({
   coupons,

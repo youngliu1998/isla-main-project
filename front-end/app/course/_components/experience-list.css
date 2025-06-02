@@ -8,7 +8,7 @@
   left: 0;
   height: 100%;
   background: linear-gradient(rgba(0, 0, 0, 0.4) 80%);
-  pointer-events: none; /* 不影響 hover / click */
+  pointer-events: auto; /* 不影響 hover / click */
 }
 .bread-crumbs {
   font-size: 15px;
@@ -131,11 +131,14 @@
 }
 .banner-ctabox h5 {
   font-size: 16px;
+  pointer-events: auto;
+  z-index: 10; /* 如果被圖片覆蓋也一起處理 */
 }
 
 .banner-ctabox i {
   color: var(--white);
   font-size: 2.5rem;
+  pointer-events: auto;
 }
 /* box1 */
 /* ---------- course按鈕樣式 ---------- */
@@ -194,10 +197,16 @@
 }
 /* box3 */
 .box3-content-collapse {
-  max-height: 1000px;
+  max-height: 600px;
   overflow: hidden;
   transition: max-height 0.3s ease;
   position: relative;
+}
+.box3-content-collapse img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1rem 0;
 }
 
 .box3-fade-mask {
@@ -209,6 +218,10 @@
 
 .box3-expanded .box3-content-collapse {
   max-height: 9999px;
+}
+.box3-content-collapse.expanded {
+  max-height: none; /* 展開時顯示完整內容 */
+  overflow: visible;
 }
 
 .box3-expanded #box3-fadeMask {
@@ -424,4 +437,8 @@
 }
 .card-text-discount {
   text-decoration: line-through;
+}
+.countdown-text.text-muted {
+  color: #999;
+  font-style: italic;
 }

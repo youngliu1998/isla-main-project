@@ -2,17 +2,18 @@
 
 import './post.css'
 import { useParams, useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import EditPostModal from '../_components/edit-post-modal'
 import useSWR from 'swr'
 import ComponentsBtnLikedSaved from '../_components/btn-liked-saved'
-import ComponentsMorePost from './_components/more-post'
+import ComponentsMorePost from './_components/morePost'
 import ComponentsAuthorInfo from '../_components/author-info'
 import { useAuth } from '../../../hook/use-auth'
 import ConfirmModal from '../_components/confirmModal'
 import CommentSection from './comment-section'
 import CommentInput from './comment-input'
 import Link from 'next/link'
+import PostDetailLoader from '../_components/loader-detail'
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
 
@@ -24,21 +25,32 @@ export default function PostIDPage(props) {
   const postID = useParams().postID
   const [commentMutate, setCommentMutate] = useState()
   const [lastCommentRef, setLastCommentRef] = useState()
-  if (commentMutate) console.log(commentMutate)
+  // if (commentMutate) console.log(commentMutate)
 
   const postAPI = `http://localhost:3005/api/forum/posts/post-detail?postID=${postID}`
   const { data, isLoading, error, mutate } = useSWR(postAPI, fetcher)
   let posts = data?.data?.posts
   let post = {}
   let morePosts = data?.data?.morePosts
-  if (error) {
-    console.log(error)
-    return (
-      <main className="main col col-10 d-flex flex-column align-items-start">
-        連線錯誤
-      </main>
-    )
-  }
+
+  // 新增 minimum loading 狀態
+  const [showLoading, setShowLoading] = useState(true)
+  useEffect(() => {
+    if (!isLoading) {
+      // 至少顯示 600ms
+      const timer = setTimeout(() => setShowLoading(false), 400)
+      return () => clearTimeout(timer)
+    } else {
+      setShowLoading(true)
+    }
+  }, [isLoading])
+
+  // // FIXME 載入中動畫
+  // if (showLoading) {
+  //   console.log(showLoading)
+  //   return <PostDetailLoader />
+  // }
+
   if (Array.isArray(posts)) {
     posts = posts.map((post) => {
       return {
@@ -63,21 +75,6 @@ export default function PostIDPage(props) {
       }
     })
   }
-  // console.log(morePosts)
-  // FIXME 載入中動畫
-  // if (isLoading) {
-  //   console.log(isLoading)
-  //   return (
-  //     <main className="main col col-10 d-flex flex-column align-items-start">
-  //       載入中
-  //     </main>
-  //   )
-  // }
-
-  // if (!posts || posts.length === 0) {
-  //   // router.push('/forum') //FIXME 要回到上一頁
-  //   return <div>查無文章</div>
-  // }
 
   // 日期格式
   const date = new Date(post?.updated_at)
@@ -122,13 +119,29 @@ export default function PostIDPage(props) {
 
   return (
     <>
+      {/* <PostDetailLoader /> */}
       <main className="main col col-10 d-flex flex-column align-items-start">
-        {!posts || posts.length === 0 ? (
+        {error ? (
           <div className="fs32 d-flex flex-column align-items-center mx-auto mt-3 gap-2">
-            <div>查無此文章</div>
+            <div>連線錯誤，試試重新整理</div>
             <Link
               href={'/forum'}
               className="main-color fs24 text-decoration-underline"
+            >
+              回到論壇首頁
+            </Link>
+          </div>
+        ) : showLoading ? (
+          <div className="post post-detail-loading d-flex flex-column gap-2 px-4 w-100 rounded-top-4 shadow-forum bg-pure-white pt-4 card-border position-relative">
+            <PostDetailLoader />
+          </div>
+        ) : !posts || posts.length === 0 ? (
+          <div className="fs24 d-flex flex-column align-items-center mx-auto mt-3 gap-2">
+            {/* FIXME */}
+            <div>查無此文章</div>
+            <Link
+              href={'/forum'}
+              className="main-color fs20 text-decoration-underline"
             >
               回到論壇首頁
             </Link>

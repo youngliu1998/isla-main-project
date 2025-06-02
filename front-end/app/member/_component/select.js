@@ -29,6 +29,19 @@ export default function Select({
           defaultValue={text[`${selectKey}`]}
           onChange={(e) => {
             setText({ ...text, [selectKey]: e.target.value })
+            // ==== 直接輸入全部 (依照城市預選地區、號碼) ====
+            if (selectKey === 'CityName') {
+              setText({
+                ...text,
+                [selectKey]: e.target.value,
+                ['AreaName']: arr.filter((v) => {
+                  return v['CityName'] === e.target.value
+                })[0]['AreaList'][0]['AreaName'],
+                ['ZipCode']: arr.filter((v) => {
+                  return v['CityName'] === e.target.value
+                })[0]['AreaList'][0]['ZipCode'],
+              })
+            }
             // ==== 直接輸入郵遞區號 (地區即決定號碼) ====
             if (selectKey === 'AreaName') {
               setText({

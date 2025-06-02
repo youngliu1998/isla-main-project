@@ -16,7 +16,7 @@ export function UseDirectToLogin({ isAuth }) {
     }
 
     if (!isAuth) {
-      toast.error(
+      toast.warning(
         <div className="d-flex justify-content-between w-100">
           <span>請先登入</span>
           <Link
