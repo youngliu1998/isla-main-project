@@ -217,7 +217,22 @@ export default function PaymentPage() {
           router.push('/cart/order-completed')
         }, 1000)
       } else if (paymentMethod === 'LinePay') {
-        // router.push('/cart/order-completed')
+        try {
+          const linePayRes = await cartApi.get(
+            `/cart-items/line-pay/reserve?amount=${finalTotal}`,
+            { withCredentials: true }
+          )
+
+          const url = linePayRes.data?.data?.paymentUrl
+          if (url) {
+            window.location.href = url
+          } else {
+            toast.error('無法取得 LINE Pay 付款連結')
+          }
+        } catch (error) {
+          console.error('Line pay 錯誤:', error)
+          toast.error('LINE Pay 建立付款失敗')
+        }
       }
     } catch (error) {
       console.error(error)
