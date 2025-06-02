@@ -25,7 +25,6 @@ export default function OrderSummary({
   setSelecGloCoup,
   onCheckout,
   isLoading = false,
-  universalCoupon = [],
   shippingCoupons = [],
 }) {
   // console.log('🧾 全站券 filterGloCoups:', universalCoupon)

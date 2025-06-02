@@ -291,7 +291,21 @@ export default function PaymentPage() {
               />
             )}
           </div>
-          {isMobile && <MobileOrderBar />}
+          {isMobile && (
+            <MobileOrderBar
+              cartItems={orderData?.cartItems || []}
+              checkedItems={orderData?.cartItems?.reduce((acc, item) => {
+                acc[item.id] = true
+                return acc
+              }, {})}
+              selecProdCoup={orderData?.selecProdCoup}
+              selecCourCoup={orderData?.selecCourCoup}
+              selecGloCoup={orderData?.selecGloCoup}
+              setSelecGloCoup={() => {}}
+              shippingCoupons={orderData?.shippingCoupons || []}
+              onCheckout={handleCheckout}
+            />
+          )}
         </div>
       </section>
 
