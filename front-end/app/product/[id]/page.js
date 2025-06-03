@@ -26,6 +26,7 @@ import Link from 'next/link'
 import LoadingLottie from '../_components/loading/lottie-loading.js'
 import LoadingErrorLottie from '../_components/loading-error/lottie-error.js'
 import ReactViewShare from './_component/recent-view-and-share/recent-view-and-share'
+import ProductRelative from './_component/relative-products-products/relative-products-products'
 
 export default function page({ params }) {
   // i don't know what is this shit, but it's warning
@@ -324,6 +325,7 @@ export default function page({ params }) {
         <div className="relative-products-title-box">
           <div className="relative-products-title-main">猶豫不決嗎？</div>
           <div className="relative-products-title-sub">下面有其他類似商品</div>
+          <ProductRelative />
         </div>
         <div className="relative-products-cards"></div>
       </section>

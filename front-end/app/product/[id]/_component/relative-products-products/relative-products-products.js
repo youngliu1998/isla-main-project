@@ -4,17 +4,18 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 // ==== compoents ====
 import Componentstab from '@/app/_components/tab'
-import BrandSelect from './_component/brand-select'
-import ProductCard from './_component/product-card-l'
+import BrandSelect from '@/app/_components/_component-main-page/product/_component/brand-select'
+import ProductCard from '@/app/_components/_component-main-page/product/_component/product-card-l.js'
+import './product-relative.css'
 // ==== hooks ====
 import { useProducts } from '@/hook/use-products'
-import './_style/product-section.css'
+// ==== css ====
 
-export default function ProductSectionNew() {
+export default function ProductRelative() {
   // ==== 取得商品資料 ====
   const [filters, setFilters] = useState({
     keyword: '',
-    brandIds: [3],
+    brandIds: [],
     tagIds: [],
     categoryIds: [],
     minRating: 0,
@@ -22,13 +23,12 @@ export default function ProductSectionNew() {
     minPrice: 0,
     maxPrice: 9999,
     onSaleOnly: false,
-    selectedPriceRangeKeys: [], // 保存未被parsePriceRanges轉換的價格區間
-    sortBy: 'created_at',
+    selectedPriceRangeKeys: [],
+    sortBy: '',
     sortOrder: 'ASC',
   })
   const { products } = useProducts(filters)
-  // ==== END 取得商品資料 ====
-  // ==== tab setting ====
+
   const navBrands = [
     'Unleashia',
     "A'Piuw",
@@ -38,7 +38,7 @@ export default function ProductSectionNew() {
     'Rom&nd',
   ]
   // ==== END tab setting ====
-  const [tabSwitch, setTabSwitch] = useState(1)
+  const [tabSwitch, setTabSwitch] = useState(3)
   const handleFilterChange = (partialUpdate) => {
     setFilters((prev) => {
       const updated = { ...prev, ...partialUpdate }
@@ -58,29 +58,16 @@ export default function ProductSectionNew() {
       return hasChanged ? updated : prev
     })
   }
-  useEffect(() => {
-    handleFilterChange({ brandIds: [tabSwitch] })
-    // eslint-disable-next-line
-  }, [tabSwitch])
   return (
     <>
       <div className="d-flex flex-column align-items-center gap-4">
-        <div className="d-flex flex-column align-items-center gap-4">
-          <h3 className="main-product-section-title">新進商品</h3>
-          <div className="d-lg-block d-none">
-            <Componentstab cates={navBrands} handleTabChange={setTabSwitch} />
-          </div>
-          <BrandSelect
-            navBrands={navBrands}
-            tabSwitch={tabSwitch}
-            setTabSwitch={setTabSwitch}
-          />
-        </div>
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-lg-4 g-4 p-0 m-0 mt-4">
-          {
-            <div className="product-list product-list-main-page">
-              {products.slice(0, 4).map((p) => (
-                <div key={p.product_id} className="product-card-container">
+          <div className="product-list product-list-main-page">
+            {[...products]
+              .sort(() => Math.random() - 0.5)
+              .slice(0, 4)
+              .map((p, i) => (
+                <div className="product-card-container" key={p.product_id}>
                   <ProductCard
                     product={{
                       id: p.product_id,
@@ -97,13 +84,8 @@ export default function ProductSectionNew() {
                   />
                 </div>
               ))}
-            </div>
-          }
-          {tabSwitch === 2}
+          </div>
         </div>
-        <Link href="/product" className="mt-4 pt-4">
-          <button className="btn btn-primary">查看更多商品</button>
-        </Link>
       </div>
     </>
   )
