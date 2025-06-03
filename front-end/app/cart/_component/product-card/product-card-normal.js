@@ -122,11 +122,7 @@ export default function ProductCardNormal({
           <div className="col-9 d-flex flex-column gap-1">
             <div className="d-flex justify-content-between">
               <h6 className={`${styles.ellipsis} mb-0`}>{title}</h6>
-              <button
-                type="button"
-                className="btn border-0 p-0"
-                onClick={onDelete}
-              >
+              <button type="button" className="btn" onClick={onDelete}>
                 <BsTrash className="text-subtext fs-6" />
               </button>
             </div>
