@@ -3,21 +3,20 @@
 
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
-import './_style/product-card-s.css'
-import RatingComponent from './product-rating.js'
-import BookmarkComponent from './product-bookmark.js'
+import '../_style/product-card-l.css'
+import RatingComponent from '../../../../product/_components/product-rating.js'
+import BookmarkComponent from '../../../../product/_components/product-bookmark.js'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useClientToken } from '@/hook/use-client-token.js'
 import { useAuth } from '@/hook/use-auth.js'
 import { useAddCart } from '@/hook/use-add-cart.js'
 import { useToggleWish } from '@/hook/use-toggle-wish.js'
+import WishButton from '../../../wish-toggle.js'
 import { toast } from 'react-toastify'
 
 function ProductCard({ product }) {
-  if (!product) return <div></div>
   const { user, isLoading: isAuthLoading } = useAuth()
-  if (isAuthLoading) return <div></div>
   const token = useClientToken()
   const [isImageLoaded, setIsImageLoaded] = useState(false)
   const { mutate: addToCart } = useAddCart(token)
@@ -49,7 +48,7 @@ function ProductCard({ product }) {
       {
         onSuccess: (data) => {
           window.dispatchEvent(new Event('cart-updated'))
-          // toast.success('商品加入購物車成功：', data)
+          toast.success(data?.message || '成功加入購物車')
           // 可以添加成功提示 UI
         },
         onError: (err) => {
@@ -84,10 +83,14 @@ function ProductCard({ product }) {
   const fullImageUrl = `${IMAGE_PREFIX}${imageUrl}`
   const productUrl = `http://localhost:3000/product/${id}`
 
+  if (!product || isAuthLoading) {
+    return null
+  }
+
   return (
     <Link href={productUrl} passHref>
-      <div className="product-card-product_card" key={id}>
-        <div className="product-card-product_card-head">
+      <div className="product-card-l-product_card" key={id}>
+        <div className="product-card-l-product_card-head">
           <div className="product-card-head-top d-flex">
             <div className="product-card-rating product-card-rating-desktop">
               <div className="product-card-star-box">
@@ -104,7 +107,7 @@ function ProductCard({ product }) {
             />
           </div>
 
-          <div className="product-card-product_card-img image-container">
+          <div className="product-card-l-product_card-img image-container">
             <div className="skeleton-image" />
             <Image
               src={fullImageUrl}
@@ -126,7 +129,7 @@ function ProductCard({ product }) {
           </div>
         </div>
 
-        <div className="product-card-product_card-info">
+        <div className="product-card-l-product_card-info">
           <div className="product-card-info">
             <div className="product-card-product_details">
               <div className="product-card-brand">{brand}</div>

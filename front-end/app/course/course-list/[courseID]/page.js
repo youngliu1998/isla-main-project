@@ -109,6 +109,7 @@ export default function CourseIDPage() {
       toast.info('請先登入會員才能購買')
       localStorage.setItem('redirectAfterLogin', window.location.href)
       localStorage.setItem('pendingBuyNow', id) // ⭐ 新增這行：記錄課程 ID
+      localStorage.setItem('pendingBuyNowType', 'course')
       router.push('/member/login')
       return
     }

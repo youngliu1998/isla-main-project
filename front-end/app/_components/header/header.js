@@ -92,7 +92,13 @@ export default function Header() {
               type="button"
               onClick={handleCartClick}
             >
-              <BsHandbag style={{ color: 'white', fontSize: '30px' }} />
+              {/* <BsHandbag style={{ color: 'white', fontSize: '30px' }} /> */}
+              <Image
+                src="/header/Elements/Navigation/outline/shoppingbag.svg"
+                alt="購物袋"
+                width={34}
+                height={34}
+              />
               <div>{totalCount}</div>
             </button>
 

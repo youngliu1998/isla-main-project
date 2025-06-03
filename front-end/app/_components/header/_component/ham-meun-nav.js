@@ -32,7 +32,6 @@ export default function HamMeunNav({
               所有產品
             </Link>
           </li>
-          <li>品牌總覽</li>
           <li>優惠券專區</li>
           <li>
             <Link

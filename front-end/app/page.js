@@ -30,7 +30,9 @@ import { useRouter } from 'next/navigation'
 import HomeAnimationSplash from './home-animation/splash'
 
 export default function Home() {
-  const [showMain, setShowMain] = useState(true)
+  const [showMain, setShowMain] = useState(false)
+  const [hasShownAnimation, setHasShownAnimation] = useState(false)
+
   const images = [
     'http://localhost:3005/images/ad/isla-ad.001.jpeg',
     'http://localhost:3005/images/ad/isla-ad.002.jpeg',
@@ -42,8 +44,23 @@ export default function Home() {
   const router = useRouter()
   // const handleForumTab = () => {}
 
-  if (!showMain)
-    return <HomeAnimationSplash onFinish={() => setShowMain(true)} />
+  // 檢查是否第一次進入 localStorage
+  useEffect(() => {
+    const seen = localStorage.getItem('hasSeenHomeAnimation')
+    if (seen) {
+      setHasShownAnimation(true)
+      setShowMain(true)
+    }
+  }, [])
+
+  const handleFinishAnimation = () => {
+    localStorage.setItem('hasSeenHomeAnimation', 'true')
+    setShowMain(true)
+  }
+
+  if (!hasShownAnimation && !showMain) {
+    return <HomeAnimationSplash onFinish={handleFinishAnimation} />
+  }
 
   return (
     <>
@@ -72,8 +89,8 @@ export default function Home() {
                 key={index}
                 className="d-flex justify-content-center"
                 style={{
-                  width: '90vw', // 使用 viewport 寬度
-                  maxWidth: '1100px', // 限制最大寬
+                  width: '100vw', // 使用 viewport 寬度
+                  maxWidth: '1350px', // 限制最大寬
                   height: 'auto', // 高度交給內部 div 控制
                 }}
               >

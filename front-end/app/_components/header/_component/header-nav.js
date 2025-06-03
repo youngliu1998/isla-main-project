@@ -1,8 +1,11 @@
 'use client'
 
+import { useState } from 'react'
 import Link from 'next/link'
+import CouponNav from './_component-nav/coupon-nav'
 
 export default function HeaderNav() {
+  const [open, setOpen] = useState(false)
   return (
     <>
       <nav className="order-lg-2 d-lg-block d-none">
@@ -10,11 +13,17 @@ export default function HeaderNav() {
           <li>
             <Link href="/product">所有產品</Link>
           </li>
-          <li>
-            <Link href="">品牌總覽</Link>
-          </li>
-          <li>
-            <Link href="/coupon/products">優惠券專區</Link>
+          <li
+            className="position-relative"
+            onMouseEnter={() => {
+              setOpen(true)
+            }}
+            onMouseLeave={() => {
+              setOpen(false)
+            }}
+          >
+            <Link href="/">優惠券專區</Link>
+            <CouponNav open={open} />
           </li>
           <li>
             <Link href="/course">美妝教室</Link>
