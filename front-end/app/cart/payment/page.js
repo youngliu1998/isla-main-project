@@ -207,6 +207,7 @@ export default function PaymentPage() {
         const form = container.querySelector('form')
         if (form) {
           form.submit()
+          toast.success('即將跳轉至綠界付款')
         } else {
           toast.error('綠界表單產生失敗')
         }
@@ -214,9 +215,24 @@ export default function PaymentPage() {
         toast.success('訂單完成，即將跳轉至完成頁')
         setTimeout(() => {
           router.push('/cart/order-completed')
-        }, 1500)
+        }, 1000)
       } else if (paymentMethod === 'LinePay') {
-        // router.push('/cart/order-completed')
+        try {
+          const linePayRes = await cartApi.get(
+            `/cart-items/line-pay/reserve?amount=${finalTotal}`,
+            { withCredentials: true }
+          )
+
+          const url = linePayRes.data?.data?.paymentUrl
+          if (url) {
+            window.location.href = url
+          } else {
+            toast.error('無法取得 LINE Pay 付款連結')
+          }
+        } catch (error) {
+          console.error('Line pay 錯誤:', error)
+          toast.error('LINE Pay 建立付款失敗')
+        }
       }
     } catch (error) {
       console.error(error)
@@ -291,7 +307,21 @@ export default function PaymentPage() {
               />
             )}
           </div>
-          {isMobile && <MobileOrderBar />}
+          {isMobile && (
+            <MobileOrderBar
+              cartItems={orderData?.cartItems || []}
+              checkedItems={orderData?.cartItems?.reduce((acc, item) => {
+                acc[item.id] = true
+                return acc
+              }, {})}
+              selecProdCoup={orderData?.selecProdCoup}
+              selecCourCoup={orderData?.selecCourCoup}
+              selecGloCoup={orderData?.selecGloCoup}
+              setSelecGloCoup={() => {}}
+              shippingCoupons={orderData?.shippingCoupons || []}
+              onCheckout={handleCheckout}
+            />
+          )}
         </div>
       </section>
 
