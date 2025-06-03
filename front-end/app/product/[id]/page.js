@@ -68,6 +68,7 @@ export default function page({ params }) {
   const [selectedColorId, setSelectedColorId] = useState(null)
   const [quantity, setQuantity] = useState(1)
   const [selectedIndex, setSelectedIndex] = useState(0)
+  const [order_price, setOrder_price] = useState(0)
 
   // 判斷是否為標準色（無色碼）
   const isStandardOnly = useMemo(() => {
@@ -76,7 +77,6 @@ export default function page({ params }) {
     )
   }, [product])
 
-  // 初始化選擇顏色（非標準色）
   useEffect(() => {
     if (
       product?.colors?.length > 0 &&
@@ -86,6 +86,21 @@ export default function page({ params }) {
       setSelectedColorId(product.colors[0].color_id)
     }
   }, [product, selectedColorId, isStandardOnly])
+
+  useEffect(() => {
+    if (product?.final_price) {
+      setOrder_price(product.final_price * quantity)
+    }
+  }, [product?.final_price, quantity])
+
+  // useEffect(() => {
+  //   if (
+  //     product?.name &&
+  //     router.asPath !== `/product/${product.product_id}商品詳細`
+  //   ) {
+  //     router.push(`/product/${product.id}商品詳細`, { scroll: false })
+  //   }
+  // }, [product, router])
 
   // 處理圖片
   const filenames = useMemo(() => {
@@ -187,6 +202,7 @@ export default function page({ params }) {
       </div>
     )
   }
+
   return (
     <>
       <ReactViewShare product={product} />
@@ -225,8 +241,8 @@ export default function page({ params }) {
             <div className="product-index d-flex flex-column justify-content-between">
               <div className="index-top">
                 <div className="top-main">
-                  <Link href={`/product?brandIds=${product.brand.brand_id}`}>
-                    <div className="brand">{product.brand.name}</div>
+                  <Link href={`/product?brandIds=${product?.brand.brand_id}`}>
+                    <div className="brand">{product?.brand.name}</div>
                   </Link>
                   <div className="name">{product.name}</div>
                 </div>
@@ -254,9 +270,7 @@ export default function page({ params }) {
                   />
                 </div>
                 <div className="price-box d-flex align-items-center ">
-                  <div className="price">
-                    NT${parseInt(product.final_price)}
-                  </div>{' '}
+                  <div className="price">NT${parseInt(order_price)}</div>{' '}
                   <button
                     className="add-cart"
                     type="button"

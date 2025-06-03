@@ -72,8 +72,8 @@ export default function Home() {
                 key={index}
                 className="d-flex justify-content-center"
                 style={{
-                  width: '90vw', // 使用 viewport 寬度
-                  maxWidth: '1100px', // 限制最大寬
+                  width: '100vw', // 使用 viewport 寬度
+                  maxWidth: '1350px', // 限制最大寬
                   height: 'auto', // 高度交給內部 div 控制
                 }}
               >
