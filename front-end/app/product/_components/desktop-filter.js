@@ -3,7 +3,7 @@ import { BsSearch, BsX, BsArrowDown, BsArrowUp } from 'react-icons/bs'
 import clsx from 'clsx'
 import styles from './_style/desktop-filter.module.css'
 import DesktopFilterButtons from './desktop-filter-buttons.js'
-import IslaSwitch from "../../_components/form/switch/form-switch.js";
+import IslaSwitch from '../../_components/form/switch/form-switch.js'
 
 const priceRanges = ['100 ~ 300', '300 ~ 500', '500 ~ 1000', '1000 元以上']
 
@@ -90,7 +90,7 @@ function SidebarFilter({ filters, onFilterChange, brands, categories, tags }) {
             'd-flex justify-content-center align-items-center flex-row w-100 px-3 gap-3'
           )}
         >
-          <BsSearch className={styles['sidebar-filter-search-icon']} />
+          <BsSearch className={styles['sidebar-filter-search-icon-desktop']} />
           <div className={clsx(styles['sidebar-filter-search-input'], 'w-100')}>
             <input
               className={clsx(styles['sidebar-filter-search'], 'w-100')}
@@ -102,10 +102,7 @@ function SidebarFilter({ filters, onFilterChange, brands, categories, tags }) {
           </div>
           {keyword && (
             <button
-              className={clsx(
-                styles['sidebar-filter-search-x-icon'],
-                'border-0 bg-transparent'
-              )}
+              className={clsx(styles['sidebar-filter-search-x-icon'])}
               onClick={() => onFilterChange({ ...filters, keyword: '' })}
             >
               <BsX />
@@ -174,7 +171,13 @@ function SidebarFilter({ filters, onFilterChange, brands, categories, tags }) {
         )}
       >
         <div className={styles['sidebar-filter-filter-menu']}>
-          <div className={clsx('form-check', 'form-switch' ,styles['sidebar-filter-filter-menu-sale'])} >
+          <div
+            className={clsx(
+              'form-check',
+              'form-switch',
+              styles['sidebar-filter-filter-menu-sale']
+            )}
+          >
             <IslaSwitch
               id="switch-sale"
               checked={onSaleOnly}
