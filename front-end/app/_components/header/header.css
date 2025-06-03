@@ -16,16 +16,17 @@ header {
 
 .header-body {
   height: 80px;
-  backdrop-filter: blur(35px);
+  backdrop-filter: blur(10px);
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding-inline: 4rem;
   /* ==== backgroud setting ==== */
   background: linear-gradient(
-    rgba(255, 131, 119, 0.8),
-    rgba(255, 162, 152, 0.7)
+    rgba(255, 130, 119, 0.8),
+    rgba(255, 162, 152, 0.6)
   );
+  box-shadow: 0 0 20px #0000002e;
   @media (max-width: 992px) {
     padding-inline: 1rem;
   }

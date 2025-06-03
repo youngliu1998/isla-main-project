@@ -10,6 +10,8 @@ import useMobileDisplay from '../../hook/use-mobile-display.js'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Image from 'next/image'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import LoadingLottie from './_components/loading/lottie-loading.js'
+// import LoadingErrorLottie from '../_components/loading-error/lottie-error.js'
 
 // 簡單的篩選快取管理
 const FILTER_CACHE_KEY = 'product_filters_cache'
@@ -115,7 +117,6 @@ export default function ProductPage() {
     setFilters(initialFilters)
   }, [])
 
-
   const handleFilterChange = (partialUpdate) => {
     setFilters((prev) => {
       const updated = { ...prev, ...partialUpdate }
@@ -177,7 +178,11 @@ export default function ProductPage() {
     setIsMobilePanelOpen((prev) => !prev)
   }, [])
   if (!filters) {
-    return <div>載入篩選器中...</div>
+    return (
+      <div className="loading-container">
+        <LoadingLottie />
+      </div>
+    )
   }
 
   const ProductList = ({ products, fetchNextPage, hasNextPage }) => {
@@ -194,6 +199,14 @@ export default function ProductPage() {
             />
           </div>
           <p className="no-product-message">沒有符合條件的商品了</p>
+        </div>
+      )
+    }
+
+    if (productsLoading || !filters) {
+      return (
+        <div className="loading-container">
+          <LoadingLottie />
         </div>
       )
     }
