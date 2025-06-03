@@ -252,6 +252,19 @@ export default function EditCoursePage() {
               <div>{course.title}</div>
             )}
           </div>
+          <div>
+            <Label className="my-2">課程簡介：</Label>
+            {isEditMode ? (
+              <Textarea
+                name="detail"
+                value={course.detail}
+                onChange={handleChange}
+                rows={3}
+              />
+            ) : (
+              <p>{course.detail}</p>
+            )}
+          </div>
           <Label>分類：</Label>
           {isEditMode ? (
             <select
@@ -260,7 +273,7 @@ export default function EditCoursePage() {
               onChange={handleChange}
               className="w-full border rounded p-2"
             >
-              <option value="">請選擇分類</option>
+              <option value="">請選擇分類：</option>
               {categories.map((cat) => (
                 <option key={cat.id} value={cat.id}>
                   {cat.name}
@@ -295,19 +308,6 @@ export default function EditCoursePage() {
             </p>
           )}
 
-          <div>
-            <Label className="my-2">課程簡介：</Label>
-            {isEditMode ? (
-              <Textarea
-                name="detail"
-                value={course.detail}
-                onChange={handleChange}
-                rows={3}
-              />
-            ) : (
-              <p>{course.detail}</p>
-            )}
-          </div>
           <div>
             <Label className="my-2">課程定價：</Label>
             {isEditMode ? (

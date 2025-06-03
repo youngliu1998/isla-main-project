@@ -24,24 +24,31 @@ export default function LoginPage() {
   const loginPush = (isAuth) => {
     // 登入成功( isAuth != null )
     if (isAuth) {
-      console.log('flag isAuthLocal')
       // 取得登入前預先儲存的導向路徑（例如使用者原本想進入的頁面）
       const redirectPath = localStorage.getItem('redirectAfterLogin') || false
       // 檢查使用者是否在登入前點擊「立即購買」按鈕
       const pendingBuyNow = localStorage.getItem('pendingBuyNow') || false
+      localStorage.removeItem('pendingBuyNow') // 清除 pending 購買記錄
 
       // ✅【情境一】使用者登入前有點擊「立即購買」
       if (pendingBuyNow) {
+        // 進一步判斷購買的是「課程」還是「體驗」
+        const pendingType = localStorage.getItem('pendingBuyNowType')
+        localStorage.removeItem('pendingBuyNowType') // 同樣使用後清除
+
         toast.success('登入成功，將導回購買頁', {
           position: 'top-right',
           autoClose: 1000,
           hideProgressBar: false,
         })
-        console.log('flag buyNow')
-        // 清除 pending 購買記錄
-        localStorage.removeItem('pendingBuyNow')
-        // 導向該課程詳情頁，讓該頁 useEffect 中的購買邏輯自動處理
-        router.push(`/course/course-list/${pendingBuyNow}`)
+        // 🔁 根據類型導向對應的詳細頁
+        if (pendingType === 'experience') {
+          // 體驗頁：跳轉至 /course/experience/:id
+          router.push(`/course/experience/${pendingBuyNow}`)
+        } else {
+          // 課程頁（預設）：跳轉至 /course/course-list/:id
+          router.push(`/course/course-list/${pendingBuyNow}`)
+        }
         return
       }
 
@@ -54,6 +61,7 @@ export default function LoginPage() {
         })
         console.log('flag redirectPath')
         router.push(redirectPath)
+        return
       } else {
         toast.success('登入成功，將導回首頁', {
           position: 'top-right',
@@ -62,6 +70,7 @@ export default function LoginPage() {
         })
         // 若無特定導向頁面，預設導回首頁
         router.push('/')
+        return
       }
     } else {
       toast.error('登入失敗', {
