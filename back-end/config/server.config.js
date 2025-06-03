@@ -58,9 +58,9 @@ export const serverConfig = {
   },
   linePay: {
     development: {
-      channelId: '123456789',
-      channelSecret: 'xxxxxxxxxxxx',
-      confirmUrl: 'http://localhost:3000/line-pay',
+      channelId: '2007517570',
+      channelSecret: 'aa43887747592e8f1e9840e8c3cc0392',
+      confirmUrl: 'http://localhost:3000/cart/order-completed',
       cancelUrl: 'http://localhost:3000/line-pay/cancel',
     },
     production: {

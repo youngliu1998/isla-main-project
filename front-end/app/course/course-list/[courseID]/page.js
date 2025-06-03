@@ -2,7 +2,8 @@
 
 // ✅ Hook 匯入
 import { useAuth } from '@/hook/use-auth'
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useMemo } from 'react'
+
 import React from 'react'
 
 // ✅ 元件與樣式匯入
@@ -47,6 +48,26 @@ export default function CourseIDPage() {
   const introRef = useRef(null)
   const [isExpanded, setIsExpanded] = useState(false)
   const toggleRef = useRef(null)
+  const recommendedCourseIds = [1, 7, 8, 19]
+  const [highlightedCommentId, setHighlightedCommentId] = useState(null)
+  const [sortOption, setSortOption] = useState(1)
+
+  const sortedReviews = useMemo(() => {
+    const copy = [...reviewCard]
+    switch (sortOption) {
+      case 2:
+        return copy.sort((a, b) => b.star - a.star)
+      case 3:
+        return copy.sort((a, b) => a.star - b.star)
+      case 4:
+        return copy.sort((a, b) => new Date(b.created) - new Date(a.created))
+      case 5:
+        return copy.sort((a, b) => new Date(a.created) - new Date(b.created))
+      case 1:
+      default:
+        return copy.sort((a, b) => (b.is_helpful || 0) - (a.is_helpful || 0))
+    }
+  }, [reviewCard, sortOption])
 
   // 新增加入購物車函式
   const handleAddToCart = async () => {
@@ -88,6 +109,7 @@ export default function CourseIDPage() {
       toast.info('請先登入會員才能購買')
       localStorage.setItem('redirectAfterLogin', window.location.href)
       localStorage.setItem('pendingBuyNow', id) // ⭐ 新增這行：記錄課程 ID
+      localStorage.setItem('pendingBuyNowType', 'course')
       router.push('/member/login')
       return
     }
@@ -157,7 +179,14 @@ export default function CourseIDPage() {
     setIsEditModalOpen(true)
   }
 
-  const handleCommentUpdate = (id, newContent, newStar) => {
+  const handleCommentUpdate = (id, content, star) => {
+    setReviewCard((prev) =>
+      prev.map((v) => (v.comment_id === id ? { ...v, content, star } : v))
+    )
+    setHighlightedCommentId(id)
+    setTimeout(() => setHighlightedCommentId(null), 3000)
+  }
+  const handleUpdate = (id, newContent, newStar) => {
     setReviewCard((prev) =>
       prev.map((v) =>
         v.comment_id === id ? { ...v, content: newContent, star: newStar } : v
@@ -784,6 +813,8 @@ export default function CourseIDPage() {
                             count: newReview.is_helpful || 0,
                           },
                         }))
+                        setHighlightedCommentId(newReview.comment_id) // ✅ 強調這則留言
+                        setTimeout(() => setHighlightedCommentId(null), 3000) // 3 秒後移除高亮
                       }}
                     />
                   ) : (
@@ -822,7 +853,7 @@ export default function CourseIDPage() {
                         content={v.content}
                         ava_url={v.ava_url}
                         comment_id={v.comment_id}
-                        member_id={v.member_id} // ✅ 加上這個
+                        member_id={v.member_id}
                         likeData={
                           likesMap[v.comment_id] || { liked: false, count: 0 }
                         }
@@ -832,6 +863,7 @@ export default function CourseIDPage() {
                           handleEditComment(id) // ✅ 這行才會把該留言設定為可編輯並打開 Modal
                         }}
                         onDelete={handleDeleteComment}
+                        highlighted={highlightedCommentId === v.comment_id} // ✅ 傳入是否高亮
                       />
                     ))}
                 </div>
@@ -850,15 +882,17 @@ export default function CourseIDPage() {
                 <ReviewModal
                   isOpen={isModalOpen}
                   onClose={closeModal}
-                  reviewCard={reviewCard}
+                  reviewCard={sortedReviews}
                   likesMap={likesMap}
                   toggleLike={toggleLike}
                   onAfterDelete={onAfterDelete}
+                  sortOption={sortOption}
+                  setSortOption={setSortOption}
                   onEdit={(comment) => {
                     setEditingComment(comment)
                     setIsEditModalOpen(true)
                   }}
-                  onUpdate={handleCommentUpdate} // ✅ 更新狀態至畫面
+                  onUpdate={handleCommentUpdate}
                 />
               </div>
               <div className="col-lg-3 d-none d-lg-block">
@@ -981,25 +1015,22 @@ export default function CourseIDPage() {
         </div>
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-lg-4 g-4 p-0 m-0 my-4">
           {courseCard
-            .filter((v) => v.status != 0 && v.status != '0')
-            .slice(0, 4)
-            .map(function (v, i) {
-              return (
-                <CourseCard
-                  key={v.id}
-                  id={v.id}
-                  picture={'/images/course/bannerall/' + v.picture}
-                  tag={v.tag}
-                  title={v.title}
-                  teacher={v.teacher}
-                  student={v.student}
-                  price={v.price}
-                  discount={v.discount}
-                  avg_star={v.avg_star}
-                  comment_count={v.comment_count}
-                />
-              )
-            })}
+            .filter((v) => recommendedCourseIds.includes(v.id))
+            .map((v) => (
+              <CourseCard
+                key={v.id}
+                id={v.id}
+                picture={`/images/course/bannerall/${v.picture}`}
+                tag={v.tag}
+                title={v.title}
+                teacher={v.teacher}
+                student={v.student}
+                price={v.price}
+                discount={v.discount}
+                avg_star={v.avg_star}
+                comment_count={v.comment_count}
+              />
+            ))}
         </div>
       </section>
       {/* 留言編輯 Modal */}

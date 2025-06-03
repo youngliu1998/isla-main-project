@@ -1,5 +1,4 @@
 'use client'
-import styles from './empty-cart.module.scss'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 
@@ -11,7 +10,7 @@ export default function EmptyCart() {
       <Image
         src="/images/cart/empty-cart06.png"
         alt="空購物車"
-        width={580}
+        width={550}
         height={620}
       />
       <h5 className="text-maintext mb-3">
@@ -19,7 +18,7 @@ export default function EmptyCart() {
       </h5>
       <button
         className="btn btn-secondary"
-        onClick={() => router.push('/products')}
+        onClick={() => router.push('/product')}
       >
         去逛逛商品吧
       </button>

@@ -276,7 +276,7 @@ export default function page({ params }) {
                     type="button"
                     onClick={handleAddToCart}
                   >
-                    加入購物袋
+                    加入購物車
                   </button>{' '}
                 </div>
               </div>

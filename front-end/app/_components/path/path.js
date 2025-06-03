@@ -8,13 +8,10 @@ import './_style/path.css'
 
 export default function Path() {
   const pathname = usePathname()
-  const router = useRouter()
+  // const router = useRouter()
   let pathArr = []
-  if (router === '/') {
-    pathArr = ['/']
-  } else {
-    pathArr = pathname.split('/')
-  }
+
+  pathArr = pathname.split('/')
 
   const getPath = (thisPath) => {
     let address = ''
@@ -26,6 +23,27 @@ export default function Path() {
     // route
     // r.push(address)
   }
+  function convertToChinese(thisPath) {
+    switch (thisPath) {
+      case '':
+        return '首頁'
+
+      case 'member':
+        return '會員中心'
+    
+      case 'coupon':
+        return '優惠券專區'
+
+      case 'course':
+        return '美妝教室'
+
+      case 'product':
+        return '所有產品'
+
+      default:
+        return ''
+    }
+  }
   if (pathname === '/' || pathname.includes('/forum')) {
     return <></>
   }
@@ -36,7 +54,7 @@ export default function Path() {
           return (
             <div key={i} className="d-flex gap-1 ps-1">
               <Link href={getPath(path)} className="path-link">
-                {path !== '' ? path : 'home'}
+                {convertToChinese(path)}
               </Link>
               {i < pathArr.length - 1 && <span className="path-link">/</span>}
             </div>

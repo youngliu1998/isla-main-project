@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import './review-card.css'
 import LikeButton from '../like-button/like-button'
@@ -17,20 +17,26 @@ export default function ReviewCard({
   comment_id = 0,
   likeData = {},
   onToggleLike = () => {},
-  onEdit = () => {}, // ✅ 加上這行
-  onDelete = () => {}, // ✅ 加上這行
+  onEdit = () => {},
+  onDelete = () => {},
+  highlighted = false,
 }) {
   const { user } = useAuth()
   const image = ava_url
     ? `http://localhost:3005/images/member/${ava_url}`
     : 'http://localhost:3005/images/member/default-avatar.jpg'
 
+  // ⭐ 新增：讓 star 和 content 可隨 props 更新
+  const [displayContent, setDisplayContent] = useState(content)
+  const [displayStar, setDisplayStar] = useState(star)
+
   const renderStars = (score) => {
     const ratingNum = Number(score)
     const fullStars = Math.floor(ratingNum)
     const halfStar = ratingNum % 1 >= 0.5
     const emptyStars = 5 - fullStars - (halfStar ? 1 : 0)
-    console.log(member_id)
+    console.log('目前登入的 user:', user)
+    console.log('這則留言的 member_id:', member_id)
     return (
       <>
         {[...Array(fullStars)].map((_, i) => (
@@ -45,7 +51,9 @@ export default function ReviewCard({
   }
 
   return (
-    <div className="review-card box5-comment-p">
+    <div
+      className={`review-card box5-comment-p ${highlighted ? 'highlight-border' : ''}`}
+    >
       <div className="card-body">
         <div className="d-flex justify-content-between align-items-center">
           <div className="d-flex align-items-center">
@@ -59,7 +67,7 @@ export default function ReviewCard({
               />
             </div>
             <div>
-              <h5 className="card-title">{member_name}</h5>
+              <h5 className="card-title ">{member_name}</h5>
               <div>{created.split(' ')[0]}</div>
             </div>
           </div>

@@ -1,0 +1,376 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { useParams, useRouter } from 'next/navigation'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+import DOMPurify from 'dompurify'
+import { Badge } from '@/components/ui/badge'
+import dynamic from 'next/dynamic'
+import '../../_components/tiptap-editor/tiptap-editor'
+import CourseEditor from '../../_components/course-editor/course-editor'
+import '@/app/courses/_components/course-prose.scss'
+
+const theme = {
+  paragraph: 'mb-2',
+  heading: {
+    h1: 'text-2xl font-bold',
+    h2: 'text-xl font-semibold',
+    h3: 'text-lg font-medium',
+  },
+}
+
+export default function EditCoursePage() {
+  const { id } = useParams()
+  const router = useRouter()
+  const [course, setCourse] = useState(null)
+  const [initialCourse, setInitialCourse] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [isEditMode, setIsEditMode] = useState(false)
+  const [categories, setCategories] = useState([])
+  const [teachers, setTeachers] = useState([])
+
+  useEffect(() => {
+    async function fetchAll() {
+      try {
+        const [courseRes, categoryRes, teacherRes] = await Promise.all([
+          fetch(
+            `http://localhost:3005/api/courses-manage/course-list/course/${id}`
+          ),
+          fetch(
+            `http://localhost:3005/api/courses-manage/course-list/categories`
+          ),
+          fetch(
+            `http://localhost:3005/api/courses-manage/course-list/teachers`
+          ),
+        ])
+
+        const teacherJson = await teacherRes.json()
+        if (teacherJson.status === 'success') setTeachers(teacherJson.data)
+
+        if (!courseRes.ok || !categoryRes.ok) {
+          throw new Error('API 錯誤，請檢查路由或伺服器回應')
+        }
+
+        const courseJson = await courseRes.json()
+        const categoryJson = await categoryRes.json()
+
+        if (courseJson.status === 'success') {
+          const cleaned = {
+            ...courseJson.data,
+            title: courseJson.data.title || '',
+            price: courseJson.data.price || '',
+            discount: courseJson.data.discount || '',
+            detail: courseJson.data.detail || '',
+            content: courseJson.data.content || '',
+            course_chapter: courseJson.data.course_chapter || '',
+            video_length: courseJson.data.video_length || '',
+            categories_id: courseJson.data.categories_id || '',
+            teacher_name: courseJson.data.teacher_name || '',
+            teacher_id: courseJson.data.teacher_id || '',
+          }
+          setCourse(cleaned)
+          setInitialCourse(cleaned)
+        }
+
+        if (categoryJson.status === 'success') setCategories(categoryJson.data)
+      } catch (err) {
+        console.error('載入資料失敗：', err)
+        alert('資料載入失敗，請檢查 API 是否正常')
+      }
+    }
+
+    fetchAll()
+  }, [id])
+
+  const handleFileUpload = async (e, type) => {
+    const file = e.target.files[0]
+    if (!file) return
+
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('courseId', id)
+
+    try {
+      const res = await fetch(
+        `http://localhost:3005/api/courses-manage/course-list/upload?courseId=${id}`,
+        {
+          method: 'POST',
+          body: formData,
+        }
+      )
+
+      const text = await res.text()
+      let result = {}
+      try {
+        result = JSON.parse(text)
+      } catch (err) {
+        console.error('不是 JSON，回傳內容是：', text)
+        throw new Error('圖片上傳格式錯誤')
+      }
+
+      if (result.status === 'success') {
+        setCourse((prev) => ({
+          ...prev,
+          [type]: result.url.split('/').pop(), // 只存檔名
+        }))
+      } else {
+        alert('上傳失敗：' + result.message)
+      }
+    } catch (err) {
+      console.error('上傳錯誤:', err)
+      alert('伺服器錯誤，請稍後再試')
+    }
+
+    e.target.value = ''
+  }
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setCourse((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const getChangedFields = () => {
+    if (!initialCourse || !course) return {}
+    const changed = {}
+
+    for (const key in course) {
+      if (course[key] !== initialCourse[key]) {
+        changed[key] = course[key]
+      }
+    }
+
+    // 🔴 移除不能寫入 DB 的欄位
+    delete changed.teacher_name
+
+    return changed
+  }
+
+  const handleSubmit = async () => {
+    const changedFields = getChangedFields()
+    if (Object.keys(changedFields).length === 0) {
+      alert('沒有任何欄位需要更新')
+      return
+    }
+    setLoading(true)
+    try {
+      const res = await fetch(
+        `http://localhost:3005/api/courses-manage/course-list/course/${id}`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(changedFields),
+        }
+      )
+      const json = await res.json()
+      if (json.status === 'success') {
+        alert('更新成功')
+        router.push('/courses')
+      } else {
+        alert(json.message || '更新失敗')
+      }
+    } catch (err) {
+      console.error(err)
+      alert('伺服器錯誤')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (!course) return <div className="p-6">載入中...</div>
+
+  return (
+    <div className="max-w-6xl mx-auto p-6">
+      <h1 className="text-2xl font-bold mb-6">
+        {isEditMode ? '編輯課程' : `課程詳情：${course.title}`}
+      </h1>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="col-span-1 space-y-4">
+          <div>
+            <Label className="my-2">課程縮圖：</Label>
+            {isEditMode ? (
+              <>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleFileUpload(e, 'picture')}
+                />
+                <img
+                  src={`http://localhost:3005/images/course/bannerall/${course.picture}`}
+                  alt="預覽圖片"
+                  className="w-full rounded border mt-2"
+                />
+              </>
+            ) : (
+              <img
+                src={`http://localhost:3005/images/course/bannerall/${course.picture}`}
+                alt="課程圖片"
+                className="w-full rounded border"
+              />
+            )}
+          </div>
+
+          <div>
+            <Label className="my-2">介紹影片：</Label>
+            {isEditMode ? (
+              <>
+                <input
+                  type="file"
+                  accept="video/*"
+                  onChange={(e) => handleFileUpload(e, 'banner_video')}
+                />
+                {course.banner_video?.endsWith('.mp4') && (
+                  <video
+                    className="w-full mt-2"
+                    controls
+                    src={`/images/course/bannerall/${course.banner_video}`}
+                  />
+                )}
+              </>
+            ) : (
+              course.banner_video?.endsWith('.mp4') && (
+                <video
+                  className="w-full"
+                  controls
+                  src={`/images/course/bannerall/${course.banner_video}`}
+                />
+              )
+            )}
+          </div>
+
+          <div>
+            <Label className="my-2">課程名稱：</Label>
+            {isEditMode ? (
+              <Input
+                name="title"
+                value={course.title}
+                onChange={handleChange}
+              />
+            ) : (
+              <div>{course.title}</div>
+            )}
+          </div>
+          <div>
+            <Label className="my-2">課程簡介：</Label>
+            {isEditMode ? (
+              <Textarea
+                name="detail"
+                value={course.detail}
+                onChange={handleChange}
+                rows={3}
+              />
+            ) : (
+              <p>{course.detail}</p>
+            )}
+          </div>
+          <Label>分類：</Label>
+          {isEditMode ? (
+            <select
+              name="categories_id"
+              value={course.categories_id}
+              onChange={handleChange}
+              className="w-full border rounded p-2"
+            >
+              <option value="">請選擇分類：</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <p>
+              {categories.find((cat) => cat.id === course.categories_id)
+                ?.name || '—'}
+            </p>
+          )}
+
+          <Label>講師：</Label>
+          {isEditMode ? (
+            <select
+              name="teacher_id"
+              value={course.teacher_id}
+              onChange={handleChange}
+              className="w-full border rounded p-2"
+            >
+              <option value="">請選擇講師</option>
+              {teachers.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.name}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <p>
+              {teachers.find((t) => t.id === course.teacher_id)?.name || '—'}
+            </p>
+          )}
+
+          <div>
+            <Label className="my-2">課程定價：</Label>
+            {isEditMode ? (
+              <Input
+                name="price"
+                type="number"
+                value={course.price}
+                onChange={handleChange}
+              />
+            ) : (
+              <div>NT$ {Number(course.price).toLocaleString()}</div>
+            )}
+          </div>
+          <div>
+            <Label className="my-2">課程售價：</Label>
+            {isEditMode ? (
+              <Input
+                name="discount"
+                type="number"
+                value={course.discount}
+                onChange={handleChange}
+              />
+            ) : (
+              <div>NT$ {Number(course.discount).toLocaleString()}</div>
+            )}
+          </div>
+        </div>
+
+        <div className="md:col-span-2">
+          <Label className="my-4">課程內容：</Label>
+          {isEditMode ? (
+            <CourseEditor
+              value={course.content}
+              courseId={course.id}
+              onChange={(html) => {
+                setCourse((prev) => ({ ...prev, content: html }))
+              }}
+            />
+          ) : (
+            <div
+              className="prose max-w-none"
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(course.content || '無內容'),
+              }}
+            />
+          )}
+        </div>
+      </div>
+
+      <div className="flex justify-end gap-3 pt-6">
+        {isEditMode ? (
+          <>
+            <Button variant="outline" onClick={() => setIsEditMode(false)}>
+              取消
+            </Button>
+            <Button onClick={handleSubmit} disabled={loading}>
+              {loading ? '更新中...' : '完成編輯'}
+            </Button>
+          </>
+        ) : (
+          <Button onClick={() => setIsEditMode(true)}>編輯</Button>
+        )}
+      </div>
+    </div>
+  )
+}
