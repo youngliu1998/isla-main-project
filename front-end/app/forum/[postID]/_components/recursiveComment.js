@@ -12,6 +12,7 @@ import { UseDirectToLogin } from '../../_hooks/useDirectToLogin'
 
 export default function RecursiveComment({
   commentID = '',
+  userId = '',
   userImg = '',
   userNick = '',
   content = '',
@@ -45,15 +46,15 @@ export default function RecursiveComment({
 
   return (
     <>
-      <div className="comment-content d-flex gap10">
-        <Link href="/" className="user-avatar">
+      <div className="comment-content d-flex gap-1">
+        <Link href={`/forum/profile/${userId}`} className="user-avatar py-1">
           <ComponentsAvatar classWidth="32" src={userImg} alt={userNick} />
         </Link>
-        <div className="comment-main d-flex flex-column flex-grow-1 gap-1">
+        <div className="comment-main d-flex flex-column flex-grow-1 gap-1 px-3 py-2 bg-gray-article rounded-4">
           <div className="comment-header d-flex align-items-start">
             <div className="author-account me-auto">
               <Link
-                href="/"
+                href={`/forum/profile/${userId}`}
                 className="d-flex align-items-center gap-1 text-decoration-none fw-medium main-text-color"
               >
                 {userNick}
@@ -111,6 +112,7 @@ export default function RecursiveComment({
           {/* comment-card d-flex flex-column gap-3 py-3 bottom-stroke */}
           <RecursiveComment
             commentID={subComment.id}
+            userId={subComment.user_id}
             userImg={subComment.user_img}
             userNick={subComment.nick}
             content={subComment.content}

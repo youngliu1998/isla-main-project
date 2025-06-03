@@ -26,7 +26,7 @@ export default function ChatLayout({ children }) {
       <main className="main col col-10 col-xl-10 d-flex flex-column align-items-center mx-0">
         <div className="chat-container row w-100 pb-3 h-100">
           <div
-            className={`chat-list col col-12 col-md-5 bg-pure-white rounded-start-3 p-0 shadow-forum overflow-hidden position-relative main-text-color bg-pure-white ${isInRoom ? 'd-none d-md-block' : 'd-block'}`}
+            className={`chat-list col col-12 col-md-5 bg-pure-white rounded-3 p-0 shadow-forum overflow-hidden position-relative main-text-color bg-pure-white ${isInRoom ? 'd-none d-md-block' : 'd-block'}`}
           >
             <div className="chat-list-header d-flex px-3 py-2 fs24 fw-bold position-absolute bg-pure-white rounded-top-3 shadow-sm z-1">
               <span className="me-auto">我的訊息</span>

@@ -30,6 +30,7 @@
   --badge-color: #f4b12b;
   --border-color-forum: #48484821;
   /* overscroll-behavior: none; */
+
   .button-clear {
     border: 0px solid #ffffff00;
     background-color: transparent;
@@ -98,8 +99,13 @@
 .bg-hover {
   background-color: var(--hover-gray);
 }
-.bg-hovering-gray:hover {
-  background-color: var(--hover-light-gray);
+.bg-hovering-gray {
+  &:hover {
+    background-color: var(--hover-light-gray);
+  }
+  &:active {
+    background-color: var(--hover-gray);
+  }
 }
 .bg-light-hover {
   background-color: var(--hover-light-gray);
@@ -194,9 +200,6 @@
   }
   &.btn-follow {
     min-width: 75px;
-    &:hover {
-      background-color: var(--hover-gray-dark);
-    }
   }
 }
 .button-bounce {
@@ -273,6 +276,36 @@
       border: 0px solid #fff;
       outline: 0px solid #fff;
       box-shadow: none;
+    }
+  }
+}
+.modal-confirm {
+  z-index: 1060 !important;
+  .modal-content {
+    background-color: white;
+  }
+  .modal-title {
+    color: var(--main-text);
+  }
+  .modal-body {
+    color: var(--main-text);
+  }
+  .btn-close {
+    &:focus-visible {
+      border: 0px solid #fff;
+      outline: 0px solid #fff;
+      box-shadow: none;
+    }
+    &:focus {
+      border: 0px solid #fff;
+      outline: 0px solid #fff;
+      box-shadow: none;
+    }
+  }
+  .btn-submit {
+    background-color: var(--sub-color);
+    &:hover {
+      background-color: var(--main-color);
     }
   }
 }
@@ -361,8 +394,14 @@
   }
 }
 
+.confirm-modal-wrapper {
+  width: 500px;
+  height: 200px;
+}
+
 /* main */
 .posts-section {
+  max-width: 800px;
   height: calc(100vh - 96px);
 }
 .tabs {
@@ -376,8 +415,8 @@
 .dropdown-toggle {
   background-color: transparent;
 }
+
 .posts {
-  max-width: 800px;
   padding-bottom: 24px;
   .updated-at {
     letter-spacing: 0.5;

@@ -73,7 +73,7 @@ export default function ChatRoom() {
   }
   return (
     <>
-      <div className="chat-main d-flex flex-column h-100 bg-pure-white rounded-end-3 bg-pure-white shadow-forum">
+      <div className="chat-main d-flex flex-column ms-3 h-100 bg-pure-white rounded-3 bg-pure-white shadow-forum">
         <div className="chat-main-header bg-pure-white d-flex gap-2 px-3 py-2 align-items-center shadow-sm fs20 fw-bold rounded-top-3">
           <button
             className="chat-main-return d-block d-md-none rounded-circle border-0 p-2"
