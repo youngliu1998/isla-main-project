@@ -30,7 +30,7 @@ import { useRouter } from 'next/navigation'
 import HomeAnimationSplash from './home-animation/splash'
 
 export default function Home() {
-  const [showMain, setShowMain] = useState(true)
+  const [showMain, setShowMain] = useState(false)
   const images = [
     'http://localhost:3005/images/ad/isla-ad.001.jpeg',
     'http://localhost:3005/images/ad/isla-ad.002.jpeg',
