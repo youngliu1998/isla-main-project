@@ -331,3 +331,11 @@ $btn-primary-border-color: #4f46e5; // 自定義 primary 邊框色
     opacity: 1;
   }
 }
+
+.loading-container {
+  display: flex;
+  height: 80vh;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
