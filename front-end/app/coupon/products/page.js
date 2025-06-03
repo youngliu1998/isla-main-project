@@ -14,10 +14,10 @@ import Componentstab from '../_components/tab/tab'
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/hook/use-auth'
 
-// fetcher 給 SWR 用
+// SWR fetcher：用於抓後端資料
 const fetcher = (...args) => fetch(...args).then((res) => res.json())
 
-// type_id 對應樣式
+// type_id -> 樣式對應
 const typeIdToStyle = {
   1: 'button-orange',
   2: 'button-purple',
@@ -26,40 +26,61 @@ const typeIdToStyle = {
 const getCouponStyle = (typeId) => typeIdToStyle[typeId] || 'button-all'
 
 export default function CouponPage() {
-  // SWR 取得資料
+  //  使用者資料 & 取得優惠券 API 路徑
   const { user } = useAuth()
   const url = user
     ? `http://localhost:3005/api/coupon/products?user_id=${user.id}`
     : null
-  const { data, mutate, error } = useSWR(url, fetcher)
 
-  // 手機板的 nav 切換
-  const [tab, setTab] = useState(1)
-  const handleRefresh = () => {
-    mutate() // 重新 fetch
+  //  取得優惠券資料
+  const { data, error } = useSWR(url, fetcher)
+
+  // 預防 TDZ 錯誤：先宣告 coupons
+  const coupons = Array.isArray(data?.data?.coupons) ? data.data.coupons : []
+
+  //  localCoupons 控制畫面資料（避免領取後重抓整包資料）
+  const [localCoupons, setLocalCoupons] = useState([])
+
+  // 初始化 localCoupons（當遠端資料更新時）
+  useEffect(() => {
+    if (coupons.length) {
+      setLocalCoupons(coupons)
+    }
+  }, [coupons])
+
+  // 單張更新優惠券狀態（避免重新 fetch）
+  const handleClaimSuccess = (couponId) => {
+    setLocalCoupons((prev) =>
+      prev.map((c) =>
+        c.id === couponId
+          ? {
+              ...c,
+              claimed: new Date().toISOString(),
+              state_id: 1,
+            }
+          : c
+      )
+    )
   }
 
-  // 是否為手機版（768px 以下）
+  // 手機版 tab 切換（1 = 商品、2 = 課程）
+  const [tab, setTab] = useState(1)
   const [isMobile, setIsMobile] = useState(false)
 
-  // 監聽視窗大小變化，切換為桌機時自動重設為商品 tab
+  // 監聽畫面大小以切換手機/桌機介面
   useEffect(() => {
     const handleResize = () => {
       const mobile = window.innerWidth < 768
       setIsMobile(mobile)
-
-      // 桌機版一律回到商品
-      if (!mobile) {
-        setTab(1)
-      }
+      if (!mobile) setTab(1)
     }
 
-    handleResize() // 初始化判斷一次
+    handleResize()
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  // 使用 hook 管理篩選狀態
+  //  篩選相關 hook（優惠券類型、品牌、分類等）
   const { currentType, setCurrentType } = useCouponFilter(' ')
   const {
     showClaimed,
@@ -70,7 +91,7 @@ export default function CouponPage() {
     setProductCategory,
   } = useCouponFilter()
 
-  // （name -> id）
+  //  品牌對應名稱轉換
   const brandMap = {
     1: 'Unleashia',
     2: 'Cosnori',
@@ -83,7 +104,7 @@ export default function CouponPage() {
     Object.entries(brandMap).map(([id, name]) => [name, Number(id)])
   )
 
-  // nav li
+  //  分類選單
   const couponTypes = [
     { label: '全部', value: ' ' },
     { label: '滿額券', value: 1 },
@@ -91,7 +112,7 @@ export default function CouponPage() {
     { label: '免運券', value: 3 },
   ]
 
-  // 各分頁顯示狀態
+  //  每個類型最多顯示幾張（搭配載入更多）
   const [couponCountMap, setCouponCountMap] = useState({
     ' ': 10,
     1: 10,
@@ -100,19 +121,15 @@ export default function CouponPage() {
   })
   const currentCount = couponCountMap[currentType] || 10
 
-  // 判斷狀態
+  //  狀態標記（載入中 / 錯誤）
   const isLoading = !data
   const isError = error || data?.status === 'false'
 
-  // 取得原始資料陣列
-  const coupons = Array.isArray(data?.data?.coupons) ? data.data.coupons : []
-
-  // 以過期的不顯示
+  //  篩選 + 排序
   const now = dayjs()
   const shouldExcludeExpired = !showClaimed
 
-  // 篩選 + 排序
-  const filteredCoupons = coupons
+  const filteredCoupons = localCoupons
     .filter((coupon) => {
       const typeMatch = currentType === ' ' || coupon.type_id === currentType
       const claimedMatch = showClaimed ? coupon.claimed : true
@@ -120,7 +137,6 @@ export default function CouponPage() {
         !currentBrand || coupon.brand_id === nameToId[currentBrand]
       const categoryMatch =
         !productCategory || coupon.category_name === productCategory
-
       const validTo = dayjs(coupon.valid_to)
       const isExpired = validTo.isBefore(now.startOf('day'))
 
@@ -129,7 +145,7 @@ export default function CouponPage() {
         claimedMatch &&
         brandMatch &&
         categoryMatch &&
-        (shouldExcludeExpired ? !isExpired : true) // 排除過期
+        (shouldExcludeExpired ? !isExpired : true)
       )
     })
     .sort((a, b) => {
@@ -139,31 +155,23 @@ export default function CouponPage() {
         'button-purple': 2,
         'button-blue': 3,
       }
-
       const aStyle = getCouponStyle(a.type_id)
       const bStyle = getCouponStyle(b.type_id)
-
-      const aPriority = stylePriority[aStyle] ?? 99
-      const bPriority = stylePriority[bStyle] ?? 99
-
-      return aPriority - bPriority
+      return (stylePriority[aStyle] ?? 99) - (stylePriority[bStyle] ?? 99)
     })
 
-  // 根據 tab 篩選商品 or 課程
+  //  依 tab 過濾商品 or 課程
   const tabFilteredCoupons = filteredCoupons.filter(
     (coupon) => parseInt(coupon.area) === tab
   )
 
-  // 載入更多
+  //  顯示區塊
   const displayCoupon = tabFilteredCoupons.slice(0, currentCount)
-  // 是否顯示載入更多按鈕
   const moreBtn = currentCount < tabFilteredCoupons.length
-
-  // 判斷是否為空結果
   const isEmpty = !isLoading && !isError && tabFilteredCoupons.length === 0
   const emptyMsg = showClaimed ? '尚未有已領取的優惠券' : '尚未有優惠券'
 
-  // 點擊載入更多
+  //  點擊載入更多
   const handleLoadMore = () => {
     setCouponCountMap((prev) => ({
       ...prev,
@@ -171,10 +179,10 @@ export default function CouponPage() {
     }))
   }
 
-  // 未登入警告
+  //  未登入提醒 modal
   const [showLoginModal, setShowLoginModal] = useState(false)
 
-  // 切換手機 tab 時重新計數
+  //  tab 切換
   const handleTabChange = (newTab) => {
     setTab(newTab)
     setCouponCountMap((prev) => ({
@@ -186,6 +194,7 @@ export default function CouponPage() {
   return (
     <main className="px-md-5 px-3 pb-5 container">
       <div className="row mt-sm-4 g-sm-5">
+        {/* 左側篩選區 */}
         <AsideProduct
           currentBrand={currentBrand}
           setCurrentBrand={setCurrentBrand}
@@ -193,9 +202,11 @@ export default function CouponPage() {
           setProductCategory={setProductCategory}
         />
 
+        {/* 主內容區 */}
         <div className="col-lg-9 col-md-8 col-12 mt-0">
           <CouponHeader type="product" />
-          {/* 只在手機版顯示 tab */}
+
+          {/* 手機版：上下切換 tab */}
           {isMobile && (
             <Componentstab
               cates={['商品', '課程']}
@@ -203,6 +214,7 @@ export default function CouponPage() {
             />
           )}
 
+          {/* 篩選分類選單 + 已領取開關 */}
           <PcNav
             options={couponTypes}
             currentValue={currentType}
@@ -212,6 +224,7 @@ export default function CouponPage() {
             onToggleSwitch={() => setShowClaimed((prev) => !prev)}
           />
 
+          {/* 狀態顯示 */}
           <DataStatus
             isLoading={isLoading}
             isError={isError}
@@ -220,13 +233,14 @@ export default function CouponPage() {
             errorMessage="伺服器忙線中，請稍後再試"
           />
 
+          {/* 優惠券清單 + 載入更多按鈕 */}
           {!isLoading && !isError && (
             <>
               <CouponList
                 coupons={displayCoupon}
                 getCouponStyle={getCouponStyle}
                 isLogin={() => setShowLoginModal(true)}
-                handleRefresh={handleRefresh}
+                handleClaimSuccess={handleClaimSuccess}
               />
               <LoadMoreButton visible={moreBtn} onClick={handleLoadMore} />
             </>
@@ -234,6 +248,7 @@ export default function CouponPage() {
         </div>
       </div>
 
+      {/* 登入提示 Modal */}
       <LoginModal
         show={showLoginModal}
         onClose={() => setShowLoginModal(false)}

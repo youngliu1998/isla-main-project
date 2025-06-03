@@ -38,7 +38,7 @@ export default function CouponCard({
   state_id = '',
   type_id = '',
   isLogin = () => {},
-  handleRefresh = () => {},
+  handleClaimSuccess = () => {},
 }) {
   const [get, setGet] = useState(claimed_at ? true : false)
   const [loading, setLoading] = useState(false)
@@ -51,7 +51,8 @@ export default function CouponCard({
   const isClaimed = get || state_id === 1 || state_id === 4
 
   const alreadyGet = async () => {
-    console.log('alredyGet!!')
+    // console.log('alredyGet!!')
+    // console.log('領取 coupon_id:', coupon_id)
     if (get || loading) return
     if (!user_id) {
       isLogin()
@@ -77,6 +78,7 @@ export default function CouponCard({
       if (res.ok) {
         setGet(true)
         confetti({ particleCount: 60, spread: 70, origin: { y: 0.7 } })
+        handleClaimSuccess?.()
       } else {
         alert(result.message || '領取失敗，請稍後再試')
       }
@@ -108,7 +110,7 @@ export default function CouponCard({
   const goUrl =
     area === 2
       ? `/course?course_categories_id=${course_categories_id}`
-      : `/product/list?brandIds=${brand_id}&categoryIds=${categories}`
+      : `/product?brandIds=${brand_id}&categoryIds=${categories}`
   const isUsed = state_id === 2
   const isExpired = state_id === 3
 
@@ -161,7 +163,7 @@ export default function CouponCard({
             className={`d-flex align-items-center flex-shrink-0 ${couponstyle}`}
             onClick={async () => {
               await alreadyGet()
-              handleRefresh()
+              // handleRefresh()
             }}
             disabled={loading || isDisabled}
           >
