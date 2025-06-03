@@ -35,7 +35,7 @@ export const useAddCart = (token) => {
             },
           }
         )
-        toast.success("加入購物車成功")
+        // toast.success("加入購物車成功")
         return res.data
       } catch (error) {
         // toast.error("加入購物車失敗，請稍後再試")

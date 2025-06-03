@@ -11,6 +11,7 @@ export default function TheModal({
   btnsuc,
   btnclsOnclick,
   btnsucOnclick,
+  btnsucHref = '/',
 }) {
   return (
     <Modal show={show} onHide={onClose} centered>
@@ -23,7 +24,7 @@ export default function TheModal({
           {btncls}
         </button>
         <Link
-          href="/coupon/create"
+          href={btnsucHref}
           className="btn btn-primary"
           onClick={btnsucOnclick}
         >

@@ -7,6 +7,7 @@ import './review-modal.css'
 import { useAuth } from '@/hook/use-auth'
 import { toast } from 'react-toastify'
 import EditReviewModal from '../edit-review-modal/edit-review-modal'
+import CommentsCard from '../comments-card/comments-card'
 
 export default function ReviewModal({
   isOpen,
@@ -16,8 +17,12 @@ export default function ReviewModal({
   toggleLike = () => {},
   onAfterDelete = () => {},
   onUpdate = () => {},
+  onEdit = () => {},
+  sortOption = 1,
+  setSortOption = () => {},
+  highlightedId = null,
+  // highlightedCommentId = 0,
 }) {
-  const [sortOption, setSortOption] = useState(1)
   const { user } = useAuth()
   const token = user?.token || ''
   const [editingComment, setEditingComment] = useState(null)
@@ -84,23 +89,6 @@ export default function ReviewModal({
     )
   }
 
-  const sortedReviews = useMemo(() => {
-    const copy = [...reviewCard]
-    switch (sortOption) {
-      case 2:
-        return copy.sort((a, b) => b.star - a.star)
-      case 3:
-        return copy.sort((a, b) => a.star - b.star)
-      case 4:
-        return copy.sort((a, b) => new Date(b.created) - new Date(a.created))
-      case 5:
-        return copy.sort((a, b) => new Date(a.created) - new Date(b.created))
-      case 1:
-      default:
-        return copy.sort((a, b) => (b.is_helpful || 0) - (a.is_helpful || 0))
-    }
-  }, [reviewCard, sortOption])
-
   if (!isOpen) return null
 
   return (
@@ -146,7 +134,8 @@ export default function ReviewModal({
               )}
             </div>
 
-            {sortedReviews.map((v) => (
+            {/* ✅ 渲染 reviewCard（已排序） */}
+            {reviewCard.map((v) => (
               <ReviewCard
                 key={v.comment_id}
                 member_id={v.member_id}
@@ -158,7 +147,7 @@ export default function ReviewModal({
                 comment_id={v.comment_id}
                 likeData={likesMap[v.comment_id] || { liked: false, count: 0 }}
                 onToggleLike={toggleLike}
-                onEdit={() => setEditingComment(v)}
+                onEdit={() => handleEditComment(v)}
                 onDelete={() => handleDelete(v.comment_id)}
                 isEditing={editingComment?.comment_id === v.comment_id}
                 editingContent={editingComment?.content || ''}
@@ -166,9 +155,9 @@ export default function ReviewModal({
                 onEditChange={(field, value) => {
                   setEditingComment((prev) => ({ ...prev, [field]: value }))
                 }}
+                highlighted={v.comment_id === highlightedId}
                 onEditCancel={() => setEditingComment(null)}
                 onEditSave={async () => {
-                  const token = localStorage.getItem('jwtToken')
                   try {
                     const res = await fetch(
                       `http://localhost:3005/api/course/comments/${editingComment.comment_id}`,
@@ -219,6 +208,7 @@ export default function ReviewModal({
         onClose={() => setIsEditModalOpen(false)}
         comment={editingComment}
         onUpdate={handleCommentUpdate}
+        // highlightedId={highlightedCommentId}
       />
     </>
   )

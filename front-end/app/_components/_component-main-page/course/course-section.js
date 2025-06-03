@@ -12,6 +12,7 @@ export default function CourseSection(props) {
   const [experienceCard, setExperienceCard] = useState([]) // 體驗資料
   const [tabSwitch, setTabSwitch] = useState(1)
   // console.log('tabSwitch ', tabSwitch)
+  const recommendedCourseIds = [1, 7, 8, 19]
 
   useEffect(() => {
     async function getCourse() {
@@ -38,24 +39,26 @@ export default function CourseSection(props) {
         </div>
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-lg-4 g-4 p-0 m-0 mt-4">
           {tabSwitch === 1 &&
-            courseCard.slice(0, 4).map((v, i) => {
-              return (
-                <CourseCard
-                  key={i}
-                  id={v.id}
-                  picture={'/images/course/bannerall/' + v.picture}
-                  tag={v.tag}
-                  title={v.title}
-                  teacher_name={v.teacher_name}
-                  teacher={v.teacher}
-                  student={v.student}
-                  price={v.price}
-                  discount={v.discount}
-                  avg_star={v.avg_star}
-                  comment_count={v.comment_count}
-                />
-              )
-            })}
+            courseCard
+              .filter((v) => recommendedCourseIds.includes(v.id))
+              .map((v, i) => {
+                return (
+                  <CourseCard
+                    key={i}
+                    id={v.id}
+                    picture={'/images/course/bannerall/' + v.picture}
+                    tag={v.tag}
+                    title={v.title}
+                    teacher_name={v.teacher_name}
+                    teacher={v.teacher}
+                    student={v.student}
+                    price={v.price}
+                    discount={v.discount}
+                    avg_star={v.avg_star}
+                    comment_count={v.comment_count}
+                  />
+                )
+              })}
           {tabSwitch === 2 &&
             experienceCard.slice(0, 4).map((v, i) => {
               return (

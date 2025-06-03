@@ -12,7 +12,7 @@
   height: 100%;
   background: linear-gradient(rgba(0, 0, 0, 0.4) 80%);
   pointer-events: none; /* 不影響 hover / click */
-  pointer-events: none;
+  
 }
 .bread-crumbs {
   font-size: 15px;

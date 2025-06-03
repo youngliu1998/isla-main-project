@@ -83,7 +83,7 @@ export default function AddReviewForm({ courseID, onReviewAdded }) {
           course_id: courseID,
           star: star,
           content: content,
-          member_id: user.id,
+          
         }),
       })
 

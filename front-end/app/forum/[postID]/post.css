@@ -2,6 +2,9 @@
   max-width: 800px;
   /* padding: 32px; */
 }
+.post-detail-loading {
+  height: 100vh;
+}
 .post-img {
   max-width: 560px;
 }

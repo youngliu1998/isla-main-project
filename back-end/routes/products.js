@@ -4,7 +4,7 @@ const router = express.Router()
 import { getFilteredProducts } from '../services/product-controller.js'
 
 router.get('/', async (req, res) => {
-  console.log('Front Send Query :', req.query)
+  console.log('篩選參數:', req.query)
 
   try {
     const {

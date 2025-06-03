@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import InputPass from '../_component/input-pass'
+// ==== css ====
 import '../_component/_style.css/form.css'
 
 export default function PasswordPage() {

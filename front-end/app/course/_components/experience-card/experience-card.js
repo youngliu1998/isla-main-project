@@ -140,7 +140,7 @@ export default function ExperienceCard({
           </div>
           <div className="card-body">
             <button className="btn experience-tag mb-2">{tagLabel}</button>
-            <h5 className="card-title mb-2">{title}</h5>
+            <h5 className="card-title card-title-box mb-2">{title}</h5>
             <p className="card-teacher-course mb-2">
               <i className="bi bi-geo-alt me-1" />
               {city}

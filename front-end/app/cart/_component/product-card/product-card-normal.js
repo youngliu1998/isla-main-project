@@ -39,6 +39,7 @@ export default function ProductCardNormal({
               <Image
                 src={image}
                 className="img-fluid ms-3"
+                // style={{ border: '2px solid red', objectFit: 'cover' }}
                 width={100}
                 height={100}
                 alt="商品圖"
