@@ -1,0 +1,21 @@
+/* ==== 商品與文章共用 ==== */
+.header-search-block-lg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  /* position */
+  position: relative;
+  z-index: 1000;
+  /* width */
+  width: 380px;
+  max-height: 1000px;
+  /* background */
+  background-color: var(--white);
+  > div {
+    width: 100%;
+  }
+  input {
+    background-color: transparent;
+  }
+}

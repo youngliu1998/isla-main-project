@@ -1,0 +1,46 @@
+/* ==== 商品與文章共用 ==== */
+/* 大外框 */
+.header-search-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  /* position */
+  position: relative;
+  z-index: 1000;
+  /* width */
+  width: 380px;
+  max-height: 1000px;
+  /* background */
+  background-color: var(--white);
+  > div {
+    width: 100%;
+  }
+  input {
+    background-color: transparent;
+  }
+}
+/* 卡片列表 */
+.header-search-item-list {
+  /* padding-block: 8px; */
+  padding-inline: 16px;
+  max-height: calc(100vh - 198px);
+  /* background */
+  background-color: #ffffff;
+  /* postion */
+  position: absolute;
+  top: 110px;
+  left: 0;
+  z-index: 1000;
+  overflow: auto;
+}
+/* 卡片本體 */
+.header-search-item {
+  display: flex;
+  gap: 1rem;
+  background-color: #ececec;
+  width: 320px;
+  height: 80px;
+  padding: 0.5rem;
+  /* border: 1px solid #000; */
+}

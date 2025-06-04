@@ -115,6 +115,12 @@ header {
   justify-content: center;
   align-items: center;
 }
+/* search bar */
+.header-lg-search-bar-container {
+  position: absolute;
+  top: 80px;
+  right: 0;
+}
 /* ham-menu */
 .ham-menu {
   height: 30px;
