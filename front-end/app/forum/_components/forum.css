@@ -142,7 +142,7 @@
 } */
 .shadow-forum {
   /* box-shadow: 0 0 8px #5447340d; fb */
-  box-shadow: 0 0 12px 0 #0000000a;
+  box-shadow: 0 0 12px 0 #00000015;
 }
 
 /* font */
@@ -403,7 +403,7 @@
 }
 
 /* main */
-.posts-section {
+.maxWidth800 {
   max-width: 800px;
   height: calc(100vh - 96px);
 }

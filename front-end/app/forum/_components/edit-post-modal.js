@@ -6,6 +6,7 @@ import { useAuth } from '../../../hook/use-auth'
 import { useFilter } from '../_context/filterContext'
 import { useRouter } from 'next/navigation'
 import UseImg from '../_hooks/useImg'
+import GetPosts from '../_hooks/getPosts'
 // import '/bootstrap/dist/js/bootstrap.bundle.min.js' 無法直接引入
 
 export default function EditPostModal({
@@ -15,7 +16,7 @@ export default function EditPostModal({
   postTitle = '',
   postContent = '',
   isUpdated = false,
-  mutate = () => {},
+  // mutate = () => {},
 }) {
   const modalRef = useRef()
   const router = useRouter()
@@ -25,6 +26,8 @@ export default function EditPostModal({
   const userNick = user.nickname
 
   const { productCateItems, postCateItems } = useFilter()
+  const { mutate } = GetPosts('')
+
   useEffect(() => {
     titleRef.current.innerText = postTitle
     contentRef.current.innerHTML = postContent
@@ -41,7 +44,6 @@ export default function EditPostModal({
 
   // 提交表單
   const handleSubmit = async (e) => {
-    console.log('submit')
     e.preventDefault()
     const productCate = productCateRef.current.value
     const postCate = postCateRef.current.value
@@ -108,8 +110,8 @@ export default function EditPostModal({
     // )
     // m.hide()
     // console.log(m)
+    mutate()
     router.push('/forum?tab=2')
-    // mutate()
   }
   // 字數
   const [titleLength, setTitleLength] = useState(0)
@@ -119,7 +121,7 @@ export default function EditPostModal({
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
+      <form>
         <div
           className="modal fade"
           // id="editPostModal"
@@ -286,6 +288,8 @@ export default function EditPostModal({
                     // console.log({ isTitleValid, isContentValid })
                     setHasTitleTouched(false)
                     // FIXME modal剛出現 按按鈕時出現警示
+                    console.log('click')
+                    handleSubmit(e)
                   }}
                 >
                   發布

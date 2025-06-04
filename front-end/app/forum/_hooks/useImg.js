@@ -46,7 +46,7 @@ export default function UseImg() {
   // 圖片上傳
   function handleImgUpload(e, userID, contentRef, modalRef) {
     const files = Array.from(e.target.files || [])
-    console.log(files)
+    // console.log(files)
     // setImagesList((prev) => [...prev, ...files])
     const imageFD = new FormData()
     imageFD.append('userID', userID)

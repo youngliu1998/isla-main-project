@@ -11,12 +11,13 @@ import { useAuth } from '../../hook/use-auth'
 import { useFilter } from './_context/filterContext'
 import EditPostModal from './_components/edit-post-modal'
 import PostLoader from './_components/loader-post'
+import GetPosts from './_hooks/getPosts'
 // import dynamic from 'next/dynamic'
 // const PostLoader = dynamic(() => import('./_components/post-loader'), {
 //   ssr: false,
 // })
 
-const fetcher = (url) => fetch(url).then((res) => res.json())
+// const fetcher = (url) => fetch(url).then((res) => res.json())
 
 export default function ForumPage() {
   const router = useRouter()
@@ -60,42 +61,47 @@ export default function ForumPage() {
   }
 
   const params = useSearchParams()
-  const postsAPI = params
-    ? `http://localhost:3005/api/forum/posts/home?${params}`
-    : `http://localhost:3005/api/forum/posts/home`
-  const { data, isLoading, error, mutate } = useSWR(postsAPI, fetcher)
+  const { posts, showLoading, error, mutate } = GetPosts(params)
+  // console.log(params.toString())
 
-  // 新增 minimum loading 狀態
-  const [showLoading, setShowLoading] = useState(true)
-  useEffect(() => {
-    if (!isLoading) {
-      // 至少顯示 600ms
-      const timer = setTimeout(() => setShowLoading(false), 400)
-      return () => clearTimeout(timer)
-    } else {
-      setShowLoading(true)
-    }
-  }, [isLoading])
+  // const postsAPI = params
+  //   ? `http://localhost:3005/api/forum/posts/home?${params}`
+  //   : `http://localhost:3005/api/forum/posts/home`
 
-  // 整理posts內的liked_user_ids和saved_user_ids
-  let posts = data?.data
-  if (Array.isArray(posts)) {
-    posts = posts.map((post) => {
-      return {
-        ...post,
-        liked_user_ids: post.liked_user_ids
-          ? post.liked_user_ids.split(',').map(Number)
-          : [],
-        saved_user_ids: post.saved_user_ids
-          ? post.saved_user_ids.split(',').map(Number)
-          : [],
-      }
-    })
-  }
+  // const getPosts = GetPosts()
+  // const { data, isLoading, error, mutate } = useSWR(postsAPI, fetcher)
+
+  // // 新增 minimum loading 狀態
+  // const [showLoading, setShowLoading] = useState(true)
+  // useEffect(() => {
+  //   if (!isLoading) {
+  //     // 至少顯示 600ms
+  //     const timer = setTimeout(() => setShowLoading(false), 400)
+  //     return () => clearTimeout(timer)
+  //   } else {
+  //     setShowLoading(true)
+  //   }
+  // }, [isLoading])
+
+  // // 整理posts內的liked_user_ids和saved_user_ids
+  // let posts = data?.data
+  // if (Array.isArray(posts)) {
+  //   posts = posts.map((post) => {
+  //     return {
+  //       ...post,
+  //       liked_user_ids: post.liked_user_ids
+  //         ? post.liked_user_ids.split(',').map(Number)
+  //         : [],
+  //       saved_user_ids: post.saved_user_ids
+  //         ? post.saved_user_ids.split(',').map(Number)
+  //         : [],
+  //     }
+  //   })
+  // }
 
   return (
     <>
-      <main className="main posts-section col col-10 col-xl-8 d-flex flex-column align-items-center mx-0 px-0 position-relative overflow-hidden no-scroll-bar h-100">
+      <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center mx-0 px-0 position-relative overflow-hidden no-scroll-bar h-100">
         <div className="tabs d-flex position-absolute w-100 top-0 px-3">
           <Componentstab
             cates={['熱門', '最新']}
@@ -130,7 +136,7 @@ export default function ForumPage() {
             />
           </div>
         </div>
-        <div className="posts d-flex flex-column gap-3 pt-5 pb-5 px-3 mt-1 w-100 overflow-auto">
+        <div className="posts maxWidth800 d-flex flex-column gap-3 pt-5 pb-5 px-3 mt-1 w-100 overflow-auto">
           {/* <PostLoader /> */}
           {error
             ? '連線錯誤'
@@ -178,7 +184,15 @@ export default function ForumPage() {
           handleAsideSearchChange={handleAsideSearchChange}
         />
       </div>
-      <EditPostModal postTitle="" postContent="" isUpdated={false} />
+      {/* <EditPostModal
+        postID=""
+        productCate=""
+        postCate=""
+        postTitle=""
+        postContent=""
+        isUpdated={false}
+        mutate={mutate}
+      /> */}
     </>
   )
 }

@@ -116,7 +116,7 @@ export default function PostIDPage(props) {
   return (
     <>
       {/* <PostDetailLoader /> */}
-      <main className="main posts-section col col-10 col-xl-8 d-flex flex-column align-items-start px-0 h-100">
+      <main className="main col col-10 col-xl-8 d-flex flex-column align-items-start px-0 h-100">
         {error ? (
           <div className="fs24 d-flex flex-column align-items-center mx-auto mt-3 gap-2">
             <div>連線錯誤，試試重新整理</div>
@@ -143,7 +143,7 @@ export default function PostIDPage(props) {
             </Link>
           </div>
         ) : (
-          <div className="posts d-flex flex-column gap16 pb-0 w-100 px-3">
+          <div className="posts d-flex flex-column gap16 pb-0 w-100 px-3 maxWidth800">
             <div className="post d-flex flex-column gap-2 rounded-top-4 shadow-forum bg-pure-white pt-4 card-border position-relative">
               <div className="post-header d-flex  align-items-start mx-4">
                 <div className="post-title flex-grow-1 me-3 fs24 fw-medium">

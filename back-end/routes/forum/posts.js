@@ -162,6 +162,7 @@ router.post(
   '/upload-image',
   upload.fields([{ name: 'images', maxCount: 50 }]),
   async function (req, res) {
+    console.log(req)
     const files = req.files.images
     const filenames = files.map((f) => f.filename)
     console.log('req----' + filenames)
