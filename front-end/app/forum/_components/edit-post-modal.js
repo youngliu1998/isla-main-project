@@ -5,6 +5,7 @@ import ComponentsAuthorInfo from './author-info'
 import { useAuth } from '../../../hook/use-auth'
 import { useFilter } from '../_context/filterContext'
 import { useRouter } from 'next/navigation'
+import UseImg from '../_hooks/useImg'
 // import '/bootstrap/dist/js/bootstrap.bundle.min.js' 無法直接引入
 
 export default function EditPostModal({
@@ -18,8 +19,8 @@ export default function EditPostModal({
 }) {
   const modalRef = useRef()
   const router = useRouter()
-  const { user, isAuth } = useAuth() //NOTE
-  // console.log(user)
+  const { user, isAuth } = useAuth()
+  // const isAuth = user.id !== 0
   const userID = user.id
   const userUrl = user.ava_url
   const userNick = user.nickname
@@ -31,106 +32,14 @@ export default function EditPostModal({
     setTitleValid(true)
     setContentValid(true)
   }, [postTitle, postContent])
-  // 新增貼文
-  //FIXME 等待體驗 const [isLoading, setLoading] = useState()
-  // FIXME 為輸入的警告提示體驗
+
   const productCateRef = useRef()
   const postCateRef = useRef()
   const titleRef = useRef()
   const contentRef = useRef()
 
-  // 圖片上傳
-  const handleFilesChange = (e) => {
-    const files = Array.from(e.target.files || [])
-    // console.log(files)
-    // setImagesList((prev) => [...prev, ...files])
-    const imageFD = new FormData()
-    imageFD.append('userID', userID)
-    files.forEach((f) => {
-      imageFD.append('images', f)
-    })
+  const { handleImgUpload } = UseImg()
 
-    fetch('http://localhost:3005/api/forum/posts/upload-image', {
-      method: 'POST',
-      body: imageFD,
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error('上傳失敗')
-        return res.json() //FIXME 上傳成功的提示
-      })
-      .then((data) => {
-        // console.log(`上傳成功-應該是含url的物件: ${data.filenames}`)
-        const { filenames } = data
-        const filenamesToUrl = filenames.map(
-          (f) => `http://localhost:3005/images/forum/${f}`
-        )
-
-        files.forEach((f, i) => {
-          const objectUrl = URL.createObjectURL(f)
-          const url = filenamesToUrl[i]
-          // console.log('inner', filenamesToUrl)
-          // console.log(url)
-          insertImage(url)
-        })
-      })
-      .catch((err) => {
-        console.log(err) //FIXME 上傳失敗的提示
-      })
-
-    e.target.value = []
-  }
-  // 圖片預覽
-  const insertImage = (filename) => {
-    const select = window.getSelection()
-    let range
-    // 確認輸入區域在content內
-    if (
-      !select ||
-      select.rangeCount === 0 ||
-      !contentRef.current.contains(select.anchorNode)
-    ) {
-      if (!modalRef.current.hasAttribute('aria-hidden')) {
-        // contentRef.current.focus()
-      }
-      // contentRef.current.focus() //強制上傳位置為content區域
-      range = document.createRange()
-      range.selectNodeContents(contentRef.current)
-      range.collapse(false)
-    } else {
-      range = select.getRangeAt(0)
-    }
-    // // 確認是否為新的一行
-    // const isAtLineStart = (() => {
-    //   const preRange = range.cloneRange()
-    //   preRange.setStart(contentRef.current, 0)
-    //   const fragment = preRange.cloneContents()
-    //   return !fragment.textContent.trim() && fragment.childNodes.length === 0
-    // })()
-    // if (!isAtLineStart) {
-    //   const br = document.createElement('br')
-    //   range.insertNode(br)
-    //   range.setStartAfter(br)
-    //   range.collapse(true)
-    // }
-    // 新增圖片
-    const img = document.createElement('img')
-    const br = document.createElement('br')
-    img.setAttribute('class', 'd-block w-50')
-    // const br = document.createElement('br')
-    // img.src = objectUrl
-    img.src = filename
-    img.onload = () => {
-      URL.revokeObjectURL(filename)
-    }
-    range.insertNode(img)
-    range.setStartAfter(img)
-    range.insertNode(br)
-    // range.insertNode(br)
-    range.collapse(false)
-    select.removeAllRanges()
-    select.addRange(range)
-    // img src: blob:...3000/970f494f-bc90-4bd7-8919-93a2af43af7f
-  }
   // 提交表單
   const handleSubmit = async (e) => {
     console.log('submit')
@@ -289,6 +198,7 @@ export default function EditPostModal({
                     className="edit-title main-text-color fs20 me-auto text-wrap w-100"
                     contentEditable
                     data-placeholder="輸入文章標題"
+                    // dangerouslySetInnerHTML={{ __html: postTitle }} 不能修改
                     onInput={(e) => {
                       // 沒有trim的話會剩下，可能殘留<br>
                       const titleLength = e.target.innerText.trim().length
@@ -334,12 +244,9 @@ export default function EditPostModal({
                     const text = e.clipboardData.getData('text/plain')
                     document.execCommand('insertText', false, text)
                   }}
-                >
-                  {/* {isUpdated && '123'} */}
-                </div>
+                ></div>
               </div>
-              <div className="modal-footer px-4 py-2">
-                {/* NOTE */}
+              <div className="modal-footer px-4 py-2 gap-1">
                 <input
                   name="images"
                   type="file"
@@ -348,13 +255,12 @@ export default function EditPostModal({
                   multiple
                   hidden
                   onChange={(e) => {
-                    handleFilesChange(e)
+                    handleImgUpload(e)
                   }}
                 />
-                <span></span>
                 <label
                   htmlFor="uploadImage"
-                  className="mx-0 my-0 me-auto h-100"
+                  className="px-3 py-1 mx-0 my-0 me-auto h-100 bg-hovering-gray rounded-pill"
                 >
                   <div
                     role="button"
@@ -366,7 +272,7 @@ export default function EditPostModal({
                 </label>
                 <button
                   type="button"
-                  className="sub-text-color button-clear bounce"
+                  className="px-3 py-2 rounded-3 sub-text-color button-clear bounce bg-hovering-gray"
                   data-bs-dismiss="modal"
                 >
                   取消
@@ -375,7 +281,10 @@ export default function EditPostModal({
                   type="submit"
                   data-bs-dismiss="modal"
                   className={`px-4 py-2 rounded-3 border-0 bounce ${isTitleValid && isContentValid ? 'bg-main color-isla-white' : 'bg-hover-gray sub-text-color border-0'}`}
-                  onClick={() => {
+                  disabled={isTitleValid && isContentValid ? false : true}
+                  onClick={(e) => {
+                    e.preventDefault()
+                    console.log({ isTitleValid, isContentValid })
                     setHasTitleTouched(false)
                     // FIXME modal剛出現 按按鈕時出現警示
                   }}

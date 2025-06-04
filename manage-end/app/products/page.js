@@ -1,7 +1,7 @@
 // app/products/page.js
 'use client'
 
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { useState, useMemo, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation' // Import useRouter
 import {
   useReactTable,
@@ -42,8 +42,11 @@ import {
   ChevronRight,
 } from 'lucide-react'
 import Image from 'next/image'
-
-import {useProductManageList} from '@/hook/use-product-manage.js'
+import { toast } from 'react-toastify'
+import {
+  useProductManageList,
+  useDeleteProduct,
+} from '@/hook/use-product-manage.js'
 // import { getProducts } from './data-controller.js'
 
 export default function ProductListPage() {
@@ -51,8 +54,9 @@ export default function ProductListPage() {
   const [globalFilter, setGlobalFilter] = useState('')
   const [selectedProductForDialog, setSelectedProductForDialog] = useState(null) // For the Eye icon dialog
   const router = useRouter() // Initialize router
-  const {products, loading, productError} = useProductManageList()
+  const { products, loading, productError } = useProductManageList()
   const [data, setData] = useState([])
+  const { mutate: deleteProduct, isPending } = useDeleteProduct()
 
   useEffect(() => {
     if (products) {
@@ -60,28 +64,26 @@ export default function ProductListPage() {
     }
   }, [products])
 
-
   const handleEditProduct = (product_id) => {
     router.push(`/products/edit/${product_id}`)
   }
 
   const handleAddProduct = (product_id) => {
-    router.push(`/products/add/${product_id}`)
-    // Or open a modal, then use addProduct from data.js
-    console.log('Add product functionality to be implemented')
+    router.push(`/products/add`)
   }
 
-  const handleDeleteProduct = (productId) => {
-    if (confirm('你確定要刪除嗎?')) {
-        const success = deleteProduct(productId);
-        if (success) {
-          setData(useProductManageList());
-        }
-    }
-    console.log(
-      `Delete product ${productId} - to be implemented with confirmation`
-    )
-  }
+  const handleDelete = useCallback(
+    (productId, productName) => {
+      const isConfirmed = window.confirm(
+        `您確定要刪除「${productName}」嗎？此操作無法復原。`
+      )
+      if (isConfirmed) {
+        console.log('刪除', productId)
+        deleteProduct(productId)
+      }
+    },
+    [deleteProduct]
+  )
 
   const getStatusTag = (status) => {
     return status === 'active' ? (
@@ -122,25 +124,25 @@ export default function ProductListPage() {
       {
         accessorKey: 'id',
         header: ({ column }) => (
-            <Button
-                variant="ghost"
-                onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-                className="hover:bg-transparent p-0 font-medium text-left"
-            >
-              商品ID
-              {column.getIsSorted() === 'asc' ? (
-                  <ArrowUp className="ml-2 h-4 w-4" />
-              ) : column.getIsSorted() === 'desc' ? (
-                  <ArrowDown className="ml-2 h-4 w-4" />
-              ) : (
-                  <ArrowUpDown className="ml-2 h-4 w-4" />
-              )}
-            </Button>
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+            className="hover:bg-transparent p-0 font-medium text-left"
+          >
+            商品ID
+            {column.getIsSorted() === 'asc' ? (
+              <ArrowUp className="ml-2 h-4 w-4" />
+            ) : column.getIsSorted() === 'desc' ? (
+              <ArrowDown className="ml-2 h-4 w-4" />
+            ) : (
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            )}
+          </Button>
         ),
         cell: ({ row }) => (
-            <div>
-              <div className="font-medium">{row.original.product_id}</div>
-            </div>
+          <div>
+            <div className="font-medium">{row.original.product_id}</div>
+          </div>
         ),
       },
       {
@@ -177,9 +179,12 @@ export default function ProductListPage() {
         ),
         cell: ({ row }) => (
           <div>
-            <div className="font-medium cursor-pointer"
-                 onClick={() => setSelectedProductForDialog(row.original)}
-            >{row.original.name}</div>
+            <div
+              className="font-medium cursor-pointer"
+              onClick={() => setSelectedProductForDialog(row.original)}
+            >
+              {row.original.name}
+            </div>
             <div className="text-sm text-gray-500">{row.original.category}</div>
           </div>
         ),
@@ -286,8 +291,10 @@ export default function ProductListPage() {
                 編輯商品
               </DropdownMenuItem>
               <DropdownMenuItem
-                onClick={() => handleDeleteProduct(row.original.product_id)} // Updated
-                className="cursor-pointer text-red-600 hover:!text-red-600 hover:!bg-red-50" // Fixed hover style
+                onClick={() =>
+                  handleDelete(row.original.product_id, row.original.name)
+                }
+                className="cursor-pointer"
               >
                 <Trash2 className="mr-2 h-4 w-4" />
                 刪除商品
@@ -312,19 +319,18 @@ export default function ProductListPage() {
     initialState: { pagination: { pageSize: 10 } },
   })
 
-
   if (loading) {
     return (
-        <>
-          <h1>載入中</h1>
-        </>
+      <>
+        <h1>載入中</h1>
+      </>
     )
   }
   if (productError) {
     return (
-        <>
-          <h1>ERROR: {productError.message}</h1>
-        </>
+      <>
+        <h1>ERROR: {productError.message}</h1>
+      </>
     )
   }
 

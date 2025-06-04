@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { FaAngleLeft, FaAngleRight } from 'react-icons/fa6'
 // import { FaAngleLeft, FaAngleRight } from 'lucide-react'
 import Image from 'next/image'
+import Swiper from 'swiper'
 import './_style/banner.css'
 
 const images = [

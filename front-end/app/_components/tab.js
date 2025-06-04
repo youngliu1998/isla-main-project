@@ -51,18 +51,26 @@ export default function Componentstab({
   }, [activeIndex, updateUnderline])
 
   useEffect(() => {
+    let resizeTimer
     const handleResize = () => {
       setEnableTransition(false)
       updateUnderline(activeIndex)
+      clearTimeout(resizeTimer)
+      resizeTimer = setTimeout(() => {
+        setEnableTransition(true)
+      }, 100)
     }
     window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      clearTimeout(resizeTimer)
+    }
   }, [activeIndex, updateUnderline])
 
   useEffect(() => {
-    setEnableTransition(true)
-    // const timer = setTimeout(() => setEnableTransition(true), 0)
-    // return () => clearTimeout(timer)
+    // setEnableTransition(true)
+    const timer = setTimeout(() => setEnableTransition(true), 0)
+    return () => clearTimeout(timer)
   }, [])
 
   return (

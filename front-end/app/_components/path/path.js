@@ -87,10 +87,11 @@ export default function Path() {
 
     console.log('==== useEffect End ====')
   }, [pathArr[pathArr.length - 1]])
-  // 首頁,文章列表不需要麵包削
+  // 首頁,文章，創造優惠券列表不需要麵包削
   if (
     pathname === '/' ||
     pathname.includes('/forum') ||
+    pathname.includes('/coupon/create') ||
     pathname.startsWith('/course')
   ) {
     return <></>

@@ -763,3 +763,228 @@ export async function updateProduct(req, res) {
     if (conn) conn.release()
   }
 }
+
+export async function createProduct(req, res) {
+  // 從請求主體中解構出所有前端傳來的資料
+  const {
+    name,
+    description,
+    brand_id,
+    category_id,
+    base_price,
+    sale_price = null,
+    sale_start_date = null,
+    sale_end_date = null,
+    status = 'active',
+    images: imageUrls = [],
+    colors: colorStocks = [],
+    tag_ids = [],
+    ingredient_ids = [], // 接收新增的成分 ID 列表
+  } = req.body
+
+  console.log('=== createProduct Controller 開始 ===')
+  console.log('接收到的產品資料:', req.body)
+
+  // 確保必要的顏色和圖片資料存在
+  if (!colorStocks || colorStocks.length === 0) {
+    return res
+      .status(400)
+      .json({ success: false, message: '商品至少需要一種顏色規格。' })
+  }
+  if (!imageUrls || imageUrls.length === 0) {
+    return res
+      .status(400)
+      .json({ success: false, message: '商品至少需要一張圖片。' })
+  }
+
+  let conn
+  try {
+    // 取得資料庫連線並開始一個事務
+    conn = await db.getConnection()
+    await conn.beginTransaction()
+    console.log('資料庫交易開始')
+
+    // --- 步驟 1: 新增商品基本資料到 `products` 資料表 ---
+    console.log('=== 步驟 1: 新增商品基本資料 ===')
+    const [productResult] = await conn.query(
+      `INSERT INTO products 
+        (name, description, brand_id, category_id, base_price, sale_price, sale_start_date, sale_end_date, status, created_at, updated_at) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        name,
+        description || null,
+        parseInt(brand_id),
+        parseInt(category_id),
+        parseFloat(base_price),
+        sale_price ? parseFloat(sale_price) : null,
+        sale_start_date || null,
+        sale_end_date || null,
+        status,
+        new Date(),
+        new Date(),
+      ]
+    )
+
+    const newProductId = productResult.insertId
+    // 如果無法取得新商品的 ID，事務失敗
+    if (!newProductId) {
+      throw new Error('無法建立商品主體，無法取得 newProductId')
+    }
+    console.log(`商品主體建立成功, newProductId: ${newProductId}`)
+
+    // --- 步驟 2: 新增商品圖片到 `product_images` 資料表 ---
+    console.log('=== 步驟 2: 新增商品圖片 ===')
+    const imageInsertData = imageUrls.map((url, index) => [
+      newProductId,
+      url,
+      index + 1, // sort_order
+      index === 0 ? 1 : 0, // is_primary (第一張設為主圖)
+    ])
+    await conn.query(
+      `INSERT INTO product_images (product_id, image_url, sort_order, is_primary) VALUES ?`,
+      [imageInsertData]
+    )
+    console.log(`已插入 ${imageUrls.length} 筆圖片關聯`)
+
+    // --- 步驟 3: 新增顏色庫存到 `product_color_stocks` 資料表 ---
+    // (這裡的邏輯與您提供的更新邏輯幾乎相同，只是使用 newProductId)
+    console.log('=== 步驟 3: 新增顏色與庫存 ===')
+    for (const stock of colorStocks) {
+      // 驗證傳入的資料是否有效
+      if (!stock.color_name) {
+        console.error('收到的顏色規格缺少 color_name:', stock)
+        // 在事務中，拋出錯誤會觸發 rollback
+        throw new Error('顏色項目缺少必要的 color_name 資訊')
+      }
+
+      // --- 開始：修正後的「查詢或新增顏色 ID」邏輯 ---
+
+      // 1. 只根據唯一的 color_name 來查詢顏色是否存在
+      const [existingColors] = await conn.query(
+        `SELECT color_id FROM colors WHERE color_name = ?`,
+        [stock.color_name]
+      )
+
+      let colorId
+
+      if (existingColors.length > 0) {
+        // 2. 如果找到了，直接使用現有的 color_id
+        colorId = existingColors[0].color_id
+        console.log(`找到現有顏色 '${stock.color_name}', ID: ${colorId}`)
+      } else {
+        // 3. 如果沒找到，才執行 INSERT 操作來新增這個新顏色
+        console.log(`未找到顏色 '${stock.color_name}', 準備新增...`)
+        const [newColorResult] = await conn.query(
+          `INSERT INTO colors (color_name, color_code) VALUES (?, ?)`,
+          [stock.color_name, stock.color_code || '#000000'] // 提供一個預設色碼以防萬一
+        )
+        colorId = newColorResult.insertId
+        console.log(`新增顏色成功, 新 ID: ${colorId}`)
+      }
+
+      // 再次確認是否成功獲取 colorId
+      if (!colorId) {
+        throw new Error(`無法處理或建立顏色: ${stock.color_name}`)
+      }
+      // --- 結束：修正後的「查詢或新增顏色 ID」邏輯 ---
+
+      // 4. 使用獲取到的 colorId 來插入 product_color_stocks 關聯表
+      await conn.query(
+        `INSERT INTO product_color_stocks (product_id, color_id, stock_quantity) VALUES (?, ?, ?)`,
+        [newProductId, colorId, parseInt(stock.stock_quantity, 10) || 0]
+      )
+    }
+    console.log(`已插入 ${colorStocks.length} 筆顏色庫存關聯`)
+    // --- 步驟 4: 新增商品標籤到 `product_tag_relations` 資料表 ---
+    console.log('=== 步驟 4: 新增標籤關聯 ===')
+    if (tag_ids && tag_ids.length > 0) {
+      const tagInsertData = tag_ids.map((tagId) => [
+        newProductId,
+        parseInt(tagId),
+      ])
+      await conn.query(
+        `INSERT INTO product_tag_relations (product_id, tag_id) VALUES ?`,
+        [tagInsertData]
+      )
+      console.log(`已插入 ${tag_ids.length} 筆標籤關聯`)
+    }
+
+    // --- 步驟 5: 新增商品成分到 `product_ingredients` 資料表 ---
+    console.log('=== 步驟 5: 新增成分關聯 ===')
+    if (ingredient_ids && ingredient_ids.length > 0) {
+      const ingredientInsertData = ingredient_ids.map((ingredientId) => [
+        newProductId,
+        parseInt(ingredientId),
+      ])
+      await conn.query(
+        `INSERT INTO product_ingredients (product_id, ingredient_id) VALUES ?`,
+        [ingredientInsertData]
+      )
+      console.log(`已插入 ${ingredient_ids.length} 筆成分關聯`)
+    }
+
+    // --- 所有步驟成功，提交事務 ---
+    await conn.commit()
+    console.log('=== 交易提交成功 ===')
+
+    // 回傳 201 Created 狀態碼，並附上成功訊息與新商品的 ID
+    res.status(201).json({
+      success: true,
+      message: '商品新增成功！',
+      productId: newProductId,
+    })
+  } catch (err) {
+    // 如果過程中發生任何錯誤，回滾所有操作
+    console.error('=== createProduct 發生錯誤 ===', err)
+    if (conn) await conn.rollback()
+
+    // 回傳 500 伺服器內部錯誤
+    res.status(500).json({
+      success: false,
+      message: err.message || '伺服器內部錯誤，無法新增商品。',
+    })
+  } finally {
+    // 無論成功或失敗，最後都釋放資料庫連線
+    if (conn) conn.release()
+    console.log('資料庫連線已釋放')
+  }
+}
+
+export async function deleteProduct(req, res) {
+  const productId = parseInt(req.params.id, 10)
+
+  if (isNaN(productId)) {
+    return res.status(400).json({ success: false, message: '無效的商品 ID' })
+  }
+
+  console.log(
+    `=== softDeleteProduct Controller 開始，目標 ID: ${productId} ===`
+  )
+
+  try {
+    const sqlQuery = `
+      UPDATE products 
+      SET 
+        status = 'deleted', 
+        updated_at = ? 
+      WHERE 
+        product_id = ?;
+    `
+    const [result] = await db.query(sqlQuery, [new Date(), productId])
+
+    if (result.affectedRows === 0) {
+      console.log(`找不到 ID 為 ${productId} 的商品，無法進行軟刪除。`)
+      return res
+        .status(404)
+        .json({ success: false, message: '找不到指定的商品' })
+    }
+
+    console.log(`ID 為 ${productId} 的商品已成功標記為刪除`)
+    res.status(200).json({ success: true, message: '商品已成功設為刪除' })
+  } catch (err) {
+    console.error('=== softDeleteProduct 發生錯誤 ===', err)
+    res
+      .status(500)
+      .json({ success: false, message: '伺服器內部錯誤，操作失敗。' })
+  }
+}

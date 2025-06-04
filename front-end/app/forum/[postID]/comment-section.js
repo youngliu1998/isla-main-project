@@ -103,6 +103,7 @@ export default function CommentSection({
   // console.log(commentsMap)
   // console.log(commentsTree)
   // console.log(commentsTree[0].subComments[0].subComments.length ?? '0')
+  console.log(commentsTree)
 
   return (
     <>
@@ -123,6 +124,7 @@ export default function CommentSection({
               >
                 <RecursiveComment
                   commentID={comment.id}
+                  userId={comment.user_id}
                   userImg={comment.user_img}
                   userNick={comment.nick}
                   content={comment.content}
