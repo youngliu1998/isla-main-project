@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "cross-env PORT=3000 next dev --turbopack",
     "build": "next build",
-    "start": "next start",
+    "start": "PORT=3000 next start",
     "lint": "next lint"
   },
   "dependencies": {

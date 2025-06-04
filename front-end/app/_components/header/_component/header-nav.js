@@ -13,15 +13,12 @@ export default function HeaderNav() {
           <li>
             <Link href="/product">所有產品</Link>
           </li>
-          <li>
-            <Link href="">品牌總覽</Link>
-          </li>
           <li
             className="position-relative"
             onMouseEnter={() => {
               setOpen(true)
             }}
-             onMouseLeave={() => {
+            onMouseLeave={() => {
               setOpen(false)
             }}
           >

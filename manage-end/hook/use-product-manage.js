@@ -1,7 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
 import qs from 'qs'
-import { useMemo } from 'react'
+import React, { useMemo } from 'react'
+import { toast } from 'react-toastify'
 
 const fetchProductDetail = async (id) => {
   const res = await axios.get(`http://localhost:3005/api/product/edit/${id}`)
@@ -138,6 +139,56 @@ export function useMutipleOptions() {
       )
       if (!res.ok) throw new Error('錯誤，資料截取失敗')
       return res.json()
+    },
+  })
+}
+
+const deleteProductAPI = async (productId) => {
+  try {
+    const response = await axios.delete(
+      `http://localhost:3005/api/product/${productId}`
+    )
+
+    if (response.data?.success === false) {
+      throw new Error(response.data.message || '後端回報了一個錯誤。')
+    }
+    return response.data
+  } catch (error) {
+    const errorMessage =
+      error.response?.data?.message || error.message || '發生未知的錯誤'
+    throw new Error(errorMessage)
+  }
+}
+
+export const useDeleteProduct = () => {
+  const queryClient = useQueryClient()
+  const loadingToastId = React.useRef(null)
+
+  return useMutation({
+    mutationFn: deleteProductAPI,
+
+    onMutate: () => {
+      loadingToastId.current = toast.loading('正在刪除商品...')
+    },
+
+    onSuccess: (data, productId) => {
+      toast.success(data.message || '商品已成功刪除！')
+
+      // 關鍵步驟：讓商品列表的快取失效，UI 將自動更新
+      queryClient.invalidateQueries({ queryKey: ['products'] })
+
+      // 也可以選擇性地直接從快取中移除該商品的詳細資料，因為它已不存在
+      queryClient.removeQueries({ queryKey: ['product', productId] })
+    },
+
+    onError: (error) => {
+      toast.error(`刪除失敗: ${error.message}`)
+    },
+
+    onSettled: () => {
+      if (loadingToastId.current) {
+        toast.dismiss(loadingToastId.current)
+      }
     },
   })
 }
