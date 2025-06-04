@@ -22,49 +22,25 @@
 }
 /* 卡片列表 */
 .header-search-item-list {
-  padding-block: 8px;
+  /* padding-block: 8px; */
   padding-inline: 16px;
+  max-height: calc(100vh - 198px);
   /* background */
   background-color: #ffffff;
   /* postion */
   position: absolute;
-  top: 100px;
+  top: 110px;
   left: 0;
   z-index: 1000;
+  overflow: auto;
 }
 /* 卡片本體 */
 .header-search-item {
   display: flex;
   gap: 1rem;
   background-color: #ececec;
-  width: 350px;
+  width: 320px;
   height: 80px;
   padding: 0.5rem;
   /* border: 1px solid #000; */
-}
-/* ==== 商品 ====  */
-.for-product {
-  /* 標題 */
-  .search-item-title {
-    width: 150px;
-    height: 1.5rem;
-    overflow: hidden;
-    /* 圖片外框 */
-    .search-item-img {
-      width: 60px;
-      aspect-ratio: 1 / 1;
-    }
-    /* 商品價格 */
-    .search-item-price {
-    }
-    /* 商品品牌 */
-    .search-item-brand {
-    }
-  }
-}
-/* ==== 文章 ====  */
-.for-forum .search-item-title {
-  width: 150px;
-  height: 1.5rem;
-  overflow: hidden;
 }
