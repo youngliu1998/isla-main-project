@@ -113,6 +113,9 @@
 .bg-light-hover {
   background-color: var(--hover-light-gray);
 }
+.bg-chat-me {
+  background-color: var(--main-color);
+}
 .main-text-color {
   color: var(--main-text);
 }
@@ -135,14 +138,14 @@
 }
 .card-border {
   /* border: 1px solid #4e221d1d; */
-  border: 1px solid var(--border-color-forum);
+  border: 0.5px solid var(--border-color-forum);
 }
 /* .top-stroke {
   border-top: 1px solid var(--stroke-color) !important;
 } */
 .shadow-forum {
   /* box-shadow: 0 0 8px #5447340d; fb */
-  box-shadow: 0 0 12px 0 #0000000a;
+  box-shadow: 0 0 12px 0 #00000015;
 }
 
 /* font */
@@ -352,6 +355,13 @@
 
 /* VVVV微調！VVVV */
 /* layout */
+.search-bar-offcanvas {
+  --bs-offcanvas-width: 300px;
+}
+
+.search-bar-wrapper {
+  padding-top: 100px;
+}
 
 .my-container {
   /* max-width: 1440px !important; */
@@ -403,7 +413,7 @@
 }
 
 /* main */
-.posts-section {
+.maxWidth800 {
   max-width: 800px;
   height: calc(100vh - 96px);
 }
@@ -499,7 +509,6 @@
       }
     }
   }
-
   .more-followings-link {
     &:hover {
       background-color: var(--hover-light-gray);
@@ -512,7 +521,7 @@
     display: flex;
     justify-content: center;
     isolation: isolate;
-    z-index: 998;
+    z-index: 99;
   }
   .sub-nav-item {
     display: flex;
@@ -570,4 +579,15 @@
 /* chat */
 .chat-avas {
   margin-inline: -7px;
+}
+
+/* chat-room */
+.message {
+  font-size: 15px;
+  padding-inline: 12px;
+  border-radius: 20px;
+}
+
+.chat-main-header {
+  min-height: 52px;
 }

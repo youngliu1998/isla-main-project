@@ -18,7 +18,8 @@ router.get('/:pageName', async function (req, res) {
         u.ava_url AS user_img,
         IFNULL (liked.user_ids, '') AS liked_user_ids,
         IFNULL( liked.likes, 0) AS likes,
-        IFNULL (saved.user_ids, '') AS saved_user_ids
+        IFNULL (saved.user_ids, '') AS saved_user_ids,
+        IFNULL (comment.count, 0) AS comment_count
     FROM post p
     JOIN post_category pc ON p.cate_id = pc.id
     JOIN users u ON p.user_id = u.id
@@ -35,11 +36,19 @@ router.get('/:pageName', async function (req, res) {
         FROM post_user_saved
         GROUP BY post_id
     ) saved ON p.id = saved.post_id
+    LEFT JOIN (
+      SELECT post_id,
+      COUNT(id) AS count
+      FROM comment
+      GROUP BY post_id
+    ) comment ON p.id = comment.post_id
     WHERE p.valid=1`
 
   const pageName = req.params.pageName
   let postsResult
   let morePostsResult
+  let isResultExist = true
+  let otherPosts
 
   if (!userID) return res.json({ status: 'success', data: '未登入成功' })
 
@@ -66,7 +75,7 @@ router.get('/:pageName', async function (req, res) {
       const keyword = req.query.keyword
       const productCate = req.query.productCate?.split(',')
       const postCate = req.query.postCate?.split(',')
-      console.log({ keyword, productCate, postCate })
+      // console.log({ keyword, productCate, postCate })
 
       // WHERE p.title LIKE ? OR p.content LIKE ? AND p.cate_id = ? AND p.product_cate_id = ?
       // 冷靜的找到篩選問題是括號，我好棒！
@@ -108,7 +117,12 @@ router.get('/:pageName', async function (req, res) {
       } else {
         postsResult = await db.query(`${postsQuery} ORDER BY likes DESC`)
       }
-
+      if (postsResult[0].length === 0) {
+        isResultExist = false
+        otherPosts = await db.query(`${postsQuery} ORDER BY likes DESC`)
+      }
+      // console.log('有資料')
+      // console.log('---------' + isResultExist)
       break
     }
     case 'profile': {
@@ -142,16 +156,10 @@ router.get('/:pageName', async function (req, res) {
   return res.json({
     status: 'success',
     data: postsResult[0],
+    isResultExist,
+    otherPosts: otherPosts?.[0],
   })
 })
-
-// // 得到多筆文章 - 篩選
-// router.get('/:queryParam', async function (req, res) {
-//   const queryParam = req.params.queryParam
-//   queryParam.split('&')
-//   const [posts] = await db.query(`SELECT * FROM post`)
-//   return res.json({ status: 'success', data: { posts } })
-// })
 
 // 新增一筆文章 - 網址：POST /api/forum/posts
 const storage = multer.diskStorage({
@@ -170,6 +178,7 @@ router.post(
   '/upload-image',
   upload.fields([{ name: 'images', maxCount: 50 }]),
   async function (req, res) {
+    console.log(req)
     const files = req.files.images
     const filenames = files.map((f) => f.filename)
     console.log('req----' + filenames)

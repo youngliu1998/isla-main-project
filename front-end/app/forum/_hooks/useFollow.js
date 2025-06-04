@@ -8,11 +8,15 @@ const fetcher = (url) => fetch(url).then((res) => res.json())
 
 export default function UseFollow(userID, followID) {
   const { data, isLoading, error, mutate } = useSWR(
-    `http://localhost:3005/api/forum/follow?followID=${followID}`,
+    `http://localhost:3005/api/forum/follow?followID=${followID}&userID=${userID}`,
     fetcher
   )
+  console.log(
+    `http://localhost:3005/api/forum/follow?followID=${followID}&userID=${userID}`
+  )
   const isFollow = data?.data.includes(userID)
-  const follows = data?.data.length
+  const followCount = data?.data.length
+  const follows = data?.follows
   const method = isFollow ? 'DELETE' : 'POST'
 
   const handleFollow = async () => {
@@ -33,5 +37,5 @@ export default function UseFollow(userID, followID) {
   if (isLoading || error || data.status !== 'success')
     return { isLoading, error, status: data?.status }
 
-  return { handleFollow, isFollow, follows }
+  return { handleFollow, isFollow, followCount, follows, isLoading, error }
 }

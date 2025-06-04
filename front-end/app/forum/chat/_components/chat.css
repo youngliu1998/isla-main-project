@@ -73,16 +73,10 @@
     left: 0;
     right: 0;
   }
-  .messages-block {
-    /* padding-top: 52px; */
-  }
+
   .message {
     min-width: 0;
+    max-width: 400px;
     width: auto;
-  }
-}
-.chat-input-block {
-  /* border-top: 1px solid var(--border-color-forum); */
-  .chat-main-input {
   }
 }

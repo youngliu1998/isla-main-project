@@ -6,6 +6,7 @@ import { useAuth } from '../../../hook/use-auth'
 import { useFilter } from '../_context/filterContext'
 import { useRouter } from 'next/navigation'
 import UseImg from '../_hooks/useImg'
+import GetPosts from '../_hooks/getPosts'
 // import '/bootstrap/dist/js/bootstrap.bundle.min.js' 無法直接引入
 
 export default function EditPostModal({
@@ -15,17 +16,18 @@ export default function EditPostModal({
   postTitle = '',
   postContent = '',
   isUpdated = false,
-  mutate = () => {},
+  // mutate = () => {},
 }) {
   const modalRef = useRef()
   const router = useRouter()
   const { user, isAuth } = useAuth()
-  // const isAuth = user.id !== 0
   const userID = user.id
   const userUrl = user.ava_url
   const userNick = user.nickname
-  // const [imagesList, setImagesList] = useState([])
+
   const { productCateItems, postCateItems } = useFilter()
+  const { mutate } = GetPosts('')
+
   useEffect(() => {
     titleRef.current.innerText = postTitle
     contentRef.current.innerHTML = postContent
@@ -42,7 +44,6 @@ export default function EditPostModal({
 
   // 提交表單
   const handleSubmit = async (e) => {
-    console.log('submit')
     e.preventDefault()
     const productCate = productCateRef.current.value
     const postCate = postCateRef.current.value
@@ -109,8 +110,8 @@ export default function EditPostModal({
     // )
     // m.hide()
     // console.log(m)
+    mutate()
     router.push('/forum?tab=2')
-    // mutate()
   }
   // 字數
   const [titleLength, setTitleLength] = useState(0)
@@ -120,7 +121,7 @@ export default function EditPostModal({
 
   return (
     <>
-      <form onSubmit={handleSubmit}>
+      <form>
         <div
           className="modal fade"
           // id="editPostModal"
@@ -255,7 +256,7 @@ export default function EditPostModal({
                   multiple
                   hidden
                   onChange={(e) => {
-                    handleImgUpload(e)
+                    handleImgUpload(e, userID, contentRef, modalRef)
                   }}
                 />
                 <label
@@ -284,9 +285,11 @@ export default function EditPostModal({
                   disabled={isTitleValid && isContentValid ? false : true}
                   onClick={(e) => {
                     e.preventDefault()
-                    console.log({ isTitleValid, isContentValid })
+                    // console.log({ isTitleValid, isContentValid })
                     setHasTitleTouched(false)
                     // FIXME modal剛出現 按按鈕時出現警示
+                    console.log('click')
+                    handleSubmit(e)
                   }}
                 >
                   發布

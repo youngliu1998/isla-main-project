@@ -116,7 +116,7 @@ export default function PostIDPage(props) {
   return (
     <>
       {/* <PostDetailLoader /> */}
-      <main className="main posts-section col col-10 col-xl-8 d-flex flex-column align-items-start px-0">
+      <main className="main col col-10 col-xl-8 d-flex flex-column align-items-start px-0 h-100">
         {error ? (
           <div className="fs24 d-flex flex-column align-items-center mx-auto mt-3 gap-2">
             <div>連線錯誤，試試重新整理</div>
@@ -143,7 +143,7 @@ export default function PostIDPage(props) {
             </Link>
           </div>
         ) : (
-          <div className="posts d-flex flex-column gap16 pb-0 w-100 px-3">
+          <div className="posts d-flex flex-column gap16 pb-0 w-100 h-100 px-3 maxWidth800">
             <div className="post d-flex flex-column gap-2 rounded-top-4 shadow-forum bg-pure-white pt-4 card-border position-relative">
               <div className="post-header d-flex  align-items-start mx-4">
                 <div className="post-title flex-grow-1 me-3 fs24 fw-medium">
@@ -222,7 +222,12 @@ export default function PostIDPage(props) {
                   mutate={mutate}
                   color={''}
                 />
-                <button className="evaluate px-2 py-1 border-0 rounded-3 d-flex align-items-center">
+                <button
+                  className="evaluate px-2 py-1 border-0 rounded-3 d-flex align-items-center"
+                  // onClick={() => {
+                  //   router.push('#scrollToBottom')
+                  // }}
+                >
                   <i className="bi bi-chat me-1 fs16" />8
                 </button>
                 <ComponentsBtnLikedSaved
@@ -247,6 +252,7 @@ export default function PostIDPage(props) {
                             postTitle={morePost.title}
                             likedUserIDs={morePost.liked_user_ids}
                             savedUserIDs={morePost.saved_user_ids}
+                            commentCount={morePost.comment_count}
                             postID={morePost.id}
                             userID={userID} //登入使用者
                             authorID={morePost.user_id}
@@ -263,6 +269,7 @@ export default function PostIDPage(props) {
                 setCommentMutate={setCommentMutate}
                 setLastCommentRef={setLastCommentRef}
               />
+
               <CommentInput
                 mutate={commentMutate}
                 lastCommentRef={lastCommentRef}
@@ -272,32 +279,35 @@ export default function PostIDPage(props) {
         )}
       </main>
       <div className="col col-2 d-none d-xl-block px-0 ps-xl-2 ps-xxl-0 position-relative"></div>
-      <EditPostModal
-        postID={post.id}
-        productCate={post.product_cate_id}
-        postCate={post.cate_id}
-        postTitle={post.title}
-        postContent={post.content}
-        isUpdated={true}
-        mutate={mutate}
-      />
-      <EditPostModal
-        postID=""
-        productCate=""
-        postCate=""
-        postTitle=""
-        postContent=""
-        isUpdated={false}
-        mutate={mutate}
-      />
-
-      <ConfirmModal
-        title="確定刪除嗎？"
-        content="刪除後，文章將無法復原"
-        confirm="刪除"
-        cancel="取消"
-        handleModalAction={handleDeletePost}
-      />
+      {post && (
+        <>
+          <EditPostModal
+            postID={post.id}
+            productCate={post.product_cate_id}
+            postCate={post.cate_id}
+            postTitle={post.title}
+            postContent={post.content}
+            isUpdated={true}
+            mutate={mutate}
+          />
+          <EditPostModal
+            postID=""
+            productCate=""
+            postCate=""
+            postTitle=""
+            postContent=""
+            isUpdated={false}
+            mutate={mutate}
+          />
+          <ConfirmModal
+            title="確定刪除嗎？"
+            content="刪除後，文章將無法復原"
+            confirm="刪除"
+            cancel="取消"
+            handleModalAction={handleDeletePost}
+          />
+        </>
+      )}
     </>
   )
 }

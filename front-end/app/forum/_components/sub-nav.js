@@ -99,7 +99,7 @@ export default function ComponentsSubNav() {
                 }}
                 onClick={(e) => {
                   !isAuth && e.preventDefault()
-                  handleDirectToLogin('/forum')
+                  handleDirectToLogin('')
                 }}
               >
                 <i
@@ -358,7 +358,7 @@ export default function ComponentsSubNav() {
         </aside>
       </div>
       <div className="position-absolute">
-        <EditPostModal isUpdated={false} mutate={() => {}} />
+        <EditPostModal isUpdated={false} />
       </div>
     </>
   )
