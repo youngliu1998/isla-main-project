@@ -74,3 +74,52 @@
     }
   }
 }
+
+/* GPT
+  .container {
+    display: 'flex',
+    flexDirection: 'column',
+    height: '100vh',
+    maxWidth: '600px',
+    margin: '0 auto',
+    padding: '16px',
+  }
+  .chatWindow {
+    flex: 1,
+    border: '1px solid #ccc',
+    borderRadius: '8px',
+    padding: '12px',
+    overflowY: 'auto',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '8px',
+    backgroundColor: '#FAFAFA',
+  }
+  .message {
+    maxWidth: '80%',
+    padding: '8px 12px',
+    borderRadius: '16px',
+    lineHeight: 1.4,
+  }
+  .inputArea {
+    display: 'flex',
+    gap: '8px',
+    marginTop: '12px',
+  }
+  .textarea {
+    flex: 1,
+    resize: 'none',
+    padding: '8px',
+    borderRadius: '8px',
+    border: '1px solid #ccc',
+    fontSize: '14px',
+    fontFamily: 'sans-serif',
+  }
+  .sendButton {
+    padding: '0 16px',
+    borderRadius: '8px',
+    border: 'none',
+    backgroundColor: '#0070f3',
+    color: '#fff',
+    cursor: 'pointer',
+  } */
