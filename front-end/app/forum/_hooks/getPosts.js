@@ -11,8 +11,6 @@ export default function GetPosts(params) {
     : `http://localhost:3005/api/forum/posts/home`
   const { data, isLoading, error, mutate } = useSWR(postsAPI, fetcher)
 
-  //   console.log(postsAPI)
-
   // 新增 minimum loading 狀態
   const [showLoading, setShowLoading] = useState(true)
   useEffect(() => {
@@ -25,10 +23,17 @@ export default function GetPosts(params) {
     }
   }, [isLoading])
 
+  // const { isResultExist, otherPosts } = data
+  // console.log({ isResultExist, otherPosts })
+  const isResultExist = data?.isResultExist
+  const otherPosts = data?.otherPosts
+
+  console.log(data?.isResultExist)
+
   // 整理posts內的liked_user_ids和saved_user_ids
-  let posts = data?.data
-  if (Array.isArray(posts)) {
-    posts = posts.map((post) => {
+  let originPosts = data?.data
+  if (Array.isArray(originPosts)) {
+    originPosts = originPosts.map((post) => {
       return {
         ...post,
         liked_user_ids: post.liked_user_ids
@@ -40,6 +45,9 @@ export default function GetPosts(params) {
       }
     })
   }
+  const posts = isResultExist ? originPosts : otherPosts
 
-  return { posts, showLoading, error, mutate }
+  console.log({ posts, isResultExist })
+
+  return { posts, isResultExist, showLoading, error, mutate }
 }

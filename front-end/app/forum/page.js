@@ -1,23 +1,15 @@
 'use client'
 
 import ComponentsSearchBar from './_components/search-bar'
-import useSWR from 'swr'
-import { useEffect, useState } from 'react'
+import ComponentsSearchButton from './_components/search-button'
+import { useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import ComponentsPostCard from './_components/post-card'
 import Componentstab from '../_components/tab'
-import ComponentsSearchButton from './_components/search-button'
 import { useAuth } from '../../hook/use-auth'
 import { useFilter } from './_context/filterContext'
-import EditPostModal from './_components/edit-post-modal'
 import PostLoader from './_components/loader-post'
 import GetPosts from './_hooks/getPosts'
-// import dynamic from 'next/dynamic'
-// const PostLoader = dynamic(() => import('./_components/post-loader'), {
-//   ssr: false,
-// })
-
-// const fetcher = (url) => fetch(url).then((res) => res.json())
 
 export default function ForumPage() {
   const router = useRouter()
@@ -55,49 +47,13 @@ export default function ForumPage() {
       ...tabParams.entries(),
       ...params.entries(),
     ])
-    // console.log(`----http://localhost:3000/forum?${mergedParams.toString()}`)
     mutate()
     router.push(`http://localhost:3000/forum?${mergedParams.toString()}`)
   }
 
   const params = useSearchParams()
-  const { posts, showLoading, error, mutate } = GetPosts(params)
-  // console.log(params.toString())
-
-  // const postsAPI = params
-  //   ? `http://localhost:3005/api/forum/posts/home?${params}`
-  //   : `http://localhost:3005/api/forum/posts/home`
-
-  // const getPosts = GetPosts()
-  // const { data, isLoading, error, mutate } = useSWR(postsAPI, fetcher)
-
-  // // 新增 minimum loading 狀態
-  // const [showLoading, setShowLoading] = useState(true)
-  // useEffect(() => {
-  //   if (!isLoading) {
-  //     // 至少顯示 600ms
-  //     const timer = setTimeout(() => setShowLoading(false), 400)
-  //     return () => clearTimeout(timer)
-  //   } else {
-  //     setShowLoading(true)
-  //   }
-  // }, [isLoading])
-
-  // // 整理posts內的liked_user_ids和saved_user_ids
-  // let posts = data?.data
-  // if (Array.isArray(posts)) {
-  //   posts = posts.map((post) => {
-  //     return {
-  //       ...post,
-  //       liked_user_ids: post.liked_user_ids
-  //         ? post.liked_user_ids.split(',').map(Number)
-  //         : [],
-  //       saved_user_ids: post.saved_user_ids
-  //         ? post.saved_user_ids.split(',').map(Number)
-  //         : [],
-  //     }
-  //   })
-  // }
+  const { posts, isResultExist, showLoading, error, mutate } = GetPosts(params)
+  // console.log(posts)
 
   return (
     <>
@@ -109,68 +65,83 @@ export default function ForumPage() {
             // setTab={setTab}
             handleTabChange={handleTabChange}
           />
-          {/* <ComponentsSearchButton /> */}
-          <button
-            className="d-flex d-xl-none justify-content-center align-items-center gap-1 px-3 py-2 ms-2 my-1 rounded-pill sub-text-color border-0 text-nowrap button-clear"
-            type="button"
-            // data-bs-toggle="dropdown"
-            // aria-expanded="false"
-            data-bs-toggle="offcanvas"
-            data-bs-target="#offcanvasWithBothOptions"
-            aria-controls="offcanvasWithBothOptions"
-          >
-            <i className="bi bi-search"></i>
-            分類
-          </button>
-          <div
-            className="offcanvas offcanvas-end px-5"
-            data-bs-scroll="true"
-            tabIndex={-1}
-            id="offcanvasWithBothOptions"
-            aria-labelledby="offcanvasWithBothOptionsLabel"
-          >
-            <ComponentsSearchBar
-              postCateItems={postCateItems}
-              productCateItems={productCateItems}
-              handleAsideSearchChange={handleAsideSearchChange}
-            />
-          </div>
+          <ComponentsSearchButton
+            postCateItems={postCateItems}
+            productCateItems={productCateItems}
+            handleAsideSearchChange={handleAsideSearchChange}
+          />
         </div>
         <div className="posts maxWidth800 d-flex flex-column gap-3 pt-5 pb-5 px-3 mt-1 w-100 overflow-auto">
           {/* <PostLoader /> */}
-          {error
-            ? '連線錯誤'
-            : showLoading
-              ? Array(5)
-                  .fill(1)
-                  .map((v, i) => <PostLoader key={i} />)
-              : posts?.length === 0
-                ? '無文章資料'
-                : posts?.map((post) => {
-                    return (
-                      <ComponentsPostCard
-                        key={post.id}
-                        postID={post.id}
-                        postTitle={post.title}
-                        postCateName={post.cate_name}
-                        postContent={post.content}
-                        authorID={post.user_id}
-                        width="21"
-                        src={post.user_img}
-                        alt={post.user_name}
-                        fontSize="14"
-                        color="var(--sub-text)"
-                        updatedAt={post.updated_at.toString()}
-                        authorName={post.user_nick}
-                        btnLikedActive={post.liked_user_ids.includes(userID)}
-                        btnSavedActive={post.saved_user_ids.includes(userID)}
-                        btnLikedCount={post.liked_user_ids.length}
-                        btnSavedCount={post.saved_user_ids.length}
-                        userID={userID}
-                        mutate={mutate}
-                      />
-                    )
-                  })}
+          {error ? (
+            '連線錯誤'
+          ) : showLoading ? (
+            Array(5)
+              .fill(1)
+              .map((v, i) => <PostLoader key={i} />)
+          ) : !isResultExist ? (
+            <div className="d-flex flex-column gap-3">
+              <div className="py-3 text-center sub-text-color fs20 fst-italic fw-normal">
+                ——查無文章——
+              </div>
+              <div className="text-center main-color fw-medium">
+                觀看更多美妝心得👇
+              </div>
+              {posts?.map((post) => {
+                return (
+                  <ComponentsPostCard
+                    key={post.id}
+                    postID={post.id}
+                    postTitle={post.title}
+                    postCateName={post.cate_name}
+                    postContent={post.content}
+                    authorID={post.user_id}
+                    width="21"
+                    src={post.user_img}
+                    alt={post.user_name}
+                    fontSize="14"
+                    color="var(--sub-text)"
+                    updatedAt={post.updated_at.toString()}
+                    authorName={post.user_nick}
+                    btnLikedActive={post.liked_user_ids.includes(userID)}
+                    btnSavedActive={post.saved_user_ids.includes(userID)}
+                    btnLikedCount={post.liked_user_ids.length}
+                    btnSavedCount={post.saved_user_ids.length}
+                    commentCount={post.comment_count}
+                    userID={userID}
+                    mutate={mutate}
+                  />
+                )
+              })}
+            </div>
+          ) : (
+            posts?.map((post) => {
+              return (
+                <ComponentsPostCard
+                  key={post.id}
+                  postID={post.id}
+                  postTitle={post.title}
+                  postCateName={post.cate_name}
+                  postContent={post.content}
+                  authorID={post.user_id}
+                  width="21"
+                  src={post.user_img}
+                  alt={post.user_name}
+                  fontSize="14"
+                  color="var(--sub-text)"
+                  updatedAt={post.updated_at.toString()}
+                  authorName={post.user_nick}
+                  btnLikedActive={post.liked_user_ids.includes(userID)}
+                  btnSavedActive={post.saved_user_ids.includes(userID)}
+                  btnLikedCount={post.liked_user_ids.length}
+                  btnSavedCount={post.saved_user_ids.length}
+                  commentCount={post.comment_count}
+                  userID={userID}
+                  mutate={mutate}
+                />
+              )
+            })
+          )}
         </div>
       </main>
       <div className="col col-2 d-none d-xl-block px-0 ps-xl-2 ps-xxl-0 position-relative">
@@ -184,15 +155,6 @@ export default function ForumPage() {
           handleAsideSearchChange={handleAsideSearchChange}
         />
       </div>
-      {/* <EditPostModal
-        postID=""
-        productCate=""
-        postCate=""
-        postTitle=""
-        postContent=""
-        isUpdated={false}
-        mutate={mutate}
-      /> */}
     </>
   )
 }

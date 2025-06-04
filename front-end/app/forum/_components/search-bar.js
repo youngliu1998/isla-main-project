@@ -83,9 +83,11 @@ export default function ComponentsSearchBar({
               </button>
             )}
           </div>
-          <div className="reset-filter d-flex">
+          <div
+            className={`reset-filter d-flex ${keyword || productCate.length > 0 || postCate.length > 0 ? '' : 'hidden'}`}
+          >
             <button
-              className={`ps-1 sub-text-color button-clear py-1 ${keyword || productCate.length > 0 || postCate.length > 0 ? '' : 'hidden'} fs14`}
+              className={`ps-1 sub-text-color button-clear py-1 fs14`}
               onClick={(e) => {
                 e.preventDefault()
                 console.log({ keyword, productCate, postCate })

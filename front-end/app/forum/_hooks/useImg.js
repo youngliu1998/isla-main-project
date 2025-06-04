@@ -13,9 +13,9 @@ export default function UseImg() {
       select.rangeCount === 0 ||
       !contentRef.current.contains(select.anchorNode)
     ) {
-      if (!modalRef.current.hasAttribute('aria-hidden')) {
-        // contentRef.current.focus()
-      }
+      // if (!modalRef.current.hasAttribute('aria-hidden')) {
+      //   contentRef.current.focus()
+      // }
       // contentRef.current.focus() //強制上傳位置為content區域
       range = document.createRange()
       range.selectNodeContents(contentRef.current)
@@ -31,7 +31,7 @@ export default function UseImg() {
     // img.src = objectUrl
     img.src = filename
     img.onload = () => {
-      URL.revokeObjectURL(filename)
+      URL.revokeObjectURL(filename) //img載入完成後，將暫時用的 Blob URL取消
     }
     range.insertNode(img)
     range.setStartAfter(img)

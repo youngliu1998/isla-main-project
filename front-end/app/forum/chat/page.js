@@ -1,8 +1,5 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
-import { useAuth } from '../../../hook/use-auth'
-import { useEffect } from 'react'
 import Ripples from 'react-ripples'
 
 export default function ChatPage(props) {

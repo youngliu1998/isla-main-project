@@ -18,7 +18,8 @@ router.get('/:pageName', async function (req, res) {
         u.ava_url AS user_img,
         IFNULL (liked.user_ids, '') AS liked_user_ids,
         IFNULL( liked.likes, 0) AS likes,
-        IFNULL (saved.user_ids, '') AS saved_user_ids
+        IFNULL (saved.user_ids, '') AS saved_user_ids,
+        IFNULL (comment.count, 0) AS comment_count
     FROM post p
     JOIN post_category pc ON p.cate_id = pc.id
     JOIN users u ON p.user_id = u.id
@@ -35,11 +36,19 @@ router.get('/:pageName', async function (req, res) {
         FROM post_user_saved
         GROUP BY post_id
     ) saved ON p.id = saved.post_id
+    LEFT JOIN (
+      SELECT post_id,
+      COUNT(id) AS count
+      FROM comment
+      GROUP BY post_id
+    ) comment ON p.id = comment.post_id
     WHERE p.valid=1`
 
   const pageName = req.params.pageName
   let postsResult
   let morePostsResult
+  let isResultExist = true
+  let otherPosts
 
   if (!userID) return res.json({ status: 'success', data: '未登入成功' })
 
@@ -108,7 +117,12 @@ router.get('/:pageName', async function (req, res) {
       } else {
         postsResult = await db.query(`${postsQuery} ORDER BY likes DESC`)
       }
-
+      if (postsResult[0].length === 0) {
+        isResultExist = false
+        otherPosts = await db.query(`${postsQuery} ORDER BY likes DESC`)
+      }
+      // console.log('有資料')
+      // console.log('---------' + isResultExist)
       break
     }
     case 'profile': {
@@ -142,6 +156,8 @@ router.get('/:pageName', async function (req, res) {
   return res.json({
     status: 'success',
     data: postsResult[0],
+    isResultExist,
+    otherPosts: otherPosts?.[0],
   })
 })
 

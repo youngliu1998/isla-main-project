@@ -9,6 +9,7 @@ export default function ComponentsMorePost({
   postTitle = '',
   likedUserIDs = [],
   savedUserIDs = [],
+  commentCount = '',
   postID = '',
   userID = '',
   authorID = '',
@@ -35,7 +36,8 @@ export default function ComponentsMorePost({
               mutate={mutate}
             />
             <button className="evaluate px-2 py-1 border-0 rounded-3 d-flex align-items-center">
-              <i className="bi bi-chat me-1 fs16" />8
+              <i className="bi bi-chat me-1 fs16" />
+              {commentCount}
             </button>
             <ComponentsBtnLikedSaved
               type="saved"

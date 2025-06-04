@@ -99,7 +99,7 @@ export default function ComponentsSubNav() {
                 }}
                 onClick={(e) => {
                   !isAuth && e.preventDefault()
-                  handleDirectToLogin('/forum')
+                  handleDirectToLogin('')
                 }}
               >
                 <i
