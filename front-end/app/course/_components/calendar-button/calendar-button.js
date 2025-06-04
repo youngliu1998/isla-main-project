@@ -3,21 +3,44 @@
 import { AddToCalendarButton } from 'add-to-calendar-button-react'
 
 function parseActivityData(str) {
-  // 範例：'2025.06.19 (四) 10:30 - 18:30'
+  // 範例輸入：'2025.06.19 (四) 10:30 - 18:30'
   if (!str || typeof str !== 'string') return { start: '', end: '' }
 
   try {
     const [dateRaw, timeRange] = str.split(')').map((s) => s.trim())
     const dateFormatted = str.split('(')[0].replace(/\./g, '-').trim()
-    const [startTime, endTime] = timeRange.split('-').map((s) => s.trim())
 
-    if (!dateFormatted || !startTime || !endTime) throw new Error('格式錯誤')
+    let [startTime, endTime] = timeRange.split('-').map((s) => s.trim())
+
+    // ⬇️ 自動格式修正器：支援 930、9:0、09:0 等 ➝ 09:30
+    const fixTimeFormat = (t) => {
+      // 如果是 HH:MM 格式
+      if (/^\d{1,2}:\d{1,2}$/.test(t)) {
+        const [h, m] = t.split(':')
+        return `${h.padStart(2, '0')}:${m.padStart(2, '0')}`
+      }
+      // 如果是 HHMM 或 HMM 整數格式（如 930、1030）
+      if (/^\d{3,4}$/.test(t)) {
+        const h = t.length === 3 ? `0${t[0]}` : t.slice(0, 2)
+        const m = t.slice(-2)
+        return `${h}:${m}`
+      }
+      // 格式錯誤
+      return ''
+    }
+
+    startTime = fixTimeFormat(startTime)
+    endTime = fixTimeFormat(endTime)
+
+    if (!dateFormatted || !startTime || !endTime)
+      throw new Error('解析時間失敗')
 
     const start = `${dateFormatted}T${startTime}:00`
     const end = `${dateFormatted}T${endTime}:00`
 
     return { start, end }
-  } catch {
+  } catch (err) {
+    console.warn('活動時間解析失敗：', str)
     return { start: '', end: '' }
   }
 }
