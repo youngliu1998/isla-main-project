@@ -1,5 +1,6 @@
 import express from 'express'
 import { getProductIngredient } from '../services/product-controller.js'
+import db from '../config/mysql.js'
 
 const router = express.Router()
 

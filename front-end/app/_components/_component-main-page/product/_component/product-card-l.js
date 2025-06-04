@@ -24,6 +24,7 @@ function ProductCard({ product }) {
   const {
     id,
     brand = 'N/A',
+    category_name = '',
     name = 'Unnamed Product',
     price = '0',
     originalPrice,
@@ -91,12 +92,12 @@ function ProductCard({ product }) {
     <Link href={productUrl} passHref>
       <div className="product-card-l-product_card" key={id}>
         <div className="product-card-l-product_card-head">
-          <div className="product-card-head-top d-flex">
-            <div className="product-card-rating product-card-rating-desktop">
+          <div className="product-card-head-top d-flex justify-content-end">
+            {/* <div className="product-l-card-rating product-l-card-rating-desktop">
               <div className="product-card-star-box">
                 <RatingComponent rating={rating} reviewCount={reviews} />
               </div>
-            </div>
+            </div> */}
             <BookmarkComponent
               isbookmarked={isFavorited}
               isMobile={isMobile}
@@ -132,17 +133,22 @@ function ProductCard({ product }) {
         <div className="product-card-l-product_card-info">
           <div className="product-card-info">
             <div className="product-card-product_details">
-              <div className="product-card-brand">{brand}</div>
+              <div className="d-flex">
+                <div className="product-card-product_category">
+                  {category_name}
+                </div>
+                <div className="product-card-brand">{brand}</div>
+              </div>
               <div className="product-card-product_name">{name}</div>
             </div>
           </div>
 
-          <div className="product-card-rating product-card-rating-mobile">
+          <div className="product-l-card-rating">
             <div className="product-card-star-box">
               <RatingComponent
                 rating={rating}
                 reviewCount={reviews}
-                isMobile={true}
+                isMobile={false}
               />
             </div>
           </div>
@@ -150,11 +156,11 @@ function ProductCard({ product }) {
           <div className="product-card-price d-flex justify-content-between">
             <div className="product-card-price-box d-flex gap-2">
               <div className="product-card-main-price">
-                NT${parseInt(price)}
+                NT$ {parseInt(price).toLocaleString()}
               </div>
               {originalPrice && originalPrice !== price && (
                 <div className="product-card-basic-price">
-                  <del>${parseInt(originalPrice)}</del>
+                  <del>${parseInt(originalPrice).toLocaleString()}</del>
                 </div>
               )}
             </div>
