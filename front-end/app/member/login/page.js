@@ -140,7 +140,7 @@ export default function LoginPage() {
           <span className="title">ISLA</span> 會員登入
         </h1>
         {/* === for test === */}
-        <div className="position-absolute top-50 left-0">
+        {/* <div className="position-absolute top-50 left-0">
           <div className="d-flex gap-4">
             <div>cart:</div>
             <div> johnsmith@gmail.com</div>
@@ -162,7 +162,7 @@ export default function LoginPage() {
             <div>teacher3:</div>
             <div> frankmiller@gmail.com</div>
           </div>
-        </div>
+        </div> */}
         {/* === END for test === */}
         <div className="card-glass-linear login-panel">
           {/* login form */}

@@ -131,8 +131,10 @@ export default function ProfilePage() {
   }, [])
   if (!user?.email) {
     return (
-      <div className="loading-container">
-        <LoadingLottie />
+      <div>
+        <div className="loading-container">
+          <LoadingLottie />
+        </div>
       </div>
     )
   }

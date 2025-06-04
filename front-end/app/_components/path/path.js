@@ -61,12 +61,25 @@ export default function Path() {
           return '美妝教室'
         case 'product':
           return '所有產品'
+        case 'profile':
+          return '基本資料'
+        case 'password':
+          return '密碼'
+        case 'forget-password':
+          return '忘記密碼'
+        case 'register':
+          return '註冊'
+        case 'order':
+          return '訂單'
+        case 'like-list':
+          return '願望清單'
         case 'course-list':
           return ''
         case 'experience':
           return ''
         case 'teacher':
           return ''
+
         default:
           return thisPath
       }
@@ -97,7 +110,7 @@ export default function Path() {
   }
   return (
     <>
-      <div className="d-flex">
+      <div className="d-flex position-absolute px-3 pt-3">
         {pathArr.map((path, i) => {
           if (pathArrTag[i] === '') {
             return
