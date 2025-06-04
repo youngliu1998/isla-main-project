@@ -2,12 +2,12 @@
 import Link from 'next/link'
 import Image from 'next/image'
 //styles
-import { BsHandbag } from 'react-icons/bs'
 import { useAuth } from '@/hook/use-auth'
 import { useCartContext } from '../../cart/context/cart-context'
 import HamMenu from './_component/ham-menu'
 import HamMeunNav from './_component/ham-meun-nav'
 import HeaderNav from './_component/header-nav'
+import CartDropdown from '../../cart/_component/cart-dropdown/cart-dropdown'
 import './header.css'
 // hook
 import { usePathname, useRouter } from 'next/navigation'
@@ -16,7 +16,7 @@ import { useState } from 'react'
 import { USER_AVA_URL } from '@/_route/img-url'
 
 export default function Header() {
-  const { totalCount } = useCartContext()
+  const { totalCount, cartItems } = useCartContext()
   const pathname = usePathname()
   const router = useRouter()
   const [hamMenuOpen, setHamMenuOpen] = useState(false)
@@ -87,12 +87,11 @@ export default function Header() {
               <i className="bi bi-search" />
             </button>
 
-            <button
+            {/* <button
               className="cart-icon"
               type="button"
               onClick={handleCartClick}
             >
-              {/* <BsHandbag style={{ color: 'white', fontSize: '30px' }} /> */}
               <Image
                 src="/header/Elements/Navigation/outline/shoppingbag.svg"
                 alt="購物袋"
@@ -100,13 +99,12 @@ export default function Header() {
                 height={34}
               />
               <div>{totalCount}</div>
-            </button>
+            </button> */}
+            <CartDropdown cartItems={cartItems} onCartClick={handleCartClick} />
 
             <Link href={'/member/' + loginUrl} className="d-lg-block d-none">
               <button>{loginAva}</button>
             </Link>
-            {/* </Link> */}
-            {/* </button> */}
           </div>
         </div>
       </header>
