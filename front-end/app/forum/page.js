@@ -95,7 +95,7 @@ export default function ForumPage() {
 
   return (
     <>
-      <main className="main posts-section col col-10 col-xl-8 d-flex flex-column align-items-center mx-0 px-0 position-relative overflow-hidden no-scroll-bar">
+      <main className="main posts-section col col-10 col-xl-8 d-flex flex-column align-items-center mx-0 px-0 position-relative overflow-hidden no-scroll-bar h-100">
         <div className="tabs d-flex position-absolute w-100 top-0 px-3">
           <Componentstab
             cates={['熱門', '最新']}

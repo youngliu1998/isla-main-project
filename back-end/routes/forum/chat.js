@@ -4,6 +4,53 @@ import multer from 'multer'
 
 const router = express.Router()
 
+router.post('/add-chat', async (req, res) => {
+  const { list, userID } = req.body
+
+  // 找到有user的房間，比對有沒有一樣的，回傳布林值（有的話跳轉、沒的話POST新增聊天室）
+  list.push(userID) //若回傳，值會是長度而非陣列
+  const listCount = list.length
+  const listPlaceholders = list.map(() => '?').join(',')
+  const [exsitRoom] = await db.query(
+    `
+    SELECT room_id
+    FROM chat_room_user
+    GROUP BY room_id
+    HAVING count(*) = ?
+    AND SUM(user_id IN (${listPlaceholders})) = ?
+    `,
+    [listCount, ...list, listCount]
+  )
+  // console.log({ listCount, listPlaceholders, exsitRoom })
+
+  const isRoomExsit = !!exsitRoom[0]
+  let data
+  if (!isRoomExsit) {
+    const [createRoom] = await db.query(
+      `
+      INSERT INTO chat_room (fake_name) VALUES (NULL);`
+    )
+
+    const newRoomId = createRoom.insertId
+    // console.log(newRoomId)
+    const newList = list.map((id) => [newRoomId, id])
+
+    const [result] = await db.query(
+      `
+      INSERT INTO chat_room_user (room_id, user_id)
+      VALUES ?`,
+      [newList]
+    )
+    if (result.affectedRows === 0) {
+      throw new Error('未成功新增聊天室')
+    }
+    return res.json({ status: 'success', data: newRoomId })
+  } else {
+    data = 'exist'
+    return res.json({ status: 'success', data })
+  }
+})
+
 router.get('/', async (req, res) => {
   const userID = req.query.userID
   const [room] = await db.query(
@@ -12,7 +59,7 @@ router.get('/', async (req, res) => {
     WHERE user_id = ${userID}
     GROUP BY user_id`
   )
-  console.log(room)
+
   if (!room) {
     return res.json({ status: 'success', data: null })
   }
@@ -21,7 +68,7 @@ router.get('/', async (req, res) => {
   if (!rooms) {
     return res.json({ status: 'error', data: null })
   }
-  console.log({ userID: userID, rooms: rooms })
+
   // console.log(rooms) //string 1,2,3,4,5,6,7,8
   const [roomList] = await db.query(
     `SELECT m.room_id,

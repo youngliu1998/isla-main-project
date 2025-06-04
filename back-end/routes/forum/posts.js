@@ -66,7 +66,7 @@ router.get('/:pageName', async function (req, res) {
       const keyword = req.query.keyword
       const productCate = req.query.productCate?.split(',')
       const postCate = req.query.postCate?.split(',')
-      console.log({ keyword, productCate, postCate })
+      // console.log({ keyword, productCate, postCate })
 
       // WHERE p.title LIKE ? OR p.content LIKE ? AND p.cate_id = ? AND p.product_cate_id = ?
       // 冷靜的找到篩選問題是括號，我好棒！
@@ -144,14 +144,6 @@ router.get('/:pageName', async function (req, res) {
     data: postsResult[0],
   })
 })
-
-// // 得到多筆文章 - 篩選
-// router.get('/:queryParam', async function (req, res) {
-//   const queryParam = req.params.queryParam
-//   queryParam.split('&')
-//   const [posts] = await db.query(`SELECT * FROM post`)
-//   return res.json({ status: 'success', data: { posts } })
-// })
 
 // 新增一筆文章 - 網址：POST /api/forum/posts
 const storage = multer.diskStorage({

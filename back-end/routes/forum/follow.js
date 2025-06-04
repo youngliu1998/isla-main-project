@@ -5,11 +5,11 @@ import path from 'path'
 
 const router = express.Router()
 
-// 取得第一層留言
 router.get('/', async function (req, res) {
   //   const { followID, userID } = req.body
   // const userID = req.query.userID
   const followID = req.query.followID
+  const userID = req.query.userID
 
   const [result] = await db.query(
     `SELECT GROUP_CONCAT(user_id) AS user_ids
@@ -20,8 +20,20 @@ router.get('/', async function (req, res) {
     [followID]
   )
 
+  const [follows] = await db.query(
+    `SELECT uf.follow_id AS follow_id,
+    u.nickname AS follow_nick,
+    u.ava_url AS follow_img
+    FROM user_follow AS uf
+    JOIN users AS u ON uf.follow_id = u.id
+    WHERE user_id = ?
+    `,
+    [userID]
+  )
+  // console.log(follows)
+
   const user_ids = result[0] ? result[0]?.user_ids.split(',').map(Number) : ''
-  return res.json({ status: 'success', data: user_ids })
+  return res.json({ status: 'success', data: user_ids, follows })
 })
 
 router.post('/get-follow-list', async function (req, res) {

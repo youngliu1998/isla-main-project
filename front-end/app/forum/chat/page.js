@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { useAuth } from '../../../hook/use-auth'
 import { useEffect } from 'react'
+import Ripples from 'react-ripples'
 
 export default function ChatPage(props) {
   return (
@@ -13,14 +14,16 @@ export default function ChatPage(props) {
         </div>
         <div className="fs24 fw-bolder">你的訊息</div>
         <div className="sub-text-color">和朋友或群組討論最新美妝話題！</div>
-        <button
-          className="p-0 button-clear bg-main text-white px-3 py-1 mt-2 rounded-3"
-          type="button"
-          data-bs-toggle="modal"
-          data-bs-target="#addChat"
-        >
-          發送訊息
-        </button>
+        <Ripples className="bounce bg-main px-3 py-1 mt-2 rounded-3">
+          <button
+            className="button-clear text-white"
+            type="button"
+            data-bs-toggle="modal"
+            data-bs-target="#addChat"
+          >
+            發送訊息
+          </button>
+        </Ripples>
       </div>
     </>
   )

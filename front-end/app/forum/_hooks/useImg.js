@@ -44,9 +44,9 @@ export default function UseImg() {
   }
 
   // 圖片上傳
-  function handleImgUpload(e, userID) {
+  function handleImgUpload(e, userID, contentRef, modalRef) {
     const files = Array.from(e.target.files || [])
-    // console.log(files)
+    console.log(files)
     // setImagesList((prev) => [...prev, ...files])
     const imageFD = new FormData()
     imageFD.append('userID', userID)
@@ -74,15 +74,15 @@ export default function UseImg() {
           const url = filenamesToUrl[i]
           // console.log('inner', filenamesToUrl)
           // console.log(url)
-          previewImage(url)
+          previewImage(url, contentRef, modalRef)
         })
       })
       .catch((err) => {
         console.log(err) //FIXME 上傳失敗的提示
       })
-
+    // console.log('test')
     e.target.value = []
   }
 
-  return { handleImgUpload, previewImage }
+  return { handleImgUpload }
 }

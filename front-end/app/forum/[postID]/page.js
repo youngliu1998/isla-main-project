@@ -116,7 +116,7 @@ export default function PostIDPage(props) {
   return (
     <>
       {/* <PostDetailLoader /> */}
-      <main className="main posts-section col col-10 col-xl-8 d-flex flex-column align-items-start px-0">
+      <main className="main posts-section col col-10 col-xl-8 d-flex flex-column align-items-start px-0 h-100">
         {error ? (
           <div className="fs24 d-flex flex-column align-items-center mx-auto mt-3 gap-2">
             <div>連線錯誤，試試重新整理</div>
@@ -272,32 +272,35 @@ export default function PostIDPage(props) {
         )}
       </main>
       <div className="col col-2 d-none d-xl-block px-0 ps-xl-2 ps-xxl-0 position-relative"></div>
-      <EditPostModal
-        postID={post.id}
-        productCate={post.product_cate_id}
-        postCate={post.cate_id}
-        postTitle={post.title}
-        postContent={post.content}
-        isUpdated={true}
-        mutate={mutate}
-      />
-      <EditPostModal
-        postID=""
-        productCate=""
-        postCate=""
-        postTitle=""
-        postContent=""
-        isUpdated={false}
-        mutate={mutate}
-      />
-
-      <ConfirmModal
-        title="確定刪除嗎？"
-        content="刪除後，文章將無法復原"
-        confirm="刪除"
-        cancel="取消"
-        handleModalAction={handleDeletePost}
-      />
+      {post && (
+        <>
+          <EditPostModal
+            postID={post.id}
+            productCate={post.product_cate_id}
+            postCate={post.cate_id}
+            postTitle={post.title}
+            postContent={post.content}
+            isUpdated={true}
+            mutate={mutate}
+          />
+          <EditPostModal
+            postID=""
+            productCate=""
+            postCate=""
+            postTitle=""
+            postContent=""
+            isUpdated={false}
+            mutate={mutate}
+          />
+          <ConfirmModal
+            title="確定刪除嗎？"
+            content="刪除後，文章將無法復原"
+            confirm="刪除"
+            cancel="取消"
+            handleModalAction={handleDeletePost}
+          />
+        </>
+      )}
     </>
   )
 }

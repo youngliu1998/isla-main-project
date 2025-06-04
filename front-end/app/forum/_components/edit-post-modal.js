@@ -20,11 +20,10 @@ export default function EditPostModal({
   const modalRef = useRef()
   const router = useRouter()
   const { user, isAuth } = useAuth()
-  // const isAuth = user.id !== 0
   const userID = user.id
   const userUrl = user.ava_url
   const userNick = user.nickname
-  // const [imagesList, setImagesList] = useState([])
+
   const { productCateItems, postCateItems } = useFilter()
   useEffect(() => {
     titleRef.current.innerText = postTitle
@@ -255,7 +254,7 @@ export default function EditPostModal({
                   multiple
                   hidden
                   onChange={(e) => {
-                    handleImgUpload(e)
+                    handleImgUpload(e, userID, contentRef, modalRef)
                   }}
                 />
                 <label
@@ -284,7 +283,7 @@ export default function EditPostModal({
                   disabled={isTitleValid && isContentValid ? false : true}
                   onClick={(e) => {
                     e.preventDefault()
-                    console.log({ isTitleValid, isContentValid })
+                    // console.log({ isTitleValid, isContentValid })
                     setHasTitleTouched(false)
                     // FIXME modal剛出現 按按鈕時出現警示
                   }}
