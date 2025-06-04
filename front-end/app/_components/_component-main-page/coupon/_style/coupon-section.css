@@ -71,3 +71,51 @@
   color: #ffffff;
   font-weight: 400;
 }
+
+.swiper-button-prev-custom,
+.swiper-button-next-custom {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.3s ease;
+  color: #333;
+}
+
+.swiper-button-prev-custom:hover,
+.swiper-button-next-custom:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.swiper-button-prev-custom {
+  left: 20px;
+}
+
+.swiper-button-next-custom {
+  right: 20px;
+}
+
+@media (max-width: 768px) {
+  .swiper-button-prev-custom,
+  .swiper-button-next-custom {
+    width: 35px;
+    height: 35px;
+  }
+
+  .swiper-button-prev-custom {
+    left: 10px;
+  }
+
+  .swiper-button-next-custom {
+    right: 10px;
+  }
+}

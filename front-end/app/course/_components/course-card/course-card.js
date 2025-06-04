@@ -135,7 +135,10 @@ export default function CourseCard({
         href={`/course/course-list/${id}`}
         className="text-decoration-none course-card-animate"
       >
-        <div className="card h-100 card-hover-course" data-course-id={id}>
+        <div
+          className="card h-100 card-hover-course course-card"
+          data-course-id={id}
+        >
           <div className="card-img-container-course position-relative">
             <Image
               src={picture}
@@ -159,7 +162,7 @@ export default function CourseCard({
               />
             </button>
           </div>
-          <div className="card-body">
+          <div className="card-body course-card-body">
             <button className="btn card-btn-course mb-2">{tagLabel}</button>
             <h5 className="card-title card-title-box mb-2">{title}</h5>
             <p className="card-teacher-course mb-2">{teacher_name}</p>
@@ -176,12 +179,12 @@ export default function CourseCard({
               </div>
             </div>
 
-            <div className="d-flex align-items-end text-end">
+            <div className="d-flex align-items-end text-end course-money">
               <h5 className=" me-3 fw-bold">
-                NT {Number(discount).toLocaleString()}
+                NT$ {Number(discount).toLocaleString()}
               </h5>
               <p className="card-text-price m-0">
-                NT {Number(price).toLocaleString()}
+                $ {Number(price).toLocaleString()}
               </p>
             </div>
           </div>

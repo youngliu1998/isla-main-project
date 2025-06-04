@@ -87,7 +87,7 @@ export default function ProductEditPage({ params }) {
   const [imagePreviews, setImagePreviews] = useState([]) // 與 formData.images 保持一致，用於顯示
   const [isFormInitialized, setIsFormInitialized] = useState(false)
   const IMAGE_BASE_URL = 'https://isla-image.chris142852145.workers.dev/'
-  const R2_PUBLIC_URL = 'YOUR_PUBLIC_R2_URL/'
+  const R2_PUBLIC_URL = 'https://isla-image.chris142852145.workers.dev/'
   const IMAGE_WORKER_URL = 'https://isla-image.chris142852145.workers.dev/'
 
   useEffect(() => {
