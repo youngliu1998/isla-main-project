@@ -1,0 +1,15 @@
+/* ==== 文章 ====  */
+.header-search-item.for-forum {
+  /* 標題 */
+  .search-item-title {
+    width: 150px;
+    height: 1.5rem;
+    overflow: hidden;
+  }
+  /* 頭像外框 */
+  .search-item-img {
+    width: 20px;
+    aspect-ratio: 1 / 1;
+  }
+}
+/* 商品與文章卡片細節的css分別移至 product.css 與 forum.css */

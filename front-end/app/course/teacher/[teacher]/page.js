@@ -12,6 +12,7 @@ import ComponentsPostCard from '../../../forum/_components/post-card'
 import '../../../forum/_components/forum.css'
 import Link from 'next/link'
 import PurchasedCourseCard from '../../../course/_components/purchased-course-card/purchased-course-card'
+import Breadcrumb from '../../_components/breadcrumb/breadcrumb'
 
 export default function TeacherPage() {
   const [data, setData] = useState(null) // 講師資料
@@ -138,7 +139,9 @@ export default function TeacherPage() {
   return (
     <section className=" container my-5">
       <div className="row d-lg-flex d-none">
-        <p className="bread-crumbs my-5">首頁 / 美妝學院 / {data.users_name}</p>
+        <div className="bread-crumbs my-5">
+          <Breadcrumb type="teacher" path={id} />
+        </div>
       </div>
       <div className="row">
         <div className="col-lg-3 col-12">

@@ -24,6 +24,7 @@ import EditReviewModal from '../../../course/_components/edit-review-modal/edit-
 import LoginModal from '../../../course/_components/login-modal'
 import { useRouter } from 'next/navigation'
 import DOMPurify from 'dompurify'
+import Breadcrumb from '../../_components/breadcrumb/breadcrumb'
 
 export default function CourseIDPage() {
   // ✅ 取得動態路由的課程 ID
@@ -398,9 +399,9 @@ export default function CourseIDPage() {
 
               <div className="card-img-overlay banner-img-mask-course">
                 <div className="row d-lg-flex d-none">
-                  <p className="bread-crumbs mt-3 ms-5">
-                    首頁 / 美妝學院 / {v.title}
-                  </p>
+                  <div className="bread-crumbs mt-3 ms-5">
+                    <Breadcrumb type="course" path={id} />
+                  </div>
                 </div>
                 <div className="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-end p-xl-4 p-lg-3 p-md-2 p-sm-1 p-0">
                   <div className="row position-absolute top-50 end-0 translate-middle-y d-flex align-items-center gap-2 me-5 d-lg-flex d-none banner-play-box">
