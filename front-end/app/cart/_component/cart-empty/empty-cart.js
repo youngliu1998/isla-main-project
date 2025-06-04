@@ -12,6 +12,7 @@ export default function EmptyCart() {
         alt="空購物車"
         width={550}
         height={620}
+        style={{ width: '100%', height: 'auto', maxWidth: '550px' }}
       />
       <h5 className="text-maintext mb-3">
         你的購物車是空的，快去選購喜歡的商品吧！

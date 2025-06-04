@@ -332,7 +332,7 @@ export default function CartPage() {
 
             <div className="row gy-5">
               <div className="col-lg-7 col-12 gy-5">
-                <div className="card-style mb-4 p-4">
+                <div className="card-style mb-4 p-lg-4 p-2">
                   <div className="mb-3 d-flex align-items-center text-primary">
                     <i className="bi bi-cart4 fs-6 mb-1 me-1"></i>
                     <div>彩妝商品</div>
@@ -374,13 +374,13 @@ export default function CartPage() {
                   {}
 
                   {/* add-on-divider */}
-                  <div
+                  {/* <div
                     className="w-100 bg-subtext my-3"
                     style={{ height: '1px' }}
                   ></div>
                   <div className="text-elem">
                     <i className="bi bi-cart-check-fill me-2"></i>加購商品
-                  </div>
+                  </div> */}
                 </div>
 
                 <CouponAccordion>
