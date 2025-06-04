@@ -128,7 +128,9 @@ export default function OrderCompletedPage() {
             </div>
             <div className="col-6 col-md-3 mb-2">
               <div className="fw-bold">訂單狀態</div>
-              <div style={{ color: 'green' }}>{orderStatus}</div>
+              <div style={{ color: 'green' }}>
+                {orderStatus === 'completed' ? '已完成' : '待付款'}
+              </div>
             </div>
             <div className="col-6 col-md-3 mb-2">
               <div className="fw-bold">付款方式</div>
