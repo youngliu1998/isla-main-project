@@ -1,7 +1,7 @@
-export default async function getForum(search = '') {
+export default async function getProduct(search = '') {
   if (search === '') return []
   let error = ''
-  const forums = await fetch(
+  const products = await fetch(
     'http://localhost:3005/api/forum/posts/header-search',
     {
       method: 'POST',
@@ -15,20 +15,20 @@ export default async function getForum(search = '') {
     .then((data) => data['data'])
     .catch((err) => {
       error = err
-
-      return {}
+      return []
     })
+
   if (error) {
-    console.log('getForum error', error)
+    console.log('getProduct error', error)
     return [{ title: '', nickname: '', ava_img: '', catName: '' }]
   }
-  return forums.map((forum) => {
+  // console.log('get product:', products)
+  return products.map((product) => {
     return {
-      title: forum.title,
-      nickname: forum.user_nick,
-      ava_img: forum.user_img,
-      catName: forum.cate_name,
-      content: forum.content,
+      title: product.title,
+      productImg: '133692/1.jpg',
+      price: 3000,
+      brand: 'Unleashia',
     }
   })
 }

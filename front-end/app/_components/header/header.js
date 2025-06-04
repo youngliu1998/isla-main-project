@@ -1,13 +1,15 @@
 'use client'
 import Link from 'next/link'
 import Image from 'next/image'
-//styles
 import { BsHandbag } from 'react-icons/bs'
 import { useAuth } from '@/hook/use-auth'
 import { useCartContext } from '../../cart/context/cart-context'
+// component
 import HamMenu from './_component/ham-menu'
 import HamMeunNav from './_component/ham-meun-nav'
 import HeaderNav from './_component/header-nav'
+import SearchBlockLg from './_component/search-block/search-block-lg'
+//styles
 import './header.css'
 // hook
 import { usePathname, useRouter } from 'next/navigation'
@@ -20,6 +22,8 @@ export default function Header() {
   const pathname = usePathname()
   const router = useRouter()
   const [hamMenuOpen, setHamMenuOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
+  console.log('searchOpen', searchOpen)
   const { user, isAuth } = useAuth()
   // console.log('header: user: ', user)
   // ==== 購物車按鈕路徑定義 ====
@@ -69,6 +73,9 @@ export default function Header() {
   return (
     <>
       <header>
+        <div className="d-none d-lg-block header-lg-search-bar-container">
+          <SearchBlockLg open={searchOpen} />
+        </div>
         <div className="position-relative header-body">
           {/* (START) for burger menu*/}
           <HamMeunNav
@@ -83,7 +90,12 @@ export default function Header() {
           {/*  nav-bar */}
           <HeaderNav />
           <div className="order-3 icons">
-            <button className="d-lg-block d-none">
+            <button
+              className="d-lg-block d-none"
+              onClick={() => {
+                setSearchOpen(!searchOpen)
+              }}
+            >
               <i className="bi bi-search" />
             </button>
 

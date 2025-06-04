@@ -16,7 +16,7 @@ export default function HamMeunNav({
   return (
     <>
       <nav className={'d-lg-none d-block ham-menu-nav' + ' ' + isOpen}>
-          <SearchBlock />
+        <SearchBlock />
         <ul className="d-flex flex-column mt-3">
           <li>
             <Link

@@ -9,14 +9,16 @@ import ProductBar from './_component/product-bar'
 import getForum from './_method/getForum'
 import getProduct from './_method/getProduct'
 // ==== css ====
+import './_style/search-block-lg.css'
 import './_style/search-block.css'
 
-export default function SearchBlock() {
+export default function SearchBlockLg({ open = true }) {
   const [searchType, setSearchType] = useState(1)
   const [searchText, setSearchText] = useState('')
   const [forums, setForums] = useState([])
   const [products, setProducts] = useState([])
   // console.log('searchText', searchText)
+  const isOpen = open ? 'd-flex' : 'd-none'
   useEffect(() => {
     const getData = async () => {
       if (searchType === 1) {
@@ -32,7 +34,7 @@ export default function SearchBlock() {
   }, [searchText, searchType])
   return (
     <>
-      <div className="header-search-block px-3 mt-3">
+      <div className={'header-search-block-lg for-product px-3' + ' ' + isOpen}>
         {/* ==== 切換欄位 ==== */}
         <div className="w-50">
           <Componentstab

@@ -59,7 +59,7 @@ router.get('/:pageName', async function (req, res) {
         data: { posts: postsResult[0], morePosts: morePostsResult[0] },
       })
       // }
-      break
+      // break
     }
     case 'home': {
       const tab = req.query.tab
