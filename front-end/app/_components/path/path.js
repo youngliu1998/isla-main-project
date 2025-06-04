@@ -12,9 +12,8 @@ import { useEffect, useState } from 'react'
 export default function Path() {
   const pathname = usePathname()
   const [pathArrTag, setPathArrTag] = useState([])
-  let pathArr = pathname.split('/')
+  let pathArr = pathname.split('/') // "/member/profile" => ['',member,profile]
   // const [pathArr, setPathArr] = useState(pathname.split('/'))
-  console.log() // "/member/profile" => ['',member,profile]
 
   // ==== 為每個 tag 整理新的 href ====
   const getPath = (thisPath) => {
@@ -26,11 +25,11 @@ export default function Path() {
     return address
   }
 
-  console.log('pathArr:', pathArr)
-  console.log('pathArrTag:', pathArrTag)
+  // console.log('pathArr:', pathArr)
+  // console.log('pathArrTag:', pathArrTag)
 
   useEffect(() => {
-    console.log('==== useEffect Start ====')
+    // console.log('==== useEffect Start ====')
     // ==== (function )將 pathArr 的內容改為中文(tag 為中文) ====
     let prevPath = ''
     async function convertToChinese(thisPath) {
@@ -68,13 +67,13 @@ export default function Path() {
         newPathArrTag[i] = await convertToChinese(pathArr[i])
       }
 
-      console.log('in UseEffect async', newPathArrTag)
+      // console.log('in UseEffect async', newPathArrTag)
       setPathArrTag(newPathArrTag)
     }
-    console.log('in UseEffect', pathArrTag)
+    // console.log('in UseEffect', pathArrTag)
     getPath()
 
-    console.log('==== useEffect End ====')
+    // console.log('==== useEffect End ====')
   }, [pathArr[pathArr.length - 1]])
   // 首頁,文章列表不需要麵包削
   if (pathname === '/' || pathname.includes('/forum')) {
