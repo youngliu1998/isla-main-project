@@ -12,6 +12,7 @@ import DOMPurify from 'dompurify'
 import CalendarButton from '@/app/course/_components/calendar-button/calendar-button'
 import CountdownTimer from '@/app/course/_components/countdown-timer/countdown-timer'
 import LoginModal from '../../../course/_components/login-modal'
+import Breadcrumb from '../../_components/breadcrumb/breadcrumb'
 
 export default function ExperienceIDPage() {
   const params = useParams()
@@ -219,9 +220,9 @@ export default function ExperienceIDPage() {
               />
               <div className="card-img-overlay banner-img-mask-course">
                 <div className="row d-lg-flex d-none">
-                  <p className="bread-crumbs mt-3 ms-5">
-                    首頁 / 美妝學院 / {v.title}
-                  </p>
+                  <div className="bread-crumbs mt-3 ms-5">
+                    <Breadcrumb type="experience" path={id} />
+                  </div>
                 </div>
                 <div className="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-end p-xl-4 p-lg-3 p-md-2 p-sm-1 p-0">
                   <div className="container">
