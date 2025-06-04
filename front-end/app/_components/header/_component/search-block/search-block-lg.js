@@ -35,16 +35,8 @@ export default function SearchBlockLg({ open = true }) {
   return (
     <>
       <div className={'header-search-block-lg for-product px-3' + ' ' + isOpen}>
-        {/* ==== 切換欄位 ==== */}
-        <div className="w-50">
-          <Componentstab
-            cates={['商品', '文章']}
-            height={40}
-            handleTabChange={setSearchType}
-          />
-        </div>
         {/* ==== 搜尋欄位 ==== */}
-        <div className="d-flex align-items-center ps-4 mb-3">
+        <div className="d-flex align-items-center ps-4 mt-3">
           <label htmlFor="serch" className="px-3">
             <i className="bi bi-search fs-5" />
           </label>
@@ -57,14 +49,22 @@ export default function SearchBlockLg({ open = true }) {
             }}
           />
         </div>
+        {/* ==== 切換欄位 ==== */}
+        <div className="w-50 mb-3">
+          <Componentstab
+            cates={['商品', '文章']}
+            height={40}
+            handleTabChange={setSearchType}
+          />
+        </div>
         {/* ==== 商品(文章)列表 ==== */}
         <div className="d-flex flex-wrap gap-2 header-search-item-list">
           {searchType == 1 &&
-            products.slice(0, 6).map((product, i) => {
+            products.slice(0, 10).map((product, i) => {
               return <ProductBar product={product} key={i} />
             })}
           {searchType == 2 &&
-            forums.slice(0, 6).map((forum, i) => {
+            forums.slice(0, 10).map((forum, i) => {
               return <ForumBar forum={forum} key={i} />
             })}
         </div>

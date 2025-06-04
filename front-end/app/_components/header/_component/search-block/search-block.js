@@ -6,17 +6,19 @@ import Componentstab from '@/app/_components/tab'
 import ForumBar from './_component/forum-bar'
 import ProductBar from './_component/product-bar'
 // ==== method ====
-import getForum from './_method/getForum'
-import getProduct from './_method/getProduct'
+import getForum from './_method/getForum' // 傳入文章資料的函式 [{},{}]
+import getProduct from './_method/getProduct' // 傳入商品資料的函式 [{},{}]
 // ==== css ====
 import './_style/search-block.css'
 
 export default function SearchBlock() {
-  const [searchType, setSearchType] = useState(1)
-  const [searchText, setSearchText] = useState('')
+  const [searchType, setSearchType] = useState(1) // tab 控制項( 1是商品，2是文章 )
+  const [searchText, setSearchText] = useState('') // input 文字控制項
+  // ==== 商品與文章的list控制項( [{},{}] ) ====
   const [forums, setForums] = useState([])
   const [products, setProducts] = useState([])
-  // console.log('searchText', searchText)
+
+  // ==== 每當input文字改變，撈取資料庫的資料 ====
   useEffect(() => {
     const getData = async () => {
       if (searchType === 1) {
@@ -33,16 +35,8 @@ export default function SearchBlock() {
   return (
     <>
       <div className="header-search-block px-3 mt-3">
-        {/* ==== 切換欄位 ==== */}
-        <div className="w-50">
-          <Componentstab
-            cates={['商品', '文章']}
-            height={40}
-            handleTabChange={setSearchType}
-          />
-        </div>
         {/* ==== 搜尋欄位 ==== */}
-        <div className="d-flex align-items-center ps-4 mb-3">
+        <div className="d-flex align-items-center">
           <label htmlFor="serch" className="px-3">
             <i className="bi bi-search fs-5" />
           </label>
@@ -55,14 +49,22 @@ export default function SearchBlock() {
             }}
           />
         </div>
+        {/* ==== 切換欄位 ==== */}
+        <div className="w-50 mb-3">
+          <Componentstab
+            cates={['商品', '文章']}
+            height={40}
+            handleTabChange={setSearchType}
+          />
+        </div>
         {/* ==== 商品(文章)列表 ==== */}
-        <div className="d-flex flex-wrap gap-2 header-search-item-list">
+        <div className="d-flex flex-wrap justify-content-center gap-2 header-search-item-list">
           {searchType == 1 &&
-            products.slice(0, 6).map((product, i) => {
+            products.slice(0, 8).map((product, i) => {
               return <ProductBar product={product} key={i} />
             })}
           {searchType == 2 &&
-            forums.slice(0, 6).map((forum, i) => {
+            forums.slice(0, 8).map((forum, i) => {
               return <ForumBar forum={forum} key={i} />
             })}
         </div>

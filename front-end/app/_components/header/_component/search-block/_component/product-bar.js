@@ -4,6 +4,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 // ==== route ====
 import { PRODUCT_IMG_URL } from '@/_route/img-url'
+// ==== css ====
+import '../_style/product.css' // 卡片css
 
 export default function ProductBar({
   product = { brand: 'eee', title: 'weeeeeee', price: 3000 },
