@@ -85,7 +85,7 @@ export default function ComponentsSearchBar({
           </div>
           <div className="reset-filter d-flex">
             <button
-              className={`sub-text-color button-clear ms-auto py-1 ${keyword || productCate.length > 0 || postCate.length > 0 ? '' : 'hidden'} fs14`}
+              className={`ps-1 sub-text-color button-clear py-1 ${keyword || productCate.length > 0 || postCate.length > 0 ? '' : 'hidden'} fs14`}
               onClick={(e) => {
                 e.preventDefault()
                 console.log({ keyword, productCate, postCate })
@@ -93,6 +93,8 @@ export default function ComponentsSearchBar({
                 setKeyword('')
                 setSearchEmpty(true)
                 keywordInputRef.current.value = ''
+                setProductCate('')
+                setPostCate('')
                 handleAsideSearchChange('', '', '')
               }}
             >
@@ -102,7 +104,7 @@ export default function ComponentsSearchBar({
         </form>
 
         <div className="cate ps-1">
-          <div className="cate-title pt-2 pb-2 rounded-3 fs14 fw-medium sub-text-color">
+          <div className="cate-title pt-2 pb-2 rounded-3 fs14 fw-medium main-color">
             商品類型
           </div>
           <div className="cate-input">
@@ -137,7 +139,7 @@ export default function ComponentsSearchBar({
           </div>
         </div>
         <div className="cate ps-1">
-          <div className="cate-title pt-4 pb-2 rounded-3 fs14 fw-medium sub-text-color">
+          <div className="cate-title pt-4 pb-2 rounded-3 fs14 fw-medium main-color">
             文章類型
           </div>
           <div className="cate-input">

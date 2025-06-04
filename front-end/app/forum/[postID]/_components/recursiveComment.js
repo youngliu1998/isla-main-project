@@ -27,6 +27,7 @@ export default function RecursiveComment({
   const path = usePathname()
   const postID = useParams().postID
   const lastSubCommentRef = useRef()
+  // const subInputRef = useRef()
   const { user } = useAuth()
   const isAuth = user.id !== 0
   const userIDMe = user.id
@@ -81,8 +82,7 @@ export default function RecursiveComment({
               href="/"
               className="reply button-clear text-decoration-none"
               onClick={() => {
-                setSubInputShow((v) => !v)
-                handleDirectToLogin(path)
+                !isAuth ? handleDirectToLogin(path) : setSubInputShow((v) => !v)
               }}
             >
               <span className="fs14 sub-text-color fw-light">回覆</span>
@@ -131,6 +131,7 @@ export default function RecursiveComment({
       >
         <ComponentsAvatar classWidth="32" src={userImgMe} alt={userNickMe} />
         <input
+          // ref={subInputRef}
           className="sub-input bg-gray-article border-0 rounded-pill px-3 w-100"
           placeholder={`回覆 ${userNick}`}
           type="text"
@@ -143,6 +144,7 @@ export default function RecursiveComment({
               handleCommentSubmit(e, userIDMe, commentID, lastSubCommentRef)
               mutate()
               setSubCommentShow(true)
+              setSubInputShow(false)
             }
           }}
         />

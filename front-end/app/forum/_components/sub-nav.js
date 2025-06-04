@@ -112,7 +112,7 @@ export default function ComponentsSubNav() {
             <Ripples className="rounded-3 d-block">
               <button
                 className={`sub-nav-item button-clear d-flex px-3 py-3 gap-2 w-100 rounded-3 text-decoration-none fw-medium main-text-color fs16`}
-                data-bs-toggle="collapse"
+                data-bs-toggle={isAuth ? 'collapse' : ''}
                 data-bs-target="#panelsStayOpen-collapseOne"
                 aria-expanded="true"
                 aria-controls="panelsStayOpen-collapseOne"
@@ -130,7 +130,7 @@ export default function ComponentsSubNav() {
             </Ripples>
             <div
               id="panelsStayOpen-collapseOne"
-              className="accordion-collapse collapse show"
+              className={`accordion-collapse collapse ${isAuth && 'show'}`}
             >
               <div className="followings fs14 d-flex flex-column px-4 py-1 gap-2">
                 {
