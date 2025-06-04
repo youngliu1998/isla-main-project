@@ -16,12 +16,26 @@
   border-top: 1px solid #fff;
   background: #f6f6f6;
 }
-.sidebar-filter-search-icon {
+.sidebar-filter-search-icon-desktop {
   display: flex;
-  font-size: 32px;
+  font-size: 26px;
+  transition: all 0.3s;
+  /* background: #000; */
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  color: #7f7f7f;
 }
 .sidebar-filter-search-x-icon {
-  font-size: 36px;
+  font-size: 32px;
+  transition: all 0.3s;
+  background: transparent;
+  border: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: #504747;
 }
 .sidebar-filter-search {
   height: 100%;
@@ -47,7 +61,6 @@
   color: #8f8f8f;
 }
 
-
 .sidebar-filter-order-label {
   font-size: 14px;
   font-weight: 700;
@@ -61,7 +74,10 @@
   gap: 3px;
   color: #494949;
   font-size: 16px;
-  transition: font-size 0.5s, font-weight 0.5s, color 0.5s;
+  transition:
+    font-size 0.5s,
+    font-weight 0.5s,
+    color 0.5s;
 }
 .sidebar-filter-order-btn:hover {
   font-size: 17px;
@@ -72,7 +88,6 @@
   color: #ea7979;
   font-weight: 700;
 }
-
 
 .sidebar-filter-order-order {
   width: 26px;
@@ -105,7 +120,6 @@
     transform: rotate(0deg);
   }
 }
-
 
 .sidebar-filter-main-filter-box {
   display: flex;
@@ -234,3 +248,32 @@
   }
 }
 
+.sidebar-filter-search {
+  display: block;
+  width: 100%;
+  height: 100%;
+  /* padding: 0.375rem 0.75rem; */
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  border-radius: none;
+  box-shadow: none;
+  transition:
+    border-color 0.15s ease-in-out,
+    box-shadow 0.15s ease-in-out;
+}
+
+.sidebar-filter-search:focus {
+  color: #495057;
+  background-color: transparent !important;
+  border-color: none !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+}
+
+.sidebar-filter-search::placeholder {
+  color: #70757a;
+  opacity: 0.5;
+}

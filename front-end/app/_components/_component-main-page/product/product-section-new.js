@@ -5,10 +5,9 @@ import Link from 'next/link'
 // ==== compoents ====
 import Componentstab from '@/app/_components/tab'
 import BrandSelect from './_component/brand-select'
-import ProductCard from '@/app/product/_components/product-card-s'
+import ProductCard from './_component/product-card-l'
 // ==== hooks ====
 import { useProducts } from '@/hook/use-products'
-import './_style/product-card-s.css'
 import './_style/product-section.css'
 
 export default function ProductSectionNew() {
@@ -79,7 +78,7 @@ export default function ProductSectionNew() {
         </div>
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-lg-4 g-4 p-0 m-0 mt-4">
           {
-            <div className="d-flex gap-4 product-list">
+            <div className="product-list product-list-main-page">
               {products.slice(0, 4).map((p) => (
                 <div key={p.product_id} className="product-card-container">
                   <ProductCard
@@ -87,6 +86,7 @@ export default function ProductSectionNew() {
                       id: p.product_id,
                       brand: p.brand_name,
                       name: p.name,
+                      category_name: p.category_name,
                       price: p.final_price,
                       originalPrice: p.base_price,
                       rating: p.avg_rating,

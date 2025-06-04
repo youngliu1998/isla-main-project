@@ -95,17 +95,42 @@ export default function ForumPage() {
 
   return (
     <>
-      <main className="main posts-section col col-10 col-xl-8 d-flex flex-column align-items-center mx-0 position-relative overflow-hidden no-scroll-bar">
-        <div className="tabs d-flex position-absolute w-100 top-0">
+      <main className="main posts-section col col-10 col-xl-8 d-flex flex-column align-items-center mx-0 px-0 position-relative overflow-hidden no-scroll-bar">
+        <div className="tabs d-flex position-absolute w-100 top-0 px-3">
           <Componentstab
             cates={['熱門', '最新']}
             height={'40'}
             // setTab={setTab}
             handleTabChange={handleTabChange}
           />
-          <ComponentsSearchButton />
+          {/* <ComponentsSearchButton /> */}
+          <button
+            className="d-flex d-xl-none justify-content-center align-items-center gap-1 px-3 py-2 ms-2 my-1 rounded-pill sub-text-color border-0 text-nowrap button-clear"
+            type="button"
+            // data-bs-toggle="dropdown"
+            // aria-expanded="false"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasWithBothOptions"
+            aria-controls="offcanvasWithBothOptions"
+          >
+            <i className="bi bi-search"></i>
+            分類
+          </button>
+          <div
+            className="offcanvas offcanvas-end px-5"
+            data-bs-scroll="true"
+            tabIndex={-1}
+            id="offcanvasWithBothOptions"
+            aria-labelledby="offcanvasWithBothOptionsLabel"
+          >
+            <ComponentsSearchBar
+              postCateItems={postCateItems}
+              productCateItems={productCateItems}
+              handleAsideSearchChange={handleAsideSearchChange}
+            />
+          </div>
         </div>
-        <div className="posts d-flex flex-column gap-3 pt-5 pb-5 mt-1 w-100 overflow-auto">
+        <div className="posts d-flex flex-column gap-3 pt-5 pb-5 px-3 mt-1 w-100 overflow-auto">
           {/* <PostLoader /> */}
           {error
             ? '連線錯誤'
@@ -142,15 +167,17 @@ export default function ForumPage() {
                   })}
         </div>
       </main>
-      <ComponentsSearchBar
-        // setKeyword={setKeyword}
-        // setTab={setTab}
-        // setProductCate={setProductCate}
-        // setPostCate={setPostCate}
-        postCateItems={postCateItems}
-        productCateItems={productCateItems}
-        handleAsideSearchChange={handleAsideSearchChange}
-      />
+      <div className="col col-2 d-none d-xl-block px-0 ps-xl-2 ps-xxl-0 position-relative">
+        <ComponentsSearchBar
+          // setKeyword={setKeyword}
+          // setTab={setTab}
+          // setProductCate={setProductCate}
+          // setPostCate={setPostCate}
+          postCateItems={postCateItems}
+          productCateItems={productCateItems}
+          handleAsideSearchChange={handleAsideSearchChange}
+        />
+      </div>
       <EditPostModal postTitle="" postContent="" isUpdated={false} />
     </>
   )

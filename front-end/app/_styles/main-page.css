@@ -30,3 +30,11 @@
   background-color: #ff4f67;
   opacity: 1;
 }
+
+.main-sub-page-swiper-contrainer {
+  max-width: 950px;
+  /* background: #000; */
+}
+.swiper-inside {
+  border-radius: 28px;
+}

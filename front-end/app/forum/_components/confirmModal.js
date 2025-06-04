@@ -13,14 +13,14 @@ export default function ConfirmModal({
   return (
     <>
       <div
-        className="modal fade"
+        className="modal fade modal-confirm"
         id="confirmModal"
         tabIndex={-1}
         aria-labelledby="ConfirmLabel"
         aria-hidden="true"
       >
         <div className="modal-dialog modal-sm">
-          <div className="modal-content">
+          <div className="modal-content bg-pure-white">
             <div className="modal-header">
               <h1 className="modal-title fs-5" id="ConfirmLabel">
                 {title}
@@ -40,7 +40,7 @@ export default function ConfirmModal({
             <div className="modal-footer">
               <button
                 type="button"
-                className="btn btn-secondary"
+                className="btn-cancel px-3 py-2 rounded-3 button-clear sub-text-color bg-hovering-gray"
                 data-bs-dismiss="modal"
                 onClick={(e) => {
                   e.preventDefault()
@@ -51,7 +51,7 @@ export default function ConfirmModal({
               </button>
               <button
                 type="button"
-                className="btn btn-primary"
+                className="btn-submit px-3 py-2 border-0 rounded-3 color-isla-white"
                 data-bs-dismiss="modal"
                 onClick={(e) => {
                   e.preventDefault()
