@@ -4,6 +4,7 @@ import Image from 'next/image'
 //styles
 import { useAuth } from '@/hook/use-auth'
 import { useCartContext } from '../../cart/context/cart-context'
+//component
 import HamMenu from './_component/ham-menu'
 import HamMeunNav from './_component/ham-meun-nav'
 import HeaderNav from './_component/header-nav'
