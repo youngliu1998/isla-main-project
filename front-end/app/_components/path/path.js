@@ -4,13 +4,19 @@ import { usePathname } from 'next/navigation'
 // import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 // ==== method ====
-import { getCoursePath, getExperiencePath } from './_method/course-path'
+import {
+  getCoursePath,
+  getExperiencePath,
+  getTeacherPath,
+} from './_method/course-path'
 // ==== css ====
 import './_style/path.css'
 import { useEffect, useState } from 'react'
 
 export default function Path() {
   const pathname = usePathname()
+  // 新增條件判斷：只要是課程詳細頁，就不要顯示這條麵包屑
+  const isHiddenPath = pathname.startsWith('/course/course-list/')
   const [pathArrTag, setPathArrTag] = useState([])
   let pathArr = pathname.split('/')
   // const [pathArr, setPathArr] = useState(pathname.split('/'))
@@ -41,6 +47,9 @@ export default function Path() {
         // return getCoursePath(thisPath)
         return await getExperiencePath(thisPath)
       }
+      if (prevPath === 'teacher') {
+        return await getTeacherPath(thisPath)
+      }
       prevPath = thisPath
       switch (thisPath) {
         case '':
@@ -56,6 +65,8 @@ export default function Path() {
         case 'course-list':
           return ''
         case 'experience':
+          return ''
+        case 'teacher':
           return ''
         default:
           return thisPath
@@ -77,7 +88,11 @@ export default function Path() {
     console.log('==== useEffect End ====')
   }, [pathArr[pathArr.length - 1]])
   // 首頁,文章列表不需要麵包削
-  if (pathname === '/' || pathname.includes('/forum')) {
+  if (
+    pathname === '/' ||
+    pathname.includes('/forum') ||
+    pathname.startsWith('/course')
+  ) {
     return <></>
   }
   return (
