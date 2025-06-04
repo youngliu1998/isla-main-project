@@ -86,6 +86,7 @@ export default function ProductSectionNew() {
                       id: p.product_id,
                       brand: p.brand_name,
                       name: p.name,
+                      category_name: p.category_name,
                       price: p.final_price,
                       originalPrice: p.base_price,
                       rating: p.avg_rating,

@@ -8,16 +8,20 @@ const router = express.Router()
 // 取得第一層留言
 router.get('/', async function (req, res) {
   //   const { followID, userID } = req.body
-  const userID = req.query.userID
+  // const userID = req.query.userID
   const followID = req.query.followID
 
   const [result] = await db.query(
-    `SELECT * FROM user_follow
-    WHERE user_id = ? AND follow_id = ?
+    `SELECT GROUP_CONCAT(user_id) AS user_ids
+    FROM user_follow
+    WHERE follow_id = ?
+    GROUP BY follow_id
     `,
-    [userID, followID]
+    [followID]
   )
-  return res.json({ status: 'success', data: result.length > 0 })
+
+  const user_ids = result[0] ? result[0]?.user_ids.split(',').map(Number) : ''
+  return res.json({ status: 'success', data: user_ids })
 })
 
 router.post('/get-follow-list', async function (req, res) {

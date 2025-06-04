@@ -22,7 +22,7 @@ export function UseDirectToLogin({ isAuth }) {
           <Link
             // href={`/member/login?callBackUrl=${encodeURIComponent(path)}`}
             href={`/member/login`}
-            className="main-color text-decoration-underline me-4"
+            className="sub-text-color text-decoration-underline me-4"
           >
             前往登入
           </Link>

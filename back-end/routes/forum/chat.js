@@ -1,7 +1,6 @@
 import express from 'express'
 import db from '../../config/mysql.js'
 import multer from 'multer'
-// import path from 'path'
 
 const router = express.Router()
 

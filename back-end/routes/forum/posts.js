@@ -225,4 +225,48 @@ router.put('/soft-delete/:postID', async function (req, res) {
   }
   // return res.json({ status: 'success', data: null })
 })
+
+// header 搜尋
+// 標題title, 內文content（要塞在dangerouslySetInnerHTML內）, 分類cate_name, 作者名稱user_nick, 作者圖片user_img,
+router.post('/header-search', async function (req, res) {
+  const { keyword } = req.body
+  try {
+    const [result] = await db.query(
+      `
+      SELECT 
+        p.*,
+        pc.id AS cate_id,
+        pc.name AS cate_name,
+        u.nickname AS user_nick,
+        u.ava_url AS user_img,
+        IFNULL (liked.user_ids, '') AS liked_user_ids,
+        IFNULL( liked.likes, 0) AS likes,
+        IFNULL (saved.user_ids, '') AS saved_user_ids
+    FROM post p
+    JOIN post_category pc ON p.cate_id = pc.id
+    JOIN users u ON p.user_id = u.id
+    LEFT JOIN (
+        SELECT post_id,
+        GROUP_CONCAT(user_id) AS user_ids,
+        COUNT(user_id) AS likes
+        FROM post_user_liked
+        GROUP BY post_id
+    ) liked ON p.id = liked.post_id
+    LEFT JOIN (
+        SELECT post_id,
+        GROUP_CONCAT(user_id) AS user_ids
+        FROM post_user_saved
+        GROUP BY post_id
+    ) saved ON p.id = saved.post_id
+    WHERE p.valid=1 AND (p.title LIKE ? OR p.content LIKE ?)`,
+      [`%${keyword}%`, `%${keyword}%`]
+    )
+
+    return res.json({ status: 'success', data: result })
+  } catch (error) {
+    console.log(error)
+    return res.json({ status: 'error', message: error.message })
+  }
+})
+
 export default router

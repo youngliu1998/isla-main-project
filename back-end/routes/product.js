@@ -4,6 +4,8 @@ import {
   getProductDetail,
   updateProduct,
   getProductById,
+  createProduct,
+  deleteProduct,
 } from '../services/product-controller.js'
 import multer from 'multer'
 //驗證格式套件
@@ -100,23 +102,8 @@ router.put(
   }
 )
 
-router.delete('/:id', async (req, res) => {
-  try {
-    const productId = parseInt(req.params.id)
-    if (isNaN(productId)) return res.status(400).json({ error: 'ID格式錯誤' })
+router.post('/create', createProduct)
 
-    const [product, reviews] = await Promise.all([getProductDetail(productId)])
-
-    res.json({
-      success: true,
-      data: {
-        ...product,
-        reviews,
-      },
-    })
-  } catch (error) {
-    res.status(404).json({ success: false, message: error.message })
-  }
-})
+router.delete('/:id', deleteProduct)
 
 export default router
