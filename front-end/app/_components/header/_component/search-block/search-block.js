@@ -60,11 +60,11 @@ export default function SearchBlock() {
         {/* ==== 商品(文章)列表 ==== */}
         <div className="d-flex flex-wrap justify-content-center gap-2 header-search-item-list">
           {searchType == 1 &&
-            products.slice(0, 8).map((product, i) => {
+            products.map((product, i) => {
               return <ProductBar product={product} key={i} />
             })}
           {searchType == 2 &&
-            forums.slice(0, 8).map((forum, i) => {
+            forums.map((forum, i) => {
               return <ForumBar forum={forum} key={i} />
             })}
         </div>

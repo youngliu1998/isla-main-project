@@ -33,23 +33,27 @@ export default function ForgetPasswordPage() {
   }
   return (
     <>
-      <div className="card-glass-linear login-panel forget-panel">
+      {/* ==== 返回鍵 ==== */}
+      <div className="mx-auto forget-block">
         <button className="forget-prev-step-btn" onClick={prev}>
-          {step === 1 ? '登入' : '上一步'}
+          <i class="bi bi-chevron-left"></i>
+          {step === 1 ? '返回登入' : '上一步'}
         </button>
-        <h3 className="text-primary">忘記密碼</h3>
-        {step === 1 && (
-          <Email
-            setStep={setStep}
-            email={email}
-            setEmail={setEmail}
-            defaultEmail={defaultEmail}
-            error={error}
-            setError={setError}
-          />
-        )}
-        {step === 2 && <Otp setStep={setStep} email={email} />}
-        {/* {step === 3 && <Password />} */}
+        <h1 className="text-primary text-center mb-4">忘記密碼</h1>
+        <div className="card-glass-linear login-panel forget-panel">
+          {step === 1 && (
+            <Email
+              setStep={setStep}
+              email={email}
+              setEmail={setEmail}
+              defaultEmail={defaultEmail}
+              error={error}
+              setError={setError}
+            />
+          )}
+          {step === 2 && <Otp setStep={setStep} email={email} />}
+          {/* {step === 3 && <Password />} */}
+        </div>
       </div>
     </>
   )

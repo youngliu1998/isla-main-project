@@ -56,6 +56,7 @@ export default function UploadAva({
                 alt="preview avatar"
                 width={280}
                 height={280}
+                style={{ objectFit: 'cover' }}
               />
             )}
           </div>

@@ -61,6 +61,8 @@ export default function Path() {
           return '美妝教室'
         case 'product':
           return '所有產品'
+        case 'login':
+          return '登入'
         case 'profile':
           return '基本資料'
         case 'password':
@@ -104,7 +106,11 @@ export default function Path() {
     pathname === '/' ||
     pathname.includes('/forum') ||
     pathname.includes('/coupon/create') ||
-    pathname.startsWith('/course')
+    pathname.includes('/login') ||
+    pathname.includes('/register') ||
+    pathname.includes('/forget-password') ||
+    pathname.startsWith('/course') ||
+    !pathArrTag
   ) {
     return <></>
   }

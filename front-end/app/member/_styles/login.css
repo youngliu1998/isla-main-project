@@ -53,3 +53,19 @@
   height: 1px;
   background: var(--sub-element);
 }
+.login-main-page-btn-container {
+  width: 100%;
+  max-width: 500px;
+  margin-inline: auto;
+  .to-main-page-btn {
+    padding-inline: 2px;
+    background-color: transparent;
+    border: 0;
+    /* border-bottom: 1px solid var(--sub-color); */
+    color: var(--sub-color);
+    letter-spacing: 0.05rem;
+    &:hover {
+      color: var(--strong-color);
+    }
+  }
+}
