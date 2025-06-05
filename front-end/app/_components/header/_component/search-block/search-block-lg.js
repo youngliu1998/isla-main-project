@@ -58,7 +58,7 @@ export default function SearchBlockLg({ open = true }) {
           />
         </div>
         {/* ==== 商品(文章)列表 ==== */}
-        <div className="d-flex flex-wrap gap-2 header-search-item-list">
+        <div className="d-flex flex-wrap gap-2 header-search-item-list bg-block pb-4">
           {searchType == 1 &&
             products.slice(0, 10).map((product, i) => {
               return <ProductBar product={product} key={i} />

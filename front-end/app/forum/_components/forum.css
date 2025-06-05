@@ -401,11 +401,11 @@
     outline: 0px;
   }
 }
-.reset-filter {
-  .hidden {
-    visibility: hidden;
-  }
+/* .reset-filter { */
+.hidden {
+  visibility: hidden;
 }
+/* } */
 
 .confirm-modal-wrapper {
   width: 500px;

@@ -123,7 +123,7 @@ export default function CommentSection({
               }
               return (
                 <div
-                  className="comment-card d-flex flex-column gap-3 py-3 bottom-stroke"
+                  className="comment-card d-flex flex-column gap-3 py-2 bottom-stroke"
                   ref={i === commentsTree.length - 1 ? lastCommentRef : null}
                   key={i}
                 >

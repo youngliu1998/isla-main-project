@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react'
 
 export default function UseAddChat() {
-  const handleAddChat = async (list, userID) => {
+  const handleAddChat = async (list, userID, listMutate) => {
     try {
       const res = await fetch(`http://localhost:3005/api/forum/chat/add-chat`, {
         method: 'POST',
@@ -17,6 +17,7 @@ export default function UseAddChat() {
     } catch (error) {
       console.log(error)
     }
+    listMutate()
   }
   return { handleAddChat }
 }

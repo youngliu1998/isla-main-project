@@ -50,7 +50,9 @@ router.post('/get-follow-list', async function (req, res) {
     u.nickname AS userNick
     FROM user_follow AS follow
     JOIN users AS u ON follow.follow_id = u.id
-    WHERE user_id = ? ${limitClause}`,
+    WHERE user_id = ?
+    ORDER BY follow.follow_id
+    ${limitClause}`,
     [userID]
   )
   return res.json({ status: 'success', data: result })

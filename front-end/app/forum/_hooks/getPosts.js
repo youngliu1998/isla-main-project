@@ -5,10 +5,11 @@ import useSWR from 'swr'
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
 
-export default function GetPosts(params) {
+export default function GetPosts(params, page = 1, limit = 6) {
+  // 開抓
   const postsAPI = params
-    ? `http://localhost:3005/api/forum/posts/home?${params}`
-    : `http://localhost:3005/api/forum/posts/home`
+    ? `http://localhost:3005/api/forum/posts/home?${params}&page=${page}&limit=${limit}`
+    : `http://localhost:3005/api/forum/posts/home?page=${page}&limit=${limit}`
   const { data, isLoading, error, mutate } = useSWR(postsAPI, fetcher)
 
   // 新增 minimum loading 狀態
@@ -23,12 +24,8 @@ export default function GetPosts(params) {
     }
   }, [isLoading])
 
-  // const { isResultExist, otherPosts } = data
-  // console.log({ isResultExist, otherPosts })
   const isResultExist = data?.isResultExist
   const otherPosts = data?.otherPosts
-
-  console.log(data?.isResultExist)
 
   // 整理posts內的liked_user_ids和saved_user_ids
   let originPosts = data?.data
@@ -46,8 +43,6 @@ export default function GetPosts(params) {
     })
   }
   const posts = isResultExist ? originPosts : otherPosts
-
-  console.log({ posts, isResultExist })
 
   return { posts, isResultExist, showLoading, error, mutate }
 }

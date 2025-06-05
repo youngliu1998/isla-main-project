@@ -54,7 +54,8 @@ export default function ComponentsSearchBar({
                   if (
                     e.key === 'Enter' &&
                     inputKeyword.length !== 0 &&
-                    !isSearchEmpty
+                    !isSearchEmpty &&
+                    !e.nativeEvent.isComposing
                   ) {
                     e.preventDefault()
                     setKeyword(inputKeyword)

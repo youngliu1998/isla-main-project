@@ -112,7 +112,8 @@ export default function PostIDPage(props) {
     router.push(window.location.href)
   }
 
-  const handleDirectLogin = UseDirectToLogin(isAuth)
+  // const handleDirectLogin = UseDirectToLogin(isAuth)
+  console.log(post)
   return (
     <>
       {/* <PostDetailLoader /> */}
@@ -228,7 +229,8 @@ export default function PostIDPage(props) {
                   //   router.push('#scrollToBottom')
                   // }}
                 >
-                  <i className="bi bi-chat me-1 fs16" />8
+                  <i className="bi bi-chat me-1 fs16" />
+                  {post.comment_count}
                 </button>
                 <ComponentsBtnLikedSaved
                   type="saved"
