@@ -3,21 +3,15 @@
 import React, { useState, useEffect } from 'react'
 import ComponentsSearchBar from './search-bar'
 
-export default function ComponentsSearchButton(props) {
-  const productCate = [
-    '臉頰底妝',
-    '眼部彩妝',
-    '唇部彩妝',
-    '臉頰彩妝',
-    '眉部彩妝',
-    '睫毛彩妝',
-    '臉部保養',
-  ]
-  const postCate = ['分享', '請益', '討論', '試色']
+export default function ComponentsSearchButton({
+  postCateItems = [],
+  productCateItems = [],
+  handleAsideSearchChange = () => {},
+}) {
   return (
     <>
       <button
-        className="d-flex d-xl-none justify-content-center align-items-center gap-1 px-3 py-2 ms-2 my-1 rounded-pill fs14 sub-text-color bg-hovering-gray border-0"
+        className="d-flex d-xl-none justify-content-center align-items-center gap-1 ms-1 p-2 rounded-pill sub-text-color border-0 text-nowrap button-clear bg-hovering-gray"
         type="button"
         // data-bs-toggle="dropdown"
         // aria-expanded="false"
@@ -25,43 +19,22 @@ export default function ComponentsSearchButton(props) {
         data-bs-target="#offcanvasWithBothOptions"
         aria-controls="offcanvasWithBothOptions"
       >
+        <i className="bi bi-search"></i>
         分類
       </button>
       <div
-        className="offcanvas offcanvas-end"
+        className="offcanvas offcanvas-end search-bar-offcanvas px-5"
         data-bs-scroll="true"
         tabIndex={-1}
         id="offcanvasWithBothOptions"
         aria-labelledby="offcanvasWithBothOptionsLabel"
       >
-        <ComponentsSearchBar />
-      </div>
-      <div className="dropdown-menu dropdown-forum px-3 py-3 w-50 shadow-sm border-0 main-text-color">
-        <div className="pb-2">
-          <div className="dropdown-label py-1 fs12 sub-text-color">
-            商品類型
-          </div>
-          {productCate.map((v, i) => (
-            <button
-              key={i}
-              className="dropdown-item-forum px-2 py-1 my-1 rounded-pill button-clear"
-            >
-              {v}
-            </button>
-          ))}
-        </div>
-        <div className="pb-2">
-          <div className="dropdown-label py-1 fs12 sub-text-color">
-            文章類型
-          </div>
-          {postCate.map((v, i) => (
-            <button
-              key={i}
-              className="dropdown-item-forum px-2 py-1 rounded-pill button-clear"
-            >
-              {v}
-            </button>
-          ))}
+        <div className="search-bar-wrapper overflow-scroll">
+          <ComponentsSearchBar
+            postCateItems={postCateItems}
+            productCateItems={productCateItems}
+            handleAsideSearchChange={handleAsideSearchChange}
+          />
         </div>
       </div>
     </>

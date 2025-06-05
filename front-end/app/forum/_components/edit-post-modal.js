@@ -6,6 +6,8 @@ import { useAuth } from '../../../hook/use-auth'
 import { useFilter } from '../_context/filterContext'
 import { useRouter } from 'next/navigation'
 import UseImg from '../_hooks/useImg'
+import GetPosts from '../_hooks/getPosts'
+import Ripples from 'react-ripples'
 // import '/bootstrap/dist/js/bootstrap.bundle.min.js' 無法直接引入
 
 export default function EditPostModal({
@@ -15,22 +17,23 @@ export default function EditPostModal({
   postTitle = '',
   postContent = '',
   isUpdated = false,
-  mutate = () => {},
+  // mutate = () => {},
 }) {
   const modalRef = useRef()
   const router = useRouter()
   const { user, isAuth } = useAuth()
-  // const isAuth = user.id !== 0
   const userID = user.id
   const userUrl = user.ava_url
   const userNick = user.nickname
-  // const [imagesList, setImagesList] = useState([])
+
   const { productCateItems, postCateItems } = useFilter()
+  const { mutate } = GetPosts('')
+
   useEffect(() => {
     titleRef.current.innerText = postTitle
     contentRef.current.innerHTML = postContent
-    setTitleValid(true)
-    setContentValid(true)
+    // setTitleValid(true)
+    // setContentValid(true)
   }, [postTitle, postContent])
 
   const productCateRef = useRef()
@@ -38,11 +41,16 @@ export default function EditPostModal({
   const titleRef = useRef()
   const contentRef = useRef()
 
+  // 類別預設值
+  useEffect(() => {
+    productCateRef.current.value = productCate
+    postCateRef.current.value = postCate
+  }, [])
+
   const { handleImgUpload } = UseImg()
 
   // 提交表單
   const handleSubmit = async (e) => {
-    console.log('submit')
     e.preventDefault()
     const productCate = productCateRef.current.value
     const postCate = postCateRef.current.value
@@ -95,6 +103,7 @@ export default function EditPostModal({
           return res.json()
         })
         .then((data) => {
+          mutate()
           console.log(data)
         })
         .catch((err) => {
@@ -109,8 +118,8 @@ export default function EditPostModal({
     // )
     // m.hide()
     // console.log(m)
-    router.push('/forum?tab=2')
     // mutate()
+    router.push('/forum?tab=2')
   }
   // 字數
   const [titleLength, setTitleLength] = useState(0)
@@ -118,9 +127,10 @@ export default function EditPostModal({
   const [hasTitleTouched, setHasTitleTouched] = useState(false)
   const [isContentValid, setContentValid] = useState(false)
 
+  console.log({ isTitleValid, isContentValid, hasTitleTouched })
   return (
     <>
-      <form onSubmit={handleSubmit}>
+      <form>
         <div
           className="modal fade"
           // id="editPostModal"
@@ -204,7 +214,8 @@ export default function EditPostModal({
                       const titleLength = e.target.innerText.trim().length
                       setTitleLength(titleLength)
                       setHasTitleTouched(true)
-                      titleLength <= 50 && titleLength != 0
+                      console.log(titleLength)
+                      titleLength <= 50 && titleLength > 0
                         ? setTitleValid(true)
                         : setTitleValid(false)
                     }}
@@ -222,7 +233,7 @@ export default function EditPostModal({
                   error-persudo={
                     titleLength > 50
                       ? '標題已超過字數上限'
-                      : titleLength < 1
+                      : titleLength === 0
                         ? `請輸入標題`
                         : ''
                   }
@@ -255,7 +266,7 @@ export default function EditPostModal({
                   multiple
                   hidden
                   onChange={(e) => {
-                    handleImgUpload(e)
+                    handleImgUpload(e, userID, contentRef, modalRef)
                   }}
                 />
                 <label
@@ -277,20 +288,28 @@ export default function EditPostModal({
                 >
                   取消
                 </button>
-                <button
-                  type="submit"
-                  data-bs-dismiss="modal"
-                  className={`px-4 py-2 rounded-3 border-0 bounce ${isTitleValid && isContentValid ? 'bg-main color-isla-white' : 'bg-hover-gray sub-text-color border-0'}`}
-                  disabled={isTitleValid && isContentValid ? false : true}
-                  onClick={(e) => {
-                    e.preventDefault()
-                    console.log({ isTitleValid, isContentValid })
-                    setHasTitleTouched(false)
-                    // FIXME modal剛出現 按按鈕時出現警示
-                  }}
-                >
-                  發布
-                </button>
+                <Ripples className="rounded-3">
+                  <button
+                    type="submit"
+                    data-bs-dismiss="modal"
+                    className={`px-4 py-2 rounded-3 border-0 bounce ${isTitleValid && isContentValid ? 'bg-main color-isla-white' : 'bg-hover-gray sub-text-color border-0'}`}
+                    disabled={
+                      isTitleValid && isContentValid && hasTitleTouched
+                        ? false
+                        : true
+                    }
+                    onClick={(e) => {
+                      e.preventDefault()
+                      // console.log({ isTitleValid, isContentValid })
+                      setHasTitleTouched(false)
+                      // FIXME modal剛出現 按按鈕時出現警示
+                      console.log('click')
+                      handleSubmit(e)
+                    }}
+                  >
+                    發布
+                  </button>
+                </Ripples>
               </div>
             </div>
           </div>

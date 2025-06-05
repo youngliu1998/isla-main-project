@@ -3,6 +3,7 @@ body {
 }
 .container-user {
   padding-top: 3.5rem;
+  min-height: calc(100vh - 300px);
 }
 .user-content {
   display: flex;

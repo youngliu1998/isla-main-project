@@ -9,6 +9,7 @@ import '@/app/_styles/globals.scss'
 import Provider from './provider'
 import Chat from './service-chat/chat'
 import ToastClient from './_components/toast-client'
+import { relative } from 'path'
 
 export const metadata = {
   title: 'ISLA project',
@@ -44,7 +45,7 @@ export default function RootLayout({ children }) {
           <Header />
           {/* ToastContainer由客戶端元件引入，避免hydration */}
           <ToastClient />
-          <div style={{ marginTop: '80px' }}>
+          <div style={{ marginTop: '80px', position: 'relative' }}>
             <Path />
             {children}
           </div>

@@ -53,13 +53,13 @@ export default function ForumPage(props) {
   // console.log(data)
   const posts = data?.status === 'success' ? data?.data : []
 
-  const { handleFollow, isFollow, follows } = UseFollow(userID, followID)
+  const { handleFollow, isFollow, followCount } = UseFollow(userID, followID)
   const method = isFollow ? 'DELETE' : 'POST'
   console.log(isFollow, method, userID)
 
   return (
     <>
-      <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center">
+      <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center h-100">
         {/* author-card-sm */}
         {!showLoading && posts.length !== 0 && (
           <div className="author-card d-block d-xl-none position-relative px-0 mb-3 w-100">
@@ -75,7 +75,7 @@ export default function ForumPage(props) {
                 </div>
                 <div className="d-flex justify-content-end gap-3 text-nowrap">
                   <div className="d-flex align-items-center gap-2">
-                    <span className="fs24 main-color">{follows}</span>
+                    <span className="fs24 main-color">{followCount}</span>
                     <span className="fs14 main-text-color">粉絲</span>
                   </div>
                   <div className="d-flex align-items-center gap-2">
@@ -164,7 +164,7 @@ export default function ForumPage(props) {
               </div>
               <div className="d-flex w-100 text-nowrap">
                 <div className="d-flex flex-column align-items-center justify-content-center w-50">
-                  <span className="fs24 main-color">{follows}</span>
+                  <span className="fs24 main-color">{followCount}</span>
                   <span className="fs14 main-text-color">粉絲</span>
                 </div>
                 <div className="d-flex flex-column align-items-center justify-content-center w-50">

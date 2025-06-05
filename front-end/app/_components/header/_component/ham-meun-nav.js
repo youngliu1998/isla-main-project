@@ -4,6 +4,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { useAuth } from '@/hook/use-auth'
+import SearchBlock from './search-block/search-block'
 
 export default function HamMeunNav({
   hamMenuOpen = false,
@@ -15,12 +16,7 @@ export default function HamMeunNav({
   return (
     <>
       <nav className={'d-lg-none d-block ham-menu-nav' + ' ' + isOpen}>
-        <form action="" className="d-flex align-items-center pe-3">
-          <label htmlFor="serch" className="px-3">
-            <i className="bi bi-search fs-5" />
-          </label>
-          <input type="text" name="serch" className="" />
-        </form>
+        <SearchBlock />
         <ul className="d-flex flex-column mt-3">
           <li>
             <Link

@@ -49,7 +49,7 @@ export default function FollowingCard({
         </div>
         <div className="following-button d-flex gap-2 ms-auto">
           <ComponentsButtonFollowing
-            followID={followID}
+            isFollow={true}
             followMutate={followMutate}
           />
           <ComponentsButtonChat />

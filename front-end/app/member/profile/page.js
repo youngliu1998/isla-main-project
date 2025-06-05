@@ -9,6 +9,7 @@ import BasicProfile from './_component/basic-profile'
 import InputText from '../_component/input-text'
 import Select from '../_component/select'
 import { toast } from 'react-toastify'
+import LoadingLottie from '@/app/_components/loading/lottie-loading'
 // import Path from '../_component/path/path'
 import { getProfile } from './_method/method'
 // ==== data ====
@@ -16,7 +17,7 @@ import { cities } from './data/CityCountyData'
 
 export default function ProfilePage() {
   // const router = useRouter()
-  const { user, initAuth } = useAuth()
+  const { user } = useAuth()
   const defaultProfile = {
     name: '',
     nickname: '',
@@ -128,6 +129,15 @@ export default function ProfilePage() {
   useEffect(() => {
     getProfile(setText)
   }, [])
+  if (!user?.email) {
+    return (
+      <div>
+        <div className="loading-container">
+          <LoadingLottie />
+        </div>
+      </div>
+    )
+  }
   return (
     <>
       {/* <Path /> */}

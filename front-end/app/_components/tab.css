@@ -14,6 +14,11 @@
     }
   }
 }
+.btn-link {
+  &:hover {
+    color: #fd7061 !important;
+  }
+}
 
 .category-underline {
   position: absolute;
