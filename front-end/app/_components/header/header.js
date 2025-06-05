@@ -118,7 +118,11 @@ export default function Header() {
               />
               <div>{totalCount}</div>
             </button> */}
-            <CartDropdown cartItems={cartItems} onCartClick={handleCartClick} />
+            <CartDropdown
+              totalCount={totalCount}
+              cartItems={cartItems}
+              onCartClick={handleCartClick}
+            />
 
             <Link href={'/member/' + loginUrl} className="d-lg-block d-none">
               <button>{loginAva}</button>
