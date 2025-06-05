@@ -114,7 +114,7 @@ export default function OrderSummary({
           </button>
         </div>
         <p>
-          <strong>NT${formatCurrency(makeupTotal)}</strong>
+          <dev>NT${formatCurrency(makeupTotal)}</dev>
         </p>
       </div>
       <Collapse in={openProdList}>
@@ -140,7 +140,7 @@ export default function OrderSummary({
                   <div className="me-3 text-nowrap">x{item.quantity}</div>
                 </div>
 
-                <div className="fw-bold text-nowrap">
+                <div className="text-nowrap">
                   NT$
                   {formatCurrency(
                     item.quantity * (item.sale_price ?? item.base_price)
@@ -175,7 +175,7 @@ export default function OrderSummary({
           </button>
         </div>
         <p>
-          <strong>NT${formatCurrency(courseTotal)}</strong>
+          <dev>NT${formatCurrency(courseTotal)}</dev>
         </p>
       </div>
       <Collapse in={openCourList}>
@@ -198,7 +198,7 @@ export default function OrderSummary({
                   <span className={`${styles.ellipsis} me-2`}>{item.name}</span>
                   <div className="me-3 text-nowrap">x{item.quantity}</div>
                 </div>
-                <div className="fw-bold text-nowrap">
+                <div className="text-nowrap">
                   NT$
                   {formatCurrency(
                     item.quantity * (item.sale_price ?? item.base_price)
@@ -285,7 +285,7 @@ export default function OrderSummary({
       <div className="d-flex justify-content-between mb-3">
         <h4>總計：</h4>
         <h4>
-          <strong>NT${formatCurrency(finalTotal >= 0 ? finalTotal : 0)}</strong>
+          <dev>NT${formatCurrency(finalTotal >= 0 ? finalTotal : 0)}</dev>
         </h4>
       </div>
 

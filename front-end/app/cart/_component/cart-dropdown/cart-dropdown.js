@@ -44,7 +44,7 @@ export default function CartDropdown({ cartItems, onCartClick }) {
           <div className="cart-dropdown-title">最近加入的商品</div>
           <ul className="cart-dropdown-list">
             {cartItems.length === 0 ? (
-              <li>目前購物車沒有商品</li>
+              <li className="text-muted">目前購物車沒有商品</li>
             ) : (
               cartItems.map((item) => (
                 <li key={item.id} className="cart-dropdown-item">
