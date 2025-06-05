@@ -125,7 +125,7 @@ export default function Home() {
           </section>
           {/* ---- END product ---- */}
           {/* ---- START main coupon ---- */}
-          <section className="subsection-main-page">
+          <section className="subsection-main-page subsection-main-page-coupon-bg">
             <div className="main-sub-page-swiper-contrainer">
               <Swiper
                 speed={1300}

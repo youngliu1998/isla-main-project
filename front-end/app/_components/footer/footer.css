@@ -74,7 +74,6 @@ footer {
 }
 .contact-info-block {
   .contact-info {
-    font-family: 'Noto Sans TC', sans-serif;
     font-weight: 300;
     font-size: 18px;
     font-style: normal;
@@ -82,7 +81,7 @@ footer {
   }
   .contact-info-title {
     font-weight: 400;
-    font-size: 26px;
+    font-size: 24px;
     color: white;
     margin-bottom: 0.5rem;
   }
@@ -93,7 +92,7 @@ footer {
   justify-content: space-between;
   padding-inline: 0.5rem;
   padding-block: 1rem;
-  background-image: var(--footer-contact-bg);
+  /* background-image: var(--footer-contact-bg); */
   border-radius: 12px;
 }
 .footer-body .footer-header-right .contact-info-block h3 {
@@ -119,7 +118,7 @@ footer {
   }
 }
 .footer-body .source-media-block h3 {
-  font-size: 1.5rem;
+  font-size: 18px;
   color: #363636;
 }
 .footer-body .source-media-block .band {
@@ -132,6 +131,27 @@ footer {
   font-style: normal;
   font-size: 1.5rem;
   color: var(--MainColor);
+}
+
+.footer-body .logo {
+  font-size: 2.5rem;
+  font-weight: 900;
+  background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 3s ease infinite;
+  text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+}
+@keyframes gradientShift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
 .footer-body .source-media-block .icons {

@@ -19,11 +19,24 @@
     padding-block: 4rem;
   }
 }
+.subsection-main-page-coupon-bg {
+  background: linear-gradient(
+    180deg,
+    #fbfbfb 0%,
+    #effaff 48.56%,
+    #fbfbfb 99.04%
+  );
+}
 /* section css */
 /* subsction css */
 .main-page-main-swiper .swiper-pagination-bullet {
   background-color: #e0e0e0;
   opacity: 0.6;
+}
+.main-page-main-swiper {
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+  border-radius: 28px;
+  overflow: hidden;
 }
 
 .main-page-main-swiper .swiper-pagination-bullet-active {
@@ -36,5 +49,5 @@
   /* background: #000; */
 }
 .swiper-inside {
-  border-radius: 28px;
+  /* border-radius: 28px; */
 }

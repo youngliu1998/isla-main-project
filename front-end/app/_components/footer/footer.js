@@ -6,7 +6,7 @@ import './footer.css'
 import { usePathname } from 'next/navigation'
 import CartFooter from './_component/cart-footer'
 // ==== icons ====
-import { FaFacebook, FaInstagramSquare , FaYoutube } from 'react-icons/fa'
+import { FaFacebook, FaInstagramSquare, FaYoutube } from 'react-icons/fa'
 
 export default function Footer() {
   const pathname = usePathname()
@@ -89,7 +89,7 @@ export default function Footer() {
                           <FaFacebook />
                         </button>
                         <button>
-                          <FaInstagramSquare  />
+                          <FaInstagramSquare />
                         </button>
                         <button>
                           <FaYoutube />
