@@ -3,6 +3,7 @@
 import React, { useState } from 'react'
 import Image from 'next/image'
 import './_style/user-upload-ava.css'
+import { toast } from 'react-toastify'
 
 export default function UploadAva({
   openAvatar = false,
@@ -20,7 +21,12 @@ export default function UploadAva({
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!image) return alert('請選擇圖片')
+    if (!image)
+      return toast.error('請選擇圖片', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+      })
 
     const formData = new FormData()
     formData.append('image', image)
@@ -35,12 +41,20 @@ export default function UploadAva({
         body: formData,
       })
 
-      alert('成功更新頭像')
+      toast.success('成功更新頭像', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+      })
       initAuth()
       setOpenAvatar(!openAvatar)
     } catch (err) {
       console.log(err)
-      alert('更新頭像失敗')
+      toast.error('更新頭像失敗', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+      })
     }
   }
   return (

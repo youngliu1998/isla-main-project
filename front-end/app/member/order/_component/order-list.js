@@ -3,6 +3,8 @@
 import React, { useState } from 'react'
 import OrderProdList from './_component/order-prod-list'
 import './_style/order-list.css'
+// ==== method ====
+import { formatted } from '@/app/member/_method/method'
 
 export default function OrderList({
   order_number,
@@ -31,7 +33,7 @@ export default function OrderList({
     訂單編號: order_number,
     購買日期: created_at,
     訂單狀態: status,
-    結帳金額: total_price,
+    結帳金額: '$NT ' + formatted(parseInt(total_price)),
     取貨方式: shipping_method,
     付款方式: payment_method,
   }
@@ -50,6 +52,7 @@ export default function OrderList({
             orderOpenClass
           }
         >
+          {/* ==== 訂單列表 ==== */}
           {Object.keys(orderTable).map((key, i) => {
             return (
               <div className="order-col" key={i}>
@@ -59,9 +62,9 @@ export default function OrderList({
             )
           })}
         </div>
-
+        {/* ==== 訂單的詳細品項清單 ==== */}
         <OrderProdList order_id={order_id} />
-        {/* button control open */}
+        {/* ==== 展開品項詳細清單的按鈕 ==== */}
         <button
           className="d-md-none d-block btn-order"
           onClick={() => {

@@ -16,7 +16,7 @@ export default async function getForum(search = '') {
     .catch((err) => {
       error = err
 
-      return {}
+      return []
     })
   if (error) {
     console.log('getForum error', error)
