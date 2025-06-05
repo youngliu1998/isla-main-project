@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Email from './_component/email'
 import Otp from './_component/otp'
 import { toast } from 'react-toastify'
+import LoadingLottie from '@/app/_components/loading/lottie-loading'
 // ==== css ====
 import '../_component/_style.css/form.css'
 import './_style/forget-password.css'
@@ -21,7 +22,15 @@ export default function ForgetPasswordPage() {
     if (step === 1) router.push('/member/login')
     if (step > 0) setStep((prev) => prev - 1)
   }
+
   // console.log(step)
+  if (step < 1) {
+    return (
+      <div className="loading-container">
+        <LoadingLottie />
+      </div>
+    )
+  }
   return (
     <>
       <div className="card-glass-linear login-panel forget-panel">

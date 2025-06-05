@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect } from 'react'
 
-export default function AuthorIDPage(props) {
+export default function UseSubmitPost(props) {
   return (
     <>
-      <div>AuthorID Page</div>
+      <div>UseSubmitPost</div>
     </>
   )
 }

@@ -14,6 +14,7 @@ import CommentSection from './comment-section'
 import CommentInput from './comment-input'
 import Link from 'next/link'
 import PostDetailLoader from '../_components/loader-detail'
+import { UseDirectToLogin } from '../_hooks/useDirectToLogin'
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
 
@@ -44,12 +45,6 @@ export default function PostIDPage(props) {
       setShowLoading(true)
     }
   }, [isLoading])
-
-  // // FIXME 載入中動畫
-  // if (showLoading) {
-  //   console.log(showLoading)
-  //   return <PostDetailLoader />
-  // }
 
   if (Array.isArray(posts)) {
     posts = posts.map((post) => {
@@ -117,12 +112,14 @@ export default function PostIDPage(props) {
     router.push(window.location.href)
   }
 
+  // const handleDirectLogin = UseDirectToLogin(isAuth)
+  console.log(post)
   return (
     <>
       {/* <PostDetailLoader /> */}
-      <main className="main col col-10 d-flex flex-column align-items-start">
+      <main className="main col col-10 col-xl-8 d-flex flex-column align-items-start px-0 h-100">
         {error ? (
-          <div className="fs32 d-flex flex-column align-items-center mx-auto mt-3 gap-2">
+          <div className="fs24 d-flex flex-column align-items-center mx-auto mt-3 gap-2">
             <div>連線錯誤，試試重新整理</div>
             <Link
               href={'/forum'}
@@ -147,7 +144,7 @@ export default function PostIDPage(props) {
             </Link>
           </div>
         ) : (
-          <div className="posts d-flex flex-column gap16 pb-0 w-100">
+          <div className="posts d-flex flex-column gap16 pb-0 w-100 h-100 px-3 maxWidth800">
             <div className="post d-flex flex-column gap-2 rounded-top-4 shadow-forum bg-pure-white pt-4 card-border position-relative">
               <div className="post-header d-flex  align-items-start mx-4">
                 <div className="post-title flex-grow-1 me-3 fs24 fw-medium">
@@ -201,7 +198,12 @@ export default function PostIDPage(props) {
                     color={'var(--main-text-color)'}
                     authorName={post.user_nick}
                   />
-                  <button className="button-clear fs12 main-color">追蹤</button>
+                  <button
+                    className="button-clear fs12 main-color"
+                    onClick={() => {}}
+                  >
+                    追蹤中
+                  </button>
                   <div className="updated-at sub-text-color fs12 fw-light">
                     {dateFormat}
                   </div>
@@ -221,8 +223,14 @@ export default function PostIDPage(props) {
                   mutate={mutate}
                   color={''}
                 />
-                <button className="evaluate px-2 py-1 border-0 rounded-3 d-flex align-items-center">
-                  <i className="bi bi-chat me-1 fs16" />8
+                <button
+                  className="evaluate px-2 py-1 border-0 rounded-3 d-flex align-items-center"
+                  // onClick={() => {
+                  //   router.push('#scrollToBottom')
+                  // }}
+                >
+                  <i className="bi bi-chat me-1 fs16" />
+                  {post.comment_count}
                 </button>
                 <ComponentsBtnLikedSaved
                   type="saved"
@@ -246,6 +254,7 @@ export default function PostIDPage(props) {
                             postTitle={morePost.title}
                             likedUserIDs={morePost.liked_user_ids}
                             savedUserIDs={morePost.saved_user_ids}
+                            commentCount={morePost.comment_count}
                             postID={morePost.id}
                             userID={userID} //登入使用者
                             authorID={morePost.user_id}
@@ -262,40 +271,45 @@ export default function PostIDPage(props) {
                 setCommentMutate={setCommentMutate}
                 setLastCommentRef={setLastCommentRef}
               />
+
               <CommentInput
                 mutate={commentMutate}
                 lastCommentRef={lastCommentRef}
               />
             </div>
-            <EditPostModal
-              postID={post.id}
-              productCate={post.product_cate_id}
-              postCate={post.cate_id}
-              postTitle={post.title}
-              postContent={post.content}
-              isUpdated={true}
-              mutate={mutate}
-            />
-            <EditPostModal
-              postID=""
-              productCate=""
-              postCate=""
-              postTitle=""
-              postContent=""
-              isUpdated={false}
-              mutate={mutate}
-            />
-
-            <ConfirmModal
-              title="確定刪除嗎？"
-              content="刪除後，文章將無法復原"
-              confirm="刪除"
-              cancel="取消"
-              handleModalAction={handleDeletePost}
-            />
           </div>
         )}
       </main>
+      <div className="col col-2 d-none d-xl-block px-0 ps-xl-2 ps-xxl-0 position-relative"></div>
+      {post && (
+        <>
+          <EditPostModal
+            postID={post.id}
+            productCate={post.product_cate_id}
+            postCate={post.cate_id}
+            postTitle={post.title}
+            postContent={post.content}
+            isUpdated={true}
+            mutate={mutate}
+          />
+          <EditPostModal
+            postID=""
+            productCate=""
+            postCate=""
+            postTitle=""
+            postContent=""
+            isUpdated={false}
+            mutate={mutate}
+          />
+          <ConfirmModal
+            title="確定刪除嗎？"
+            content="刪除後，文章將無法復原"
+            confirm="刪除"
+            cancel="取消"
+            handleModalAction={handleDeletePost}
+          />
+        </>
+      )}
     </>
   )
 }

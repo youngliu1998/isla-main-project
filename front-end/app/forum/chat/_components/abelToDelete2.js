@@ -20,7 +20,7 @@ export default function ChatList() {
     <>
       <div
         // ref={listRef}
-        className="chat-list col col-12 col-md-5 bg-pure-white rounded-3 p-0 shadow-forum overflow-hidden position-relative main-text-color"
+        className="chat-list col col-12 col-md-5 bg-pure-white rounded-3 p-0 mb-3 shadow-forum overflow-hidden position-relative main-text-color"
         // onScroll={handleScroll}
       >
         <div className="chat-list-header d-flex px-3 py-2 fs24 fw-bold position-absolute bg-pure-white rounded-top-3 shadow-sm z-1">

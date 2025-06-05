@@ -2,6 +2,8 @@
 
 import '../_component/_style.css/form.css'
 import { useState, useEffect } from 'react'
+// ==== component ====
+import LoadingLottie from '@/app/_components/loading/lottie-loading'
 import OrderList from './_component/order-list'
 
 export default function OrderPage() {
@@ -35,6 +37,13 @@ export default function OrderPage() {
 
     getOrder()
   }, [])
+  if (!orders) {
+    return (
+      <div className="loading-container">
+        <LoadingLottie />
+      </div>
+    )
+  }
   return (
     <>
       <div className="user-content">

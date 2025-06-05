@@ -74,7 +74,7 @@ router.get('/reserve', async (req, res) => {
         products: [
           {
             id: crypto.randomBytes(5).toString('hex'),
-            name: '商品一批',
+            name: 'ISLA美妝商品課程一批',
             quantity: 1,
             price: amount,
           },

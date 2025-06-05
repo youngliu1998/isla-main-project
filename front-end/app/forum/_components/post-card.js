@@ -5,7 +5,6 @@ import ComponentsAuthorInfo from './author-info'
 import ComponentsBtnLikedSaved from './btn-liked-saved'
 import { useRouter } from 'next/navigation'
 
-
 export default function ComponentsPostCard({
   postID = '',
   postTitle = '',
@@ -23,7 +22,7 @@ export default function ComponentsPostCard({
   btnSavedActive = Boolean,
   btnLikedCount = '',
   btnSavedCount = '',
-  // userID = '',
+  commentCount = 0,
   mutate = () => {},
 }) {
   const router = useRouter()
@@ -70,6 +69,8 @@ export default function ComponentsPostCard({
   const contentImgSm = contentImg.map((v) =>
     v.replace('w-50', 'w-100 h-100 object-fit-cover rounded-3')
   )
+
+  console.log(commentCount)
 
   return (
     <>
@@ -135,7 +136,8 @@ export default function ComponentsPostCard({
             mutate={mutate}
           />
           <button className="evaluate comment px-2 py-1 border-0 rounded-3 d-flex align-items-center bg-pure-white">
-            <i className="bi bi-chat-left me-1" />8
+            <i className="bi bi-chat me-1" />
+            {commentCount}
           </button>
           <ComponentsBtnLikedSaved
             type={'saved'}

@@ -4,17 +4,22 @@ import { usePathname } from 'next/navigation'
 // import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 // ==== method ====
-import { getCoursePath, getExperiencePath } from './_method/course-path'
+import {
+  getCoursePath,
+  getExperiencePath,
+  getTeacherPath,
+} from './_method/course-path'
 // ==== css ====
 import './_style/path.css'
 import { useEffect, useState } from 'react'
 
 export default function Path() {
   const pathname = usePathname()
+  // 新增條件判斷：只要是課程詳細頁，就不要顯示這條麵包屑
+  const isHiddenPath = pathname.startsWith('/course/course-list/')
   const [pathArrTag, setPathArrTag] = useState([])
-  let pathArr = pathname.split('/')
+  let pathArr = pathname.split('/') // "/member/profile" => ['',member,profile]
   // const [pathArr, setPathArr] = useState(pathname.split('/'))
-  console.log() // "/member/profile" => ['',member,profile]
 
   // ==== 為每個 tag 整理新的 href ====
   const getPath = (thisPath) => {
@@ -26,11 +31,11 @@ export default function Path() {
     return address
   }
 
-  console.log('pathArr:', pathArr)
-  console.log('pathArrTag:', pathArrTag)
+  // console.log('pathArr:', pathArr)
+  // console.log('pathArrTag:', pathArrTag)
 
   useEffect(() => {
-    console.log('==== useEffect Start ====')
+    // console.log('==== useEffect Start ====')
     // ==== (function )將 pathArr 的內容改為中文(tag 為中文) ====
     let prevPath = ''
     async function convertToChinese(thisPath) {
@@ -40,6 +45,9 @@ export default function Path() {
       if (prevPath === 'experience') {
         // return getCoursePath(thisPath)
         return await getExperiencePath(thisPath)
+      }
+      if (prevPath === 'teacher') {
+        return await getTeacherPath(thisPath)
       }
       prevPath = thisPath
       switch (thisPath) {
@@ -53,10 +61,25 @@ export default function Path() {
           return '美妝教室'
         case 'product':
           return '所有產品'
+        case 'profile':
+          return '基本資料'
+        case 'password':
+          return '密碼'
+        case 'forget-password':
+          return '忘記密碼'
+        case 'register':
+          return '註冊'
+        case 'order':
+          return '訂單'
+        case 'like-list':
+          return '願望清單'
         case 'course-list':
           return ''
         case 'experience':
           return ''
+        case 'teacher':
+          return ''
+
         default:
           return thisPath
       }
@@ -68,25 +91,26 @@ export default function Path() {
         newPathArrTag[i] = await convertToChinese(pathArr[i])
       }
 
-      console.log('in UseEffect async', newPathArrTag)
+      // console.log('in UseEffect async', newPathArrTag)
       setPathArrTag(newPathArrTag)
     }
-    console.log('in UseEffect', pathArrTag)
+    // console.log('in UseEffect', pathArrTag)
     getPath()
 
-    console.log('==== useEffect End ====')
+    // console.log('==== useEffect End ====')
   }, [pathArr[pathArr.length - 1]])
   // 首頁,文章，創造優惠券列表不需要麵包削
   if (
     pathname === '/' ||
     pathname.includes('/forum') ||
-    pathname.includes('/coupon/create')
+    pathname.includes('/coupon/create') ||
+    pathname.startsWith('/course')
   ) {
     return <></>
   }
   return (
     <>
-      <div className="d-flex">
+      <div className="d-flex position-absolute px-3 pt-3">
         {pathArr.map((path, i) => {
           if (pathArrTag[i] === '') {
             return

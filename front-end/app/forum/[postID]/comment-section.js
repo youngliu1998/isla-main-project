@@ -103,6 +103,7 @@ export default function CommentSection({
   // console.log(commentsMap)
   // console.log(commentsTree)
   // console.log(commentsTree[0].subComments[0].subComments.length ?? '0')
+  console.log(commentsTree)
 
   return (
     <>
@@ -111,32 +112,39 @@ export default function CommentSection({
           全部留言
         </div>
         <div className="comment-cards d-flex flex-column px-1 py-1">
-          {commentsTree.map((comment, i) => {
-            {
-              /* console.log({ i: i, subComments: comment.subComments }) */
-            }
-            return (
-              <div
-                className="comment-card d-flex flex-column gap-3 py-3 bottom-stroke"
-                ref={i === commentsTree.length - 1 ? lastCommentRef : null}
-                key={i}
-              >
-                <RecursiveComment
-                  commentID={comment.id}
-                  userImg={comment.user_img}
-                  userNick={comment.nick}
-                  content={comment.content}
-                  updatedAt={comment.timeFormat}
-                  btnActive={comment.btnActive}
-                  btnCount={comment.btnCount}
-                  editActive={comment.editActive}
-                  mutate={mutate}
-                  subComments={comment.subComments}
-                  subCount={comment.subCount}
-                />
-              </div>
-            )
-          })}
+          {commentsTree.length === 0 ? (
+            <div className="py-2 text-center fst-italic sub-text-color">
+              目前無留言
+            </div>
+          ) : (
+            commentsTree.map((comment, i) => {
+              {
+                /* console.log({ i: i, subComments: comment.subComments }) */
+              }
+              return (
+                <div
+                  className="comment-card d-flex flex-column gap-3 py-2 bottom-stroke"
+                  ref={i === commentsTree.length - 1 ? lastCommentRef : null}
+                  key={i}
+                >
+                  <RecursiveComment
+                    commentID={comment.id}
+                    userId={comment.user_id}
+                    userImg={comment.user_img}
+                    userNick={comment.nick}
+                    content={comment.content}
+                    updatedAt={comment.timeFormat}
+                    btnActive={comment.btnActive}
+                    btnCount={comment.btnCount}
+                    editActive={comment.editActive}
+                    mutate={mutate}
+                    subComments={comment.subComments}
+                    subCount={comment.subCount}
+                  />
+                </div>
+              )
+            })
+          )}
         </div>
       </div>
     </>

@@ -13,10 +13,10 @@ import CouponSection from '@/app/_components/_component-main-page/coupon/coupon-
 import ProductSectionBrand from '@/app/_components/_component-main-page/product/product-section-brand'
 import ProductSectionNew from '@/app/_components/_component-main-page/product/product-section-new'
 import { Swiper, SwiperSlide } from 'swiper/react'
-import { Autoplay, Pagination } from 'swiper/modules'
+import { Autoplay, Pagination, Navigation } from 'swiper/modules'
 
 import 'swiper/css' // 必要
-// import 'swiper/css/navigation' // 如果用導航
+import 'swiper/css/navigation' // 如果用導航
 import 'swiper/css/pagination' // 如果用分頁
 
 // import 'swiper/swiper.min.css'
@@ -40,6 +40,7 @@ export default function Home() {
     'http://localhost:3005/images/ad/isla-ad4.png',
     'http://localhost:3005/images/ad/isla-ad.005.jpeg',
   ]
+  const swiperSubImages = ['http://localhost:3005/images/ad/discount-info.jpg']
 
   const router = useRouter()
   // const handleForumTab = () => {}
@@ -135,7 +136,78 @@ export default function Home() {
           {/* ---- END product ---- */}
           {/* ---- START main coupon ---- */}
           <section className="subsection-main-page">
-            <MainCouponSection />
+            <div className="main-sub-page-swiper-contrainer">
+              <Swiper
+                speed={1300}
+                grabCursor={true}
+                centeredSlides={true}
+                slidesPerView={1}
+                spaceBetween={0}
+                modules={[Autoplay, Navigation]}
+                loop={true}
+                autoplay={{
+                  delay: 3000,
+                  disableOnInteraction: false,
+                }}
+                navigation={{
+                  nextEl: '.swiper-button-next-custom',
+                  prevEl: '.swiper-button-prev-custom',
+                }}
+                className="main-page-main-swiper"
+              >
+                {swiperSubImages.map((src, index) => (
+                  <SwiperSlide
+                    key={index}
+                    className="d-flex justify-content-center"
+                    style={{
+                      width: '80vw',
+                      maxWidth: '1000px',
+                      height: 'auto',
+                    }}
+                  >
+                    <div
+                      className="position-relative w-100 overflow-hidden swiper-inside"
+                      style={{
+                        paddingTop: '46.8%', // 維持 16:9 比例
+                      }}
+                    >
+                      <Image
+                        src={src}
+                        alt={`Slide ${index}`}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  </SwiperSlide>
+                ))}
+
+                {/* 自定義箭頭 */}
+                <div className="swiper-button-prev-custom">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <polyline points="15,18 9,12 15,6"></polyline>
+                  </svg>
+                </div>
+                <div className="swiper-button-next-custom">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <polyline points="9,18 15,12 9,6"></polyline>
+                  </svg>
+                </div>
+              </Swiper>
+            </div>
           </section>
           {/* ---- END main coupon ---- */}
           {/* ---- START course ---- */}

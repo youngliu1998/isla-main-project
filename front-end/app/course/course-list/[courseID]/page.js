@@ -24,6 +24,9 @@ import EditReviewModal from '../../../course/_components/edit-review-modal/edit-
 import LoginModal from '../../../course/_components/login-modal'
 import { useRouter } from 'next/navigation'
 import DOMPurify from 'dompurify'
+import Breadcrumb from '../../_components/breadcrumb/breadcrumb'
+import LoadingLottie from '../../../_components/loading/lottie-loading'
+import LoadingErrorLottie from '../../../_components/loading-error/lottie-error'
 
 export default function CourseIDPage() {
   // ✅ 取得動態路由的課程 ID
@@ -51,6 +54,8 @@ export default function CourseIDPage() {
   const recommendedCourseIds = [1, 7, 8, 19]
   const [highlightedCommentId, setHighlightedCommentId] = useState(null)
   const [sortOption, setSortOption] = useState(1)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
 
   const sortedReviews = useMemo(() => {
     const copy = [...reviewCard]
@@ -195,6 +200,7 @@ export default function CourseIDPage() {
   }
 
   const handleDeleteComment = async (commentId) => {
+    
     const token = localStorage.getItem('jwtToken')
     if (!window.confirm('你確定要刪除這則留言嗎？')) return
     try {
@@ -305,28 +311,25 @@ export default function CourseIDPage() {
 
   // ✅ 初始化：取得課程資料與留言
   useEffect(() => {
+    const stored = localStorage.getItem(`favorite_detail_${id}`) === 'true'
+    setIsFavorited(stored)
+
     async function getCourseList() {
       const token = localStorage.getItem('jwtToken')
-      try {
-        const res = await fetch(
-          `http://localhost:3005/api/course/course-list/${id}`,
-          {
-            method: 'GET',
-            headers: token
-              ? {
-                  'Content-Type': 'application/json',
-                  Authorization: `Bearer ${token}`,
-                }
-              : { 'Content-Type': 'application/json' },
-          }
-        )
-        const result = await res.json()
-        if (result.status === 'success') {
-          setData(result.data)
+      const res = await fetch(
+        `http://localhost:3005/api/course/course-list/${id}`,
+        {
+          method: 'GET',
+          headers: token
+            ? {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${token}`,
+              }
+            : { 'Content-Type': 'application/json' },
         }
-      } catch (err) {
-        alert(err.message)
-      }
+      )
+      const result = await res.json()
+      if (result.status === 'success') setData(result.data)
     }
 
     async function getReviewCard() {
@@ -351,15 +354,32 @@ export default function CourseIDPage() {
       setCourseCard(result.data || [])
     }
 
-    const stored = localStorage.getItem(`favorite_detail_${id}`) === 'true'
-    setIsFavorited(stored)
-
     if (id) {
-      getCourseList()
-      getReviewCard()
-      getCourse()
+      Promise.all([getCourseList(), getReviewCard(), getCourse()])
+        .then(() => setLoading(false))
+        .catch((err) => {
+          console.error('資料載入錯誤：', err)
+          setError(true)
+          setLoading(false)
+        })
     }
   }, [id])
+
+  if (error) {
+    return (
+      <div className="loading-container">
+        <LoadingErrorLottie />
+      </div>
+    )
+  }
+
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <LoadingLottie />
+      </div>
+    )
+  }
 
   return (
     <>
@@ -398,9 +418,9 @@ export default function CourseIDPage() {
 
               <div className="card-img-overlay banner-img-mask-course">
                 <div className="row d-lg-flex d-none">
-                  <p className="bread-crumbs mt-3 ms-5">
-                    首頁 / 美妝學院 / {v.title}
-                  </p>
+                  <div className="bread-crumbs mt-3 ms-5">
+                    <Breadcrumb type="course" path={id} />
+                  </div>
                 </div>
                 <div className="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-end p-xl-4 p-lg-3 p-md-2 p-sm-1 p-0">
                   <div className="row position-absolute top-50 end-0 translate-middle-y d-flex align-items-center gap-2 me-5 d-lg-flex d-none banner-play-box">

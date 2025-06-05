@@ -1,22 +1,15 @@
 'use client'
 
 import ComponentsSearchBar from './_components/search-bar'
-import useSWR from 'swr'
-import { useEffect, useState } from 'react'
+import ComponentsSearchButton from './_components/search-button'
+import { useState, useRef, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import ComponentsPostCard from './_components/post-card'
 import Componentstab from '../_components/tab'
-import ComponentsSearchButton from './_components/search-button'
 import { useAuth } from '../../hook/use-auth'
 import { useFilter } from './_context/filterContext'
-import EditPostModal from './_components/edit-post-modal'
 import PostLoader from './_components/loader-post'
-// import dynamic from 'next/dynamic'
-// const PostLoader = dynamic(() => import('./_components/post-loader'), {
-//   ssr: false,
-// })
-
-const fetcher = (url) => fetch(url).then((res) => res.json())
+import GetPosts from './_hooks/getPosts'
 
 export default function ForumPage() {
   const router = useRouter()
@@ -54,69 +47,95 @@ export default function ForumPage() {
       ...tabParams.entries(),
       ...params.entries(),
     ])
-    // console.log(`----http://localhost:3000/forum?${mergedParams.toString()}`)
     mutate()
     router.push(`http://localhost:3000/forum?${mergedParams.toString()}`)
   }
 
   const params = useSearchParams()
-  const postsAPI = params
-    ? `http://localhost:3005/api/forum/posts/home?${params}`
-    : `http://localhost:3005/api/forum/posts/home`
-  const { data, isLoading, error, mutate } = useSWR(postsAPI, fetcher)
+  const { posts, isResultExist, showLoading, error, mutate } = GetPosts(params)
 
-  // 新增 minimum loading 狀態
-  const [showLoading, setShowLoading] = useState(true)
-  useEffect(() => {
-    if (!isLoading) {
-      // 至少顯示 600ms
-      const timer = setTimeout(() => setShowLoading(false), 400)
-      return () => clearTimeout(timer)
-    } else {
-      setShowLoading(true)
-    }
-  }, [isLoading])
+  // 無限滾動
+  const [page, setPage] = useState(1)
+  const [allPosts, setAllPosts] = useState([])
+  const [hasMore, setHasMore] = useState(true)
+  const observerRef = useRef(null)
+  const limit = 6
 
-  // 整理posts內的liked_user_ids和saved_user_ids
-  let posts = data?.data
-  if (Array.isArray(posts)) {
-    posts = posts.map((post) => {
-      return {
-        ...post,
-        liked_user_ids: post.liked_user_ids
-          ? post.liked_user_ids.split(',').map(Number)
-          : [],
-        saved_user_ids: post.saved_user_ids
-          ? post.saved_user_ids.split(',').map(Number)
-          : [],
-      }
-    })
-  }
+  // // 合併新資料
+  // useEffect(() => {
+  //   if (posts && posts.length > 0) {
+  //     setAllPosts((prev) => {
+  //       // 避免重複
+  //       const ids = new Set(prev.map((p) => p.id))
+  //       return [...prev, ...posts.filter((p) => !ids.has(p.id))]
+  //     })
+  //     if (posts.length < limit) setHasMore(false)
+  //   } else if (page === 1) {
+  //     setAllPosts([])
+  //     setHasMore(false)
+  //   }
+  // }, [posts])
+
+  // // Intersection Observer 無限滾動
+  // useEffect(() => {
+  //   if (!hasMore) return
+  //   const observer = new IntersectionObserver(
+  //     (entries) => {
+  //       if (entries[0].isIntersecting) {
+  //         setPage((prev) => prev + 1)
+  //       }
+  //     },
+  //     { threshold: 1 }
+  //   )
+  //   if (observerRef.current) observer.observe(observerRef.current)
+  //   return () => {
+  //     if (observerRef.current) observer.unobserve(observerRef.current)
+  //   }
+  // }, [hasMore])
+
+  // // 當 params 變動時重置
+  // useEffect(() => {
+  //   setPage(1)
+  //   setAllPosts([])
+  //   setHasMore(true)
+  // }, [params.toString()])
 
   return (
     <>
-      <main className="main posts-section col col-10 col-xl-8 d-flex flex-column align-items-center mx-0 position-relative overflow-hidden no-scroll-bar">
-        <div className="tabs d-flex position-absolute w-100 top-0">
+      <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center mx-0 px-0 position-relative overflow-hidden no-scroll-bar h-100">
+        <div className="tabs d-flex position-absolute w-100 top-0 px-3">
           <Componentstab
             cates={['熱門', '最新']}
             height={'40'}
             // setTab={setTab}
             handleTabChange={handleTabChange}
           />
-          <ComponentsSearchButton />
+          <ComponentsSearchButton
+            postCateItems={postCateItems}
+            productCateItems={productCateItems}
+            handleAsideSearchChange={handleAsideSearchChange}
+          />
         </div>
-        <div className="posts d-flex flex-column gap-3 pt-5 pb-5 mt-1 w-100 overflow-auto">
+        <div className="posts maxWidth800 d-flex flex-column gap-3 pt-5 pb-5 px-3 mt-1 w-100 overflow-auto">
           {/* <PostLoader /> */}
-          {error
-            ? '連線錯誤'
-            : showLoading
-              ? Array(5)
-                  .fill(1)
-                  .map((v, i) => <PostLoader key={i} />)
-              : posts?.length === 0
-                ? '無文章資料'
-                : posts?.map((post) => {
-                    return (
+          {error ? (
+            '連線錯誤'
+          ) : showLoading ? (
+            Array(5)
+              .fill(1)
+              .map((v, i) => <PostLoader key={i} />)
+          ) : !isResultExist ? (
+            <div className="d-flex flex-column gap-3">
+              <div className="py-3 text-center sub-text-color fs20 fst-italic fw-normal">
+                ——查無文章——
+              </div>
+              <div className="text-center main-color fw-medium">
+                觀看更多美妝心得👇
+              </div>
+              {posts?.map((post, idx) => {
+                if (idx === posts.length - 1) {
+                  return (
+                    <div key={idx} ref={observerRef}>
                       <ComponentsPostCard
                         key={post.id}
                         postID={post.id}
@@ -135,23 +154,108 @@ export default function ForumPage() {
                         btnSavedActive={post.saved_user_ids.includes(userID)}
                         btnLikedCount={post.liked_user_ids.length}
                         btnSavedCount={post.saved_user_ids.length}
+                        commentCount={post.comment_count}
                         userID={userID}
                         mutate={mutate}
                       />
-                    )
-                  })}
+                    </div>
+                  )
+                }
+                return (
+                  <ComponentsPostCard
+                    key={post.id}
+                    postID={post.id}
+                    postTitle={post.title}
+                    postCateName={post.cate_name}
+                    postContent={post.content}
+                    authorID={post.user_id}
+                    width="21"
+                    src={post.user_img}
+                    alt={post.user_name}
+                    fontSize="14"
+                    color="var(--sub-text)"
+                    updatedAt={post.updated_at.toString()}
+                    authorName={post.user_nick}
+                    btnLikedActive={post.liked_user_ids.includes(userID)}
+                    btnSavedActive={post.saved_user_ids.includes(userID)}
+                    btnLikedCount={post.liked_user_ids.length}
+                    btnSavedCount={post.saved_user_ids.length}
+                    commentCount={post.comment_count}
+                    userID={userID}
+                    mutate={mutate}
+                  />
+                )
+              })}
+            </div>
+          ) : (
+            posts?.map((post, idx) => {
+              if (idx === posts.length - 1) {
+                return (
+                  <div key={idx} ref={observerRef}>
+                    <ComponentsPostCard
+                      key={post.id}
+                      postID={post.id}
+                      postTitle={post.title}
+                      postCateName={post.cate_name}
+                      postContent={post.content}
+                      authorID={post.user_id}
+                      width="21"
+                      src={post.user_img}
+                      alt={post.user_name}
+                      fontSize="14"
+                      color="var(--sub-text)"
+                      updatedAt={post.updated_at.toString()}
+                      authorName={post.user_nick}
+                      btnLikedActive={post.liked_user_ids.includes(userID)}
+                      btnSavedActive={post.saved_user_ids.includes(userID)}
+                      btnLikedCount={post.liked_user_ids.length}
+                      btnSavedCount={post.saved_user_ids.length}
+                      commentCount={post.comment_count}
+                      userID={userID}
+                      mutate={mutate}
+                    />
+                  </div>
+                )
+              }
+              return (
+                <ComponentsPostCard
+                  key={post.id}
+                  postID={post.id}
+                  postTitle={post.title}
+                  postCateName={post.cate_name}
+                  postContent={post.content}
+                  authorID={post.user_id}
+                  width="21"
+                  src={post.user_img}
+                  alt={post.user_name}
+                  fontSize="14"
+                  color="var(--sub-text)"
+                  updatedAt={post.updated_at.toString()}
+                  authorName={post.user_nick}
+                  btnLikedActive={post.liked_user_ids.includes(userID)}
+                  btnSavedActive={post.saved_user_ids.includes(userID)}
+                  btnLikedCount={post.liked_user_ids.length}
+                  btnSavedCount={post.saved_user_ids.length}
+                  commentCount={post.comment_count}
+                  userID={userID}
+                  mutate={mutate}
+                />
+              )
+            })
+          )}
         </div>
       </main>
-      <ComponentsSearchBar
-        // setKeyword={setKeyword}
-        // setTab={setTab}
-        // setProductCate={setProductCate}
-        // setPostCate={setPostCate}
-        postCateItems={postCateItems}
-        productCateItems={productCateItems}
-        handleAsideSearchChange={handleAsideSearchChange}
-      />
-      <EditPostModal postTitle="" postContent="" isUpdated={false} />
+      <div className="col col-2 d-none d-xl-block px-0 ps-xl-2 ps-xxl-0 position-relative">
+        <ComponentsSearchBar
+          // setKeyword={setKeyword}
+          // setTab={setTab}
+          // setProductCate={setProductCate}
+          // setPostCate={setPostCate}
+          postCateItems={postCateItems}
+          productCateItems={productCateItems}
+          handleAsideSearchChange={handleAsideSearchChange}
+        />
+      </div>
     </>
   )
 }
