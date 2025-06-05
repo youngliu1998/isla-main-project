@@ -135,9 +135,23 @@ export default function LoginPage() {
 
   return (
     <>
-      <div className="d-flex flex-column justify-content-centers gap-5 py-2 postion-middle">
-        <h1 className="text-center login-title">
-          <span className="title">ISLA</span> 會員登入
+      <div className="d-flex flex-column justify-content-centers gap-5 margin-top-minus">
+        <div className="login-main-page-btn-container">
+          <button
+            className="to-main-page-btn"
+            onClick={() => {
+              router.push('/')
+            }}
+          >
+            <i className="bi bi-chevron-left"></i>
+            返回首頁
+          </button>
+        </div>
+        <h1 className="text-center text-primary login-title">
+          <Link href="/" className="text-primary">
+            <span className="title">ISLA</span>
+          </Link>{' '}
+          會員登入
         </h1>
         {/* === for test === */}
         {/* <div className="position-absolute top-50 left-0">

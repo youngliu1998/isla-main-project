@@ -61,11 +61,11 @@ export default function SearchBlock() {
         {/* ==== 商品(文章)列表 ==== */}
         <div className="d-flex justify-content-center header-search-item-list header-search-item-list-mobile">
           {searchType == 1 &&
-            products.slice(0, 8).map((product, i) => {
+            products.map((product, i) => {
               return <ProductBar key={i} product={product} />
             })}
           {searchType == 2 &&
-            forums.slice(0, 8).map((forum, i) => {
+            forums.map((forum, i) => {
               return <ForumBar forum={forum} key={i} />
             })}
         </div>
