@@ -36,7 +36,7 @@ export default function ForgetPasswordPage() {
       {/* ==== 返回鍵 ==== */}
       <div className="mx-auto forget-block">
         <button className="forget-prev-step-btn" onClick={prev}>
-          <i class="bi bi-chevron-left"></i>
+          <i className="bi bi-chevron-left"></i>
           {step === 1 ? '返回登入' : '上一步'}
         </button>
         <h1 className="text-primary text-center mb-4">忘記密碼</h1>

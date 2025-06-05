@@ -143,7 +143,7 @@ export default function LoginPage() {
               router.push('/')
             }}
           >
-            <i class="bi bi-chevron-left"></i>
+            <i className="bi bi-chevron-left"></i>
             返回首頁
           </button>
         </div>
