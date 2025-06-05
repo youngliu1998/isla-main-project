@@ -21,7 +21,7 @@ export default function FollowingCard({
     <>
       <Link
         href={cardHref}
-        className="following-card d-flex flex-row flex-sm-column flex-xl-row  align-items-center justify-content-center px-3 py-3 gap-3 rounded-3 card-border bg-pure-white forum-shadow"
+        className="following-card d-flex flex-column flex-xl-row  align-items-center justify-content-center px-3 py-3 gap-3 rounded-3 card-border bg-pure-white forum-shadow"
       >
         {/* <div className="row"> */}
         <div className="following-info  d-flex gap-2 align-items-center main-text-color">
@@ -47,7 +47,7 @@ export default function FollowingCard({
             <div className="main-text-color fs14 text-nowrap">文章</div>
           </div> */}
         </div>
-        <div className="following-button d-flex gap-2 ms-auto">
+        <div className="following-button d-flex gap-2 m-0 ms-xl-auto">
           <ComponentsButtonFollowing
             isFollow={true}
             followMutate={followMutate}

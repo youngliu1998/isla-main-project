@@ -104,7 +104,7 @@ export default function PostIDPage(props) {
 
   const handleDeletePost = async () => {
     const res = await fetch(
-      `http://localhost:3005/api/forum/posts/soft-delete/${post.id}`,
+      `http://localhost:3005/api/forum/posts/soft-delete/${post.id}&userID=${userID}&userID=${userID}`,
       { method: 'PUT' }
     )
     if (!res.ok) throw new Error('未成功連線')
@@ -117,7 +117,7 @@ export default function PostIDPage(props) {
   return (
     <>
       {/* <PostDetailLoader /> */}
-      <main className="main col col-10 col-xl-8 d-flex flex-column align-items-start px-0 h-100">
+      <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center px-0 h-100">
         {error ? (
           <div className="fs24 d-flex flex-column align-items-center mx-auto mt-3 gap-2">
             <div>連線錯誤，試試重新整理</div>
@@ -129,12 +129,13 @@ export default function PostIDPage(props) {
             </Link>
           </div>
         ) : showLoading ? (
-          <div className="post post-detail-loading d-flex flex-column gap-2 px-4 w-100 rounded-top-4 shadow-forum bg-pure-white pt-4 card-border position-relative">
-            <PostDetailLoader />
+          <div className="posts d-flex flex-column gap16 pb-0 w-100 h-100 px-3 maxWidth800">
+            <div className="post d-flex flex-column gap-2 rounded-top-4 shadow-forum bg-pure-white pt-4 px-4 card-border position-relative min-vh-100">
+              <PostDetailLoader />
+            </div>
           </div>
         ) : !posts || posts.length === 0 ? (
           <div className="fs24 d-flex flex-column align-items-center mx-auto mt-3 gap-2">
-            {/* FIXME */}
             <div>查無此文章</div>
             <Link
               href={'/forum'}
