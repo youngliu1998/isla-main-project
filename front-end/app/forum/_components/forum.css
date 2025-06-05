@@ -1,6 +1,7 @@
 /* module */
 * {
   /* overscroll-behavior: none; */
+  /* outline: 1px solid blue; */
 }
 .body {
   /* position: fixed;
@@ -366,7 +367,7 @@
 .my-container {
   /* max-width: 1440px !important; */
   height: auto;
-  padding-top: 16px;
+  padding-top: 12px;
   /* overscroll-behavior: none; */
 }
 
@@ -590,4 +591,15 @@
 
 .chat-main-header {
   min-height: 52px;
+}
+.peForumMsg {
+  padding-right: 80px;
+}
+.psForumMsg {
+  padding-left: 80px;
+}
+
+/* my-forum */
+.my-forum {
+  max-width: 800px;
 }

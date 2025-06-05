@@ -9,7 +9,6 @@ const router = express.Router()
 // 後端送出的post_user_liked, post_user_saved 為字串
 router.get('/:pageName', async function (req, res) {
   // 取得userID
-  const userID = 1
   const postsQuery = `SELECT 
         p.*,
         pc.id AS cate_id,
@@ -44,13 +43,15 @@ router.get('/:pageName', async function (req, res) {
     ) comment ON p.id = comment.post_id
     WHERE p.valid=1`
 
+  const userID = req.body.userID || req.query.userID || 0
   const pageName = req.params.pageName
   let postsResult
   let morePostsResult
   let isResultExist = true
   let otherPosts
 
-  if (!userID) return res.json({ status: 'success', data: '未登入成功' })
+  // const userID = req.query.userID || req.body.usrID || 0
+  // if (!userID) return res.json({ status: 'success', data: '未登入成功' })
 
   switch (pageName) {
     case 'post-detail': {
@@ -116,13 +117,13 @@ router.get('/:pageName', async function (req, res) {
         }
       } else {
         postsResult = await db.query(`${postsQuery} ORDER BY likes DESC`)
-        // const { page = '1', limit = '6' } = req.query
-        // const offset = (parseInt(page) - 1) * parseInt(limit)
+        const { page = '1', limit = '5' } = req.query
+        const offset = (parseInt(page) - 1) * parseInt(limit)
 
-        // postsResult = await db.query(
-        //   `${postsQuery} ORDER BY likes DESC LIMIT ? OFFSET ?`,
-        //   [parseInt(limit), offset]
-        // )
+        postsResult = await db.query(
+          `${postsQuery} ORDER BY likes DESC LIMIT ? OFFSET ?`,
+          [parseInt(limit), offset]
+        )
       }
       if (postsResult[0].length === 0) {
         isResultExist = false
@@ -151,6 +152,7 @@ router.get('/:pageName', async function (req, res) {
       postsResult[0] = postsResult[0].filter((p) =>
         p.saved_user_ids.split(',').map(Number).includes(userID)
       )
+      console.log(postsResult[0])
       break
     }
     case 'tidy': {
