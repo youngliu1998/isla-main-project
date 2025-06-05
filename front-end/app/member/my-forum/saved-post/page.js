@@ -34,15 +34,15 @@ export default function MyPostPage(props) {
   //     </>
   //   )
   // }
-  if (posts.length === 0) {
-    return (
-      <>
-        <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center">
-          無收藏文章
-        </main>
-      </>
-    )
-  }
+  // if (posts.length === 0) {
+  //   return (
+  //     <>
+  //       <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center">
+  //         無收藏文章
+  //       </main>
+  //     </>
+  //   )
+  // }
   console.log(posts.length)
   console.log(posts)
   return (
@@ -64,7 +64,7 @@ export default function MyPostPage(props) {
               isLoading
             </main>
           ) : posts.length === 0 ? (
-            <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center">
+            <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center w-100 py-5 fst-italic sub-text-color">
               無收藏文章
             </main>
           ) : (

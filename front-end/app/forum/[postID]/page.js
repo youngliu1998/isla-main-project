@@ -104,12 +104,12 @@ export default function PostIDPage(props) {
 
   const handleDeletePost = async () => {
     const res = await fetch(
-      `http://localhost:3005/api/forum/posts/soft-delete/${post.id}&userID=${userID}&userID=${userID}`,
+      `http://localhost:3005/api/forum/posts/soft-delete/${post.id}?userID=${userID}&userID=${userID}`,
       { method: 'PUT' }
     )
     if (!res.ok) throw new Error('未成功連線')
     // 已刪除提示 FIXME
-    router.push(window.location.href)
+    router.push('/forum')
   }
 
   // const handleDirectLogin = UseDirectToLogin(isAuth)
