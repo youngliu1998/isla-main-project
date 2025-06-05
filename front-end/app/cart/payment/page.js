@@ -244,7 +244,7 @@ export default function PaymentPage() {
 
   return (
     <>
-      <div style={{ height: '1rem' }}></div>
+      <div style={{ height: '2rem' }}></div>
       <section className="container text-center text-lg-start">
         <h1 className="text-subtext h2 m-4">購物車</h1>
       </section>
