@@ -9,9 +9,10 @@
   position: relative;
   z-index: 1000;
   /* width */
-  width: 380px;
+  width: 100%;
   max-height: 1000px;
   /* background */
+  padding-top: 6px;
   background-color: var(--white);
   > div {
     width: 100%;
@@ -22,29 +23,72 @@
 }
 /* 卡片列表 */
 .header-search-item-list {
+  /* background-color: #ffffff50;
+  backdrop-filter: blur(50px); */
   /* padding-block: 8px; */
-  padding-inline: 16px;
-  max-height: calc(100vh - 198px);
+  /* padding-inline: 16px; */
+  /* max-height: calc(100vh - 198px); */
   /* background */
-  background-color: #ffffff;
+
   /* postion */
-  position: absolute;
-  top: 110px;
-  left: 0;
+  /* position: absolute; */
+  /* top: 110px;
+  left: 0; */
+  height: 100%;
   z-index: 1000;
   overflow: auto;
+  gap: 12px;
+  max-height: 100%;
+  overflow-y: auto;
+  height: calc(100vh - 210px);
+  padding-bottom: 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 /* 卡片本體 */
 .header-search-item {
   display: flex;
+  border-radius: 12px;
+  margin: 3px 12px;
+
   gap: 1rem;
-  background-color: #ececec;
-  width: 320px;
-  height: 80px;
-  padding: 0.5rem;
+  background-color: #ffffff;
+  border-top: 1px #ffffff;
+  box-shadow: 0 2 12px #00000011;
+  min-width: 320px;
+  width: 100%;
+  height: 100px;
+  padding: 12px 2px;
+  /* border: 1px solid #000; */
+  max-width: 340px;
+}
+
+.header-search-item-forum {
+  display: flex;
+  border-radius: 12px;
+  margin: 3px 12px;
+
+  gap: 1rem;
+  background-color: #ffffff;
+  border-top: 1px #ffffff;
+  box-shadow: 0 2 12px #00000011;
+  min-width: 320px;
+  width: 100%;
+  height: 100px;
+  padding: 12px 2px;
   /* border: 1px solid #000; */
 }
 
 .bg-block {
   background-color: #fbfbfb;
+}
+
+.header-search-item-list-mobile {
+  align-items: center;
+  width: 100%;
+  .header-search-item {
+    max-width: 100%;
+    width: 90%;
+  }
 }

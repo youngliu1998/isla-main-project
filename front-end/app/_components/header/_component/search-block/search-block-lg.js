@@ -36,7 +36,7 @@ export default function SearchBlockLg({ open = true }) {
     <>
       <div className={'header-search-block-lg for-product px-3' + ' ' + isOpen}>
         {/* ==== 搜尋欄位 ==== */}
-        <div className="d-flex align-items-center ps-4 mt-3">
+        <div className="d-flex align-items-center ps-4 mt-3 header-search-block-lg-search">
           <label htmlFor="serch" className="px-3">
             <i className="bi bi-search fs-5" />
           </label>
@@ -58,7 +58,7 @@ export default function SearchBlockLg({ open = true }) {
           />
         </div>
         {/* ==== 商品(文章)列表 ==== */}
-        <div className="d-flex flex-wrap gap-2 header-search-item-list bg-block pb-4">
+        <div className="header-search-item-list">
           {searchType == 1 &&
             products.slice(0, 10).map((product, i) => {
               return <ProductBar product={product} key={i} />
