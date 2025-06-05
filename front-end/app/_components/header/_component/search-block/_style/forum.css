@@ -1,7 +1,6 @@
 /* ==== 文章 ====  */
 .header-search-item.for-forum {
   /* background-color: #fbfbfb; */
-  background-color: white;
   padding: 12px 12px;
 
   /* 標題 */
@@ -31,7 +30,7 @@
   /* height: 30px; */
   display: flex;
   align-items: center;
-  /* gap: 12px; */
+  gap: 12px;
   padding-bottom: 6px;
 
   .search-item-content {

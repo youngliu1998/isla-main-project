@@ -53,7 +53,7 @@
   margin: 3px 12px;
 
   gap: 1rem;
-  background-color: #ffffff;
+  background-color: #ffffff37;
   border-top: 1px #ffffff;
   box-shadow: 0 2 12px #00000011;
   min-width: 320px;
@@ -70,7 +70,7 @@
   margin: 3px 12px;
 
   gap: 1rem;
-  background-color: #ffffff;
+  background-color: #ffffff37;
   border-top: 1px #ffffff;
   box-shadow: 0 2 12px #00000011;
   min-width: 320px;
@@ -80,9 +80,9 @@
   /* border: 1px solid #000; */
 }
 
-.bg-block {
+/* .bg-block {
   background-color: #fbfbfb;
-}
+} */
 
 .header-search-item-list-mobile {
   align-items: center;

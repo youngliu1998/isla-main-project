@@ -50,10 +50,10 @@ export default function SearchBlockLg({ open = true }) {
           />
         </div>
         {/* ==== 切換欄位 ==== */}
-        <div className="w-50 mb-3">
+        <div className="header-search-block-lg-search-Componentstab mb-3">
           <Componentstab
             cates={['商品', '文章']}
-            height={40}
+            height={35}
             handleTabChange={setSearchType}
           />
         </div>
