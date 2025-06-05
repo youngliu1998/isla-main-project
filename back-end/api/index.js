@@ -68,15 +68,24 @@ app.use(express.static(path.join(process.cwd(), 'public')))
 
 // <<<<<<<<<<<<<<<<WebSocket<<<<<<<<<<<<<<<<<
 const wss = new WebSocketServer({ port: 8080 })
-wss.on('connection', (connection) => {
-  // console.log('使用者已連線')
+const clientMap = new Map()
+wss.on('connection', (connection, req) => {
+  const url = new URL(req.url, `http://${req.headers.host}`)
+  const roomID = url.searchParams.get('roomID')
+  const userID = url.searchParams.get('userID')
+  clientMap.set(connection, { roomID, userID })
+
   connection.on('message', (message) => {
     // NOTE toString(): buffer to JSON, parse(): JSON to Object
-    // console.log('收到訊息', JSON.parse(message.toString()))
-    // console.log('收到訊息', message.toString())
+
+    const parsed = JSON.parse(message.toString())
     const json = message
     wss.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) {
+      const meta = clientMap.get(client)
+      if (
+        client.readyState === WebSocket.OPEN &&
+        meta?.roomID === parsed.room_id
+      ) {
         client.send(json)
       }
     })
