@@ -2,6 +2,7 @@ import express from 'express'
 const router = express.Router()
 // import verifyToken from '../../lib/verify-token.js'
 import { getFilteredProducts } from '../services/product-controller.js'
+import db from '../config/mysql.js'
 
 router.get('/', async (req, res) => {
   console.log('篩選參數:', req.query)
@@ -65,6 +66,45 @@ router.get('/', async (req, res) => {
 
     res.json({ status: 'success', data: result })
   } catch (err) {
+    res.status(500).json({ status: 'error', message: err.message })
+  }
+})
+
+router.post('/search', async (req, res) => {
+  const { keyword = '' } = req.body
+
+  try {
+    let sql = `
+      SELECT
+        p.product_id,
+        p.name AS title,
+        p.base_price,
+        p.sale_price,
+        b.name AS brand,
+        pi.image_url AS productImg,
+        CASE 
+          WHEN p.sale_price IS NOT NULL 
+              AND NOW() >= p.sale_start_date
+              AND NOW() <= p.sale_end_date
+          THEN p.sale_price
+          ELSE p.base_price
+        END AS final_price
+      FROM products p
+      LEFT JOIN brands b ON p.brand_id = b.brand_id
+      LEFT JOIN (
+        SELECT product_id, MIN(image_url) AS image_url
+        FROM product_images
+        GROUP BY product_id
+      ) pi ON pi.product_id = p.product_id
+      WHERE p.name LIKE ?
+    `
+    const params = [`%${keyword}%`]
+
+    const [rows] = await db.execute(sql, params)
+
+    res.json({ status: 'success', data: rows })
+  } catch (err) {
+    console.error('[keyword search] 錯誤:', err)
     res.status(500).json({ status: 'error', message: err.message })
   }
 })

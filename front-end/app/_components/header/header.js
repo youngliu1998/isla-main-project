@@ -21,8 +21,8 @@ export default function Header() {
   const { totalCount, cartItems } = useCartContext()
   const pathname = usePathname()
   const router = useRouter()
-  const [hamMenuOpen, setHamMenuOpen] = useState(false)
-  const [searchOpen, setSearchOpen] = useState(false)
+  const [hamMenuOpen, setHamMenuOpen] = useState(false) // 開啟手機、平板的nav
+  const [searchOpen, setSearchOpen] = useState(false) // 開啟搜尋功能
   console.log('searchOpen', searchOpen)
   const { user, isAuth } = useAuth()
   // console.log('header: user: ', user)
@@ -41,7 +41,7 @@ export default function Header() {
   let loginAva = isAuth ? (
     <div
       className="
-    overflow-hidden rounded-pill shadow"
+    overflow-hidden rounded-pill shadow header-avartar"
     >
       <Image
         src={
@@ -95,6 +95,12 @@ export default function Header() {
               onClick={() => {
                 setSearchOpen(!searchOpen)
               }}
+              // onMouseEnter={() => {
+              //   setSearchOpen(true)
+              // }}
+              // onMouseLeave={() => {
+              //   setSearchOpen(true)
+              // }}
             >
               <i className="bi bi-search" />
             </button>

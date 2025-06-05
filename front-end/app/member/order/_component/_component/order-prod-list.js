@@ -11,6 +11,8 @@ import {
   EXPERIENCE_PAGE_URL,
 } from '@/_route/page-url'
 import { PRODUCT_IMG_URL } from '@/_route/img-url'
+// ==== method ====
+import { formatted } from '../../../_method/method'
 
 export default function OrderProdList({ order_id = 0 }) {
   const [openProd, setOpenProd] = useState(false)
@@ -27,18 +29,21 @@ export default function OrderProdList({ order_id = 0 }) {
           src: PRODUCT_IMG_URL + item?.product_pic,
           href: PRODUCT_PAGE_URL + item?.product_id,
           title: item?.product_tit,
+          type: '商品',
         }
       case 'course':
         return {
           src: COURSE_BANNER_URL + item?.course_pic,
           href: COURSE_PAGE_URL + item?.course_id,
           title: item?.course_tit,
+          type: '課程',
         }
       case 'experience':
         return {
           src: COURSE_BANNER_URL + item?.experience_pic,
           href: EXPERIENCE_PAGE_URL + item?.course_experience_id,
           title: item?.experience_tit,
+          type: '體驗',
         }
     }
   }
@@ -81,7 +86,7 @@ export default function OrderProdList({ order_id = 0 }) {
         }
       >
         {item.map((item, i) => {
-          const { src, href, title } = switchItem(item)
+          const { src, href, title, type } = switchItem(item)
           return (
             <div
               key={i}
@@ -99,12 +104,13 @@ export default function OrderProdList({ order_id = 0 }) {
               <div className="col p-2 user-item-title">
                 <Link href={href}>{title}</Link>
               </div>
-              <div className="col-2 p-2">
-                {item.item_type === 'product' && '商品'}
-                {item.item_type === 'course' && '課程'}
-                {item.item_type === 'experience' && '體驗'}
+              <div className="col-2 p-2">{type}</div>
+              <div className="col-2">
+                <div className="d-flex justify-content-between p-2">
+                  <span>$NT</span>
+                  <span>{formatted(parseInt(item.price))}</span>
+                </div>
               </div>
-              <div className="col-2 p-2">${item.price}</div>
             </div>
           )
         })}

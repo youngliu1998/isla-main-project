@@ -5,6 +5,10 @@ body {
   padding-top: 3.5rem;
   min-height: calc(100vh - 300px);
 }
+.margin-top-minus {
+  /* login, register,forget-password */
+  margin-top: -2.5rem;
+}
 .user-content {
   display: flex;
   flex-direction: column;

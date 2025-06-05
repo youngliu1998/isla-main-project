@@ -1,3 +1,9 @@
 .path-link {
   color: var(--sub-element);
+  font-weight: 300;
+  font-size: 1rem;
+  letter-spacing: 0.08rem;
+  &:hover {
+    color: #777777;
+  }
 }

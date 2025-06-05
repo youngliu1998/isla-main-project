@@ -158,9 +158,9 @@ export default function RegisterPage() {
 
   return (
     <>
-      <h2 className="regiTitle text-center mb-4">
+      <h1 className="regiTitle text-center mb-4 margin-top-minus">
         <span className="title">ISLA</span>會員註冊
-      </h2>
+      </h1>
       <div className="row row-cols-lg-2 row-cols-1 gx-5 regiBlock">
         {/* banner */}
         <div className="d-lg-block d-none">
