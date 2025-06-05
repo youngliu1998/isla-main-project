@@ -9,6 +9,8 @@ import { usePathname } from 'next/navigation'
 import MemberNav from './_side-bar-component/member-nav'
 import OpneNav from './_side-bar-component/open-nav'
 import UploadAva from './_side-bar-component/upload-ava'
+import LoadingLottie from '@/app/_components/loading/lottie-loading'
+import { toast } from 'react-toastify'
 import './_style.css/side-bar.css'
 import { USER_AVA_URL } from '@/_route/img-url.js'
 
@@ -26,7 +28,11 @@ export default function SideBar() {
       const isAuthLocal = localStorage.getItem('jwtToken') || false
       // console.log(`isAuth`, isAuth)
       if (!isAuthLocal) {
-        alert('請先登入')
+        toast.error('請先登入', {
+          position: 'top-right',
+          autoClose: 1000,
+          hideProgressBar: false,
+        })
         router.push('/member/login')
         return
       }
@@ -48,6 +54,10 @@ export default function SideBar() {
     pathname.includes('register') ||
     pathname.includes('forget-password')
   ) {
+    return <></>
+  }
+  // Loading 畫面
+  if (!user?.email) {
     return <></>
   }
   return (

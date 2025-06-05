@@ -173,11 +173,11 @@ router.post('/member', async (req, res) => {
 
   const brandMap = {
     1: 'unleashia',
-    2: 'COSNORI',
-    3: 'MUZIGAE',
-    4: 'kaja',
-    5: 'rom&nd',
-    6: "A'pieu",
+    3: 'COSNORI',
+    4: 'MUZIGAE',
+    5: 'kaja',
+    6: 'rom&nd',
+    2: "A'pieu",
   }
 
   const categoryMap = {

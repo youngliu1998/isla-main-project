@@ -1,11 +1,11 @@
 'use client'
 import { useAuth } from '@/hook/use-auth'
 import Link from 'next/link'
-import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 import RegisterInput from './_component/register-input'
+import ImgContainer from './_component/img-container'
 // import TheModal from '../_component/modal'
 import '../_styles/style.css'
 import './_style/register.css'
@@ -174,6 +174,7 @@ export default function RegisterPage() {
             是一個超貼心、懂你的韓系美妝電商品牌，專為年輕族群打造最棒的美妝體驗！我們帶來超夯的韓系美妝好物，還有專業又好玩的美妝課程跟討論區，讓你隨時掌握最新美妝趨勢，和同好一起分享創意靈感。不管你是小白還是美妝老手，ISLA
             都陪你一起解鎖屬於你的美麗冒險！
           </div>
+          <ImgContainer />
         </div>
         {/* register panel */}
 
@@ -247,26 +248,6 @@ export default function RegisterPage() {
           </div>
         </form>
       </div>
-      {/* 註冊成功後出現彈跳視窗 */}
-      {/* <TheModal
-        title="註冊成功"
-        content="請問要直接領取專屬優惠券嗎(視為直接登入)"
-        btncls="不，返回首頁"
-        btnsuc="是"
-        btnsucHref="/coupon/create"
-        show={showLoginModal}
-        onClose={() => {
-          setShowLoginModal(false)
-          router.push('/member/login')
-        }}
-        btnclsOnclick={() => {
-          setShowLoginModal(false)
-          router.push('/')
-        }}
-        btnsucOnclick={async () => {
-          setShowLoginModal(false)
-        }}
-      /> */}
     </>
   )
 }

@@ -114,7 +114,10 @@ export default function ExperienceCard({
         href={`/course/experience/${id}`}
         className="text-decoration-none course-card-animate"
       >
-        <div className="card h-100 card-hover-course" data-course-id={id}>
+        <div
+          className="card h-100 card-hover-course course-card"
+          data-course-id={id}
+        >
           <div className="card-img-container-course position-relative">
             <Image
               src={picture}
@@ -138,7 +141,7 @@ export default function ExperienceCard({
               />
             </button>
           </div>
-          <div className="card-body">
+          <div className="card-body experience-card-body">
             <button className="btn experience-tag mb-2">{tagLabel}</button>
             <h5 className="card-title card-title-box mb-2">{title}</h5>
             <p className="card-teacher-course mb-2">
@@ -146,7 +149,7 @@ export default function ExperienceCard({
               {city}
             </p>
             <p className="card-teacher-course mb-2">{activity_data}</p>
-            <div className="d-flex align-items-end text-end">
+            <div className="d-flex align-items-end text-end experience-money">
               <h5 className=" me-3">NT {Number(discount).toLocaleString()}</h5>
               <p className="card-text-price m-0">
                 NT {Number(price).toLocaleString()}

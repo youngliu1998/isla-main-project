@@ -11,6 +11,9 @@ import '../course/_components/course.css' // 課程區塊樣式
 import { MdSearch } from 'react-icons/md' // 搜尋 icon
 import MobileFilterBar from '../course/_components/mobile-filter-bar/mobile-filter-bar' // 手機版篩選欄元件（目前未使用）
 import IslaSwitch from '../_components/form/switch/form-switch'
+import Breadcrumb from '../course/_components/breadcrumb/breadcrumb'
+import LoadingLottie from '../_components/loading/lottie-loading'
+import LoadingErrorLottie from '../_components/loading-error/lottie-error'
 
 export default function CoursePage() {
   // ====== 狀態定義 ======
@@ -32,22 +35,32 @@ export default function CoursePage() {
     { id: 3, name: '日常彩妝' },
     { id: 4, name: '其他課程' },
   ]
-
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
   // ====== 取得課程、體驗與講師資料 ======
   useEffect(() => {
     async function getCourse() {
-      const res = await fetch(courseUrl + 'course') // 撈取課程資料
-      const json = await res.json()
-      setCourseCard(json.data || [])
+      try {
+        const res = await fetch(courseUrl + 'course')
+        const json = await res.json()
+        setCourseCard(json.data || [])
 
-      const resexp = await fetch(courseUrl + 'experience') // 撈取體驗資料
-      const jsonexp = await resexp.json()
-      setExperienceCard(jsonexp.data || [])
+        const resexp = await fetch(courseUrl + 'experience')
+        const jsonexp = await resexp.json()
+        setExperienceCard(jsonexp.data || [])
 
-      const resteacher = await fetch(courseUrl + 'teacher-card') // 撈取講師資料
-      const jsonteacher = await resteacher.json()
-      setTeachers(jsonteacher.data || [])
+        const resteacher = await fetch(courseUrl + 'teacher-card')
+        const jsonteacher = await resteacher.json()
+        setTeachers(jsonteacher.data || [])
+
+        setLoading(false) // ✅ 所有資料都抓完後再關閉 loading
+      } catch (error) {
+        console.error('載入資料失敗', error)
+        setLoading(false)
+        setError(true)
+      }
     }
+
     getCourse()
   }, [])
 
@@ -74,6 +87,22 @@ export default function CoursePage() {
     (v) => v.status !== 0 && v.status !== '0'
   )
 
+  // ====== 排序邏輯（熱門、評價、時間） ======
+  const sortItems = (items) => {
+    switch (sortOption) {
+      case '1':
+        return [...items].sort((a, b) => (b.student || 0) - (a.student || 0)) // 學生人數多優先
+      case '2':
+        return [...items].sort((a, b) => (b.avg_star || 0) - (a.avg_star || 0)) // 評價高優先
+      case '3':
+        return [...items].sort(
+          (a, b) => new Date(b.created) - new Date(a.created) // 最新時間優先
+        )
+      default:
+        return items
+    }
+  }
+
   // ====== 回傳排序後的課程與體驗清單 ======
   const getSortedItems = () => {
     let courses = filteredCourses
@@ -99,22 +128,6 @@ export default function CoursePage() {
     return sortItems([...courses, ...experiences])
   }
 
-  // ====== 排序邏輯（熱門、評價、時間） ======
-  const sortItems = (items) => {
-    switch (sortOption) {
-      case '1':
-        return [...items].sort((a, b) => (b.student || 0) - (a.student || 0)) // 學生人數多優先
-      case '2':
-        return [...items].sort((a, b) => (b.avg_star || 0) - (a.avg_star || 0)) // 評價高優先
-      case '3':
-        return [...items].sort(
-          (a, b) => new Date(b.created) - new Date(a.created) // 最新時間優先
-        )
-      default:
-        return items
-    }
-  }
-
   // ====== 限制最多顯示 12 筆，除非點選展開 ======
   const visibleItems = showAllCourses
     ? getSortedItems()
@@ -138,13 +151,30 @@ export default function CoursePage() {
     t.name.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
+  if (error) {
+    return (
+      <div className="loading-container">
+        <LoadingErrorLottie />
+      </div>
+    )
+  }
+
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <LoadingLottie />
+      </div>
+    )
+  }
+
   return (
     <>
       <CourseBanner />
       <section className="box2 container">
         <div className="row d-lg-flex d-none">
-          <p className="bread-crumbs mt-5">首頁 / 美妝學院 / 所有課程</p>
+          <Breadcrumb current="所有課程" className="mt-5" />
         </div>
+
         <div className="row mt-3 d-flex justify-content-between d-lg-flex d-none">
           <div className="row col-xxl-6 col-xl-7 col-lg-8 p-0 m-0">
             <ul

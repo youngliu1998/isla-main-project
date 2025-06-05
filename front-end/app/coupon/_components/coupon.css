@@ -187,21 +187,29 @@ main {
 }
 
 .button-orange {
-  background: linear-gradient(180deg, #ff7147 0%, #d35731 100%);
+  /* background: linear-gradient(180deg, #ff7147 0%, #d35731 100%); */
+  background: linear-gradient(180deg, #ff875e 0%, #e46c48 100%);
+  /* background: linear-gradient(180deg, #ffa084 0%, #e98c6d 100%); */
 }
 
 .button-purple {
-  background: linear-gradient(180deg, #b17bdd 0%, #695a9f 100%);
+  /* background: linear-gradient(180deg, #b17bdd 0%, #695a9f 100%); */
+  background: linear-gradient(180deg, #caa3e8 0%, #928ac0 100%);
+  /* background: linear-gradient(
+    180deg,
+    rgba(177, 123, 221, 0.8) 0%,
+    rgba(105, 90, 159, 0.8) 100%
+  ); */
 }
 
 /* 滑入：背景滑動、放大 */
-.button-all:hover,
+/* .button-all:hover,
 .button-blue:hover,
 .button-orange:hover,
 .button-purple:hover {
   background-position: bottom;
   transform: scale(1.03);
-}
+} */
 
 /* 白色光滑動效果 */
 .button-all::before,
@@ -221,7 +229,9 @@ main {
     rgba(255, 255, 255, 0) 100%
   );
   transform: skewX(-20deg);
-  transition: all 0.5s ease;
+  transition:
+    left 0.5s ease,
+    opacity 0.5s ease;
   pointer-events: none;
 }
 
@@ -230,6 +240,7 @@ main {
 .button-orange:hover::before,
 .button-purple:hover::before {
   left: 100%;
+  opacity: 0.3;
 }
 
 .text-group {

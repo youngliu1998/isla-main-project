@@ -31,7 +31,7 @@ import HomeAnimationSplash from './home-animation/splash'
 
 export default function Home() {
   const [showMain, setShowMain] = useState(false)
-  const [hasShownAnimation, setHasShownAnimation] = useState(false)
+  const [hasChecked, setHasChecked] = useState(false)
 
   const images = [
     'http://localhost:3005/images/ad/isla-ad.001.jpeg',
@@ -45,21 +45,31 @@ export default function Home() {
   const router = useRouter()
   // const handleForumTab = () => {}
 
-  // 檢查是否第一次進入 localStorage
+  // 使用session
   useEffect(() => {
-    const seen = localStorage.getItem('hasSeenHomeAnimation')
-    if (seen) {
-      setHasShownAnimation(true)
+    const token = localStorage.getItem('jwtToken')
+    const seen = sessionStorage.getItem('hasSeenHomeAnimation')
+
+    if (token && !seen) {
+      // 第一次登入還沒播動畫
+      setShowMain(false)
+    } else {
+      // 沒登入或已播過
       setShowMain(true)
     }
+
+    setHasChecked(true) // 已判斷完動畫狀態
   }, [])
 
   const handleFinishAnimation = () => {
-    localStorage.setItem('hasSeenHomeAnimation', 'true')
+    sessionStorage.setItem('hasSeenHomeAnimation', 'true')
     setShowMain(true)
   }
 
-  if (!hasShownAnimation && !showMain) {
+  if (
+    !hasChecked ||
+    (!showMain && !sessionStorage.getItem('hasSeenHomeAnimation'))
+  ) {
     return <HomeAnimationSplash onFinish={handleFinishAnimation} />
   }
 

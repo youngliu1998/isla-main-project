@@ -5,19 +5,35 @@ import path from 'path'
 
 const router = express.Router()
 
-// 取得第一層留言
 router.get('/', async function (req, res) {
   //   const { followID, userID } = req.body
-  const userID = req.query.userID
+  // const userID = req.query.userID
   const followID = req.query.followID
+  const userID = req.query.userID
 
   const [result] = await db.query(
-    `SELECT * FROM user_follow
-    WHERE user_id = ? AND follow_id = ?
+    `SELECT GROUP_CONCAT(user_id) AS user_ids
+    FROM user_follow
+    WHERE follow_id = ?
+    GROUP BY follow_id
     `,
-    [userID, followID]
+    [followID]
   )
-  return res.json({ status: 'success', data: result.length > 0 })
+
+  const [follows] = await db.query(
+    `SELECT uf.follow_id AS follow_id,
+    u.nickname AS follow_nick,
+    u.ava_url AS follow_img
+    FROM user_follow AS uf
+    JOIN users AS u ON uf.follow_id = u.id
+    WHERE user_id = ?
+    `,
+    [userID]
+  )
+  // console.log(follows)
+
+  const user_ids = result[0] ? result[0]?.user_ids.split(',').map(Number) : ''
+  return res.json({ status: 'success', data: user_ids, follows })
 })
 
 router.post('/get-follow-list', async function (req, res) {
@@ -34,7 +50,9 @@ router.post('/get-follow-list', async function (req, res) {
     u.nickname AS userNick
     FROM user_follow AS follow
     JOIN users AS u ON follow.follow_id = u.id
-    WHERE user_id = ? ${limitClause}`,
+    WHERE user_id = ?
+    ORDER BY follow.follow_id
+    ${limitClause}`,
     [userID]
   )
   return res.json({ status: 'success', data: result })

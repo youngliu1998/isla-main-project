@@ -12,6 +12,7 @@ import { UseDirectToLogin } from '../../_hooks/useDirectToLogin'
 
 export default function RecursiveComment({
   commentID = '',
+  userId = '',
   userImg = '',
   userNick = '',
   content = '',
@@ -26,6 +27,7 @@ export default function RecursiveComment({
   const path = usePathname()
   const postID = useParams().postID
   const lastSubCommentRef = useRef()
+  // const subInputRef = useRef()
   const { user } = useAuth()
   const isAuth = user.id !== 0
   const userIDMe = user.id
@@ -45,15 +47,15 @@ export default function RecursiveComment({
 
   return (
     <>
-      <div className="comment-content d-flex gap10">
-        <Link href="/" className="user-avatar">
+      <div className="comment-content d-flex gap-1">
+        <Link href={`/forum/profile/${userId}`} className="user-avatar py-1">
           <ComponentsAvatar classWidth="32" src={userImg} alt={userNick} />
         </Link>
-        <div className="comment-main d-flex flex-column flex-grow-1 gap-1">
+        <div className="comment-main d-flex flex-column flex-grow-1 gap-1 px-3 py-2 bg-gray-article rounded-4">
           <div className="comment-header d-flex align-items-start">
             <div className="author-account me-auto">
               <Link
-                href="/"
+                href={`/forum/profile/${userId}`}
                 className="d-flex align-items-center gap-1 text-decoration-none fw-medium main-text-color"
               >
                 {userNick}
@@ -80,8 +82,7 @@ export default function RecursiveComment({
               href="/"
               className="reply button-clear text-decoration-none"
               onClick={() => {
-                setSubInputShow((v) => !v)
-                handleDirectToLogin(path)
+                !isAuth ? handleDirectToLogin(path) : setSubInputShow((v) => !v)
               }}
             >
               <span className="fs14 sub-text-color fw-light">回覆</span>
@@ -111,6 +112,7 @@ export default function RecursiveComment({
           {/* comment-card d-flex flex-column gap-3 py-3 bottom-stroke */}
           <RecursiveComment
             commentID={subComment.id}
+            userId={subComment.user_id}
             userImg={subComment.user_img}
             userNick={subComment.nick}
             content={subComment.content}
@@ -129,6 +131,7 @@ export default function RecursiveComment({
       >
         <ComponentsAvatar classWidth="32" src={userImgMe} alt={userNickMe} />
         <input
+          // ref={subInputRef}
           className="sub-input bg-gray-article border-0 rounded-pill px-3 w-100"
           placeholder={`回覆 ${userNick}`}
           type="text"
@@ -141,6 +144,7 @@ export default function RecursiveComment({
               handleCommentSubmit(e, userIDMe, commentID, lastSubCommentRef)
               mutate()
               setSubCommentShow(true)
+              setSubInputShow(false)
             }
           }}
         />
