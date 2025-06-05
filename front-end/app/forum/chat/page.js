@@ -1,8 +1,14 @@
 'use client'
 
 import Ripples from 'react-ripples'
+import { useAuth } from '../../../hook/use-auth'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 
 export default function ChatPage(props) {
+  const router = useRouter()
+  const { user } = useAuth()
+
   return (
     <>
       <div className="chat-main d-flex flex-column justify-content-center align-items-center gap-1 h-100 bg-pure-white rounded-3 ms-3 shadow-forum">

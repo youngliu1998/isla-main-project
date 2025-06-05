@@ -3,7 +3,6 @@ import db from '../../config/mysql.js'
 import multer from 'multer'
 
 const router = express.Router()
-
 router.post('/add-chat', async (req, res) => {
   const { list, userID } = req.body
 
@@ -53,20 +52,23 @@ router.post('/add-chat', async (req, res) => {
 
 router.get('/', async (req, res) => {
   const userID = req.query.userID
+  console.log(userID)
   const [room] = await db.query(
     `SELECT GROUP_CONCAT(room_id) AS room_id
     FROM chat_room_user
-    WHERE user_id = ${userID}
-    GROUP BY user_id`
+    WHERE user_id = ?
+    GROUP BY user_id`,
+    [userID]
   )
-
   if (!room) {
     return res.json({ status: 'success', data: null })
   }
   // console.log(room)
-  const rooms = room[0]?.room_id?.split(',').map(Number).join(',')
-  if (!rooms) {
-    return res.json({ status: 'error', data: null })
+  const rooms = room[0]?.room_id?.split(',').map(Number) || []
+  const placeHolders = rooms.map(() => '?').join(',') || ''
+
+  if (rooms.length === 0) {
+    return res.json({ status: 'success', data: null })
   }
 
   // console.log(rooms) //string 1,2,3,4,5,6,7,8
@@ -93,22 +95,28 @@ router.get('/', async (req, res) => {
     ORDER BY m.created_at DESC`
   )
 
+  const [roomHeader] = await db.query(
+    `SELECT cru.room_id,
+    GROUP_CONCAT(u.nickname) AS nicks,
+    GROUP_CONCAT(u.ava_url) AS imgs
+    FROM chat_room_user cru
+    JOIN users u ON cru.user_id = u.id
+    WHERE room_id IN (${placeHolders})
+    GROUP BY cru.room_id`,
+    rooms
+  )
+
+  // for detail
   const roomID = req.query.roomID
   if (roomID) {
-    const [messages] = await db.query(
-      `SELECT msg.room_id,
-      GROUP_CONCAT(
-        DISTINCT sender_id) AS users,
-      GROUP_CONCAT(
-        DISTINCT nickname) AS nicks,
-      GROUP_CONCAT(
-        DISTINCT ava_url) AS avaUrls,
+    const [messages] = await db.query(`
+      SELECT msg.room_id,
       CONCAT(
         '[',
         GROUP_CONCAT(
           JSON_OBJECT(
-            'sender_id', msg.sender_id, 
-            'content', msg.content, 
+            'sender_id', msg.sender_id,
+            'content', msg.content,
             'nick', u.nickname,
             'ava_url', u.ava_url)
         ),
@@ -118,11 +126,22 @@ router.get('/', async (req, res) => {
       JOIN users u ON msg.sender_id = u.id
       WHERE room_id = ${roomID}
       GROUP BY msg.room_id
-      ORDER BY msg.created_at`
+      ORDER BY msg.created_at`)
+
+    const [roomHeader] = await db.query(
+      `SELECT
+      GROUP_CONCAT(u.nickname) AS nicks,
+      GROUP_CONCAT(u.ava_url) AS imgs
+      FROM chat_room_user cru
+      JOIN users u ON cru.user_id = u.id
+      WHERE room_id = ?`,
+      [roomID]
     )
-    return res.json({ status: 'success', data: messages })
+
+    console.log({ line: 23, userID, room, rooms })
+    return res.json({ status: 'success', roomHeader, messages })
   }
-  return res.json({ status: 'success', data: roomList })
+  return res.json({ status: 'success', roomList, roomHeader })
 })
 
 router.post('/', async (req, res) => {

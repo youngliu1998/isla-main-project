@@ -2,7 +2,7 @@
 
 import ComponentsSearchBar from './_components/search-bar'
 import ComponentsSearchButton from './_components/search-button'
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import ComponentsPostCard from './_components/post-card'
 import Componentstab from '../_components/tab'
@@ -53,7 +53,52 @@ export default function ForumPage() {
 
   const params = useSearchParams()
   const { posts, isResultExist, showLoading, error, mutate } = GetPosts(params)
-  // console.log(posts)
+
+  // 無限滾動
+  const [page, setPage] = useState(1)
+  const [allPosts, setAllPosts] = useState([])
+  const [hasMore, setHasMore] = useState(true)
+  const observerRef = useRef(null)
+  const limit = 6
+
+  // // 合併新資料
+  // useEffect(() => {
+  //   if (posts && posts.length > 0) {
+  //     setAllPosts((prev) => {
+  //       // 避免重複
+  //       const ids = new Set(prev.map((p) => p.id))
+  //       return [...prev, ...posts.filter((p) => !ids.has(p.id))]
+  //     })
+  //     if (posts.length < limit) setHasMore(false)
+  //   } else if (page === 1) {
+  //     setAllPosts([])
+  //     setHasMore(false)
+  //   }
+  // }, [posts])
+
+  // // Intersection Observer 無限滾動
+  // useEffect(() => {
+  //   if (!hasMore) return
+  //   const observer = new IntersectionObserver(
+  //     (entries) => {
+  //       if (entries[0].isIntersecting) {
+  //         setPage((prev) => prev + 1)
+  //       }
+  //     },
+  //     { threshold: 1 }
+  //   )
+  //   if (observerRef.current) observer.observe(observerRef.current)
+  //   return () => {
+  //     if (observerRef.current) observer.unobserve(observerRef.current)
+  //   }
+  // }, [hasMore])
+
+  // // 當 params 變動時重置
+  // useEffect(() => {
+  //   setPage(1)
+  //   setAllPosts([])
+  //   setHasMore(true)
+  // }, [params.toString()])
 
   return (
     <>
@@ -87,7 +132,35 @@ export default function ForumPage() {
               <div className="text-center main-color fw-medium">
                 觀看更多美妝心得👇
               </div>
-              {posts?.map((post) => {
+              {posts?.map((post, idx) => {
+                if (idx === posts.length - 1) {
+                  return (
+                    <div key={idx} ref={observerRef}>
+                      <ComponentsPostCard
+                        key={post.id}
+                        postID={post.id}
+                        postTitle={post.title}
+                        postCateName={post.cate_name}
+                        postContent={post.content}
+                        authorID={post.user_id}
+                        width="21"
+                        src={post.user_img}
+                        alt={post.user_name}
+                        fontSize="14"
+                        color="var(--sub-text)"
+                        updatedAt={post.updated_at.toString()}
+                        authorName={post.user_nick}
+                        btnLikedActive={post.liked_user_ids.includes(userID)}
+                        btnSavedActive={post.saved_user_ids.includes(userID)}
+                        btnLikedCount={post.liked_user_ids.length}
+                        btnSavedCount={post.saved_user_ids.length}
+                        commentCount={post.comment_count}
+                        userID={userID}
+                        mutate={mutate}
+                      />
+                    </div>
+                  )
+                }
                 return (
                   <ComponentsPostCard
                     key={post.id}
@@ -115,7 +188,35 @@ export default function ForumPage() {
               })}
             </div>
           ) : (
-            posts?.map((post) => {
+            posts?.map((post, idx) => {
+              if (idx === posts.length - 1) {
+                return (
+                  <div key={idx} ref={observerRef}>
+                    <ComponentsPostCard
+                      key={post.id}
+                      postID={post.id}
+                      postTitle={post.title}
+                      postCateName={post.cate_name}
+                      postContent={post.content}
+                      authorID={post.user_id}
+                      width="21"
+                      src={post.user_img}
+                      alt={post.user_name}
+                      fontSize="14"
+                      color="var(--sub-text)"
+                      updatedAt={post.updated_at.toString()}
+                      authorName={post.user_nick}
+                      btnLikedActive={post.liked_user_ids.includes(userID)}
+                      btnSavedActive={post.saved_user_ids.includes(userID)}
+                      btnLikedCount={post.liked_user_ids.length}
+                      btnSavedCount={post.saved_user_ids.length}
+                      commentCount={post.comment_count}
+                      userID={userID}
+                      mutate={mutate}
+                    />
+                  </div>
+                )
+              }
               return (
                 <ComponentsPostCard
                   key={post.id}

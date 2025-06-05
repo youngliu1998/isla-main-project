@@ -9,8 +9,9 @@ import UseFollow from '../../_hooks/useFollow'
 import { useAuth } from '../../../../hook/use-auth'
 import Ripples from 'react-ripples'
 import UseAddChat from '../_method/useAddChat'
+import GetChatList from '../_method/getChatList'
 
-export default function ComponentsAddChat() {
+export default function ComponentsAddChat({ listMutate }) {
   const router = useRouter()
   const modalRef = useRef()
   const { user, isAuth } = useAuth()
@@ -18,6 +19,8 @@ export default function ComponentsAddChat() {
   const { follows, isLoading, error } = UseFollow(userID)
   const [checkList, setCheckList] = useState([])
   const { handleAddChat } = UseAddChat()
+
+  const { mutate } = GetChatList(userID)
 
   return (
     <>
@@ -99,9 +102,7 @@ export default function ComponentsAddChat() {
                             alt={follow.follow_nick}
                             classWidth="44"
                           />
-                          <span>
-                            {follow.follow_nick + '---' + follow.follow_id}
-                          </span>
+                          <span>{follow.follow_nick}</span>
                           <i
                             className={`bi ${isChecked ? 'bi-check-circle-fill' : 'bi-circle'} ms-auto main-text-color fs20`}
                           ></i>
@@ -118,7 +119,7 @@ export default function ComponentsAddChat() {
                       onClick={async (e) => {
                         e.preventDefault()
                         const newRoomId = await handleAddChat(checkList, userID)
-                        // console.log(newRoomId)
+                        mutate()
                         router.push(`/forum/chat/${newRoomId}`)
                       }}
                     >

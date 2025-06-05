@@ -116,6 +116,13 @@ router.get('/:pageName', async function (req, res) {
         }
       } else {
         postsResult = await db.query(`${postsQuery} ORDER BY likes DESC`)
+        // const { page = '1', limit = '6' } = req.query
+        // const offset = (parseInt(page) - 1) * parseInt(limit)
+
+        // postsResult = await db.query(
+        //   `${postsQuery} ORDER BY likes DESC LIMIT ? OFFSET ?`,
+        //   [parseInt(limit), offset]
+        // )
       }
       if (postsResult[0].length === 0) {
         isResultExist = false
