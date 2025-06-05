@@ -85,6 +85,62 @@ export default function EditCoursePage() {
     fetchAll()
   }, [id])
 
+  const handleDeleteCourse = async () => {
+    if (!confirm('確定要刪除此課程嗎？')) return
+
+    try {
+      const res = await fetch(
+        `http://localhost:3005/api/courses-manage/course-list/${id}/delete`,
+        {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
+      const result = await res.json()
+      if (result.status === 'success') {
+        alert('課程已刪除（軟刪除）')
+        router.push('/courses') // 刪除後導回課程列表
+      } else {
+        alert(result.message || '刪除失敗')
+      }
+    } catch (err) {
+      console.error('刪除課程失敗:', err)
+      alert('伺服器錯誤，刪除失敗')
+    }
+  }
+
+  const handleRestoreCourse = async () => {
+    if (!confirm('確定要上架此課程嗎？')) return
+  
+    try {
+      const res = await fetch(
+        `http://localhost:3005/api/courses-manage/course-list/${id}/restore`,
+        {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
+      const result = await res.json()
+  
+      if (result.status === 'success') {
+        alert('課程已上架')
+  
+        // ✅ 立即更新前端狀態，讓畫面反應「已上架」
+        setCourse((prev) => ({
+          ...prev,
+          status: 1,
+          remove: null,
+        }))
+      } else {
+        alert(result.message || '上架失敗')
+      }
+    } catch (err) {
+      console.error('上架課程失敗:', err)
+      alert('伺服器錯誤，無法上架')
+    }
+  }
+  
+
   const handleFileUpload = async (e, type) => {
     const file = e.target.files[0]
     if (!file) return
@@ -186,17 +242,29 @@ export default function EditCoursePage() {
       <h1 className="text-2xl font-bold mb-6">
         {isEditMode ? '編輯課程' : `課程詳情：${course.title}`}
       </h1>
+      {course.status === 0 && course.remove && (
+        <p className="text-xl text-red-600 mt-1">
+          ⚠️ 此課程已下架，時間：
+          {new Date(course.remove).toLocaleDateString('zh-TW')}
+        </p>
+      )}
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="col-span-1 space-y-4">
           <div>
+            {/* 課程縮圖 */}
             <Label className="my-2">課程縮圖：</Label>
             {isEditMode ? (
               <>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleFileUpload(e, 'picture')}
-                />
+                <label className="inline-block px-4 py-2 bg-black text-white rounded cursor-pointer hover:bg-gray-800 transition">
+                  上傳圖片
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={(e) => handleFileUpload(e, 'picture')}
+                  />
+                </label>
                 <img
                   src={`http://localhost:3005/images/course/bannerall/${course.picture}`}
                   alt="預覽圖片"
@@ -213,14 +281,19 @@ export default function EditCoursePage() {
           </div>
 
           <div>
+            {/* 介紹影片 */}
             <Label className="my-2">介紹影片：</Label>
             {isEditMode ? (
               <>
-                <input
-                  type="file"
-                  accept="video/*"
-                  onChange={(e) => handleFileUpload(e, 'banner_video')}
-                />
+                <label className="inline-block px-4 py-2 bg-black text-white rounded cursor-pointer hover:bg-gray-800 transition">
+                  上傳影片
+                  <input
+                    type="file"
+                    accept="video/*"
+                    className="hidden"
+                    onChange={(e) => handleFileUpload(e, 'banner_video')}
+                  />
+                </label>
                 {course.banner_video?.endsWith('.mp4') && (
                   <video
                     className="w-full mt-2"
@@ -357,19 +430,41 @@ export default function EditCoursePage() {
         </div>
       </div>
 
-      <div className="flex justify-end gap-3 pt-6">
-        {isEditMode ? (
-          <>
-            <Button variant="outline" onClick={() => setIsEditMode(false)}>
-              取消
+      <div className="flex justify-between pt-6">
+        <div>
+          {!isEditMode && course.status === 1 && (
+            <Button
+              variant="destructive"
+              onClick={handleDeleteCourse}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              刪除課程
             </Button>
-            <Button onClick={handleSubmit} disabled={loading}>
-              {loading ? '更新中...' : '完成編輯'}
+          )}
+          {!isEditMode && course.status === 0 && (
+            <Button
+              onClick={handleRestoreCourse}
+              className="bg-green-600 text-white hover:bg-green-700"
+            >
+              上架課程
             </Button>
-          </>
-        ) : (
-          <Button onClick={() => setIsEditMode(true)}>編輯</Button>
-        )}
+          )}
+        </div>
+
+        <div className="flex gap-3">
+          {isEditMode ? (
+            <>
+              <Button variant="outline" onClick={() => setIsEditMode(false)}>
+                取消
+              </Button>
+              <Button onClick={handleSubmit} disabled={loading}>
+                {loading ? '更新中...' : '完成編輯'}
+              </Button>
+            </>
+          ) : (
+            <Button onClick={() => setIsEditMode(true)}>編輯</Button>
+          )}
+        </div>
       </div>
     </div>
   )

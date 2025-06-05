@@ -45,7 +45,7 @@ export const useProducts = (filters, { pageSize = 20 } = {}) => {
       }
       return res.data
     },
-    staleTime: 1000 * 60 * 60,
+    staleTime: 1000 * 60 * 5,
   })
 
   const productsQuery = useInfiniteQuery({
