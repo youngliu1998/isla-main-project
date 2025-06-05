@@ -13,8 +13,6 @@ export default function useProcesCoups(
 
   useEffect(() => {
     const selectedItems = cartItems.filter((item) => checkedItems[item.id])
-    //
-    // ✅ 加在這裡 👇
     console.log(
       '🧾 勾選課程類別：',
       selectedItems

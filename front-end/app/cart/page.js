@@ -312,7 +312,7 @@ export default function CartPage() {
           >
             <div className="row gy-5">
               <div className="col-lg-4 col-12">
-                <div className="form-check m-4 ">
+                <div className="form-check m-4">
                   <input
                     className={`form-check-input me-2 ${styles.checkboxInput}`}
                     type="checkbox"
@@ -331,8 +331,8 @@ export default function CartPage() {
             </div>
 
             <div className="row gy-5">
-              <div className="col-lg-7 col-12 gy-5">
-                <div className="card-style mb-4 p-lg-4 p-2">
+              <div className="col-lg-8 col-12 gy-5">
+                <div className={`${styles.cardStyle} mb-4 p-lg-4 p-2`}>
                   <div className="mb-3 d-flex align-items-center text-primary">
                     <i className="bi bi-cart4 fs-6 mb-1 me-1"></i>
                     <div>彩妝商品</div>
@@ -391,7 +391,7 @@ export default function CartPage() {
                   />
                 </CouponAccordion>
 
-                <div className="card-style mb-3 p-4">
+                <div className={`${styles.cardStyle} mb-3 p-4`}>
                   <div className="mb-3">
                     <div className="mb-3 d-flex align-items-center text-primary">
                       <i className="bi bi-film fs-6 mb-1 me-2"></i>
@@ -441,7 +441,7 @@ export default function CartPage() {
                   />
                 </CouponAccordionCourse>
               </div>
-              <div className="col-lg-5 col-12">
+              <div className="col-lg-4 col-12">
                 {!isMobile && (
                   <OrderSummary
                     cartItems={cartItems.filter((i) => checkedItems[i.id])}
