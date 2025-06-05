@@ -1,3 +1,5 @@
+import LoadingLottie from '../../_components/loading/lottie-loading'
+
 export default function DataStatus({
   isLoading,
   isError,
@@ -9,8 +11,9 @@ export default function DataStatus({
   if (isLoading) {
     return (
       <div className="text-center py-5 sub-text fs-5">
-        <div className="mb-2">🔄</div>
-        載入中...
+        {/* <div className="mb-2">🔄</div>
+        載入中... */}
+        <LoadingLottie />
       </div>
     )
   }
@@ -18,7 +21,9 @@ export default function DataStatus({
   if (isError) {
     return (
       <div className="text-center py-5 sub-text fs-5">
-        <div className="mb-2">⚠️</div>
+        <div className="mb-3 d-flex justify-content-center mt-5">
+          <LoadingLottie />
+        </div>
         {errorMessage}
       </div>
     )
@@ -27,7 +32,9 @@ export default function DataStatus({
   if (isEmpty) {
     return (
       <div className="text-center py-5 sub-text fs-5">
-        <div className="mb-2">📭</div>
+        <div className="mb-3 d-flex justify-content-center mt-5-2">
+          <LoadingLottie />
+        </div>
         {message}
       </div>
     )

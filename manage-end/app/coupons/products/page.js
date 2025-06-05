@@ -209,7 +209,7 @@ export default function CouponListPage() {
         header: '類型',
         cell: ({ row }) => (
           <span
-            className={`px-2 py-1 rounded text-sm ${getTypeStyle(row.original.type)}`}
+            className={`flex-nowrap px-2 py-1 rounded text-sm ${getTypeStyle(row.original.type)}`}
           >
             {row.original.type}
           </span>
