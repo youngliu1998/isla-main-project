@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { toast } from 'react-toastify'
 import { useAuth } from '@/hook/use-auth'
 import LoginModal from '../../_components/login-modal'
+import './purchased-course-card.css'
 
 export default function PurchasedCourseCard({ course }) {
   const { auth, showLoginModal } = useAuth()
@@ -60,7 +61,7 @@ export default function PurchasedCourseCard({ course }) {
   return (
     <div className="col mb-5">
       <Link href={href} className="text-decoration-none course-card-animate">
-        <div className="card h-100 card-hover-course">
+        <div className="card h-100 card-hover-course course-card">
           <div className="card-img-container-course">
             <Image
               src={`/images/course/bannerall/${course.picture}`}
@@ -84,7 +85,7 @@ export default function PurchasedCourseCard({ course }) {
               />
             </div>
           </div>
-          <div className="card-body">
+          <div className="card-body teacher-card-body">
             <button
               className={`btn mb-2 ${
                 course.tag === 2 ? 'experience-tag' : 'card-btn-course'
@@ -94,7 +95,7 @@ export default function PurchasedCourseCard({ course }) {
             </button>
             <h5 className="card-title mb-2 clamp-2-lines">{course.title}</h5>
             <p className="card-teacher-course mb-2">{course.teacher_name}</p>
-            <div className="d-flex align-items-end text-end">
+            <div className="d-flex align-items-end text-end teacher-money">
               <h5 className="me-3">
                 NT {Number(course.discount).toLocaleString()}
               </h5>

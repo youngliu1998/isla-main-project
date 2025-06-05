@@ -51,6 +51,7 @@ router.get('/', async (req, res) => {
 router.patch('/:id/toggle-status', async (req, res) => {
   const courseId = req.params.id
   try {
+    // 確認課程是否存在
     const [[course]] = await db.query(
       'SELECT status FROM courses WHERE id = ?',
       [courseId]
@@ -79,6 +80,40 @@ router.patch('/:id/toggle-status', async (req, res) => {
   } catch (err) {
     console.error('更新課程狀態錯誤:', err)
     res.status(500).json({ status: 'false', message: '資料庫錯誤' })
+  }
+})
+
+// ✅ PATCH 軟刪除課程
+// PATCH /api/courses-manage/course-list/:id/delete
+router.patch('/:id/delete', async (req, res) => {
+  const courseId = req.params.id
+
+  try {
+    // 確認課程是否存在
+    const [[course]] = await db.query('SELECT * FROM courses WHERE id = ?', [
+      courseId,
+    ])
+    if (!course) {
+      return res.status(404).json({ status: 'fail', message: '找不到課程' })
+    }
+
+    const now = new Date()
+    await db.query(
+      `UPDATE courses SET status = 0, remove = ?, updated = ? WHERE id = ?`,
+      [now, now, courseId]
+    )
+
+    res.json({
+      status: 'success',
+      data: {
+        id: courseId,
+        status: 0,
+        remove: now,
+      },
+    })
+  } catch (err) {
+    console.error('軟刪除課程錯誤:', err)
+    res.status(500).json({ status: 'fail', message: '資料庫錯誤' })
   }
 })
 
@@ -244,6 +279,39 @@ router.post('/upload', upload.single('file'), (req, res) => {
   } catch (error) {
     console.error('上傳錯誤:', error)
     res.status(500).json({ status: 'fail', message: error.message })
+  }
+})
+
+// ✅ PATCH 上架課程
+// PATCH /api/courses-manage/course-list/:id/restore
+router.patch('/:id/restore', async (req, res) => {
+  const courseId = req.params.id
+
+  try {
+    const [[course]] = await db.query('SELECT * FROM courses WHERE id = ?', [
+      courseId,
+    ])
+
+    if (!course) {
+      return res.status(404).json({ status: 'fail', message: '找不到課程' })
+    }
+
+    await db.query(
+      'UPDATE courses SET status = 1, remove = NULL, updated = ? WHERE id = ?',
+      [new Date(), courseId]
+    )
+
+    res.json({
+      status: 'success',
+      data: {
+        id: courseId,
+        status: 1,
+        remove: null,
+      },
+    })
+  } catch (err) {
+    console.error('上架課程錯誤:', err)
+    res.status(500).json({ status: 'fail', message: '資料庫錯誤' })
   }
 })
 
