@@ -244,8 +244,9 @@ export default function PaymentPage() {
 
   return (
     <>
-      <section className="container text-center text-lg-start mt-2">
-        <h1 className="text-subtext h2 m-5">購物車</h1>
+      <div style={{ height: '1rem' }}></div>
+      <section className="container text-center text-lg-start">
+        <h1 className="text-subtext h2 m-4">購物車</h1>
       </section>
       {/* step-icon */}
       <section className="container d-none d-lg-block mb-4">
@@ -254,7 +255,7 @@ export default function PaymentPage() {
       <section className="container-fluid container-lg">
         <div className="row gy-5">
           {/* Left */}
-          <div className="col-lg-7 col-12">
+          <div className="col-lg-8 col-12">
             <ShippingForm
               memberSameInfo={memberSameInfo}
               setMemberSameInfo={setMemberSameInfo}
@@ -292,7 +293,7 @@ export default function PaymentPage() {
             </div>
           </div>
           {/* Right*/}
-          <div className="col-lg-5 col-12">
+          <div className="col-lg-4 col-12">
             {!isMobile && (
               <OrderSummary
                 cartItems={orderData?.cartItems || []}

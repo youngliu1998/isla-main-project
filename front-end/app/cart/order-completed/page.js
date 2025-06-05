@@ -94,8 +94,9 @@ export default function OrderCompletedPage() {
 
   return (
     <>
-      <section className="container text-center text-lg-start mt-2">
-        <h1 className="text-subtext h2 m-5">購物車</h1>
+      <div style={{ height: '1rem' }}></div>
+      <section className="container text-center text-lg-start">
+        <h1 className="text-subtext h2 m-4">購物車</h1>
       </section>
 
       <section className="container d-none d-lg-block mb-4">

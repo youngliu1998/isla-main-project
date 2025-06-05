@@ -100,7 +100,7 @@ export default function OrderSummary({
     <div className={`${styles.orderSummary} card-style mb-3`}>
       <h5 className="fw-bold mb-5 text-maintext text-center">訂單明細</h5>
 
-      {/* 彩妝商品區 */}
+      {/* 彩妝商品 */}
       <div className="d-flex justify-content-between text-maintext mb-2">
         <div className="d-flex align-items-center">
           <p className="me-2">彩妝商品</p>
@@ -113,9 +113,8 @@ export default function OrderSummary({
             <i className="bi bi-caret-down-fill text-subtext"></i>
           </button>
         </div>
-        <p>
-          <dev>NT${formatCurrency(makeupTotal)}</dev>
-        </p>
+
+        <div>NT${formatCurrency(makeupTotal)}</div>
       </div>
       <Collapse in={openProdList}>
         <div>
@@ -161,7 +160,7 @@ export default function OrderSummary({
         </div>
       )}
 
-      {/* 彩妝課程區 */}
+      {/* 彩妝課程 */}
       <div className="d-flex justify-content-between text-maintext mb-2">
         <div className="d-flex align-items-center">
           <p className="me-2">彩妝課程</p>
@@ -174,9 +173,8 @@ export default function OrderSummary({
             <i className="bi bi-caret-down-fill text-subtext"></i>
           </button>
         </div>
-        <p>
-          <dev>NT${formatCurrency(courseTotal)}</dev>
-        </p>
+
+        <div>NT${formatCurrency(courseTotal)}</div>
       </div>
       <Collapse in={openCourList}>
         <div>
@@ -284,9 +282,8 @@ export default function OrderSummary({
       {/* 總計 */}
       <div className="d-flex justify-content-between mb-3">
         <h4>總計：</h4>
-        <h4>
-          <dev>NT${formatCurrency(finalTotal >= 0 ? finalTotal : 0)}</dev>
-        </h4>
+
+        <div>NT${formatCurrency(finalTotal >= 0 ? finalTotal : 0)}</div>
       </div>
 
       <div className="w-100 d-flex justify-content-end">
