@@ -239,7 +239,7 @@ export default function TeacherPage() {
         </div>
         <div className="col-lg-9 col">
           {/* box3 */}
-          <div className="px-0">
+          <div className="p-0">
             <div className="position-relative" id="box3-expand-section">
               <div
                 ref={toggleRef}

@@ -83,8 +83,47 @@ export default function CourseListPage() {
     router.push(`/courses/edit/${id}`)
   }
 
-  const handleDelete = (id) => {
-    console.log(`刪除課程 ${id}`)
+  const handleDelete = async (id) => {
+    if (!confirm('確定要刪除這堂課程嗎？')) return
+
+    try {
+      const res = await fetch(
+        `http://localhost:3005/api/courses-manage/course-list/${id}/delete`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      )
+      const result = await res.json()
+      console.log('刪除回應', result)
+      if (result.status === 'success') {
+        // 更新畫面資料
+        setData((prev) =>
+          prev.map((course) =>
+            course.id === id
+              ? {
+                  ...course,
+                  status: 0,
+                  remove: result.data.remove, // ⬅️ 後端要記得回傳 remove 時間戳
+                  updated: new Date().toISOString(),
+                }
+              : course
+          )
+        )
+        if (selectedCourse?.id === id) {
+          setSelectedCourse((prev) =>
+            prev ? { ...prev, status: 0, remove: result.data.remove } : prev
+          )
+        }
+      } else {
+        alert(result.message || '刪除失敗')
+      }
+    } catch (err) {
+      console.error(err)
+      alert('伺服器錯誤，請稍後再試')
+    }
   }
 
   const columns = useMemo(
@@ -300,17 +339,26 @@ export default function CourseListPage() {
           }
 
           return (
-            <button
-              onClick={toggleStatus}
-              disabled={loading}
-              className={`text-sm px-2 py-1 rounded-full transition-all duration-200 ${
-                isActive
-                  ? 'bg-green-100 text-green-800 hover:bg-green-200'
-                  : 'bg-red-100 text-red-800 hover:bg-red-200'
-              }`}
-            >
-              {loading ? '更新中...' : isActive ? '上架中' : '已下架'}
-            </button>
+            <div className="flex flex-col items-center">
+              <button
+                onClick={toggleStatus}
+                disabled={loading}
+                className={`text-sm px-2 py-1 rounded-full transition-all duration-200 ${
+                  isActive
+                    ? 'bg-green-100 text-green-800 hover:bg-green-200'
+                    : 'bg-red-100 text-red-800 hover:bg-red-200'
+                }`}
+              >
+                {loading ? '更新中...' : isActive ? '上架中' : '已下架'}
+              </button>
+
+              {!isActive && row.original.remove && (
+                <div className="text-xs text-gray-500 mt-1">
+                  下架於{' '}
+                  {new Date(row.original.remove).toLocaleDateString('zh-TW')}
+                </div>
+              )}
+            </div>
           )
         },
       },
@@ -372,7 +420,7 @@ export default function CourseListPage() {
         ),
       },
     ],
-    [router]
+    [router, data]
   )
 
   const table = useReactTable({

@@ -15,14 +15,14 @@ export default function Breadcrumb({ type, path, current, className = '' }) {
   const labelMap = {
     course: '美妝教室',
     experience: '美妝教室',
-    teacher: '講師介紹',
+    teacher: '美妝教室',
   }
 
   // 第二層連結對照
   const typeUrlMap = {
     course: '/course',
     experience: '/course',
-    teacher: '/course/teacher',
+    teacher: '/course',
   }
   // 否則使用 type + path 模式，從 API 取得標題
   useEffect(() => {
