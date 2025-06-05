@@ -94,11 +94,11 @@ export default function CouponPage() {
   //  品牌對應名稱轉換
   const brandMap = {
     1: 'Unleashia',
-    2: 'Cosnori',
-    3: 'Muzigae Mansion',
-    4: 'Kaja',
-    5: 'rom&nd',
-    6: "A'Pieu",
+    3: 'Cosnori',
+    4: 'Muzigae Mansion',
+    5: 'Kaja',
+    6: 'rom&nd',
+    2: "A'Pieu",
   }
   const nameToId = Object.fromEntries(
     Object.entries(brandMap).map(([id, name]) => [name, Number(id)])
@@ -192,7 +192,7 @@ export default function CouponPage() {
   }
 
   return (
-    <main className="px-md-5 px-3 pb-5 container">
+    <main className="px-md-5 px-3 pb-5 container min-vh-100">
       <div className="row mt-sm-4 g-sm-5">
         {/* 左側篩選區 */}
         <AsideProduct

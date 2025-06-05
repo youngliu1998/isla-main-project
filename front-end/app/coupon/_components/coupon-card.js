@@ -9,11 +9,11 @@ import dayjs from 'dayjs'
 const brandMap = {
   0: 'isla',
   1: 'unleashia',
-  2: 'cosnori',
-  3: 'muzigae',
-  4: 'kaja',
-  5: 'rom&nd',
-  6: 'apieu',
+  3: 'cosnori',
+  4: 'muzigae',
+  5: 'kaja',
+  6: 'rom&nd',
+  2: 'apieu',
 }
 const courseMap = {
   0: 'isla-class',
@@ -142,7 +142,7 @@ export default function CouponCard({
         {/* 文字內容 */}
         <div className="content ">
           <div className="top">
-            <h2 className="text-truncate">{title}</h2>
+            <h2 className="text-truncate fw-medium">{title}</h2>
           </div>
           <div className="bottom">
             <p className="main-text fw-medium pb-2">{description}</p>
