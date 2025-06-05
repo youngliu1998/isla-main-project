@@ -10,6 +10,7 @@ import './product-bar.css'
 
 export default function ProductBar({
   product = { brand: 'eee', title: 'weeeeeee', price: 3000 },
+  setHamMenuOpen = () => {},
 }) {
   const product_url = '/product/' + product?.product_id
   return (
@@ -17,6 +18,9 @@ export default function ProductBar({
       {/* === card ==== */}
       <Link
         href={product_url}
+        onClick={() => {
+          setHamMenuOpen(false)
+        }}
         className="header-search-item header-search-item-product for-product"
       >
         {/* === product image ==== */}

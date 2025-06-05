@@ -4,16 +4,20 @@ import Image from 'next/image'
 import Link from 'next/link'
 // ==== route ====
 import { USER_AVA_URL } from '@/_route/img-url'
+import { FORUM_PAGE_URL } from '@/_route/page-url'
 // ==== css ====
 import '../_style/forum.css' // 卡片css
 
-export default function ForumBar({ forum = {} }) {
+export default function ForumBar({ forum = {}, setHamMenuOpen = () => {} }) {
   console.log(forum.content)
   return (
     <>
       <Link
         className="w-100 main-text-color d-flex align-item-center"
-        href={''}
+        href={FORUM_PAGE_URL + forum.id}
+        onClick={() => {
+          setHamMenuOpen(false)
+        }}
       >
         {/* ==== card ==== */}
         <div className="header-search-item for-forum d-flex flex-column w-100">

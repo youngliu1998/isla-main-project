@@ -49,9 +49,9 @@ export default function MemberNav({
           <Link href="/member/course">
             <li>我的課程</li>
           </Link>
-          <Link href="/member/teacher">
+          {/* <Link href="/member/teacher">
             <li>教師管理</li>
-          </Link>
+          </Link> */}
         </ul>
         <ul>
           <li className="title">文章</li>

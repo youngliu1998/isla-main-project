@@ -110,13 +110,13 @@ export default function Path() {
     pathname.includes('/register') ||
     pathname.includes('/forget-password') ||
     pathname.startsWith('/course') ||
-    !pathArrTag
+    !pathArrTag[0]
   ) {
     return <></>
   }
   return (
     <>
-      <div className="d-flex position-absolute px-3 pt-3">
+      <div className="d-flex position-absolute top-0 px-3 pt-3">
         {pathArr.map((path, i) => {
           if (pathArrTag[i] === '') {
             return
