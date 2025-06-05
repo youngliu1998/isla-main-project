@@ -127,7 +127,7 @@ export default function EditPostModal({
   const [hasTitleTouched, setHasTitleTouched] = useState(false)
   const [isContentValid, setContentValid] = useState(false)
 
-  console.log({ isTitleValid, isContentValid, hasTitleTouched })
+  // console.log({ isTitleValid, isContentValid, hasTitleTouched })
   return (
     <>
       <form>
