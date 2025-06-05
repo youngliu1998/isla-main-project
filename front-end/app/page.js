@@ -153,7 +153,7 @@ export default function Home() {
                   nextEl: '.swiper-button-next-custom',
                   prevEl: '.swiper-button-prev-custom',
                 }}
-                className="main-page-main-swiper"
+                className="main-page-main-swiper main-page-main-swiper-coupon"
               >
                 {swiperSubImages.map((src, index) => (
                   <SwiperSlide
