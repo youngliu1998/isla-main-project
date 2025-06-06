@@ -102,7 +102,7 @@ export default function Header() {
               //   setSearchOpen(false)
               // }}
             >
-              <i className="bi bi-search" />
+              <i className="bi bi-search header-search-icon" />
             </button>
 
             {/* <button

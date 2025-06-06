@@ -45,8 +45,8 @@ router.post('/add-chat', async (req, res) => {
     }
     return res.json({ status: 'success', data: newRoomId })
   } else {
-    // data = 'exist'
-    return res.json({ status: 'success', data: null })
+    data = 'exist'
+    return res.json({ status: 'success', data })
   }
 })
 
