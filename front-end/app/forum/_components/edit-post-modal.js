@@ -17,7 +17,7 @@ export default function EditPostModal({
   postTitle = '',
   postContent = '',
   isUpdated = false,
-  // mutate = () => {},
+  mutateDetail = () => {},
 }) {
   const modalRef = useRef()
   const router = useRouter()
@@ -88,7 +88,9 @@ export default function EditPostModal({
           return res.json()
         })
         .then((data) => {
-          console.log(data)
+          // console.log(data)
+          mutateDetail()
+          router.push(`/forum/${postID}`)
         })
         .catch((err) => {
           console.log(err)
@@ -104,7 +106,7 @@ export default function EditPostModal({
         })
         .then((data) => {
           mutate()
-          console.log(data)
+          router.push('/forum?tab=2')
         })
         .catch((err) => {
           console.log(err)
@@ -119,7 +121,7 @@ export default function EditPostModal({
     // m.hide()
     // console.log(m)
     // mutate()
-    router.push('/forum?tab=2')
+    // router.push('/forum?tab=2')
   }
   // 字數
   const [titleLength, setTitleLength] = useState(0)
@@ -127,7 +129,8 @@ export default function EditPostModal({
   const [hasTitleTouched, setHasTitleTouched] = useState(false)
   const [isContentValid, setContentValid] = useState(false)
 
-  console.log({ isTitleValid, isContentValid, hasTitleTouched })
+  console.log({ isUpdated })
+  // console.log({ isTitleValid, isContentValid, hasTitleTouched })
   return (
     <>
       <form>
@@ -171,7 +174,7 @@ export default function EditPostModal({
                     ref={productCateRef}
                     className="form-select form-select-sm w-auto rounded-pill"
                     aria-label="Small select example"
-                    defaultValue={isUpdated ? productCate : ''}
+                    defaultValue={isUpdated ? productCate : 1}
                   >
                     {/* FIXME 產品類型不可點選、警告 */}
                     <option disabled>產品類型</option>
@@ -303,7 +306,7 @@ export default function EditPostModal({
                       // console.log({ isTitleValid, isContentValid })
                       setHasTitleTouched(false)
                       // FIXME modal剛出現 按按鈕時出現警示
-                      console.log('click')
+                      // console.log('click')
                       handleSubmit(e)
                     }}
                   >

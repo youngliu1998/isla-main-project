@@ -85,6 +85,14 @@ export default function Path() {
           return ''
         case 'teacher':
           return ''
+        case 'my-forum':
+          return '我的論壇'
+        case 'my-following':
+          return '我的追蹤'
+        case 'my-post':
+          return '我的文章'
+        case 'saved-post':
+          return '收藏文章'
 
         default:
           return thisPath
@@ -114,7 +122,7 @@ export default function Path() {
     pathname.includes('/register') ||
     pathname.includes('/forget-password') ||
     pathname.startsWith('/course') ||
-    !pathArrTag
+    !pathArrTag[0]
   ) {
     return <></>
   }

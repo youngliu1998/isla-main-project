@@ -3,7 +3,9 @@ header {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 999;
+  /* z-index: 999; */
+  /* ==== 比商品篩選更高，個人覺得的優先做法 by Young ==== */
+  z-index: 1000001;
 }
 /* .header-module .promo-banner {
   height: 30px;
@@ -269,13 +271,13 @@ header {
 .cart-dropdown {
   position: absolute;
   right: 0;
-  top: 64px;
+  top: 48px;
   width: 340px;
   background: #ffffff;
   border-radius: 12px;
   box-shadow: 0 6px 32px rgba(0, 0, 0, 0.15);
   padding: 20px 16px 12px 16px;
-  z-index: 20;
+  z-index: 999;
   animation: dropdownFadeIn 0.2s;
 }
 @keyframes dropdownFadeIn {
@@ -332,18 +334,14 @@ header {
 .cart-dropdown-btn:hover {
   color: rgb(140, 63, 63);
 }
-.cart-badge {
+.cart-dropdown-arrow {
   position: absolute;
-  right: -10px;
-  bottom: -4px;
-  background: #c00;
-  color: #fff;
-  font-size: 12px;
-  width: 25px;
-  height: 25px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 400;
+  top: 0;
+  right: 1rem;
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 8px solid white;
+  transform: translateY(-100%);
 }

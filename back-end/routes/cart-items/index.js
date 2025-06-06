@@ -151,7 +151,8 @@ router.get('/', verifyToken, async (req, res) => {
             category: course?.category_name,
             course_categories_id: course?.course_categories_id,
             quantity: item.quantity,
-            image_url: `images/course/bannerall/${course?.picture}`,
+            // image_url: `images/course/bannerall/${course?.picture}`,
+            image_url: `http://localhost:3000/images/course/bannerall/${course?.picture}`,
           }
         }
 
@@ -167,7 +168,7 @@ router.get('/', verifyToken, async (req, res) => {
             category: e?.category_name,
             quantity: item.quantity,
             image_url: e?.images
-              ? `/images/course/bannerall/${e.images}`
+              ? `http://localhost:3000/images/course/bannerall/${e.images}`
               : null,
           }
         }

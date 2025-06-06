@@ -1,6 +1,6 @@
 export default function AsideCourse({
   courseCategory = '',
-  setcourseCategory = '',
+  setCourseCategory = '',
 }) {
   const courses = ['韓式彩妝', '專業彩妝', '日常彩妝', '其他課程']
 
@@ -17,7 +17,7 @@ export default function AsideCourse({
                   className={`aside-link nav-link px-2 py-2 fs-5 ${courseCategory === course ? 'active' : ''}`}
                   onClick={(e) => {
                     e.preventDefault()
-                    setcourseCategory(courseCategory === course ? '' : course)
+                    setCourseCategory(courseCategory === course ? '' : course)
                   }}
                 >
                   {course}

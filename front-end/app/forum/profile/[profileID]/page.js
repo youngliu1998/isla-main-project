@@ -27,7 +27,7 @@ export default function ForumPage(props) {
   const isOwnProfile = userID === followID
 
   // fetch每篇文章的資料
-  const postsAPI = `http://localhost:3005/api/forum/posts/profile?authorID=${authorID}`
+  const postsAPI = `http://localhost:3005/api/forum/posts/profile?authorID=${authorID}&userID=${userID}`
   const { data, isLoading, error, mutate } = useSWR(postsAPI, fetcher)
 
   // 新增 minimum loading 狀態
@@ -120,7 +120,8 @@ export default function ForumPage(props) {
               </Link>
             </div>
           ) : (
-            posts.map((post) => {
+            posts !== 0 &&
+            posts?.map((post) => {
               return (
                 <ComponentsPostCard
                   key={post.id}
