@@ -458,3 +458,7 @@ $form-radio-disabled-bg: #eee;
 .yarl__spinner {
   color: rgb(233, 92, 73);
 }
+
+.yarl__portal {
+  z-index: 99999999999 !important; /* 確保圖片瀏覽器的 z-index 高於其他元素 */
+}
