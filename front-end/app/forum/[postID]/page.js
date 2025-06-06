@@ -291,7 +291,7 @@ export default function PostIDPage(props) {
             postTitle={post.title}
             postContent={post.content}
             isUpdated={true}
-            mutate={mutate}
+            mutateDetail={mutate}
           />
           <EditPostModal
             postID=""
@@ -300,7 +300,7 @@ export default function PostIDPage(props) {
             postTitle=""
             postContent=""
             isUpdated={false}
-            mutate={mutate}
+            // mutate={mutate}
           />
           <ConfirmModal
             title="確定刪除嗎？"
