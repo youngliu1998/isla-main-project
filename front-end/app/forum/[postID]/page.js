@@ -104,12 +104,12 @@ export default function PostIDPage(props) {
 
   const handleDeletePost = async () => {
     const res = await fetch(
-      `http://localhost:3005/api/forum/posts/soft-delete/${post.id}?userID=${userID}&userID=${userID}`,
+      `http://localhost:3005/api/forum/posts/soft-delete/${post.id}&userID=${userID}&userID=${userID}`,
       { method: 'PUT' }
     )
     if (!res.ok) throw new Error('未成功連線')
     // 已刪除提示 FIXME
-    router.push('/forum')
+    router.push(window.location.href)
   }
 
   // const handleDirectLogin = UseDirectToLogin(isAuth)
@@ -291,7 +291,7 @@ export default function PostIDPage(props) {
             postTitle={post.title}
             postContent={post.content}
             isUpdated={true}
-            mutate={mutate}
+            mutateDetail={mutate}
           />
           <EditPostModal
             postID=""
@@ -300,7 +300,7 @@ export default function PostIDPage(props) {
             postTitle=""
             postContent=""
             isUpdated={false}
-            mutate={mutate}
+            // mutate={mutate}
           />
           <ConfirmModal
             title="確定刪除嗎？"

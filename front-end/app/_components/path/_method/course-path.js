@@ -15,7 +15,7 @@ export async function getCoursePath(thisPath) {
 
   const data = await response.json()
   // console.log(data['data'][0].title)
-  const courseTit = data['data'][0].title || ''
+  const courseTit = data.data.title || ''
   console.log('courseTit', courseTit)
   return courseTit
 }

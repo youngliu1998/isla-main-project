@@ -2,6 +2,7 @@ import express from 'express'
 import db from '../config/mysql.js'
 import {
   getProductDetail,
+  getProductName,
   updateProduct,
   getProductById,
   createProduct,
@@ -47,6 +48,24 @@ router.get('/:id', async (req, res) => {
       data: {
         ...product,
         reviews,
+      },
+    })
+  } catch (error) {
+    res.status(404).json({ success: false, message: error.message })
+  }
+})
+
+router.get('/bread/:id', async (req, res) => {
+  try {
+    const productId = parseInt(req.params.id)
+    if (isNaN(productId)) return res.status(400).json({ error: 'ID格式錯誤' })
+
+    const name = await getProductName(productId)
+
+    res.json({
+      success: true,
+      data: {
+        ...name,
       },
     })
   } catch (error) {
