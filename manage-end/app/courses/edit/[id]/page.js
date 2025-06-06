@@ -12,6 +12,8 @@ import dynamic from 'next/dynamic'
 import '../../_components/tiptap-editor/tiptap-editor'
 import CourseEditor from '../../_components/course-editor/course-editor'
 import '@/app/courses/_components/course-prose.scss'
+import { ArrowLeft, Trash2, Pencil, Save } from 'lucide-react'
+import { toast } from 'react-toastify'
 
 const theme = {
   paragraph: 'mb-2',
@@ -28,9 +30,10 @@ export default function EditCoursePage() {
   const [course, setCourse] = useState(null)
   const [initialCourse, setInitialCourse] = useState(null)
   const [loading, setLoading] = useState(false)
-  const [isEditMode, setIsEditMode] = useState(false)
+  const [isEditMode, setIsEditMode] = useState(true)
   const [categories, setCategories] = useState([])
   const [teachers, setTeachers] = useState([])
+  const [errorFields, setErrorFields] = useState([])
 
   useEffect(() => {
     async function fetchAll() {
@@ -111,7 +114,7 @@ export default function EditCoursePage() {
 
   const handleRestoreCourse = async () => {
     if (!confirm('確定要上架此課程嗎？')) return
-  
+
     try {
       const res = await fetch(
         `http://localhost:3005/api/courses-manage/course-list/${id}/restore`,
@@ -121,10 +124,10 @@ export default function EditCoursePage() {
         }
       )
       const result = await res.json()
-  
+
       if (result.status === 'success') {
         alert('課程已上架')
-  
+
         // ✅ 立即更新前端狀態，讓畫面反應「已上架」
         setCourse((prev) => ({
           ...prev,
@@ -139,7 +142,6 @@ export default function EditCoursePage() {
       alert('伺服器錯誤，無法上架')
     }
   }
-  
 
   const handleFileUpload = async (e, type) => {
     const file = e.target.files[0]
@@ -151,7 +153,7 @@ export default function EditCoursePage() {
 
     try {
       const res = await fetch(
-        `http://localhost:3005/api/courses-manage/course-list/upload?courseId=${id}`,
+        `http://localhost:3005/api/courses-manage/course-list/upload`,
         {
           method: 'POST',
           body: formData,
@@ -205,11 +207,51 @@ export default function EditCoursePage() {
   }
 
   const handleSubmit = async () => {
-    const changedFields = getChangedFields()
-    if (Object.keys(changedFields).length === 0) {
-      alert('沒有任何欄位需要更新')
+    // 🔍 必填欄位驗證（price 除外）
+    const requiredFields = [
+      'title',
+      'discount',
+      'detail',
+      'content',
+      'course_chapter',
+      'video_length',
+      'categories_id',
+      'teacher_id',
+      'picture',
+      'banner_video',
+    ]
+
+    const fieldLabels = {
+      title: '課程名稱',
+      discount: '課程售價',
+      detail: '課程簡介',
+      content: '課程內容',
+      course_chapter: '章節資訊',
+      video_length: '影片長度',
+      categories_id: '課程分類',
+      teacher_id: '講師',
+      picture: '課程縮圖',
+      banner_video: '介紹影片',
+    }
+
+    const emptyFields = requiredFields.filter(
+      (key) => !course[key]?.toString().trim()
+    )
+    if (emptyFields.length > 0) {
+      setErrorFields(emptyFields) // 記下錯誤欄位
+      const missing = emptyFields.map((f) => fieldLabels[f] || f).join('、')
+      toast.error(`請填寫所有必填欄位：${missing}`)
       return
     }
+
+    setErrorFields([]) // 清除錯誤欄位
+
+    const changedFields = getChangedFields()
+    if (Object.keys(changedFields).length === 0) {
+      toast.info('沒有任何欄位需要更新')
+      return
+    }
+
     setLoading(true)
     try {
       const res = await fetch(
@@ -222,14 +264,16 @@ export default function EditCoursePage() {
       )
       const json = await res.json()
       if (json.status === 'success') {
-        alert('更新成功')
-        router.push('/courses')
+        toast.success('更新成功')
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+        setIsEditMode(false)
+        setInitialCourse(course)
       } else {
-        alert(json.message || '更新失敗')
+        toast.error(json.message || '更新失敗')
       }
     } catch (err) {
       console.error(err)
-      alert('伺服器錯誤')
+      toast.error('伺服器錯誤')
     } finally {
       setLoading(false)
     }
@@ -239,6 +283,12 @@ export default function EditCoursePage() {
 
   return (
     <div className="max-w-6xl mx-auto p-6">
+      <div className="flex justify-end mb-4">
+        <Button variant="outline" onClick={() => router.push('/courses')}>
+          <ArrowLeft className="w-4 h-4" />
+          返回列表
+        </Button>
+      </div>
       <h1 className="text-2xl font-bold mb-6">
         {isEditMode ? '編輯課程' : `課程詳情：${course.title}`}
       </h1>
@@ -253,10 +303,16 @@ export default function EditCoursePage() {
         <div className="col-span-1 space-y-4">
           <div>
             {/* 課程縮圖 */}
-            <Label className="my-2">課程縮圖：</Label>
+            <Label className="my-2">
+              {' '}
+              課程縮圖：
+              {errorFields.includes('picture') && (
+                <span className="text-red-500 ml-1">※必填</span>
+              )}
+            </Label>
             {isEditMode ? (
               <>
-                <label className="inline-block px-4 py-2 bg-black text-white rounded cursor-pointer hover:bg-gray-800 transition">
+                <label className="inline-block px-3 py-1 bg-black text-white rounded cursor-pointer hover:bg-gray-800 transition">
                   上傳圖片
                   <input
                     type="file"
@@ -268,7 +324,7 @@ export default function EditCoursePage() {
                 <img
                   src={`http://localhost:3005/images/course/bannerall/${course.picture}`}
                   alt="預覽圖片"
-                  className="w-full rounded border mt-2"
+                  className={`w-full rounded border mt-2 ${errorFields.includes('picture') ? 'border-red-500' : ''}`}
                 />
               </>
             ) : (
@@ -285,7 +341,7 @@ export default function EditCoursePage() {
             <Label className="my-2">介紹影片：</Label>
             {isEditMode ? (
               <>
-                <label className="inline-block px-4 py-2 bg-black text-white rounded cursor-pointer hover:bg-gray-800 transition">
+                <label className="inline-block px-3 py-1 bg-black text-white rounded cursor-pointer hover:bg-gray-800 transition">
                   上傳影片
                   <input
                     type="file"
@@ -298,7 +354,7 @@ export default function EditCoursePage() {
                   <video
                     className="w-full mt-2"
                     controls
-                    src={`/images/course/bannerall/${course.banner_video}`}
+                    src={`http://localhost:3005/images/course/bannerall/${course.banner_video}`}
                   />
                 )}
               </>
@@ -307,24 +363,33 @@ export default function EditCoursePage() {
                 <video
                   className="w-full"
                   controls
-                  src={`/images/course/bannerall/${course.banner_video}`}
+                  src={`http://localhost:3005/images/course/bannerall/${course.banner_video}`}
                 />
               )
             )}
           </div>
 
           <div>
-            <Label className="my-2">課程名稱：</Label>
+            <Label className="my-2">
+              課程名稱：
+              {isEditMode && errorFields.includes('title') && (
+                <span className="text-red-500 ml-1">※必填</span>
+              )}
+            </Label>
             {isEditMode ? (
               <Input
                 name="title"
                 value={course.title}
                 onChange={handleChange}
+                className={
+                  errorFields.includes('title') ? 'border-red-500' : ''
+                }
               />
             ) : (
               <div>{course.title}</div>
             )}
           </div>
+
           <div>
             <Label className="my-2">課程簡介：</Label>
             {isEditMode ? (
@@ -338,6 +403,23 @@ export default function EditCoursePage() {
               <p>{course.detail}</p>
             )}
           </div>
+          <div>
+            <Label>章節資訊：</Label>
+            <Input
+              name="course_chapter"
+              value={course.course_chapter}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <Label>影片長度：</Label>
+            <Input
+              name="video_length"
+              value={course.video_length}
+              onChange={handleChange}
+            />
+          </div>
+
           <Label>分類：</Label>
           {isEditMode ? (
             <select
@@ -438,6 +520,8 @@ export default function EditCoursePage() {
               onClick={handleDeleteCourse}
               className="bg-red-600 hover:bg-red-700"
             >
+              {' '}
+              <Trash2 className="w-4 h-4" />
               刪除課程
             </Button>
           )}
@@ -458,11 +542,17 @@ export default function EditCoursePage() {
                 取消
               </Button>
               <Button onClick={handleSubmit} disabled={loading}>
+                {' '}
+                <Save className="w-4 h-4" />
                 {loading ? '更新中...' : '完成編輯'}
               </Button>
             </>
           ) : (
-            <Button onClick={() => setIsEditMode(true)}>編輯</Button>
+            <Button onClick={() => setIsEditMode(true)}>
+              {' '}
+              <Pencil className="w-4 h-4" />
+              編輯
+            </Button>
           )}
         </div>
       </div>
