@@ -9,6 +9,7 @@ import {
   getExperiencePath,
   getTeacherPath,
 } from './_method/course-path'
+import { getProductPath } from './_method/product-path'
 // ==== css ====
 import './_style/path.css'
 import { useEffect, useState } from 'react'
@@ -48,6 +49,9 @@ export default function Path() {
       }
       if (prevPath === 'teacher') {
         return await getTeacherPath(thisPath)
+      }
+      if (prevPath === 'product') {
+        return await getProductPath(thisPath)
       }
       prevPath = thisPath
       switch (thisPath) {
@@ -116,7 +120,7 @@ export default function Path() {
   }
   return (
     <>
-      <div className="d-flex position-absolute px-3 pt-3">
+      <div className="d-flex position-absolute bread-container">
         {pathArr.map((path, i) => {
           if (pathArrTag[i] === '') {
             return

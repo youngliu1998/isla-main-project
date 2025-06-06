@@ -7,6 +7,13 @@ import { usePathname } from 'next/navigation'
 import CartFooter from './_component/cart-footer'
 // ==== icons ====
 import { FaFacebook, FaInstagramSquare, FaYoutube } from 'react-icons/fa'
+import {
+  BsInstagram,
+  BsFacebook,
+  BsYoutube,
+  BsTelephone,
+  BsMailbox,
+} from 'react-icons/bs'
 import Image from 'next/image'
 
 export default function Footer() {
@@ -28,8 +35,8 @@ export default function Footer() {
   return (
     <>
       <footer>
-        <div>
-          <div className="row">
+        <div className="main-footer">
+          <div className="row main-footer-body gx-0">
             <div className="col-lg-2 col-12 footer-side">
               <div className="footer-side-text">ISLA 你的自由彩妝生活</div>
               <Image
@@ -43,36 +50,24 @@ export default function Footer() {
             <div className="col-lg-10 col-12 row row-cols-lg-2 row-cols-1 g-0 footer-body">
               <div className="row row-cols-lg-4 row-cols-3 footer-header-left g-0 d-lg-flex d-none">
                 <ul>
-                  <li className="list-title">彩妝</li>
-                  <div className="list-items">
-                    <li>
-                      <Link href="">優惠券專區</Link>
-                    </li>
-                    <li>
-                      <Link href="">所有商品</Link>
-                    </li>
+                  <li className="list-title-footer">彩妝</li>
+                  <div className="list-items-footer">
+                    <Link href="">優惠券專區</Link>
+                    <Link href="">所有商品</Link>
                   </div>
                 </ul>
                 <ul>
-                  <li className="list-title">生活</li>
-                  <div className="list-items">
-                    <li>
-                      <Link href="">美妝教室</Link>
-                    </li>
-                    <li>
-                      <Link href="">美妝社群 </Link>
-                    </li>
+                  <li className="list-title-footer">生活</li>
+                  <div className="list-items-footer">
+                    <Link href="">美妝教室</Link>
+                    <Link href="">美妝社群 </Link>
                   </div>
                 </ul>
                 <ul>
-                  <li className="list-title">關於品牌</li>
-                  <div className="list-items">
-                    <li>
-                      <Link href="">ISLA理念</Link>
-                    </li>
-                    <li>
-                      <Link href="">商業合作</Link>
-                    </li>
+                  <li className="list-title-footer">關於品牌</li>
+                  <div className="list-items-footer">
+                    <Link href="">ISLA理念</Link>
+                    <Link href="">商業合作</Link>
                   </div>
                 </ul>
                 <div className="blank d-lg-block d-none" />
@@ -82,28 +77,42 @@ export default function Footer() {
                   {/* contact info */}
                   <div className="contact-info-block px-3">
                     <h3 className="d-md-block d-none contact-info-title">
-                      聯絡窗口
+                      聯絡我們
                     </h3>
                     <div className="contact-info">
-                      <span>電話 TW (00) 03554798</span>
-                      <span>電子郵件 isla.supple@isla.com</span>
+                      <div className="contact-info-footer">
+                        <div className="contact-info-footer-icon">
+                          <BsTelephone />
+                        </div>
+                        <div className="contact-info-footer-text">
+                          (00) 03554798
+                        </div>
+                      </div>
+                      <div className="contact-info-footer">
+                        <div className="contact-info-footer-icon">
+                          <BsMailbox />
+                        </div>
+                        <div className="contact-info-footer-text">
+                          isla.supple@isla.com
+                        </div>
+                      </div>
                     </div>
                   </div>
                   {/* social media info */}
                   <div className="source-media-block">
                     <h3>Our Social Media</h3>
                     <div className="band">
-                      <div className="logo">ISLA</div>
-                      <div className="icons">
-                        <button>
-                          <FaFacebook />
-                        </button>
-                        <button>
-                          <FaInstagramSquare />
-                        </button>
-                        <button>
-                          <FaYoutube />
-                        </button>
+                      <div className="logo-footer">ISLA</div>
+                      <div className="icons-footer">
+                        <div className="icon-footer">
+                          <BsFacebook />
+                        </div>
+                        <div className="icon-footer">
+                          <BsInstagram />
+                        </div>
+                        <div className="icon-footer">
+                          <BsYoutube />
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -111,11 +120,11 @@ export default function Footer() {
               </div>
             </div>
           </div>
-          <div className="row footer-bottom-band p-md-2 p-3 gy-3">
+          <div className="row footer-bottom-band p-md-2 p-3 gy-3 main-footer-body">
             <div className="col-md-3 col-12 card-icons"></div>
-            <span className="col-md-6 col-12 d-flex justify-content-md-center justify-content-start">
+            <div className="col-md-6 col-12 d-flex justify-content-md-center justify-content-start">
               Copyright ©2025 Taiwan ISLA Co., Ltd. All rights reserved.
-            </span>
+            </div>
             <span className="col-md-3 col-12 d-flex justify-content-md-end justify-content-start">
               隱私條款｜條款及細則
             </span>

@@ -80,6 +80,7 @@ header {
   display: flex;
   justify-content: center;
   align-items: center;
+
   button {
     position: relative;
     display: block;
@@ -119,7 +120,7 @@ header {
     width: 25%;
   }
   @media (min-width: 768px) {
-    gap: 1rem;
+    gap: 26px;
   }
 }
 
@@ -158,6 +159,12 @@ header {
   @media (max-width: 992px) {
     width: 25%;
   }
+}
+.header-search-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 26px !important;
 }
 .ham-menu span {
   height: 3px;

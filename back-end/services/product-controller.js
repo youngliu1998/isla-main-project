@@ -399,6 +399,24 @@ export async function getProductDetail(productId) {
   }
 }
 
+export async function getProductName(productId) {
+  const [productRows] = await db.query(
+    `
+    SELECT products.name
+    FROM products
+    WHERE products.product_id = ?
+    `,
+    [productId]
+  )
+
+  if (productRows.length === 0) {
+    throw new Error('找不到商品')
+  }
+
+  return {
+    name: `商品詳細： ${productRows[0].name}`,
+  }
+}
 export async function getProductReviews(productId) {
   // TODO: 需與user資料表JOIN，取得使用者名稱
   const [reviews] = await db.query(

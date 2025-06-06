@@ -57,7 +57,7 @@
 }
 
 .header-search-item-list::-webkit-scrollbar {
-  width: 6px;
+  width: 3px;
 }
 
 .header-search-item-list::-webkit-scrollbar-track {
