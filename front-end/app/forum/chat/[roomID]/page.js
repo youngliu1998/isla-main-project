@@ -33,18 +33,24 @@ export default function ChatRoom() {
 
   useEffect(() => {
     if (data?.messages?.[0]?.msg) {
-      console.log(data?.messages?.[0]?.msg)
+      // console.log(data?.messages?.[0]?.msg)
       setMessages(JSON.parse(data?.messages?.[0].msg))
     } //QU 沒if data的話會無限迴圈
   }, [data])
 
-  const ws = new ReconnectingWebSocket('ws://localhost:8080')
+  const ws = new ReconnectingWebSocket(
+    `ws://localhost:8080?roomID=${roomID}&userID=${userID}`
+  )
 
   useEffect(() => {
+    console.log(ws)
     const handleMessage = async (event) => {
       const newMsg = await event.data.text().then((txt) => JSON.parse(txt))
       // console.log(newMsg)
       setMessages([...messages, newMsg])
+      // if (newMsg.sender_id !== userID) {
+      mutate()
+      // }
     }
     ws.addEventListener('message', handleMessage)
     const msgCurr = messagesRef.current
@@ -124,7 +130,7 @@ export default function ChatRoom() {
                       key={i}
                     >
                       <div
-                        className={`d-flex flex-column ${m.sender_id == userID ? 'ms-auto ps-5 align-items-end order-0' : 'me-auto pe-5 order-1'}`}
+                        className={`d-flex flex-column ${m.sender_id == userID ? 'ms-auto psForumMsg align-items-end order-0' : 'me-auto peForumMsg order-1'}`}
                       >
                         {/* <div className="fs14 sub-text-color">{m.nick}</div> */}
                         <div
@@ -167,6 +173,7 @@ export default function ChatRoom() {
                   // NOTE 傳送時自動轉buffer
                   ws.send(
                     JSON.stringify({
+                      room_id: roomID,
                       sender_id: userID,
                       content: e.target.value,
                       nick: userNick,
@@ -206,6 +213,7 @@ export default function ChatRoom() {
             <button
               className="px-2 button-clear rounded-circle bg-hovering-gray"
               onClick={() => {
+                // if (roomID === 1) {
                 ws.send(
                   JSON.stringify({
                     sender_id: userID,
@@ -221,6 +229,7 @@ export default function ChatRoom() {
                 })
                 mutate()
                 inputRef.current.value = ''
+                // }
               }}
             >
               <i className="bi bi-send-fill fs20 main-color" />

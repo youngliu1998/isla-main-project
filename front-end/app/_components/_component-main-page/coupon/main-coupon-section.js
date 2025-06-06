@@ -13,7 +13,7 @@ export default function MainCouponSection(props) {
   const images = ['http://localhost:3005/images/ad/discount-info.jpg']
   return (
     <>
-      <div className="main-sub-page-swiper-contrainer">
+      <div className="main-sub-page-swiper-contrainer ">
         <Swiper
           speed={1300}
           grabCursor={true}
@@ -26,7 +26,7 @@ export default function MainCouponSection(props) {
             nextEl: '.swiper-button-next-custom',
             prevEl: '.swiper-button-prev-custom',
           }}
-          className="main-page-main-swiper"
+          className="main-page-main-swiper main-page-main-swiper-coupon"
         >
           {images.map((src, index) => (
             <SwiperSlide

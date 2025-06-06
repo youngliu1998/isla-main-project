@@ -14,7 +14,7 @@ export default function Otp({ email }) {
     newPass: '',
     againPass: '',
   }
-  const [error, setError] = useState({ ...defaultPass })
+  const [error, setError] = useState({ ...defaultPass, ...defaultOtp })
   const [otp, setOtp] = useState({ ...defaultOtp })
   const [password, setPassword] = useState({ ...defaultPass })
   // ==== 表單處理 ====
@@ -43,15 +43,15 @@ export default function Otp({ email }) {
         router.push('/member/login')
       } else {
         // ==== 404 status: error ====
-        let newError = { ...defaultPass }
+        let newError = { ...defaultPass, ...defaultOtp }
         const serverErrors = data.errors
         console.log(serverErrors)
         if (Array.isArray(serverErrors)) {
           // console.log('Errors: ', serverErrors)
           serverErrors.forEach((serverError) => {
             switch (serverError.path) {
-              case 'oriPass':
-                newError = { ...newError, ['oriPass']: serverError.msg }
+              case 'optError':
+                newError = { ...newError, ['otp']: serverError.msg }
                 break
               case 'newPass':
                 newError = { ...newError, ['newPass']: serverError.msg }
@@ -66,7 +66,7 @@ export default function Otp({ email }) {
             autoClose: 1000,
             hideProgressBar: false,
           })
-          setError(newError)
+          setError({ ...newError })
         }
       }
     } catch (err) {
@@ -107,6 +107,7 @@ export default function Otp({ email }) {
             value={otp.otp}
             text={otp}
             setText={setOtp}
+            errorMsg={error.otp}
           />
         </div>
 

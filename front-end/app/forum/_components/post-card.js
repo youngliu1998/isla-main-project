@@ -70,7 +70,7 @@ export default function ComponentsPostCard({
     v.replace('w-50', 'w-100 h-100 object-fit-cover rounded-3')
   )
 
-  console.log(commentCount)
+  // console.log(commentCount)
 
   return (
     <>

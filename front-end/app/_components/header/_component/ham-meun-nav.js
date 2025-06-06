@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useAuth } from '@/hook/use-auth'
 import SearchBlock from './search-block/search-block'
+import CouponNav from './_component-nav/coupon-nav'
 
 export default function HamMeunNav({
   hamMenuOpen = false,
@@ -16,7 +17,7 @@ export default function HamMeunNav({
   return (
     <>
       <nav className={'d-lg-none d-block ham-menu-nav' + ' ' + isOpen}>
-        <SearchBlock />
+        <SearchBlock setHamMenuOpen={setHamMenuOpen} />
         <ul className="d-flex flex-column mt-3">
           <li>
             <Link
@@ -28,7 +29,10 @@ export default function HamMeunNav({
               所有產品
             </Link>
           </li>
-          <li>優惠券專區</li>
+          <li>
+            <Link href="/" onMouseEnter={()=>{}}>優惠券專區</Link>
+            <CouponNav />
+          </li>
           <li>
             <Link
               href="/course"

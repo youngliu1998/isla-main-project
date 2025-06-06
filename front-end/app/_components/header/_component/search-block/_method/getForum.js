@@ -16,7 +16,7 @@ export default async function getForum(search = '') {
     .catch((err) => {
       error = err
 
-      return {}
+      return []
     })
   if (error) {
     console.log('getForum error', error)
@@ -24,6 +24,7 @@ export default async function getForum(search = '') {
   }
   return forums.map((forum) => {
     return {
+      id: forum.id,
       title: forum.title,
       nickname: forum.user_nick,
       ava_img: forum.user_img,

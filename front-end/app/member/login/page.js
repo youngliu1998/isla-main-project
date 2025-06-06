@@ -10,16 +10,23 @@ import { useEffect, useState } from 'react'
 import InputText from '../_component/input-text'
 import InputPass from '../_component/input-pass'
 import { toast } from 'react-toastify'
-import '../_styles/login.css'
+// ==== css ====
+import '@/app/member/_component/_style.css/form.css'
+import './_style/login.css'
 // import { courseUrl } from '../../../_route/courseUrl'
 
 export default function LoginPage() {
   const router = useRouter()
   const { login, initAuth } = useAuth() // Context
+  const defaultLogin = {
+    email: '',
+    password: '',
+  }
   const [memAuth, setMemAuth] = useState({
     email: 'johnsmith@gmail.com',
     password: '12345',
   })
+  const [error, setError] = useState({ ...defaultLogin })
   // ==== 登入後跳轉流程 ====
   const loginPush = (isAuth) => {
     // 登入成功( isAuth != null )
@@ -86,7 +93,7 @@ export default function LoginPage() {
     console.log('flag submit')
     e.preventDefault() // 阻止表單預設行為（例如頁面重新載入）
 
-    await login(memAuth.email, memAuth.password)
+    await login(memAuth.email, memAuth.password, setError)
     console.log('flag login')
     // 檢查 localStorage 中的 'isAuth' 是否為 'true'（表示使用者已成功登入）
     const isAuthLocal = localStorage.getItem('jwtToken')
@@ -135,9 +142,23 @@ export default function LoginPage() {
 
   return (
     <>
-      <div className="d-flex flex-column justify-content-centers gap-5 py-2 postion-middle">
-        <h1 className="text-center login-title">
-          <span className="title">ISLA</span> 會員登入
+      <div className="d-flex flex-column justify-content-centers gap-5 margin-top-minus">
+        <div className="login-main-page-btn-container">
+          <button
+            className="to-main-page-btn"
+            onClick={() => {
+              router.push('/')
+            }}
+          >
+            <i className="bi bi-chevron-left"></i>
+            返回首頁
+          </button>
+        </div>
+        <h1 className="text-center text-primary login-title">
+          <Link href="/" className="text-primary">
+            <span className="title">ISLA</span>
+          </Link>{' '}
+          會員登入
         </h1>
         {/* === for test === */}
         {/* <div className="position-absolute top-50 left-0">
@@ -178,6 +199,7 @@ export default function LoginPage() {
                 name="email"
                 value={memAuth.email}
                 setText={setMemAuth}
+                errorMsg={error?.email || ''}
               />
             </div>
             {/* password */}
@@ -188,6 +210,7 @@ export default function LoginPage() {
                 name="password"
                 value={memAuth.password}
                 setPassword={setMemAuth}
+                errorMsg={error?.password || ''}
               />
               <Link href="/member/forget-password">忘記密碼?</Link>
             </div>

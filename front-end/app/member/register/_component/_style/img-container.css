@@ -11,7 +11,13 @@
   }
   .register-img-1 {
     position: absolute;
-    top: 50px;
+    top: 70px;
     transform: rotate(25deg);
+    z-index: 2;
+  }
+  .register-img-2 {
+    z-index: 1;
+    position: absolute;
+    top: 70px;
   }
 }

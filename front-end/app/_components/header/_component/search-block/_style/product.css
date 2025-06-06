@@ -1,21 +1,30 @@
 /* ==== 商品 ====  */
+.search-item-title-p {
+  display: -webkit-box !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-line-clamp: 2 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  line-height: 1.4 !important;
+  max-height: calc(1.4em * 2) !important;
+  word-break: break-word !important;
+}
 .header-search-item.for-product {
   /* 標題 */
   .search-item-title {
-    width: 150px;
-    height: 1.5rem;
-    overflow: hidden;
-  }
-  /* 圖片外框 */
-  .search-item-img {
-    width: 60px;
-    aspect-ratio: 1 / 1;
-  }
-  /* 商品價格 */
-  .search-item-price {
-  }
-  /* 商品品牌 */
-  .search-item-brand {
+    display: -webkit-box !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-line-clamp: 2 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    line-height: 1.4 !important;
+    max-height: calc(1.4em * 2) !important;
+    word-break: break-word !important;
   }
 }
-
+.header-search-item {
+  transition: all 0.6s;
+}
+.header-search-item:hover {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.276);
+}

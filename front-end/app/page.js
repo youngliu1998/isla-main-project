@@ -136,7 +136,7 @@ export default function Home() {
           </section>
           {/* ---- END product ---- */}
           {/* ---- START main coupon ---- */}
-          <section className="subsection-main-page">
+          <section className="subsection-main-page subsection-main-page-coupon-bg">
             <div className="main-sub-page-swiper-contrainer">
               <Swiper
                 speed={1300}
@@ -154,7 +154,7 @@ export default function Home() {
                   nextEl: '.swiper-button-next-custom',
                   prevEl: '.swiper-button-prev-custom',
                 }}
-                className="main-page-main-swiper"
+                className="main-page-main-swiper main-page-main-swiper-coupon"
               >
                 {swiperSubImages.map((src, index) => (
                   <SwiperSlide

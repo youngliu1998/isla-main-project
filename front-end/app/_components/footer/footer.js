@@ -6,7 +6,8 @@ import './footer.css'
 import { usePathname } from 'next/navigation'
 import CartFooter from './_component/cart-footer'
 // ==== icons ====
-import { FaFacebook, FaInstagramSquare , FaYoutube } from 'react-icons/fa'
+import { FaFacebook, FaInstagramSquare, FaYoutube } from 'react-icons/fa'
+import Image from 'next/image'
 
 export default function Footer() {
   const pathname = usePathname()
@@ -29,7 +30,16 @@ export default function Footer() {
       <footer>
         <div>
           <div className="row">
-            <div className="col-lg-2 col-12 footer-side" />
+            <div className="col-lg-2 col-12 footer-side">
+              <div className="footer-side-text">ISLA 你的自由彩妝生活</div>
+              <Image
+                src={'http://localhost:3005/images/ad/footer-header-left.jpg'}
+                alt="footer-ad"
+                width={10}
+                height={10}
+                className="footer-side-img"
+              />
+            </div>
             <div className="col-lg-10 col-12 row row-cols-lg-2 row-cols-1 g-0 footer-body">
               <div className="row row-cols-lg-4 row-cols-3 footer-header-left g-0 d-lg-flex d-none">
                 <ul>
@@ -89,7 +99,7 @@ export default function Footer() {
                           <FaFacebook />
                         </button>
                         <button>
-                          <FaInstagramSquare  />
+                          <FaInstagramSquare />
                         </button>
                         <button>
                           <FaYoutube />

@@ -61,6 +61,8 @@ export default function Path() {
           return '美妝教室'
         case 'product':
           return '所有產品'
+        case 'login':
+          return '登入'
         case 'profile':
           return '基本資料'
         case 'password':
@@ -79,6 +81,14 @@ export default function Path() {
           return ''
         case 'teacher':
           return ''
+        case 'my-forum':
+          return '我的論壇'
+        case 'my-following':
+          return '我的追蹤'
+        case 'my-post':
+          return '我的文章'
+        case 'saved-post':
+          return '收藏文章'
 
         default:
           return thisPath
@@ -104,13 +114,17 @@ export default function Path() {
     pathname === '/' ||
     pathname.includes('/forum') ||
     pathname.includes('/coupon/create') ||
-    pathname.startsWith('/course')
+    pathname.includes('/login') ||
+    pathname.includes('/register') ||
+    pathname.includes('/forget-password') ||
+    pathname.startsWith('/course') ||
+    !pathArrTag[0]
   ) {
     return <></>
   }
   return (
     <>
-      <div className="d-flex position-absolute px-3 pt-3">
+      <div className="d-flex position-absolute top-0 px-3 pt-3">
         {pathArr.map((path, i) => {
           if (pathArrTag[i] === '') {
             return
