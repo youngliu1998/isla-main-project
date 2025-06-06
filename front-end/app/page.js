@@ -12,6 +12,7 @@ import MainCouponSection from '@/app/_components/_component-main-page/coupon/mai
 import CouponSection from '@/app/_components/_component-main-page/coupon/coupon-section'
 import ProductSectionBrand from '@/app/_components/_component-main-page/product/product-section-brand'
 import ProductSectionNew from '@/app/_components/_component-main-page/product/product-section-new'
+import BrandSection from './_components/_component-main-page/brand/brand-section'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Pagination, Navigation } from 'swiper/modules'
 
@@ -223,6 +224,10 @@ export default function Home() {
           {/* ==== START forum ==== */}
           <section className="container subsection-main-page">
             <ForumSection />
+          </section>
+          {/* ==== show brand ====  */}
+          <section>
+            <BrandSection />
           </section>
           {/* ---- END forum ---- */}
         </section>
