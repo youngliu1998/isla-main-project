@@ -626,3 +626,9 @@
   border-radius: 5px;
   border: 1px solid #ddd;
 } */
+.loading-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

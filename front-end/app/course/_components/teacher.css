@@ -329,3 +329,9 @@
 .card-text-discount {
   text-decoration: line-through;
 }
+.loading-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

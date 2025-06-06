@@ -13,6 +13,8 @@ import CalendarButton from '@/app/course/_components/calendar-button/calendar-bu
 import CountdownTimer from '@/app/course/_components/countdown-timer/countdown-timer'
 import LoginModal from '../../../course/_components/login-modal'
 import Breadcrumb from '../../_components/breadcrumb/breadcrumb'
+import LoadingLottie from '../../../_components/loading/lottie-loading'
+import LoadingErrorLottie from '../../../_components/loading-error/lottie-error'
 
 export default function ExperienceIDPage() {
   const params = useParams()
@@ -31,6 +33,8 @@ export default function ExperienceIDPage() {
   const toggleRef = useRef(null)
   const sectionRef = useRef(null)
   const [showLoginModal, setShowLoginModal] = useState(false)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
 
   const handleBuyNow = async () => {
     if (!user || !user.id) {
@@ -186,9 +190,17 @@ export default function ExperienceIDPage() {
           }
         )
         const result = await res.json()
-        if (result.status === 'success') setData(result.data || [])
+        if (result.status === 'success') {
+          setData(result.data || [])
+          setLoading(false)
+        } else {
+          setError(true)
+          setLoading(false)
+        }
       } catch (err) {
         console.error('資料取得失敗：', err)
+        setError(true)
+        setLoading(false)
       }
     }
     if (id) getExperienceList()
@@ -201,6 +213,22 @@ export default function ExperienceIDPage() {
       handleBuyNow() // ✅ 登入後自動執行購買流程
     }
   }, [user])
+
+  if (error) {
+    return (
+      <div className="loading-container">
+        <LoadingErrorLottie />
+      </div>
+    )
+  }
+
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <LoadingLottie />
+      </div>
+    )
+  }
 
   return (
     <>
