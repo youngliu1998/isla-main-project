@@ -170,7 +170,7 @@ export default function CouponPage() {
 
   return (
     <main className="px-md-5 px-3 pb-5 container">
-      <div className="row mt-sm-4 g-sm-5">
+      <div className="row mt-0 pt-sm-5 g-sm-5">
         {/* 左側課程分類篩選區塊 */}
         <AsideCourse
           courseCategory={courseCategory}
