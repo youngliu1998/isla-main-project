@@ -199,8 +199,8 @@ export default function CouponPage() {
   }
 
   return (
-    <main className="px-md-5 px-3 pb-5 container min-vh-100">
-      <div className="row mt-sm-4 g-sm-5">
+    <main className="px-md-5 px-3 pb-5 container min-vh-100 ">
+      <div className="row mt-0 pt-sm-5 g-sm-5">
         {/* 左側篩選區 */}
         <AsideProduct
           currentBrand={currentBrand}
