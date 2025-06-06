@@ -2,7 +2,7 @@
 import { useState, useRef } from 'react'
 import Image from 'next/image'
 
-export default function CartDropdown({ cartItems, onCartClick }) {
+export default function CartDropdown({ totalCount, cartItems, onCartClick }) {
   const [isOpen, setIsOpen] = useState(false)
   const timerRef = useRef(null)
 
@@ -14,7 +14,7 @@ export default function CartDropdown({ cartItems, onCartClick }) {
   const handleMouseLeave = () => {
     timerRef.current = setTimeout(() => setIsOpen(false), 120)
   }
-  console.log('cartItems:', cartItems)
+  console.log('totalCount:', totalCount)
 
   return (
     <div
@@ -36,15 +36,16 @@ export default function CartDropdown({ cartItems, onCartClick }) {
           width={34}
           height={34}
         />
-        <div className="cart-badge">{cartItems.length}</div>
+        <div className="cart-badge">{totalCount}</div>
       </button>
       {/* Dropdown */}
       {isOpen && (
         <div className="cart-dropdown">
+          <div className="cart-dropdown-arrow"></div>
           <div className="cart-dropdown-title">最近加入的商品</div>
           <ul className="cart-dropdown-list">
-            {cartItems.length === 0 ? (
-              <li>目前購物車沒有商品</li>
+            {totalCount === 0 ? (
+              <li className="text-muted">目前購物車沒有商品</li>
             ) : (
               cartItems.map((item) => (
                 <li key={item.id} className="cart-dropdown-item">

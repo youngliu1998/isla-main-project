@@ -222,7 +222,7 @@ export default function page({ params }) {
                   style={{
                     border:
                       idx === selectedIndex
-                        ? '2px solid #007bff'
+                        ? '2px solid #fd7061'
                         : '1px solid #ccc',
                     borderRadius: '8px',
                   }}

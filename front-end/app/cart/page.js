@@ -283,19 +283,15 @@ export default function CartPage() {
       {isCheckingOut && (
         <section
           className="position-fixed top-0 start-0 w-100 h-100 bg-white d-flex justify-content-center align-items-center"
-          style={{ zIndex: 9999 }}
+          style={{ zIndex: 999 }}
         >
           <CartLoading />
         </section>
       )}
-
-      <section className="container text-center text-lg-start mt-2">
-        <h1 className="text-subtext h2 m-5">購物車</h1>
+      <div style={{ height: '2rem' }}></div>
+      <section className="container text-center text-lg-start">
+        <h1 className="text-subtext h2 m-4">購物車</h1>
       </section>
-
-      {/* <section className="container d-none d-lg-block mb-4">
-        <StepProgress currentStep={1} />
-      </section> */}
 
       {cartItems.length === 0 ? (
         <section className="container text-center my-5">
@@ -312,7 +308,7 @@ export default function CartPage() {
           >
             <div className="row gy-5">
               <div className="col-lg-4 col-12">
-                <div className="form-check m-4 ">
+                <div className="form-check m-4">
                   <input
                     className={`form-check-input me-2 ${styles.checkboxInput}`}
                     type="checkbox"
@@ -331,8 +327,8 @@ export default function CartPage() {
             </div>
 
             <div className="row gy-5">
-              <div className="col-lg-7 col-12 gy-5">
-                <div className="card-style mb-4 p-lg-4 p-2">
+              <div className="col-lg-8 col-12 gy-5">
+                <div className={`${styles.cardStyle} mb-4 p-lg-4 p-2`}>
                   <div className="mb-3 d-flex align-items-center text-primary">
                     <i className="bi bi-cart4 fs-6 mb-1 me-1"></i>
                     <div>彩妝商品</div>
@@ -391,7 +387,7 @@ export default function CartPage() {
                   />
                 </CouponAccordion>
 
-                <div className="card-style mb-3 p-4">
+                <div className={`${styles.cardStyle} mb-3 p-4`}>
                   <div className="mb-3">
                     <div className="mb-3 d-flex align-items-center text-primary">
                       <i className="bi bi-film fs-6 mb-1 me-2"></i>
@@ -441,7 +437,7 @@ export default function CartPage() {
                   />
                 </CouponAccordionCourse>
               </div>
-              <div className="col-lg-5 col-12">
+              <div className="col-lg-4 col-12">
                 {!isMobile && (
                   <OrderSummary
                     cartItems={cartItems.filter((i) => checkedItems[i.id])}

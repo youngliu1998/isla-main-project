@@ -63,10 +63,13 @@ export default function MyPostPage(props) {
   }
   return (
     <>
-      <div className="body">
-        <div className="my-post-header d-flex align-items-center px-4  py-3">
+      <div className="body my-forum">
+        <div className="my-post-header d-flex align-items-center px-4 py-3">
           <div className="me-auto fs32 fw-bold">我的文章</div>
-          <Link className="text-main px-3 py-2 rounded-pill" href={'/forum'}>
+          <Link
+            className="text-main px-3 py-2 rounded-pill bg-hovering-gray"
+            href={'/forum'}
+          >
             <i className="bi bi-box-arrow-left me-2"></i>
             回到論壇
           </Link>

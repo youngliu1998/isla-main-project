@@ -12,6 +12,7 @@ import MainCouponSection from '@/app/_components/_component-main-page/coupon/mai
 import CouponSection from '@/app/_components/_component-main-page/coupon/coupon-section'
 import ProductSectionBrand from '@/app/_components/_component-main-page/product/product-section-brand'
 import ProductSectionNew from '@/app/_components/_component-main-page/product/product-section-new'
+import BrandSection from './_components/_component-main-page/brand/brand-section'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Pagination, Navigation } from 'swiper/modules'
 
@@ -31,7 +32,7 @@ import HomeAnimationSplash from './home-animation/splash'
 
 export default function Home() {
   const [showMain, setShowMain] = useState(false)
-  const [hasShownAnimation, setHasShownAnimation] = useState(false)
+  const [hasChecked, setHasChecked] = useState(false)
 
   const images = [
     'http://localhost:3005/images/ad/isla-ad.001.jpeg',
@@ -45,21 +46,31 @@ export default function Home() {
   const router = useRouter()
   // const handleForumTab = () => {}
 
-  // 檢查是否第一次進入 localStorage
+  // 使用session
   useEffect(() => {
-    const seen = localStorage.getItem('hasSeenHomeAnimation')
-    if (seen) {
-      setHasShownAnimation(true)
+    const token = localStorage.getItem('jwtToken')
+    const seen = sessionStorage.getItem('hasSeenHomeAnimation')
+
+    if (token && !seen) {
+      // 第一次登入還沒播動畫
+      setShowMain(false)
+    } else {
+      // 沒登入或已播過
       setShowMain(true)
     }
+
+    setHasChecked(true) // 已判斷完動畫狀態
   }, [])
 
   const handleFinishAnimation = () => {
-    localStorage.setItem('hasSeenHomeAnimation', 'true')
+    sessionStorage.setItem('hasSeenHomeAnimation', 'true')
     setShowMain(true)
   }
 
-  if (!hasShownAnimation && !showMain) {
+  if (
+    !hasChecked ||
+    (!showMain && !sessionStorage.getItem('hasSeenHomeAnimation'))
+  ) {
     return <HomeAnimationSplash onFinish={handleFinishAnimation} />
   }
 
@@ -125,7 +136,7 @@ export default function Home() {
           </section>
           {/* ---- END product ---- */}
           {/* ---- START main coupon ---- */}
-          <section className="subsection-main-page">
+          <section className="subsection-main-page subsection-main-page-coupon-bg">
             <div className="main-sub-page-swiper-contrainer">
               <Swiper
                 speed={1300}
@@ -143,7 +154,7 @@ export default function Home() {
                   nextEl: '.swiper-button-next-custom',
                   prevEl: '.swiper-button-prev-custom',
                 }}
-                className="main-page-main-swiper"
+                className="main-page-main-swiper main-page-main-swiper-coupon"
               >
                 {swiperSubImages.map((src, index) => (
                   <SwiperSlide
@@ -213,6 +224,10 @@ export default function Home() {
           {/* ==== START forum ==== */}
           <section className="container subsection-main-page">
             <ForumSection />
+          </section>
+          {/* ==== show brand ====  */}
+          <section>
+            <BrandSection />
           </section>
           {/* ---- END forum ---- */}
         </section>

@@ -70,33 +70,59 @@ router.post(
   }
 )
 
+const isOpt = async (req, res) => {
+  // ==== 解讀存進資料庫的 opt 的 token ====
+  const { email, otp } = req.otpMsg
+  if (!email || !otp) {
+    return res
+      .status(400)
+      .json({ status: 'error', message: '請提供 Email 和 OTP' })
+  }
+  const clientOpt = req.body?.otp || 0
+  if (parseInt(clientOpt) !== parseInt(otp))
+    return res.status(400).json({ status: 'error', msg: '錯誤的 OTP' })
+}
 // routes/otp.js（接續之前的程式碼）
 router.post(
   '/verify-otp',
+  verifyOTP,
   [
     body('newPass')
-      .isLength({ min: 5, max: 12 })
+      .isLength({ min: 5, max: 16 })
       .withMessage('密碼長度為5~16字元間'),
     body('againPass').custom((value, { req }) => {
+      // ==== 確認密碼是否一致 ====
       if (value != req.body.newPass) {
         throw new Error('密碼不一致')
       }
+      if(value.length<5 || value.length>16){
+        throw new Error('密碼長度為5~16字元間')
+      }
+      return true
+    }),
+    body('optError').custom((value, { req }) => {
+      // ==== 解讀存進資料庫的 opt 的 token ====
+      const { email, otp } = req.otpMsg
+      if (!email || !otp) {
+        throw new Error('請提供 Email 和 OTP')
+      }
+      const clientOpt = req.body?.otp || 0
+      if (parseInt(clientOpt) !== parseInt(otp)) throw new Error('錯誤的 OTP')
       return true
     }),
   ],
   validateRequest,
-  verifyOTP,
   async (req, res) => {
     // ==== 解讀存進資料庫的 opt 的 token ====
-    const { email, otp } = req.otpMsg
-    if (!email || !otp) {
-      return res
-        .status(400)
-        .json({ status: 'error', message: '請提供 Email 和 OTP' })
-    }
-    const clientOpt = req.body?.otp || 0
-    if (parseInt(clientOpt) !== parseInt(otp))
-      return res.status(400).json({ status: 'error', message: '錯誤的 OTP' })
+    // const { email, otp } = req.otpMsg
+    // if (!email || !otp) {
+    //   return res
+    //     .status(400)
+    //     .json({ status: 'error', message: '請提供 Email 和 OTP' })
+    // }
+    // const clientOpt = req.body?.otp || 0
+    // if (parseInt(clientOpt) !== parseInt(otp))
+    //   return res.status(400).json({ status: 'error', msg: '錯誤的 OTP' })
 
     // const record = otpStore[email]
 
@@ -128,6 +154,7 @@ router.post(
     let error = ''
     try {
       // ---- change passowrd ----
+      const { email } = req.otpMsg
       // hash newPass
       const hashed = await bcrypt.hash(newPass, 10)
       console.log('hashed', newPass)

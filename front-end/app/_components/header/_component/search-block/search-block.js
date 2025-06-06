@@ -10,8 +10,9 @@ import getForum from './_method/getForum' // 傳入文章資料的函式 [{},{}]
 import getProduct from './_method/getProduct' // 傳入商品資料的函式 [{},{}]
 // ==== css ====
 import './_style/search-block.css'
+import Link from 'next/link'
 
-export default function SearchBlock() {
+export default function SearchBlock({ setHamMenuOpen = () => {} }) {
   const [searchType, setSearchType] = useState(1) // tab 控制項( 1是商品，2是文章 )
   const [searchText, setSearchText] = useState('') // input 文字控制項
   // ==== 商品與文章的list控制項( [{},{}] ) ====
@@ -58,14 +59,26 @@ export default function SearchBlock() {
           />
         </div>
         {/* ==== 商品(文章)列表 ==== */}
-        <div className="d-flex flex-wrap justify-content-center gap-2 header-search-item-list">
+        <div className="header-search-item-list header-search-item-list-mobile">
           {searchType == 1 &&
-            products.slice(0, 8).map((product, i) => {
-              return <ProductBar product={product} key={i} />
+            products.map((product, i) => {
+              return (
+                <ProductBar
+                  key={i}
+                  product={product}
+                  setHamMenuOpen={setHamMenuOpen}
+                />
+              )
             })}
           {searchType == 2 &&
-            forums.slice(0, 8).map((forum, i) => {
-              return <ForumBar forum={forum} key={i} />
+            forums.map((forum, i) => {
+              return (
+                <ForumBar
+                  forum={forum}
+                  key={i}
+                  setHamMenuOpen={setHamMenuOpen}
+                />
+              )
             })}
         </div>
       </div>

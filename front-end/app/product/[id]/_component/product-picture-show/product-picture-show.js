@@ -13,7 +13,7 @@ export default function ProductPictureShow({ images }) {
   return (
     <div className={clsx(style['main'])}>
       <div className="pic-bar d-flex align-items-center gap-3">
-          {/*沒時間修爆版，強制只顯示五個圖片*/}
+        {/*沒時間修爆版，強制只顯示五個圖片*/}
         {images.slice(0, 5).map((imgUrl, idx) => (
           <Image
             key={idx}
@@ -27,7 +27,7 @@ export default function ProductPictureShow({ images }) {
               height: '60px',
               objectFit: 'cover',
               border:
-                idx === selectedIndex ? '2px solid #007bff' : '1px solid #ccc',
+                idx === selectedIndex ? '2px solid #fd7061' : '1px solid #ccc',
               borderRadius: '4px',
             }}
             onClick={() => setSelectedIndex(idx)}

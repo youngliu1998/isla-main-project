@@ -124,7 +124,7 @@ export default function ChatRoom() {
                       key={i}
                     >
                       <div
-                        className={`d-flex flex-column ${m.sender_id == userID ? 'ms-auto ps-5 align-items-end order-0' : 'me-auto pe-5 order-1'}`}
+                        className={`d-flex flex-column ${m.sender_id == userID ? 'ms-auto psForumMsg align-items-end order-0' : 'me-auto peForumMsg order-1'}`}
                       >
                         {/* <div className="fs14 sub-text-color">{m.nick}</div> */}
                         <div

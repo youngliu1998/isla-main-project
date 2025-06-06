@@ -34,9 +34,24 @@ const validation = [
   validateTel,
   validateBirthday,
 ]
-
-// ==== 確認是否為新會員 ====
-const isNew = async (req, res, next) => {
+// ==== 確認是否為新會員(express validator) ====
+const isNew = body('existUser').custom(async (value, { req }) => {
+  const { email } = req.body
+  const query = 'SELECT email FROM users WHERE email=?'
+  const user = await db
+    .execute(query, [email])
+    .then((data) => data[0][0])
+    .catch((err) => {
+      throw new Error('資料庫錯誤' + err.message)
+    })
+  // console.log('user', user)
+  if (user) {
+    throw new Error('此會員已存在')
+  }
+  return true
+})
+// ==== 確認是否為新會員(Google) ====
+const isNewGoogle = async (req, res, next) => {
   const { email } = req.body
   const query = 'SELECT email FROM users WHERE email=?'
   try {
@@ -51,10 +66,11 @@ const isNew = async (req, res, next) => {
 // get: Send data if Auth is ok
 router.post(
   '/',
+  isNew,
   notEmpty,
   validation,
   validateRequest,
-  isNew,
+  isNewGoogle,
   async (req, res) => {
     let error = ''
 
@@ -82,7 +98,7 @@ router.post(
     console.log(`newMember`, newMember)
     // rearrange object to array (for mysql2 execute)
     const newMemArray = Object.keys(newMember).map((key) => {
-      console.log(key)
+      // console.log(key)
       return newMember[`${key}`]
     })
     // res.json({ status: 'test', queryString, valueString, newMemArray })
@@ -136,7 +152,7 @@ router.post(
     }
     // ==== format for mysql2 array ====
     const newMemArray = Object.keys(newMember).map((key) => {
-      console.log(key)
+      // console.log(key)
       return newMember[`${key}`]
     })
     // console.log('stringQuery: ', queryString)

@@ -11,7 +11,7 @@ export default function useCouponFilter(defaultType = '') {
   // product Category
   const [productCategory, setProductCategory] = useState('')
   // course
-  const [courseCategory, setcourseCategory] = useState('')
+  const [courseCategory, setCourseCategory] = useState('')
 
   return {
     currentType,
@@ -23,6 +23,6 @@ export default function useCouponFilter(defaultType = '') {
     productCategory,
     setProductCategory,
     courseCategory,
-    setcourseCategory,
+    setCourseCategory,
   }
 }

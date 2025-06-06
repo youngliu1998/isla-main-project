@@ -11,6 +11,8 @@ import CouponHeader from '../_components/coupon-header'
 import LoginModal from '../_components/login-modal'
 import useCouponFilter from '../../../hook/coupon-filter'
 import Componentstab from '../_components/tab/tab'
+import MobileCouponFilter from '../_components/filter/mobile-product-filter'
+import MobileCourseFilter from '../_components/filter/mobile-course-filter'
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/hook/use-auth'
 
@@ -66,6 +68,7 @@ export default function CouponPage() {
   // 手機版 tab 切換（1 = 商品、2 = 課程）
   const [tab, setTab] = useState(1)
   const [isMobile, setIsMobile] = useState(false)
+  const [showMobileFilter, setShowMobileFilter] = useState(false)
 
   // 監聽畫面大小以切換手機/桌機介面
   useEffect(() => {
@@ -89,16 +92,18 @@ export default function CouponPage() {
     setCurrentBrand,
     productCategory,
     setProductCategory,
+    courseCategory,
+    setCourseCategory,
   } = useCouponFilter()
 
   //  品牌對應名稱轉換
   const brandMap = {
     1: 'Unleashia',
-    2: 'Cosnori',
-    3: 'Muzigae Mansion',
-    4: 'Kaja',
-    5: 'rom&nd',
-    6: "A'Pieu",
+    3: 'Cosnori',
+    4: 'Muzigae Mansion',
+    5: 'Kaja',
+    6: 'rom&nd',
+    2: "A'Pieu",
   }
   const nameToId = Object.fromEntries(
     Object.entries(brandMap).map(([id, name]) => [name, Number(id)])
@@ -136,7 +141,9 @@ export default function CouponPage() {
       const brandMatch =
         !currentBrand || coupon.brand_id === nameToId[currentBrand]
       const categoryMatch =
-        !productCategory || coupon.category_name === productCategory
+        tab === 1
+          ? !productCategory || coupon.category_name === productCategory
+          : !courseCategory || coupon.course_category_name === courseCategory
       const validTo = dayjs(coupon.valid_to)
       const isExpired = validTo.isBefore(now.startOf('day'))
 
@@ -192,8 +199,8 @@ export default function CouponPage() {
   }
 
   return (
-    <main className="px-md-5 px-3 pb-5 container">
-      <div className="row mt-sm-4 g-sm-5">
+    <main className="px-md-5 px-3 pb-5 container min-vh-100 ">
+      <div className="row mt-0 pt-sm-5 g-sm-5">
         {/* 左側篩選區 */}
         <AsideProduct
           currentBrand={currentBrand}
@@ -213,7 +220,42 @@ export default function CouponPage() {
               handleTabChange={handleTabChange}
             />
           )}
-
+          {/* 手機版篩選 */}
+          {isMobile &&
+            (tab === 1 ? (
+              <MobileCouponFilter
+                isPanelOpen={showMobileFilter}
+                onTogglePanel={() => setShowMobileFilter((prev) => !prev)}
+                currentBrand={currentBrand}
+                setCurrentBrand={setCurrentBrand}
+                productCategory={productCategory}
+                setProductCategory={setProductCategory}
+                brandOptions={Object.values(brandMap)}
+                categoryOptions={Array.from(
+                  new Set(
+                    localCoupons
+                      .filter((c) => parseInt(c.area) === 1)
+                      .map((c) => c.category_name)
+                      .filter(Boolean)
+                  )
+                )}
+              />
+            ) : (
+              <MobileCourseFilter
+                isPanelOpen={showMobileFilter}
+                onTogglePanel={() => setShowMobileFilter((prev) => !prev)}
+                currentCategory={courseCategory}
+                setCurrentCategory={setCourseCategory}
+                categoryOptions={Array.from(
+                  new Set(
+                    localCoupons
+                      .filter((c) => parseInt(c.area) === 2)
+                      .map((c) => c.course_category_name)
+                      .filter(Boolean)
+                  )
+                )}
+              />
+            ))}
           {/* 篩選分類選單 + 已領取開關 */}
           <PcNav
             options={couponTypes}

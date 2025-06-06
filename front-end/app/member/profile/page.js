@@ -17,7 +17,7 @@ import { cities } from './data/CityCountyData'
 
 export default function ProfilePage() {
   // const router = useRouter()
-  const { user } = useAuth()
+  const { user, initAuth } = useAuth()
   const defaultProfile = {
     name: '',
     nickname: '',
@@ -77,6 +77,7 @@ export default function ProfilePage() {
             autoClose: 1000,
             hideProgressBar: false,
           })
+          initAuth()
         }
       } else {
         // ==== 404 status: error ====

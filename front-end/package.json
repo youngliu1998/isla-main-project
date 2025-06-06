@@ -23,6 +23,7 @@
     "boxicons": "^2.1.4",
     "canvas-confetti": "^1.9.3",
     "chart.js": "^4.4.9",
+    "cross-env": "^7.0.3",
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "dompurify": "^3.2.6",

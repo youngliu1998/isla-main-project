@@ -3,6 +3,26 @@
   box-shadow: none;
   border-radius: 4px;
 }
+::-webkit-scrollbar {
+  width: 3px;
+  background: rgb(254, 254, 254);
+}
+
+::-webkit-scrollbar-track {
+  background: rgb(52, 43, 43);
+  /* 透明軌道 */
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.475);
+  border-radius: 3px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.4);
+}
+
 // 使用自訂 class，也可以用原生 bs 類別覆蓋 .form-check-input
 .form-check-input {
   width: 1.25rem;
@@ -437,4 +457,8 @@ $form-radio-disabled-bg: #eee;
 /* 自訂 loading 樣式 */
 .yarl__spinner {
   color: rgb(233, 92, 73);
+}
+
+.yarl__portal {
+  z-index: 99999999999 !important; /* 確保圖片瀏覽器的 z-index 高於其他元素 */
 }
