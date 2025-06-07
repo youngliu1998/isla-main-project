@@ -177,7 +177,8 @@ export default function CreatePage() {
                 </button>
               </Link>
               <Link
-                href={`/product/list?brand_id=${newCoupon.brand_id}&categories=${newCoupon.category_id}`}
+                href={`/product?brand_id=${newCoupon.brand_id}&categories=${newCoupon.categories}`}
+                // product?brandIds=${brand_id}&categoryIds=${categories}
                 className="text-center"
               >
                 <button className="btn btn-primary w-50 text-center">

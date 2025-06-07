@@ -104,7 +104,6 @@
   font-weight: bold;
   cursor: pointer;
   transition: background 0.3s ease;
-  
 }
 .search-btntext:hover {
   color: var(--main-color);
@@ -383,3 +382,9 @@
 /* a.text-decoration-none:hover {
   text-decoration: none;
 } */
+.loading-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

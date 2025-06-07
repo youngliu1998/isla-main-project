@@ -223,9 +223,11 @@ app.listen(port, () => console.log(`Server ready on port ${port}`))
 app.use('/api/course/wishlist', wishlistRouter)
 app.use('/api/courses-manage/course-list', courseManageRoutes)
 // 讓靜態圖片資料夾能被前端正確存取
-app.use(
-  '/images/course/course-list',
-  express.static('public/images/course/course-list')
-)
+app.use('/images', express.static('public/images'))
+
+// app.use(
+//   '/images/course/course-list',
+//   express.static('public/images/course/course-list')
+// )
 
 export default app

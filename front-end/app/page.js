@@ -51,7 +51,7 @@ export default function Home() {
     const token = localStorage.getItem('jwtToken')
     const seen = sessionStorage.getItem('hasSeenHomeAnimation')
 
-    if (token && !seen) {
+    if (!seen) {
       // 第一次登入還沒播動畫
       setShowMain(false)
     } else {

@@ -13,6 +13,8 @@ import '../../../forum/_components/forum.css'
 import Link from 'next/link'
 import PurchasedCourseCard from '../../../course/_components/purchased-course-card/purchased-course-card'
 import Breadcrumb from '../../_components/breadcrumb/breadcrumb'
+import LoadingLottie from '../../../_components/loading/lottie-loading'
+import LoadingErrorLottie from '../../../_components/loading-error/lottie-error'
 
 export default function TeacherPage() {
   const [data, setData] = useState(null) // 講師資料
@@ -26,114 +28,85 @@ export default function TeacherPage() {
   console.log(params.teacher)
   const [articles, setArticles] = useState([])
   const [purchasedCourses, setPurchasedCourses] = useState([]) // 老師購買的課程
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
-    async function getTeacherData() {
+    async function loadAllData() {
       const token = localStorage.getItem('jwtToken')
+
       try {
-        const res = await fetch(
-          `http://localhost:3005/api/course/teacher-list/${id}`,
-          {
-            method: 'GET',
-            headers: token
-              ? {
-                  'Content-Type': 'application/json',
-                  Authorization: `Bearer ${token}`,
-                }
-              : { 'Content-Type': 'application/json' },
-          }
-        )
+        const [teacherRes, courseRes, articleRes, purchaseRes] =
+          await Promise.all([
+            fetch(`http://localhost:3005/api/course/teacher-list/${id}`, {
+              headers: token
+                ? {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                  }
+                : { 'Content-Type': 'application/json' },
+            }),
+            fetch(
+              `http://localhost:3005/api/course/teacher-list/teacher-course/${id - 72}`,
+              {
+                headers: token
+                  ? {
+                      'Content-Type': 'application/json',
+                      Authorization: `Bearer ${token}`,
+                    }
+                  : { 'Content-Type': 'application/json' },
+              }
+            ),
+            fetch(`http://localhost:3005/api/course/teacher-post/user/${id}`),
+            fetch(`http://localhost:3005/api/course/teacher-purchases/${id}`),
+          ])
 
-        const result = await res.json()
-        if (result.status === 'success') {
-          setData(result.data)
-        } else {
-          console.warn('講師資料非 success:', result)
-        }
+        const [teacherData, courseData, articleData, purchaseData] =
+          await Promise.all([
+            teacherRes.json(),
+            courseRes.json(),
+            articleRes.json(),
+            purchaseRes.json(),
+          ])
+
+        if (teacherData.status === 'success') setData(teacherData.data)
+        else setError(true)
+
+        if (courseData.status === 'success')
+          setCourseCard(courseData.data || [])
+        else setError(true)
+
+        if (articleData.status === 'success') setArticles(articleData.data)
+        else setError(true)
+
+        if (purchaseData.status === 'success')
+          setPurchasedCourses(purchaseData.data || [])
+        else setError(true)
       } catch (err) {
-        console.error('撈取講師資料失敗:', err)
+        console.error('撈取失敗:', err)
+        setError(true)
+      } finally {
+        setLoading(false)
       }
     }
 
-    async function getTeacherCourses() {
-      const token = localStorage.getItem('jwtToken')
-      try {
-        const res = await fetch(
-          `http://localhost:3005/api/course/teacher-list/teacher-course/${id - 72}`,
-          {
-            method: 'GET',
-            headers: token
-              ? {
-                  'Content-Type': 'application/json',
-                  Authorization: `Bearer ${token}`,
-                }
-              : { 'Content-Type': 'application/json' },
-          }
-        )
-        // ✅ 多加這一層確認狀態碼是 200～299
-        if (!res.ok) {
-          throw new Error(`伺服器錯誤，狀態碼：${res.status}`)
-        }
-
-        const contentType = res.headers.get('content-type')
-        if (!contentType?.includes('application/json')) {
-          throw new Error('伺服器沒有回傳 JSON，可能是錯誤頁')
-        }
-
-        const result = await res.json()
-        if (result.status === 'success') {
-          setCourseCard(result.data || [])
-        } else {
-          console.warn('課程資料非 success:', result)
-        }
-      } catch (err) {
-        console.error('撈取講師課程失敗:', err)
-      }
-    }
-    async function fetchTeacherArticles() {
-      const res = await fetch(
-        `http://localhost:3005/api/course/teacher-post/user/${id}`
-      )
-      const json = await res.json()
-      if (json.status === 'success') {
-        console.log(json.data)
-        setArticles(json.data)
-      }
-    }
-    async function fetchTeacherPurchases() {
-      try {
-        const res = await fetch(
-          `http://localhost:3005/api/course/teacher-purchases/${id}`
-        )
-        const result = await res.json()
-        if (result.status === 'success') {
-          setPurchasedCourses(result.data || [])
-        } else {
-          console.warn('購買課程資料非 success:', result)
-        }
-      } catch (err) {
-        console.error('撈取購買課程失敗:', err)
-      }
-    }
-
-    if (id) {
-      getTeacherData() // ✅ 恢復這個 function 的定義
-      getTeacherCourses()
-      fetchTeacherArticles()
-      fetchTeacherPurchases()
-    }
+    if (id) loadAllData()
   }, [id])
 
-  if (data === null) {
+  
+  if (loading) {
     return (
-      <div className="text-center">
-        <p>資料載入中...</p>
+      <div className="loading-container">
+        <LoadingLottie />
       </div>
     )
   }
-
-  if (!data) {
-    return <p className="text-center">找不到講師資料</p>
+  if (error) {
+    return (
+      <div className="loading-container">
+        <LoadingErrorLottie />
+      </div>
+    )
   }
 
   return (
