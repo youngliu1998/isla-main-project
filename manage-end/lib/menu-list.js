@@ -56,14 +56,14 @@ export function getMenuList(pathname) {
               href: '/courses',
               label: '線上課程列表',
             },
-            {
-              href: '/experiences',
-              label: '彩妝體驗列表',
-            },
-            {
-              href: '/teachers',
-              label: '講師列表',
-            },
+            // {
+            //   href: '/experiences',
+            //   label: '彩妝體驗列表',
+            // },
+            // {
+            //   href: '/teachers',
+            //   label: '講師列表',
+            // },
           ],
         },
         {

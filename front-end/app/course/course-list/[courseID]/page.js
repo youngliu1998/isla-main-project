@@ -200,7 +200,6 @@ export default function CourseIDPage() {
   }
 
   const handleDeleteComment = async (commentId) => {
-    
     const token = localStorage.getItem('jwtToken')
     if (!window.confirm('你確定要刪除這則留言嗎？')) return
     try {
@@ -570,7 +569,7 @@ export default function CourseIDPage() {
                     <h3>關於課程</h3>
                   </div>
                   {data.length > 0 && (
-                    <div className="m-4 text-color">
+                    <div className="my-4 text-color">
                       <p>{v.detail}</p>
                       {data[0].banner_video?.toLowerCase().endsWith('.mp4') ? (
                         <video
