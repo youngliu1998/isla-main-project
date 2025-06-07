@@ -11,7 +11,7 @@ export default function HeaderNav() {
       <nav className="order-lg-2 d-lg-block d-none">
         <ul className="d-flex flex-lg-row flex-column justify-content-center align-items-center">
           <li>
-            <Link href="/product">所有產品</Link>
+            <Link href="/product">美妝商城</Link>
           </li>
           <li
             className="position-relative"
