@@ -70,7 +70,7 @@ export default function Componentstab({
 
   return (
     <div
-      className="tab-container d-flex d-md-none position-relative"
+      className="tab-container d-flex d-md-none position-relative mt-5"
       style={{ width: '100%', height: `${height}px` }}
     >
       <div className="tab-set w-100 h-100 d-flex" ref={containerRef}>
