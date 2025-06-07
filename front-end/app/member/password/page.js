@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import Link from 'next/link'
 import InputPass from '../_component/input-pass'
 // ==== css ====
 import '../_component/_style.css/form.css'
@@ -91,6 +92,9 @@ export default function PasswordPage() {
               setPassword={setPassword}
               errorMsg={error.oriPass}
             />
+            <Link href="/member/forget-password" className="text-primary">
+              忘記密碼
+            </Link>
             <div className="bottom-line"></div>
             <InputPass
               password={password}
