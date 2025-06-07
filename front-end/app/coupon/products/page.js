@@ -168,9 +168,10 @@ export default function CouponPage() {
     })
 
   //  依 tab 過濾商品 or 課程
-  const tabFilteredCoupons = filteredCoupons.filter(
-    (coupon) => parseInt(coupon.area) === tab
-  )
+  const tabFilteredCoupons = filteredCoupons.filter((coupon) => {
+    const area = parseInt(coupon.area)
+    return area === 0 || area === tab
+  })
 
   //  顯示區塊
   const displayCoupon = tabFilteredCoupons.slice(0, currentCount)

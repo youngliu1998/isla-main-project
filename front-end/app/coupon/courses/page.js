@@ -138,9 +138,10 @@ export default function CouponPage() {
     })
 
   // 過濾出符合 tab 的優惠券資料
-  const tabFilteredCoupons = filteredCoupons.filter(
-    (coupon) => parseInt(coupon.area) === tab
-  )
+  const tabFilteredCoupons = filteredCoupons.filter((coupon) => {
+    const area = parseInt(coupon.area)
+    return area === 0 || area === tab
+  })
 
   // 顯示優惠券（含分頁數）
   const displayCoupon = tabFilteredCoupons.slice(0, currentCount)
