@@ -62,6 +62,9 @@ router.get('/', async (req, res) => {
       limit: Number.isInteger(parseInt(limit)) ? parseInt(limit) : 20,
     }
 
+    // 你可以在這裡強制讓 minRating 為 null 表示不篩選最低分
+    // 或者根據業務邏輯調整
+
     const result = await getFilteredProducts(filters)
 
     res.json({ status: 'success', data: result })
@@ -96,7 +99,7 @@ router.post('/search', async (req, res) => {
         FROM product_images
         GROUP BY product_id
       ) pi ON pi.product_id = p.product_id
-      WHERE p.name LIKE ?
+      WHERE p.status = 'active' AND p.name LIKE ?
     `
     const params = [`%${keyword}%`]
 
