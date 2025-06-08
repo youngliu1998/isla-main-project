@@ -123,7 +123,7 @@ export default function ComponentsPostCard({
         />
         <div
           ref={sliderRef}
-          className="imgs d-flex gap-3 overflow-scroll ps-4"
+          className="imgs d-flex gap-3 overflow-auto ps-4 no-scroll-bar"
           role="button"
           tabIndex={0}
           onClick={(e) => {
