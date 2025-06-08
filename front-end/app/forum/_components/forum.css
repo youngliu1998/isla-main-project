@@ -315,6 +315,9 @@
       background-color: var(--main-color);
     }
   }
+  .mtHeader {
+    margin-top: 180px;
+  }
 }
 .bounce {
   transition: 0.1s ease;
@@ -554,7 +557,9 @@
     /* top: 24px; */
   }
 }
-
+.author-card-xl {
+  height: 278px;
+}
 /* pagepost */
 .more-card {
   &:hover {

@@ -72,6 +72,7 @@ router.get('/:pageName', async function (req, res) {
       // break
     }
     case 'home': {
+      console.log('----------home---------')
       const tab = req.query.tab
       const keyword = req.query.keyword
       const productCate = req.query.productCate?.split(',')
@@ -147,11 +148,13 @@ router.get('/:pageName', async function (req, res) {
       break
     }
     case 'saved-post': {
-      postsResult = await db.query(`${postsQuery} ORDER BY p.updated_at DESC`)
-      // console.log(postsResult[0])
-      postsResult[0] = postsResult[0].filter((p) =>
-        p.saved_user_ids.split(',').map(Number).includes(userID)
+      postsResult = await db.query(
+        `${postsQuery} ORDER BY p.updated_at DESC LIMIT 4`
       )
+      // console.log(postsResult[0])
+      // postsResult[0] = postsResult[0].filter((p) =>
+      //   p.saved_user_ids.split(',').map(Number).includes(userID)
+      // )
       console.log(postsResult[0])
       break
     }

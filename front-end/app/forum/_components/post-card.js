@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import ComponentsAuthorInfo from './author-info'
 import ComponentsBtnLikedSaved from './btn-liked-saved'
 import { useRouter } from 'next/navigation'
+import UseDragScroll from '../_hooks/useDragScroll'
 
 export default function ComponentsPostCard({
   postID = '',
@@ -26,6 +27,9 @@ export default function ComponentsPostCard({
   mutate = () => {},
 }) {
   const router = useRouter()
+  const sliderRef = useRef()
+  const { handlePointerDown, handlePointerMove, stopDrag } =
+    UseDragScroll(sliderRef)
 
   // 日期格式
   const date = new Date(updatedAt)
@@ -117,7 +121,28 @@ export default function ComponentsPostCard({
             __html: contentText.replace('<br/>', ' ').slice(0, 80),
           }}
         />
-        <div className="imgs d-flex gap-3 overflow-auto ps-4">
+        <div
+          ref={sliderRef}
+          className="imgs d-flex gap-3 overflow-scroll ps-4"
+          role="button"
+          tabIndex={0}
+          onClick={(e) => {
+            e.stopPropagation()
+          }}
+          onKeyDown={() => {}}
+          onPointerDown={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            handlePointerDown(e)
+          }}
+          onPointerMove={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            handlePointerMove(e)
+          }}
+          onPointerUp={stopDrag}
+          onPointerLeave={stopDrag}
+        >
           {contentImgSm.map((v, i) => (
             <div
               key={i}
