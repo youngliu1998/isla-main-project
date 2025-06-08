@@ -45,6 +45,7 @@ import {
 } from '@/components/ui/dialog'
 import DOMPurify from 'dompurify'
 import '@/app/courses/_components/course-prose.scss'
+import { DotLottieReact } from '@lottiefiles/dotlottie-react'
 
 export default function CourseListPage() {
   const [data, setData] = useState([])
@@ -269,8 +270,7 @@ export default function CourseListPage() {
         ),
         cell: ({ row }) => (
           <div className="font-medium">
-           {row.original.student?.toLocaleString?.() ?? '—'}
-
+            {row.original.student?.toLocaleString?.() ?? '—'}
           </div>
         ),
       },
@@ -459,7 +459,9 @@ export default function CourseListPage() {
         </CardHeader>
         <CardContent>
           {isLoading && (
-            <div className="text-center text-gray-500 py-10">載入中...</div>
+            <div className="flex items-center justify-center h-64">
+              <DotLottieReact src="/loading.lottie" loop autoplay />
+            </div>
           )}
           {error && (
             <div className="text-center text-red-500 py-10">

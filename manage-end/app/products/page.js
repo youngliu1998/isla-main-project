@@ -43,10 +43,12 @@ import {
 } from 'lucide-react'
 import Image from 'next/image'
 import { toast } from 'react-toastify'
+import isEqual from 'lodash.isequal'
 import {
   useProductManageList,
   useDeleteProduct,
 } from '@/hook/use-product-manage.js'
+import { DotLottieReact } from '@lottiefiles/dotlottie-react'
 // import { getProducts } from './data-controller.js'
 
 export default function ProductListPage() {
@@ -59,7 +61,7 @@ export default function ProductListPage() {
   const { mutate: deleteProduct, isPending } = useDeleteProduct()
 
   useEffect(() => {
-    if (products) {
+    if (products && !isEqual(products, data)) {
       setData(products)
     }
   }, [products])
@@ -122,7 +124,7 @@ export default function ProductListPage() {
   const columns = useMemo(
     () => [
       {
-        accessorKey: 'id',
+        accessorKey: 'product_id',
         header: ({ column }) => (
           <Button
             variant="ghost"
@@ -313,7 +315,17 @@ export default function ProductListPage() {
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    globalFilterFn: 'includesString',
+    globalFilterFn: (row, columnId, filterValue) => {
+      const search = filterValue.toLowerCase()
+      const { product_id, name, brand_name, category } = row.original
+
+      return (
+        String(product_id).toLowerCase().includes(search) ||
+        (name || '').toLowerCase().includes(search) ||
+        (brand_name || '').toLowerCase().includes(search) ||
+        (category || '').toLowerCase().includes(search)
+      )
+    },
     state: { globalFilter },
     onGlobalFilterChange: setGlobalFilter,
     initialState: { pagination: { pageSize: 10 } },
@@ -321,9 +333,9 @@ export default function ProductListPage() {
 
   if (loading) {
     return (
-      <>
-        <h1>載入中</h1>
-      </>
+      <div className="flex items-center justify-center h-64">
+        <DotLottieReact src="/loading.lottie" loop autoplay />
+      </div>
     )
   }
   if (productError) {
