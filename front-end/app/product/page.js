@@ -117,6 +117,10 @@ export default function ProductPage() {
     setFilters(initialFilters)
   }, [])
 
+  useEffect(() => {
+    document.title = `美妝商城 - ISLA 美妝生活`
+  }, [])
+
   const handleFilterChange = (partialUpdate) => {
     setFilters((prev) => {
       const updated = { ...prev, ...partialUpdate }

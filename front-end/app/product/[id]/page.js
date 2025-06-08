@@ -94,6 +94,12 @@ export default function page({ params }) {
     }
   }, [product?.final_price, quantity])
 
+  useEffect(() => {
+    if (product?.name) {
+      document.title = `${product.name} - ISLA 美妝生活`
+    }
+  }, [product?.name])
+
   // useEffect(() => {
   //   if (
   //     product?.name &&
