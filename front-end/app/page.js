@@ -7,7 +7,7 @@ import Componentstab from './_components/tab'
 // import ImageSlider from '@/app/_components/_component-main-page/banner-2/image-slider'
 import MainBanner from './_components/_component-main-page/banner/main-banner'
 import CourseSection from '@/app/_components/_component-main-page/course/course-section'
-// import ForumSection from '@/app/_components/_component-main-page/forum/forum-section'
+import ForumSection from '@/app/_components/_component-main-page/forum/forum-section'
 import MainCouponSection from '@/app/_components/_component-main-page/coupon/main-coupon-section'
 import CouponSection from '@/app/_components/_component-main-page/coupon/coupon-section'
 import ProductSectionBrand from '@/app/_components/_component-main-page/product/product-section-brand'
@@ -223,7 +223,7 @@ export default function Home() {
           {/* ==== END coupons ==== */}
           {/* ==== START forum ==== */}
           <section className="container subsection-main-page">
-            {/* <ForumSection /> */}
+            <ForumSection />
           </section>
           {/* ==== show brand ====  */}
           <section>

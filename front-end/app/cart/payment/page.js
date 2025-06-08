@@ -1,6 +1,6 @@
 'use client'
 
-// import styles from '../_styles/cart-style.module.scss'
+import styles from '../../../app/cart/_component/shipping-form/shipping-form.module.scss'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import StepProgress from '../_component/step-progress/step-progress'
@@ -274,7 +274,7 @@ export default function PaymentPage() {
               ].map((option) => (
                 <div className="form-check mb-3" key={option.id}>
                   <input
-                    className="form-check-input"
+                    className={`${styles.formCheckInput} form-check-input`}
                     type="radio"
                     name="payment"
                     id={`payment-${option.id}`}
