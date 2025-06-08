@@ -45,7 +45,7 @@ export const useProducts = (filters, { pageSize = 20 } = {}) => {
       }
       return res.data
     },
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 10, // 10 分鐘快取
   })
 
   const productsQuery = useInfiniteQuery({
@@ -79,7 +79,7 @@ export const useProducts = (filters, { pageSize = 20 } = {}) => {
     getNextPageParam: (lastPage) => {
       return lastPage.hasMore ? lastPage.currentPage + 1 : undefined
     },
-    staleTime: 1000 * 60 * 5, // 修正為 5 分鐘
+    staleTime: 1000 * 60 * 10,
     enabled: !!filters,
   })
 
@@ -106,6 +106,7 @@ export const useProducts = (filters, { pageSize = 20 } = {}) => {
     // 其他有用的狀態
     totalProducts: productsQuery.data?.pages?.[0]?.totalCount || 0,
     currentPageCount: productsQuery.data?.pages?.length || 0,
+    refetchProducts: productsQuery.refetch,
   }
 }
 

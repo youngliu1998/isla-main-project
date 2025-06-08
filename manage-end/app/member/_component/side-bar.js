@@ -45,21 +45,9 @@ export default function SideBar() {
   return (
     <aside className="lg:w-1/4 w-full p-4 my-10">
       <Card className="flex flex-col items-center gap-4 py-6 justify-center">
-        <button
-          onClick={() => setOpenAvatar(!openAvatar)}
-          className="rounded-full border-2 border-gray-300 hover:ring-2 hover:ring-primary transition"
-        >
-          <Image
-            src={`http://localhost:3005/images/member/${user.ava_url}`}
-            alt="會員頭像"
-            width={96}
-            height={96}
-            className="rounded-full object-cover"
-          />
-        </button>
         <CardHeader className="text-center w-full">
           <CardTitle className="text-xl font-semibold">
-            {user?.nickname || 'Rookie'}
+            {user?.nickname || 'ISLA 管理員'}
           </CardTitle>
           <p className="text-sm text-gray-500">
             {user?.email || 'illegal@nomail.com'}

@@ -418,7 +418,7 @@ export default function CourseIDPage() {
               <div className="card-img-overlay banner-img-mask-course">
                 <div className="row d-lg-flex d-none">
                   <div className="bread-crumbs mt-3 ms-5">
-                    <Breadcrumb type="course" path={id} />
+                    <Breadcrumb type="course" path={id} current={v.title} />
                   </div>
                 </div>
                 <div className="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-end p-xl-4 p-lg-3 p-md-2 p-sm-1 p-0">

@@ -7,7 +7,7 @@ body {
 }
 .margin-top-minus {
   /* login, register,forget-password */
-  margin-top: -2.5rem;
+  margin-top: -80px;
 }
 .user-content {
   display: flex;

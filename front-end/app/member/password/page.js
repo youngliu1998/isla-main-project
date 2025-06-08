@@ -1,11 +1,15 @@
 'use client'
 
 import React, { useState } from 'react'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { toast } from 'react-toastify'
 import InputPass from '../_component/input-pass'
 // ==== css ====
 import '../_component/_style.css/form.css'
 
 export default function PasswordPage() {
+  const router = useRouter()
   const defaultPass = {
     oriPass: '',
     newPass: '',
@@ -39,7 +43,13 @@ export default function PasswordPage() {
       if (response.ok) {
         // ==== 200 status: success ====
         if (data.status === 'success') {
-          alert('修改密碼成功')
+          toast.success('修改密碼成功', {
+            position: 'top-right',
+            autoClose: 1000,
+            hideProgressBar: false,
+          })
+          setPassword({ ...defaultPass })
+          router.push('/member/profile')
         }
       } else {
         // ==== 404 status: error ====
@@ -60,7 +70,11 @@ export default function PasswordPage() {
                 break
             }
           })
-
+          toast.error('欄位不符規定', {
+            position: 'top-right',
+            autoClose: 1000,
+            hideProgressBar: false,
+          })
           setError(newError)
         } else {
           console.log('未知錯誤')
@@ -91,6 +105,9 @@ export default function PasswordPage() {
               setPassword={setPassword}
               errorMsg={error.oriPass}
             />
+            <Link href="/member/forget-password" className="text-primary">
+              忘記密碼
+            </Link>
             <div className="bottom-line"></div>
             <InputPass
               password={password}
