@@ -48,6 +48,13 @@ export default function RegisterPage() {
           case 'birthday':
             newError = { ...newError, ['birthday']: serverError.msg }
             break
+          case 'existUser':
+            toast.error('此使用者已存在', {
+              position: 'top-right',
+              autoClose: 1000,
+              hideProgressBar: false,
+            })
+            break
         }
       })
       setError(newError)

@@ -1,6 +1,7 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect } from 'react'
+import { toast } from 'react-toastify'
 // import { useRouter } from 'next/navigation'
 
 const AuthContext = createContext(null)
@@ -33,6 +34,33 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('jwtToken')
     localStorage.removeItem('googleToken')
   }
+  // ==== 錯誤提示 ====
+  const errorComfirm = (data, setError) => {
+    // setError用於承接輸入錯誤，用於提示
+    // ==== 404 status: error ====
+    let newError = { email: '', password: '' }
+    const serverErrors = data.errors
+    if (Array.isArray(serverErrors)) {
+      console.log('Errors: ', serverErrors)
+      serverErrors.forEach((serverError) => {
+        switch (serverError.path) {
+          case 'email':
+            newError = { ...newError, ['email']: serverError.msg }
+            break
+          case 'password':
+            newError = { ...newError, ['password']: serverError.msg }
+            break
+        }
+      })
+      setError(newError)
+      toast.error('欄位不符格式', {
+        position: 'top-right',
+        autoClose: 1000,
+        hideProgressBar: false,
+      })
+    }
+    // ==== END 404 status: error ====
+  }
   // 取得使用者資料(驗證後才可使用)
   const initAuth = async () => {
     const token = localStorage.getItem('jwtToken')
@@ -63,13 +91,18 @@ export function AuthProvider({ children }) {
     }
   }
   // login function
-  const login = async (email, passowrd) => {
+  const login = async (email, passowrd, setError) => {
+    // setError用於承接輸入錯誤，用於提示
     // fetch login auth api (post)
     try {
       const response = await fetch('http://localhost:3005/api/member/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email, password: passowrd }),
+        body: JSON.stringify({
+          email: email,
+          password: passowrd,
+          isAdmin: false,
+        }),
       })
       const data = await response.json()
 
@@ -83,7 +116,8 @@ export function AuthProvider({ children }) {
         console.log('check token: ', data['data']['token'])
         console.log('後端回應成功')
       } else {
-        console.error('登入失敗', data.message)
+        errorComfirm(data, setError)
+        // console.error('登入失敗', data.message)
       }
     } catch (err) {
       console.log(err)

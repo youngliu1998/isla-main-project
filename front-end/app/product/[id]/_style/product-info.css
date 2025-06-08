@@ -39,12 +39,11 @@ button {
   width: 100%; /* 確保容器在小屏幕上佔滿寬度 */
 }
 
-
 /* 產品主要區塊 */
 .product-main {
   margin-bottom: 32px;
   padding-top: 20px; /* 添加一些頂部空間 */
-background-color: #ffffff;
+  background-color: #ffffff;
   /*--s: 150px; !* control the size*!*/
   /*--c1: #ffffff;*/
   /*--c2: #fcfcfc;*/
@@ -140,7 +139,7 @@ background-color: #ffffff;
 }
 
 [data-yarl__container] {
-  z-index: 9999 !important;
+  z-index: 99999999 !important;
 }
 
 .pic-bar-item:hover {
@@ -275,8 +274,6 @@ background-color: #ffffff;
 .add-cart:hover {
   background: var(--MainColor, #fd7061); /* hover 時改變背景顏色 */
 }
-
-
 
 /* 顏色選擇容器 */
 .color-select-box {
@@ -455,8 +452,6 @@ background-color: #ffffff;
   border-bottom: 3px solid #f0f0f0;
   margin-bottom: 32px;
 }
-
-
 
 @media (max-width: 1098px) {
   .product {

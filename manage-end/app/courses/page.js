@@ -45,6 +45,7 @@ import {
 } from '@/components/ui/dialog'
 import DOMPurify from 'dompurify'
 import '@/app/courses/_components/course-prose.scss'
+import { DotLottieReact } from '@lottiefiles/dotlottie-react'
 
 export default function CourseListPage() {
   const [data, setData] = useState([])
@@ -154,7 +155,7 @@ export default function CourseListPage() {
         cell: ({ row }) => (
           <div className="relative h-[80px] w-[120px]">
             <Image
-              src={`/images/course/bannerall/${row.original.picture}`}
+              src={`http://localhost:3005/images/course/bannerall/${row.original.picture}`}
               alt={row.original.title || 'course image'}
               fill
               className="object-contain rounded-md"
@@ -269,7 +270,7 @@ export default function CourseListPage() {
         ),
         cell: ({ row }) => (
           <div className="font-medium">
-            {row.original.student.toLocaleString()}
+            {row.original.student?.toLocaleString?.() ?? '—'}
           </div>
         ),
       },
@@ -458,7 +459,9 @@ export default function CourseListPage() {
         </CardHeader>
         <CardContent>
           {isLoading && (
-            <div className="text-center text-gray-500 py-10">載入中...</div>
+            <div className="flex items-center justify-center h-64">
+              <DotLottieReact src="/loading.lottie" loop autoplay />
+            </div>
           )}
           {error && (
             <div className="text-center text-red-500 py-10">
@@ -585,7 +588,7 @@ export default function CourseListPage() {
             <div className="space-y-4 mt-4 text-sm">
               <div className="flex justify-center">
                 <Image
-                  src={`/images/course/bannerall/${selectedCourse.picture}`}
+                  src={`http://localhost:3005/images/course/bannerall/${selectedCourse.picture}`}
                   alt={selectedCourse.title || '課程圖片'}
                   width={450}
                   height={240}
@@ -600,7 +603,7 @@ export default function CourseListPage() {
                     preload="metadata"
                   >
                     <source
-                      src={`/images/course/bannerall/${selectedCourse.banner_video}`}
+                      src={`http://localhost:3005/images/course/bannerall/${selectedCourse.banner_video}`}
                       type="video/mp4"
                     />
                     您的瀏覽器不支援影片播放

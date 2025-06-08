@@ -9,6 +9,7 @@ import {
   getExperiencePath,
   getTeacherPath,
 } from './_method/course-path'
+import { getProductPath } from './_method/product-path'
 // ==== css ====
 import './_style/path.css'
 import { useEffect, useState } from 'react'
@@ -49,6 +50,9 @@ export default function Path() {
       if (prevPath === 'teacher') {
         return await getTeacherPath(thisPath)
       }
+      if (prevPath === 'product') {
+        return await getProductPath(thisPath)
+      }
       prevPath = thisPath
       switch (thisPath) {
         case '':
@@ -85,6 +89,14 @@ export default function Path() {
           return '購物車'
         case 'payment':
           return '付款及運送方式'
+        case 'my-forum':
+          return '我的論壇'
+        case 'my-following':
+          return '我的追蹤'
+        case 'my-post':
+          return '我的文章'
+        case 'saved-post':
+          return '收藏文章'
 
         default:
           return thisPath
@@ -114,13 +126,13 @@ export default function Path() {
     pathname.includes('/register') ||
     pathname.includes('/forget-password') ||
     pathname.startsWith('/course') ||
-    !pathArrTag
+    !pathArrTag[0]
   ) {
     return <></>
   }
   return (
     <>
-      <div className="d-flex position-absolute px-3 pt-3">
+      <div className="d-flex position-absolute bread-container">
         {pathArr.map((path, i) => {
           if (pathArrTag[i] === '') {
             return

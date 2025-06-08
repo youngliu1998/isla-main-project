@@ -197,14 +197,11 @@ export default function ProfilePage() {
         )}
 
         {/* 會員資料 */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <User className="h-5 w-5" />
-              會員資料
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+        <Card className={'mt-6 py-8'}>
+          <h3 className="text-xl text-red-400 font-semibold text-center">
+            基本資料
+          </h3>
+          <CardContent className={'py-6'}>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* 本名 */}
               <div className="space-y-2">
@@ -251,7 +248,7 @@ export default function ProfilePage() {
               </div>
 
               {/* 生日 */}
-              <div className="space-y-2">
+              {/* <div className="space-y-2">
                 <Label htmlFor="birthday">生日</Label>
                 <Input
                   id="birthday"
@@ -261,10 +258,10 @@ export default function ProfilePage() {
                     setText({ ...text, birthday: e.target.value })
                   }
                 />
-              </div>
+              </div> */}
 
               {/* 性別 */}
-              <div className="space-y-2">
+              {/* <div className="space-y-2">
                 <Label>性別</Label>
                 <RadioGroup
                   value={text.gender}
@@ -284,10 +281,10 @@ export default function ProfilePage() {
                     <Label htmlFor="other">其他</Label>
                   </div>
                 </RadioGroup>
-              </div>
+              </div> */}
 
               {/* 膚質 */}
-              <div className="space-y-2 md:col-span-2">
+              {/* <div className="space-y-2 md:col-span-2">
                 <Label>膚質</Label>
                 <RadioGroup
                   value={text.skinType}
@@ -316,113 +313,28 @@ export default function ProfilePage() {
                 {error.skinType && (
                   <p className="text-sm text-red-500">{error.skinType}</p>
                 )}
-              </div>
+              </div>*/}
             </div>
           </CardContent>
-        </Card>
-
-        {/* 預設地址 */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <MapPin className="h-5 w-5" />
-              預設地址
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-6">
-              {/* 地址選擇 */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* 城市 */}
-                <div className="space-y-2">
-                  <Label>城市 *</Label>
-                  <Select
-                    value={text.CityName}
-                    onValueChange={handleCityChange}
-                  >
-                    <SelectTrigger
-                      className={error.CityName ? 'border-red-500' : ''}
-                    >
-                      <SelectValue placeholder="請選擇城市" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {cities.map((city) => (
-                        <SelectItem key={city.CityName} value={city.CityName}>
-                          {city.CityName}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {error.CityName && (
-                    <p className="text-sm text-red-500">{error.CityName}</p>
-                  )}
-                </div>
-
-                {/* 區域 */}
-                <div className="space-y-2">
-                  <Label>市/區/鄉/鎮 *</Label>
-                  <Select
-                    value={text.AreaName}
-                    onValueChange={handleAreaChange}
-                  >
-                    <SelectTrigger disabled={!text.CityName}>
-                      <SelectValue placeholder="請選擇區域" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {areas.map((area) => (
-                        <SelectItem key={area.AreaName} value={area.AreaName}>
-                          {area.AreaName}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* 郵遞區號 */}
-                <div className="space-y-2">
-                  <Label htmlFor="zipcode">郵遞區號</Label>
-                  <Input
-                    id="zipcode"
-                    value={text.ZipCode}
-                    disabled
-                    className="bg-gray-50"
-                  />
-                </div>
-              </div>
-
-              {/* 詳細地址 */}
-              <div className="space-y-2">
-                <Label htmlFor="address">詳細地址</Label>
-                <Input
-                  id="address"
-                  value={text.address}
-                  onChange={(e) =>
-                    setText({ ...text, address: e.target.value })
-                  }
-                  placeholder="請輸入詳細地址"
-                />
-              </div>
-            </div>
-          </CardContent>
+          <div className="flex justify-center">
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="bg-red-400 hover:bg-red-500 px-8 py-2 cursor-pointer"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  更新中...
+                </>
+              ) : (
+                '送出'
+              )}
+            </Button>
+          </div>
         </Card>
 
         {/* 提交按鈕 */}
-        <div className="flex justify-center">
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            className="bg-blue-600 hover:bg-blue-700 px-8 py-2"
-          >
-            {isSubmitting ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                更新中...
-              </>
-            ) : (
-              '送出'
-            )}
-          </Button>
-        </div>
       </form>
     </div>
   )

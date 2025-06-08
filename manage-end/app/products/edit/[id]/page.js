@@ -26,6 +26,7 @@ import {
   CalendarIcon,
   UploadCloud,
   XCircle,
+  PlusCircle,
 } from 'lucide-react'
 import Image from 'next/image'
 import { format, isValid, parseISO } from 'date-fns' // For date handling
@@ -36,7 +37,6 @@ import imageCompression from 'browser-image-compression'
 
 import prev from '@/next.config.mjs'
 import { toast } from 'react-toastify'
-
 const MAX_IMAGES = 5
 
 export default function ProductEditPage({ params }) {
@@ -621,7 +621,7 @@ export default function ProductEditPage({ params }) {
                 {formData.colors.map((color, index) => (
                   <div
                     key={index}
-                    className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center"
+                    className="grid grid-cols-1 md:grid-cols-4 gap-4 items-center p-4 border rounded-md"
                   >
                     <div>
                       <Label>顏色名稱</Label>
@@ -642,7 +642,7 @@ export default function ProductEditPage({ params }) {
                         onChange={(e) =>
                           handleColorChange(index, 'color_code', e.target.value)
                         }
-                        className="mt-1 h-10 w-16 p-0"
+                        className="mt-1 h-10 w-full p-0"
                       />
                     </div>
                     <div>
@@ -654,19 +654,20 @@ export default function ProductEditPage({ params }) {
                           handleColorChange(
                             index,
                             'stock_quantity',
-                            Math.max(0, parseInt(e.target.value, 10 || 0))
+                            e.target.value
                           )
                         }
                         min="0"
                         className="mt-1"
                       />
                     </div>
-                    <div className="flex items-end">
+                    <div className="flex items-end h-full">
                       <Button
                         type="button"
                         variant="destructive"
                         onClick={() => handleRemoveColor(index)}
-                        className="mt-1"
+                        className="w-full"
+                        disabled={formData.colors.length <= 1}
                       >
                         移除
                       </Button>
@@ -678,7 +679,7 @@ export default function ProductEditPage({ params }) {
                   variant="outline"
                   onClick={handleAddColor}
                 >
-                  新增顏色
+                  <PlusCircle className="mr-2 h-4 w-4" /> 新增顏色規格
                 </Button>
               </div>
             </section>

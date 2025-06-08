@@ -16,7 +16,6 @@ export function getMenuList(pathname) {
           href: '/dashboard',
           label: '主頁',
           icon: LayoutGrid,
-          submenus: [],
         },
       ],
     },
@@ -25,7 +24,7 @@ export function getMenuList(pathname) {
       menus: [
         {
           href: '/products',
-          label: '商品',
+          label: '商品管理',
           icon: Warehouse,
           submenus: [
             {
@@ -33,38 +32,15 @@ export function getMenuList(pathname) {
               label: '商品列表',
             },
             {
-              href: '/product/categories',
-              label: '分類管理',
-            },
-            {
-              href: '/product/tags',
-              label: '標籤管理',
+              href: '/products/add',
+              label: '新增商品',
             },
           ],
-        },
-        {
-          href: '/product/reviews',
-          label: '商品評論管理',
-          icon: MessageCircleHeart,
         },
         {
           href: '/courses',
-          label: '課程',
+          label: '課程管理',
           icon: MonitorPlay,
-          submenus: [
-            {
-              href: '/courses',
-              label: '線上課程列表',
-            },
-            {
-              href: '/experiences',
-              label: '彩妝體驗列表',
-            },
-            {
-              href: '/teachers',
-              label: '講師列表',
-            },
-          ],
         },
         {
           href: '/coupons',
@@ -84,16 +60,6 @@ export function getMenuList(pathname) {
               label: '新增優惠券',
             },
           ],
-        },
-      ],
-    },
-    {
-      groupLabel: 'Settings',
-      menus: [
-        {
-          href: '/users',
-          label: 'Users',
-          icon: Users,
         },
       ],
     },

@@ -161,7 +161,6 @@ export default function ProductPage() {
     fetchNextPage,
     hasNextPage,
   } = useProducts(filters || {})
-
   useEffect(() => {
     console.log('Filters 更新 :', filters)
   }, [filters])
@@ -217,8 +216,12 @@ export default function ProductPage() {
           dataLength={products.length}
           next={fetchNextPage}
           hasMore={hasNextPage}
-          loader={<div className={'infinite-scroll-loader'}>載入中...</div>}
-          endMessage={<div className={'infinite-scroll-end'}>到底了！</div>}
+          loader={
+            <div className={'infinite-scroll-loader w-100'}>載入中...</div>
+          }
+          endMessage={
+            <div className={'infinite-scroll-end w-100'}>到底了！</div>
+          }
           className="infinite-scroll-layout"
         >
           {products.map((p) => (

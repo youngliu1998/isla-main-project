@@ -7,11 +7,12 @@ import Componentstab from './_components/tab'
 // import ImageSlider from '@/app/_components/_component-main-page/banner-2/image-slider'
 import MainBanner from './_components/_component-main-page/banner/main-banner'
 import CourseSection from '@/app/_components/_component-main-page/course/course-section'
-import ForumSection from '@/app/_components/_component-main-page/forum/forum-section'
+// import ForumSection from '@/app/_components/_component-main-page/forum/forum-section'
 import MainCouponSection from '@/app/_components/_component-main-page/coupon/main-coupon-section'
 import CouponSection from '@/app/_components/_component-main-page/coupon/coupon-section'
 import ProductSectionBrand from '@/app/_components/_component-main-page/product/product-section-brand'
 import ProductSectionNew from '@/app/_components/_component-main-page/product/product-section-new'
+import BrandSection from './_components/_component-main-page/brand/brand-section'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Pagination, Navigation } from 'swiper/modules'
 
@@ -50,7 +51,7 @@ export default function Home() {
     const token = localStorage.getItem('jwtToken')
     const seen = sessionStorage.getItem('hasSeenHomeAnimation')
 
-    if (token && !seen) {
+    if (!seen) {
       // 第一次登入還沒播動畫
       setShowMain(false)
     } else {
@@ -222,7 +223,11 @@ export default function Home() {
           {/* ==== END coupons ==== */}
           {/* ==== START forum ==== */}
           <section className="container subsection-main-page">
-            <ForumSection />
+            {/* <ForumSection /> */}
+          </section>
+          {/* ==== show brand ====  */}
+          <section>
+            <BrandSection />
           </section>
           {/* ---- END forum ---- */}
         </section>

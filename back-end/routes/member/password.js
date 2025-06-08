@@ -13,14 +13,32 @@ router.post(
   '/',
   verifyToken,
   [
+    body('oriPass').custom(async (value, { req }) => {
+      // if verifyToken works, it would send user's id to req.user.id
+      const id = req?.user?.id || 0
+      const { oriPass } = req.body
+      const query = `SELECT password FROM users WHERE id=?`
+      const user = await db
+        .execute(query, [id])
+        .then((data) => data[0][0])
+        .catch((err) => {
+          throw new Error('資料庫連接錯誤' + err.message)
+        })
+      // if the password is false
+      if (!(await bcrypt.compare(oriPass, user.password))) {
+        console.log('oriPass Error')
+        throw new Error('原密碼錯誤')
+      }
+      return true
+    }),
     body('oriPass')
       .isLength({ min: 5, max: 12 })
       .withMessage('密碼長度為5~16字元間'),
     body('newPass')
       .isLength({ min: 5, max: 12 })
       .withMessage('密碼長度為5~16字元間'),
-    body('againPass').custom((value,{req}) => {
-      if (value != req.body.newPass){
+    body('againPass').custom((value, { req }) => {
+      if (value != req.body.newPass) {
         throw new Error('密碼不一致')
       }
       return true
@@ -28,25 +46,10 @@ router.post(
   ],
   validateRequest,
   async (req, res) => {
-    let error = {}
-    // if verifyToken works, it would send user's id to req.user.id
+    const { newPass } = req.body
     const id = req?.user?.id || 0
-    const { oriPass, newPass, againPass } = req.body
-    // if password check fail
-    if (newPass != againPass)
-      return res.json({ status: 'error', message: '密碼不一致' })
-    // set query here
+    let error = {}
     try {
-      const query = `SELECT password FROM users WHERE id=?`
-      const user = await db
-        .execute(query, [id])
-        .then((data) => data[0][0])
-        .catch((err) => {
-          error = err
-        })
-      // if the password is false
-      if (!(await bcrypt.compare(oriPass, user.password)))
-        return res.json({ status: 'error', message: '原密碼錯誤' })
       // ---- change passowrd ----
       // hash newPass
       const hashed = await bcrypt.hash(newPass, 10)

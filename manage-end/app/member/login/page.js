@@ -61,8 +61,8 @@ export default function LoginPage() {
       <div className="w-full max-w-md space-y-8">
         {/* Title */}
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            <span className="text-blue-600">ISLA</span> 管理員登入
+          <h1 className="text-4xl font-bold text-gray-700 mb-2">
+            <span className="text-red-500">ISLA</span> 管理員登入
           </h1>
           <p className="text-gray-600">歡迎回來，請登入您的帳戶</p>
         </div>
@@ -182,7 +182,7 @@ export default function LoginPage() {
                 <div className="text-right">
                   <Link
                     href=""
-                    className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
+                    className="text-sm text-red-400 hover:text-red-500 hover:underline"
                   >
                     忘記密碼？
                   </Link>
@@ -192,7 +192,7 @@ export default function LoginPage() {
               {/* Submit button */}
               <Button
                 type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                className="w-full bg-red-400 hover:bg-red-500 text-white cursor-pointer"
                 disabled={isLoading}
               >
                 {isLoading ? '登入中...' : '登入'}
@@ -204,7 +204,7 @@ export default function LoginPage() {
               <span className="text-sm text-gray-600">還沒有帳戶？ </span>
               <Link
                 href="register"
-                className="text-sm text-blue-600 hover:text-blue-800 hover:underline font-medium"
+                className="text-sm text-red-400 hover:text-red-500 hover:underline font-medium"
               >
                 立即註冊
               </Link>

@@ -202,8 +202,30 @@
   background-color: transparent !important;
   border: none !important;
   box-shadow: none !important;
-  color: rgba(0, 0, 0, 0.5);
-  transition: color 0.3s ease;
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent;
+}
+.heart-icon-course i:focus,
+.heart-icon-course i:active {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+.heart-icon-course button {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.heart-icon-course button:focus,
+.heart-icon-course button:active {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
 
 .heart-icon-course i.active {
@@ -328,4 +350,10 @@
 }
 .card-text-discount {
   text-decoration: line-through;
+}
+.loading-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

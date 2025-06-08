@@ -13,12 +13,17 @@ import '../../../forum/_components/forum.css'
 import Link from 'next/link'
 import PurchasedCourseCard from '../../../course/_components/purchased-course-card/purchased-course-card'
 import Breadcrumb from '../../_components/breadcrumb/breadcrumb'
+import LoadingLottie from '../../../_components/loading/lottie-loading'
+import LoadingErrorLottie from '../../../_components/loading-error/lottie-error'
 
 export default function TeacherPage() {
   const [data, setData] = useState(null) // 講師資料
   const [courseCard, setCourseCard] = useState([]) // 該講師開的課程
   const [isExpanded, setIsExpanded] = useState(false) // 展開內容
   const toggleRef = useRef(null)
+  const courseRef = useRef(null)
+  const purchasedRef = useRef(null)
+  const articleRef = useRef(null)
 
   const params = useParams()
   const id = params.teacher
@@ -26,118 +31,104 @@ export default function TeacherPage() {
   console.log(params.teacher)
   const [articles, setArticles] = useState([])
   const [purchasedCourses, setPurchasedCourses] = useState([]) // 老師購買的課程
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
+  const [isMobileExpanded, setIsMobileExpanded] = useState({
+    course: false,
+    purchased: false,
+    article: false,
+  })
+  const [isMdDown, setIsMdDown] = useState(false)
 
   useEffect(() => {
-    async function getTeacherData() {
+    const handleResize = () => {
+      setIsMdDown(window.innerWidth < 768)
+    }
+
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  useEffect(() => {
+    async function loadAllData() {
       const token = localStorage.getItem('jwtToken')
+
       try {
-        const res = await fetch(
-          `http://localhost:3005/api/course/teacher-list/${id}`,
-          {
-            method: 'GET',
-            headers: token
-              ? {
-                  'Content-Type': 'application/json',
-                  Authorization: `Bearer ${token}`,
-                }
-              : { 'Content-Type': 'application/json' },
-          }
-        )
+        const [teacherRes, courseRes, articleRes, purchaseRes] =
+          await Promise.all([
+            fetch(`http://localhost:3005/api/course/teacher-list/${id}`, {
+              headers: token
+                ? {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                  }
+                : { 'Content-Type': 'application/json' },
+            }),
+            fetch(
+              `http://localhost:3005/api/course/teacher-list/teacher-course/${id - 72}`,
+              {
+                headers: token
+                  ? {
+                      'Content-Type': 'application/json',
+                      Authorization: `Bearer ${token}`,
+                    }
+                  : { 'Content-Type': 'application/json' },
+              }
+            ),
+            fetch(`http://localhost:3005/api/course/teacher-post/user/${id}`),
+            fetch(`http://localhost:3005/api/course/teacher-purchases/${id}`),
+          ])
 
-        const result = await res.json()
-        if (result.status === 'success') {
-          setData(result.data)
-        } else {
-          console.warn('講師資料非 success:', result)
-        }
+        const [teacherData, courseData, articleData, purchaseData] =
+          await Promise.all([
+            teacherRes.json(),
+            courseRes.json(),
+            articleRes.json(),
+            purchaseRes.json(),
+          ])
+
+        if (teacherData.status === 'success') setData(teacherData.data)
+        else setError(true)
+
+        if (courseData.status === 'success')
+          setCourseCard(courseData.data || [])
+        else setError(true)
+
+        if (articleData.status === 'success') setArticles(articleData.data)
+        else setError(true)
+
+        if (purchaseData.status === 'success')
+          setPurchasedCourses(purchaseData.data || [])
+        else setError(true)
       } catch (err) {
-        console.error('撈取講師資料失敗:', err)
+        console.error('撈取失敗:', err)
+        setError(true)
+      } finally {
+        setLoading(false)
       }
     }
 
-    async function getTeacherCourses() {
-      const token = localStorage.getItem('jwtToken')
-      try {
-        const res = await fetch(
-          `http://localhost:3005/api/course/teacher-list/teacher-course/${id - 72}`,
-          {
-            method: 'GET',
-            headers: token
-              ? {
-                  'Content-Type': 'application/json',
-                  Authorization: `Bearer ${token}`,
-                }
-              : { 'Content-Type': 'application/json' },
-          }
-        )
-        // ✅ 多加這一層確認狀態碼是 200～299
-        if (!res.ok) {
-          throw new Error(`伺服器錯誤，狀態碼：${res.status}`)
-        }
-
-        const contentType = res.headers.get('content-type')
-        if (!contentType?.includes('application/json')) {
-          throw new Error('伺服器沒有回傳 JSON，可能是錯誤頁')
-        }
-
-        const result = await res.json()
-        if (result.status === 'success') {
-          setCourseCard(result.data || [])
-        } else {
-          console.warn('課程資料非 success:', result)
-        }
-      } catch (err) {
-        console.error('撈取講師課程失敗:', err)
-      }
-    }
-    async function fetchTeacherArticles() {
-      const res = await fetch(
-        `http://localhost:3005/api/course/teacher-post/user/${id}`
-      )
-      const json = await res.json()
-      if (json.status === 'success') {
-        console.log(json.data)
-        setArticles(json.data)
-      }
-    }
-    async function fetchTeacherPurchases() {
-      try {
-        const res = await fetch(
-          `http://localhost:3005/api/course/teacher-purchases/${id}`
-        )
-        const result = await res.json()
-        if (result.status === 'success') {
-          setPurchasedCourses(result.data || [])
-        } else {
-          console.warn('購買課程資料非 success:', result)
-        }
-      } catch (err) {
-        console.error('撈取購買課程失敗:', err)
-      }
-    }
-
-    if (id) {
-      getTeacherData() // ✅ 恢復這個 function 的定義
-      getTeacherCourses()
-      fetchTeacherArticles()
-      fetchTeacherPurchases()
-    }
+    if (id) loadAllData()
   }, [id])
 
-  if (data === null) {
+  if (loading) {
     return (
-      <div className="text-center">
-        <p>資料載入中...</p>
+      <div className="loading-container">
+        <LoadingLottie />
+      </div>
+    )
+  }
+  if (error) {
+    return (
+      <div className="loading-container">
+        <LoadingErrorLottie />
       </div>
     )
   }
 
-  if (!data) {
-    return <p className="text-center">找不到講師資料</p>
-  }
-
   return (
-    <section className=" container my-5">
+    <section className=" container mb-5">
       <div className="row d-lg-flex d-none">
         <div className="bread-crumbs my-5">
           <Breadcrumb type="teacher" path={id} />
@@ -147,7 +138,7 @@ export default function TeacherPage() {
         <div className="col-lg-3 col-12">
           <div className="px-0">
             {/* teacher-card */}
-            <div className="card mb-3">
+            <div className="card mb-5 mt-lg-0 mt-5">
               <div className="card-top">
                 <div className="text-center py-4">
                   <div className="py-2">
@@ -324,14 +315,19 @@ export default function TeacherPage() {
             </div>
           </div>
           {/* box3*/}
-          <div className="px-0 my-5">
+          <div className="px-0 my-5" ref={courseRef}>
             <div className="d-flex card-text">
               <h3>{data.users_name} 開的課</h3>
             </div>
           </div>
+
           <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 p-0 m-0 my-4">
             {courseCard
               .filter((v) => v.status != 0 && v.status != '0')
+              .slice(
+                0,
+                isMdDown && !isMobileExpanded.course ? 4 : courseCard.length
+              )
               .map((v) => (
                 <CourseCard
                   key={v.id}
@@ -348,9 +344,48 @@ export default function TeacherPage() {
                 />
               ))}
           </div>
+          {isMdDown && courseCard.length > 4 && (
+            <div className="text-center my-2">
+              <button
+                className="more-courses-toggle d-flex align-items-center justify-content-center mx-auto"
+                onClick={() => {
+                  if (isMobileExpanded.course && courseRef.current) {
+                    courseRef.current.scrollIntoView({
+                      behavior: 'smooth',
+                      block: 'start',
+                    })
+                  }
+                  setIsMobileExpanded((prev) => ({
+                    ...prev,
+                    course: !prev.course,
+                  }))
+                }}
+                style={{
+                  cursor: 'pointer',
+                  border: 'none',
+                  background: 'transparent',
+                  fontWeight: 'bold',
+                  fontSize: '1.2rem',
+                  color: 'var(--main-color)',
+                }}
+              >
+                {isMobileExpanded.course ? '收起內容' : '展開全部'}
+                <i
+                  className="bx bx-chevron-down fs-4 ms-2"
+                  style={{
+                    transform: isMobileExpanded.course
+                      ? 'rotate(180deg)'
+                      : 'rotate(0deg)',
+                    transition: 'transform 0.3s',
+                  }}
+                />
+              </button>
+            </div>
+          )}
 
           {/* box4*/}
-          <div className="px-0 my-5">
+          {/* 修的課 */}
+          <div className="px-0 my-5" ref={purchasedRef}>
             <div className="d-flex card-text">
               <h3>{data.users_name} 修的課</h3>
             </div>
@@ -359,47 +394,136 @@ export default function TeacherPage() {
             {purchasedCourses.length === 0 ? (
               <p className="text-center ">尚未購買課程</p>
             ) : (
-              purchasedCourses.map((course) => (
-                <PurchasedCourseCard
-                  key={course.order_item_id}
-                  course={course}
-                />
-              ))
+              purchasedCourses
+                .slice(
+                  0,
+                  isMdDown && !isMobileExpanded.purchased
+                    ? 4
+                    : purchasedCourses.length
+                )
+                .map((course) => (
+                  <PurchasedCourseCard
+                    key={course.order_item_id}
+                    course={course}
+                  />
+                ))
             )}
           </div>
+          {isMdDown && purchasedCourses.length > 4 && (
+            <div className="text-center my-2">
+              <button
+                className="more-courses-toggle d-flex align-items-center justify-content-center mx-auto"
+                onClick={() => {
+                  if (isMobileExpanded.purchased && purchasedRef.current) {
+                    purchasedRef.current.scrollIntoView({
+                      behavior: 'smooth',
+                      block: 'start',
+                    })
+                  }
+                  setIsMobileExpanded((prev) => ({
+                    ...prev,
+                    purchased: !prev.purchased,
+                  }))
+                }}
+                style={{
+                  cursor: 'pointer',
+                  border: 'none',
+                  background: 'transparent',
+                  fontWeight: 'bold',
+                  fontSize: '1.2rem',
+                  color: 'var(--main-color)',
+                }}
+              >
+                {isMobileExpanded.purchased ? '收起內容' : '展開全部'}
+                <i
+                  className="bx bx-chevron-down fs-4 ms-2"
+                  style={{
+                    transform: isMobileExpanded.purchased
+                      ? 'rotate(180deg)'
+                      : 'rotate(0deg)',
+                    transition: 'transform 0.3s',
+                  }}
+                />
+              </button>
+            </div>
+          )}
+
           {/* box5*/}
-          <div className="px-0 my-5">
+          {/* 發佈文章 */}
+          <div className="px-0 my-5" ref={articleRef}>
             <div className="d-flex card-text">
               <h3>{data.users_name} 發佈過的文章</h3>
             </div>
           </div>
-          {/*  */}
-          <div className="">
+          <div className="row">
             {articles.length === 0 ? (
               <p className="text-center">尚未發佈文章</p>
             ) : (
-              articles.map((article) => (
-                <div className="col mb-5" key={article.id}>
-                  <ComponentsPostCard
-                    postID={article.id}
-                    postTitle={article.title}
-                    postCateName={article.product_cate_name || '分類'}
-                    postContent={article.content}
-                    updatedAt={article.updated_at}
-                    authorID={article.user_id}
-                    authorName={article.author_name}
-                    src={article.avatar_url}
-                    alt={article.author_name}
-                    width="20"
-                    btnLikedActive={false}
-                    btnSavedActive={false}
-                    btnLikedCount={0}
-                    btnSavedCount={0}
-                  />
-                </div>
-              ))
+              articles
+                .slice(
+                  0,
+                  isMdDown && !isMobileExpanded.article ? 4 : articles.length
+                )
+                .map((article) => (
+                  <div className="col mb-5" key={article.id}>
+                    <ComponentsPostCard
+                      postID={article.id}
+                      postTitle={article.title}
+                      postCateName={article.product_cate_name || '分類'}
+                      postContent={article.content}
+                      updatedAt={article.updated_at}
+                      authorID={article.user_id}
+                      authorName={article.author_name}
+                      src={article.avatar_url}
+                      alt={article.author_name}
+                      width="20"
+                      btnLikedActive={false}
+                      btnSavedActive={false}
+                      btnLikedCount={0}
+                      btnSavedCount={0}
+                    />
+                  </div>
+                ))
             )}
           </div>
+          {isMdDown && articles.length > 4 && (
+            <div className="text-center my-2">
+              <button
+                className="more-courses-toggle d-flex align-items-center justify-content-center mx-auto"
+                onClick={() => {
+                  if (isMobileExpanded.article && articleRef.current) {
+                    articleRef.current.scrollIntoView({
+                      behavior: 'smooth',
+                      block: 'start',
+                    })
+                  }
+                  setIsMobileExpanded((prev) => ({
+                    ...prev,
+                    article: !prev.article,
+                  }))
+                }}
+                style={{
+                  cursor: 'pointer',
+                  border: 'none',
+                  background: 'transparent',
+                  fontWeight: 'bold',
+                  fontSize: '1.2rem',
+                  color: 'var(--main-color)',
+                }}
+              >
+                {isMobileExpanded.article ? '收起內容' : '展開全部'}
+                <i
+                  className="bx bx-chevron-down fs-4 ms-2"
+                  style={{
+                    transform: isMobileExpanded.article
+                      ? 'rotate(180deg)'
+                      : 'rotate(0deg)',
+                    transition: 'transform 0.3s',
+                  }}
+                />
+              </button>
+            </div>
+          )}
 
           {/*  */}
         </div>

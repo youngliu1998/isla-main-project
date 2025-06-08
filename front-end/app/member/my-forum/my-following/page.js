@@ -26,10 +26,10 @@ export default function MyPostPage() {
     <>
       <div className="body">
         <div className="my-following d-flex flex-column gap-3 w-100 rounded-3 px-4 py-3 bg-pure-white card-border shadow-forum">
-          <div className="my-following-header d-flex align-items-center justify-content-sm-between justify-content-center flex-wrap">
+          <div className="my-following-header d-flex align-items-center justify-content-between flex-wrap">
             <div className="fs32 fw-bold text-nowrap">我的追蹤</div>
             <Link
-              className="text-main px-3 py-2 rounded-pill text-nowrap"
+              className="text-main px-3 py-2 rounded-pill bg-hovering-gray"
               href={'/forum'}
             >
               <i className="bi bi-box-arrow-left me-2"></i>
@@ -43,10 +43,7 @@ export default function MyPostPage() {
                 ? '載入中'
                 : followings.map((f, i) => {
                     return (
-                      <div
-                        key={i}
-                        className="col col-12 col-sm-4 col-lg-6 pb-3"
-                      >
+                      <div key={i} className="col col-6 col-lg-6 pb-3">
                         <FollowingCard
                           followID={f.follow_id}
                           nick={f.userNick}

@@ -200,7 +200,6 @@ export default function CourseIDPage() {
   }
 
   const handleDeleteComment = async (commentId) => {
-    
     const token = localStorage.getItem('jwtToken')
     if (!window.confirm('你確定要刪除這則留言嗎？')) return
     try {
@@ -419,7 +418,7 @@ export default function CourseIDPage() {
               <div className="card-img-overlay banner-img-mask-course">
                 <div className="row d-lg-flex d-none">
                   <div className="bread-crumbs mt-3 ms-5">
-                    <Breadcrumb type="course" path={id} />
+                    <Breadcrumb type="course" path={id} current={v.title} />
                   </div>
                 </div>
                 <div className="position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-end p-xl-4 p-lg-3 p-md-2 p-sm-1 p-0">
@@ -570,7 +569,7 @@ export default function CourseIDPage() {
                     <h3>關於課程</h3>
                   </div>
                   {data.length > 0 && (
-                    <div className="m-4 text-color">
+                    <div className="my-4 text-color">
                       <p>{v.detail}</p>
                       {data[0].banner_video?.toLowerCase().endsWith('.mp4') ? (
                         <video

@@ -37,6 +37,7 @@ export default function CoursePage() {
   ]
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
+  const [windowWidth, setWindowWidth] = useState(1024)
   // ====== 取得課程、體驗與講師資料 ======
   useEffect(() => {
     async function getCourse() {
@@ -62,6 +63,16 @@ export default function CoursePage() {
     }
 
     getCourse()
+  }, [])
+  useEffect(() => {
+    // 初始化設定寬度
+    if (typeof window !== 'undefined') {
+      setWindowWidth(window.innerWidth)
+    }
+
+    const handleResize = () => setWindowWidth(window.innerWidth)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
   }, [])
 
   // ====== 處理展開/收合所有課程功能 ======
@@ -126,6 +137,16 @@ export default function CoursePage() {
 
     // 回傳混合的課程與體驗資料，並排序
     return sortItems([...courses, ...experiences])
+  }
+
+  // ====== 根據裝置寬度決定顯示數量 ======
+  const getResponsiveItems = () => {
+    const sortedItems = getSortedItems()
+
+    if (showAllCourses) return sortedItems
+
+    const maxItems = windowWidth < 768 ? 4 : 12
+    return sortedItems.slice(0, maxItems)
   }
 
   // ====== 限制最多顯示 12 筆，除非點選展開 ======
@@ -359,7 +380,7 @@ export default function CoursePage() {
                       <CourseCard
                         key={`course-${v.id}-${v.title}`}
                         id={v.id}
-                        picture={'/images/course/bannerall/' + v.picture}
+                        picture={v.picture}
                         tag={v.tag}
                         title={v.title}
                         teacher_name={v.teacher_name}
@@ -374,7 +395,7 @@ export default function CoursePage() {
                       <ExperienceCard
                         key={`exp-${v.id}-${v.title}`}
                         id={v.id}
-                        picture={'/images/course/bannerall/' + v.picture}
+                        picture={v.picture}
                         tag={v.tag}
                         title={v.title}
                         city={v.city}
@@ -399,7 +420,7 @@ export default function CoursePage() {
                   ))}
                 </>
               ) : (
-                visibleItems.map((v) =>
+                getResponsiveItems().map((v) =>
                   v.tag === 1 || v.tag === '1' ? (
                     <CourseCard
                       key={`course-${v.id}-${v.title}`}
