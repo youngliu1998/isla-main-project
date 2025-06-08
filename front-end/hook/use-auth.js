@@ -98,7 +98,11 @@ export function AuthProvider({ children }) {
       const response = await fetch('http://localhost:3005/api/member/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email, password: passowrd }),
+        body: JSON.stringify({
+          email: email,
+          password: passowrd,
+          isAdmin: false,
+        }),
       })
       const data = await response.json()
 
