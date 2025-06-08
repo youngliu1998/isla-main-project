@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation'
 import UseImg from '../_hooks/useImg'
 import GetPosts from '../_hooks/getPosts'
 import Ripples from 'react-ripples'
+import { toast } from 'react-toastify'
 // import '/bootstrap/dist/js/bootstrap.bundle.min.js' 無法直接引入
 
 export default function EditPostModal({
@@ -27,12 +28,12 @@ export default function EditPostModal({
   const userNick = user.nickname
 
   const { productCateItems, postCateItems } = useFilter()
-  const { mutate } = GetPosts('')
+  const { mutate } = GetPosts('tab=2') //因為新增貼文後會導向tab=2，保持key一致才能成功mutate
 
   useEffect(() => {
     titleRef.current.innerText = postTitle
     contentRef.current.innerHTML = postContent
-    // setTitleValid(true)
+    setTitleValid(true)
     // setContentValid(true)
   }, [postTitle, postContent])
 
@@ -41,20 +42,21 @@ export default function EditPostModal({
   const titleRef = useRef()
   const contentRef = useRef()
 
-  // 類別預設值
-  useEffect(() => {
-    productCateRef.current.value = productCate
-    postCateRef.current.value = postCate
-  }, [])
+  // // 類別預設值
+  // useEffect(() => {
+  //   productCateRef.current.value = productCate
+  //   postCateRef.current.value = postCate
+  // }, [])
 
   const { handleImgUpload } = UseImg()
 
   // 提交表單
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    console.log('handleSubmit')
+    // e.preventDefault()
     const productCate = productCateRef.current.value
     const postCate = postCateRef.current.value
-    console.log({ productCate, postCate })
+    // console.log({ productCate, postCate })
     const title = titleRef.current.innerHTML.trim() //QU WHY trim
     const content = contentRef.current.innerHTML.trim()
     if (title === '' || title === '<br>') {
@@ -74,54 +76,39 @@ export default function EditPostModal({
     fd.append('title', title) //fd長怎樣QU
     fd.append('content', content)
     fd.append('userID', userID)
-    console.log(fd)
+    const method = isUpdated ? 'PUT' : 'POST'
 
     // 建立還是更新
-    if (isUpdated) {
-      fetch('http://localhost:3005/api/forum/posts', {
-        method: 'PUT',
-        body: fd,
+    fetch('http://localhost:3005/api/forum/posts', {
+      method: method,
+      body: fd,
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error(`錯誤: ${res.status}`)
+        return res.json()
       })
-        .then((res) => {
-          if (!res.ok) throw new Error(`錯誤: ${res.status}`)
-          mutate()
-          return res.json()
-        })
-        .then((data) => {
-          // console.log(data)
+      .then((data) => {
+        // console.log(data)
+        if (isUpdated) {
           mutateDetail()
           router.push(`/forum/${postID}`)
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-    } else {
-      fetch('http://localhost:3005/api/forum/posts', {
-        method: 'POST',
-        body: fd,
-      })
-        .then((res) => {
-          if (!res.ok) throw new Error(`錯誤：${res.status}`)
-          return res.json()
-        })
-        .then((data) => {
+          toast.info('已成功編輯貼文')
+        } else {
           mutate()
           router.push('/forum?tab=2')
-        })
-        .catch((err) => {
-          console.log(err)
-          // FIXME 畫面顯示上傳錯誤提示
-        })
-    }
+          toast.info('已成功發佈貼文')
+        }
+        setHasTitleTouched(false)
+        setTitleValid(false)
+        setContentValid(false)
 
-    // modalRef.current.classList.remove('show')
-    // const m = Modal.getOrCreateInstance(
-    //   document.querySelector('#editPostModal')
-    // )
-    // m.hide()
-    // console.log(m)
-    // mutate()
-    // router.push('/forum?tab=2')
+        titleRef.current.innerText = ''
+        contentRef.current.innerText = ''
+      })
+      .catch((err) => {
+        console.log(err)
+        toast.error('上傳錯誤，請重新試試')
+      })
   }
   // 字數
   const [titleLength, setTitleLength] = useState(0)
@@ -129,11 +116,17 @@ export default function EditPostModal({
   const [hasTitleTouched, setHasTitleTouched] = useState(false)
   const [isContentValid, setContentValid] = useState(false)
 
-  console.log({ isUpdated })
+  const btnSubmitClass =
+    isTitleValid && isContentValid
+      ? 'bg-main color-isla-white'
+      : 'bg-hover-gray sub-text-color'
+
+  // console.log({ isUpdated })
   // console.log({ isTitleValid, isContentValid, hasTitleTouched })
   return (
     <>
       <form>
+        {/* <button onClick={mutate}>mutate</button> */}
         <div
           className="modal fade"
           // id="editPostModal"
@@ -190,7 +183,7 @@ export default function EditPostModal({
                     ref={postCateRef}
                     className="form-select form-select-sm w-auto rounded-pill"
                     aria-label="Small select example"
-                    defaultValue={isUpdated ? postCate : ''}
+                    defaultValue={isUpdated ? postCate : 1}
                   >
                     <option disabled>文章類型</option>
                     {postCateItems.map((v, i) => {
@@ -217,7 +210,7 @@ export default function EditPostModal({
                       const titleLength = e.target.innerText.trim().length
                       setTitleLength(titleLength)
                       setHasTitleTouched(true)
-                      console.log(titleLength)
+                      // console.log(titleLength)
                       titleLength <= 50 && titleLength > 0
                         ? setTitleValid(true)
                         : setTitleValid(false)
@@ -247,16 +240,19 @@ export default function EditPostModal({
                   contentEditable
                   data-placeholder="分享你的美妝新發現✨"
                   onInput={(e) => {
-                    const contentlength = e.target.innerText.trim().length
-                    if (contentlength > 0 && contentlength <= 50) {
-                      setContentValid(true)
-                    }
+                    setContentValid(true)
+                    // if (contentlength > 0 && contentlength <= 50) {
+                    //   setContentValid(true)
+                    // } else {
+                    //   setContentValid(false)
+                    // }
                   }}
                   onPaste={(e) => {
                     // 防止xss攻擊
                     e.preventDefault()
                     const text = e.clipboardData.getData('text/plain')
                     document.execCommand('insertText', false, text)
+                    setContentValid(true)
                   }}
                 ></div>
               </div>
@@ -295,18 +291,16 @@ export default function EditPostModal({
                   <button
                     type="submit"
                     data-bs-dismiss="modal"
-                    className={`px-4 py-2 rounded-3 border-0 bounce ${isTitleValid && isContentValid ? 'bg-main color-isla-white' : 'bg-hover-gray sub-text-color border-0'}`}
-                    disabled={
-                      isTitleValid && isContentValid && hasTitleTouched
-                        ? false
-                        : true
-                    }
+                    className={`px-4 py-2 rounded-3 border-0 bounce
+                    ${btnSubmitClass}`}
+                    disabled={isTitleValid && isContentValid ? false : true}
                     onClick={(e) => {
                       e.preventDefault()
-                      // console.log({ isTitleValid, isContentValid })
-                      setHasTitleTouched(false)
-                      // FIXME modal剛出現 按按鈕時出現警示
-                      // console.log('click')
+                      // console.log({
+                      //   isTitleValid,
+                      //   isContentValid,
+                      //   hasTitleTouched,
+                      // })
                       handleSubmit(e)
                     }}
                   >

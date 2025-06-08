@@ -19,7 +19,7 @@ export default function ConfirmModal({
         aria-labelledby="ConfirmLabel"
         aria-hidden="true"
       >
-        <div className="modal-dialog modal-sm">
+        <div className="modal-dialog modal-sm mtHeader">
           <div className="modal-content bg-pure-white">
             <div className="modal-header">
               <h1 className="modal-title fs-5" id="ConfirmLabel">

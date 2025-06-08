@@ -15,6 +15,7 @@ import CommentInput from './comment-input'
 import Link from 'next/link'
 import PostDetailLoader from '../_components/loader-detail'
 import { UseDirectToLogin } from '../_hooks/useDirectToLogin'
+import { toast } from 'react-toastify'
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
 
@@ -104,16 +105,17 @@ export default function PostIDPage(props) {
 
   const handleDeletePost = async () => {
     const res = await fetch(
-      `http://localhost:3005/api/forum/posts/soft-delete/${post.id}&userID=${userID}&userID=${userID}`,
+      `http://localhost:3005/api/forum/posts/soft-delete/${post.id}`,
       { method: 'PUT' }
     )
     if (!res.ok) throw new Error('未成功連線')
     // 已刪除提示 FIXME
-    router.push(window.location.href)
+    router.push('/forum')
+    toast.info('已成功刪除貼文')
   }
 
   // const handleDirectLogin = UseDirectToLogin(isAuth)
-  console.log(post)
+  // console.log(post)
   return (
     <>
       {/* <PostDetailLoader /> */}

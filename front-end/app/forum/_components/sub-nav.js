@@ -130,75 +130,31 @@ export default function ComponentsSubNav() {
             </Ripples>
             <div
               id="panelsStayOpen-collapseOne"
-              className={`accordion-collapse collapse ${isAuth && 'show'}`}
+              data-bs-parent="#accordionExample"
+              className={`accordion-collapse collapse`}
             >
               <div className="followings fs14 d-flex flex-column px-4 py-1 gap-2">
-                {
-                  isAuth &&
-                    Array.isArray(followings) &&
-                    followings.map((v, i) => {
-                      return (
-                        <Link
-                          href={`/forum/profile/1`}
-                          className="followings-link main-text-color py-1 text-truncate"
-                          key={i}
-                        >
-                          <ComponentsAuthorInfo
-                            authorID={v.follow_id}
-                            width="20"
-                            src={v.userImg}
-                            alt={v.userNick}
-                            fontSize="16"
-                            color="var(--main-text)"
-                            authorName={v.userNick}
-                          />
-                        </Link>
-                      )
-                    })
-                  /* <Link
-                      href={`/forum/profile/1`}
-                      className="followings-link main-text-color py-1"
-                    >
-                      <ComponentsAuthorInfo
-                        authorID="1"
-                        width="20"
-                        src="/default-avatar.jpg"
-                        alt="userName"
-                        fontSize="14"
-                        color="var(--main-text)"
-                        authorName="lilly"
-                      />
-                    </Link>
-                    <Link
-                      href={`/forum/profile/userID`}
-                      className="followings-link main-text-color py-1"
-                    >
-                      <ComponentsAuthorInfo
-                        authorID="2"
-                        width="20"
-                        src="/default-avatar.jpg"
-                        alt="userName"
-                        fontSize="14"
-                        color="var(--main-text)"
-                        authorName="Meggy"
-                      />
-                    </Link>
-                    <Link
-                      href={`/forum/profile/userID`}
-                      className="followings-link main-text-color py-1"
-                    >
-                      <ComponentsAuthorInfo
-                        authorID="3"
-                        width="20"
-                        src="/default-avatar.jpg"
-                        alt="userName"
-                        fontSize="14"
-                        color="var(--main-text)"
-                        authorName="Chloe"
-                      />
-                    </Link>
-                     */
-                }
+                {isAuth &&
+                  Array.isArray(followings) &&
+                  followings.map((v, i) => {
+                    return (
+                      <Link
+                        href={`/forum/profile/1`}
+                        className="followings-link main-text-color py-1 text-truncate"
+                        key={i}
+                      >
+                        <ComponentsAuthorInfo
+                          authorID={v.follow_id}
+                          width="20"
+                          src={v.userImg}
+                          alt={v.userNick}
+                          fontSize="16"
+                          color="var(--main-text)"
+                          authorName={v.userNick}
+                        />
+                      </Link>
+                    )
+                  })}
               </div>
               <div className="d-flex text-center fs14 pt-2">
                 <Link
@@ -358,7 +314,15 @@ export default function ComponentsSubNav() {
         </aside>
       </div>
       <div className="position-absolute">
-        <EditPostModal isUpdated={false} />
+        <EditPostModal
+          postID=""
+          productCate=""
+          postCate=""
+          postTitle=""
+          postContent=""
+          isUpdated={false}
+          mutateDetail={() => {}}
+        />
       </div>
     </>
   )
