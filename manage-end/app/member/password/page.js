@@ -73,7 +73,9 @@ export default function PasswordPage() {
       onSubmit={handleSubmit}
       className="max-w-md mx-auto px-4 py-8 space-y-6 my-18 bg-white shadow-md rounded-lg flex gap-3 flex-col"
     >
-      <h3 className="text-xl font-semibold text-center">密碼變更</h3>
+      <h3 className="text-xl text-red-400 font-semibold text-center">
+        密碼變更
+      </h3>
 
       {/* 當前密碼 */}
       <div>
@@ -128,8 +130,11 @@ export default function PasswordPage() {
         )}
       </div>
 
-      <Button type="submit" className="w-full">
-        修改
+      <Button
+        type="submit"
+        className="w-full bg-red-400 hover:bg-red-500 cursor-pointer"
+      >
+        變更
       </Button>
     </form>
   )

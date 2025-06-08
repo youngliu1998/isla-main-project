@@ -164,17 +164,26 @@ export async function getFilteredProducts(filters) {
     maxRating !== null
   ) {
     conditions.push(
-      `(review_summary.avg_rating IS NOT NULL AND review_summary.avg_rating >= ? AND review_summary.avg_rating <= ?)`
+      `(
+      (review_summary.avg_rating IS NOT NULL AND review_summary.avg_rating BETWEEN ? AND ?)
+      OR review_summary.avg_rating IS NULL
+    )`
     )
     params.push(minRating, maxRating)
   } else if (minRating !== undefined && minRating !== null) {
     conditions.push(
-      `(review_summary.avg_rating IS NOT NULL AND review_summary.avg_rating >= ?)`
+      `(
+      (review_summary.avg_rating IS NOT NULL AND review_summary.avg_rating >= ?)
+      OR review_summary.avg_rating IS NULL
+    )`
     )
     params.push(minRating)
   } else if (maxRating !== undefined && maxRating !== null) {
     conditions.push(
-      `(review_summary.avg_rating IS NOT NULL AND review_summary.avg_rating <= ?)`
+      `(
+      (review_summary.avg_rating IS NOT NULL AND review_summary.avg_rating <= ?)
+      OR review_summary.avg_rating IS NULL
+    )`
     )
     params.push(maxRating)
   }
@@ -218,6 +227,7 @@ export async function getFilteredProducts(filters) {
     )
   `)
   }
+  conditions.push(`products.status = 'active'`)
 
   if (colors && colors.length > 0) {
     conditions.push(

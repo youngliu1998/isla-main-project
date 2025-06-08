@@ -42,7 +42,7 @@ router.get('/', verifyToken, async (req, res) => {
 // post: Send Auth token
 router.post('/', validation, validateRequest, async (req, res) => {
   let error
-  const { email, password } = req.body
+  const { email, password, isAdmin } = req.body
   try {
     const query = `SELECT id,email,password FROM users WHERE email=?`
     const user = await db
@@ -56,6 +56,11 @@ router.post('/', validation, validateRequest, async (req, res) => {
     // if the password is false
     if (!(await bcrypt.compare(password, user.password)))
       return res.json({ status: 'error', message: '密碼錯誤' })
+
+    const allowedAdminEmails = ['admin@isla.com']
+    if (isAdmin && !allowedAdminEmails.includes(user.email)) {
+      return res.json({ status: 'error', message: '你沒有後台管理員登入權限' })
+    }
     // if user exist, build token from user
     const token = jwt.sign(
       {
