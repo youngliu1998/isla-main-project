@@ -32,6 +32,13 @@ router.get('/', async (req, res) => {
         c.tag, c.created, c.categories_id, c.teacher_id, cat.name
       ORDER BY c.created DESC
     `)
+    // ✅ 補上完整圖片網址
+    const formattedCourses = course.map((c) => {
+      return {
+        ...c,
+        picture: c.picture ? `/images/course/bannerall/${c.picture}` : null,
+      }
+    })
 
     res.json({ status: 'success', data: course })
   } catch (err) {
