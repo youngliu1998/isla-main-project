@@ -11,16 +11,21 @@
   z-index: 980;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   gap: 1rem;
 }
 
 .floating-section {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .floating-title {
   font-size: 0.8rem;
-  font-weight: bold;
+  font-weight: 400;
+  color: #918989;
   margin-bottom: 0.3rem;
 }
 
@@ -43,19 +48,25 @@
   font-size: 16px;
   font-weight: 400;
   padding: 0.4rem 0.6rem;
-  background-color: #ec8e8e;
-  color: white;
   border: none;
-  border-radius: 8px;
   cursor: pointer;
-}
-
-.share-btn:hover {
-  background-color: #fab3b3;
+  transition: all 0.6s;
 }
 
 @media (max-width: 768px) {
   .left-floating-bar {
     display: none;
   }
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #cf7474;
+  transition: color 0.2s;
+}
+
+.icon-btn:hover {
+  color: #9f4343;
 }
