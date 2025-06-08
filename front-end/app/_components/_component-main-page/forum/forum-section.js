@@ -25,6 +25,7 @@ export default function ForumSection(props) {
     return <>資料載入中</>
   }
   const posts = data.data
+
   const postsFormat = posts.map((p) => ({
     ...p,
     content: p.content
