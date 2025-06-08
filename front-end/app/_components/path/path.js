@@ -81,6 +81,10 @@ export default function Path() {
           return ''
         case 'teacher':
           return ''
+        case 'cart':
+          return '購物車'
+        case 'payment':
+          return '付款及運送方式'
 
         default:
           return thisPath
