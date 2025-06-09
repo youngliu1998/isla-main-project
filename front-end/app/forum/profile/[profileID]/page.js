@@ -151,9 +151,9 @@ export default function ForumPage(props) {
       </main>
       {/* author-card-xl */}
       {/* {!showLoading && posts.length !== 0 && ( */}
-      <div className="author-card col col-2 d-none d-xl-block position-relative px-0 mb-3">
+      <div className="author-card author-card-xl col col-2 d-none d-xl-block position-relative px-0 mb-3">
         {!showLoading && posts.length !== 0 && (
-          <aside className="aside d-flex flex-column p-4 gap-3 position-sticky bg-pure-white card-border shadow-forum rounded-3 ">
+          <aside className="aside d-flex flex-column p-4 gap-3 position-sticky bg-pure-white card-border shadow-forum rounded-3 top-0 h-100">
             <div className="d-flex flex-column justify-content-center align-items-center gap-3">
               <div className="d-flex flex-column align-items-center gap-1 w-100">
                 <ComponentsAvatar

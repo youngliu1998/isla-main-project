@@ -21,6 +21,8 @@ router.get('/', async (req, res) => {
       LEFT JOIN courses_categories ON coupons.course_categories_id = courses_categories.id
       LEFT JOIN coupons_user 
         ON coupons_user.coupon_id = coupons.id AND coupons_user.user_id = ?
+      WHERE coupons.valid = 1
+      ORDER BY coupons.id ASC
      `,
       [user_id]
     )

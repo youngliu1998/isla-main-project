@@ -114,9 +114,10 @@ export default function CouponPage() {
   const hasMemberCoupon = coupons.some((c) => c.type_id === 5)
 
   return (
-    <>
+    <div className="min-vh-100">
       <CouponHeader type="member" hasMemberCoupon={hasMemberCoupon} />
       <PcNav
+        type="member"
         options={couponStates}
         currentValue={currentType}
         onChange={setCurrentType}
@@ -132,6 +133,6 @@ export default function CouponPage() {
           />
         </>
       )}
-    </>
+    </div>
   )
 }

@@ -64,7 +64,7 @@ export default function ShippingForm({
       <div className="d-flex justify-content-between">
         <div className="form-check mb-3">
           <input
-            className={`${styles.radioInput} form-check-input`}
+            className={`${styles.formCheckInput} form-check-input`}
             type="radio"
             name="shipping"
             id="radioShipHome"
@@ -162,7 +162,7 @@ export default function ShippingForm({
       <div className="d-flex justify-content-between">
         <div className="form-check mb-3">
           <input
-            className="form-check-input"
+            className={`${styles.formCheckInput} form-check-input`}
             type="radio"
             name="shipping"
             id="radioShip711"

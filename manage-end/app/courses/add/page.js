@@ -220,7 +220,7 @@ export default function AddCoursePage() {
                 if (file) {
                   setImagePreview(URL.createObjectURL(file))
                 }
-                handleFileChange()
+                handleFileChange(e)
                 console.log('change')
               }}
             />

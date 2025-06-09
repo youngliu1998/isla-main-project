@@ -30,7 +30,9 @@ export default function HamMeunNav({
             </Link>
           </li>
           <li>
-            <Link href="/" onMouseEnter={()=>{}}>優惠券專區</Link>
+            <Link href="/" onMouseEnter={() => {}}>
+              優惠券專區
+            </Link>
             <CouponNav />
           </li>
           <li>
@@ -70,7 +72,11 @@ export default function HamMeunNav({
           >
             <div className="avartar overflow-hidden">
               <Image
-                src={'http://localhost:3005/images/member/' + user.ava_url}
+                src={
+                  isAuth
+                    ? 'http://localhost:3005/images/member/' + user.ava_url
+                    : 'http://localhost:3000/images/member/default-user.jpg'
+                }
                 alt="Picture of the member"
                 width={100}
                 height={100}
@@ -79,7 +85,7 @@ export default function HamMeunNav({
           </Link>
           {/* ==== nickname, .... (member info) ==== */}
           <div className="d-flex flex-column align-items-center gap-3 w-50">
-            <h4 className="user-title">{user?.nickname || 'Rookie'}</h4>
+            <h4 className="user-title">{user?.nickname || 'ISLA 管理員'}</h4>
             {/* ==== login and logout button ==== */}
             <button className="login-btn">
               <Link
