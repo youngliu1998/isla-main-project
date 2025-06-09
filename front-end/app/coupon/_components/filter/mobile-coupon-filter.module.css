@@ -41,15 +41,14 @@
   width: 100%;
   display: flex;
   justify-content: center;
-
-  button {
-    width: 100%;
-    border: none;
-    background: none;
-    color: #858585;
-    font-size: 18px;
-    font-weight: 400;
-  }
+}
+.open-panel-btn {
+  width: 100%;
+  border: none;
+  background: none;
+  color: #858585;
+  font-size: 18px;
+  font-weight: 400;
 }
 .open-panel-btn {
   padding-top: 12px;
@@ -195,15 +194,14 @@
 .sidebar-filter-filter-btn input {
   margin: 0 8px;
 }
-.sidebar-filter-filter-btn:hover {
-  a {
+.sidebarFilterFilterBtn {
+  &:hover a {
     color: #2a2a2a;
   }
 }
-.sidebar-filter-filter-btn-active {
-  a {
-    color: #fa8e83;
-  }
+
+.sidebarFilterFilterBtnActive :global(a) {
+  color: #fa8e83;
 }
 
 .sidebar-filter-filter-label {
