@@ -42,7 +42,7 @@
   display: flex;
   justify-content: center;
 }
-.open-panel-btn-container :global(button) {
+.open-panel-btn {
   width: 100%;
   border: none;
   background: none;
@@ -195,12 +195,14 @@
 .sidebar-filter-filter-btn input {
   margin: 0 8px;
 }
-.sidebar-filter-filter-btn:hover a {
+.sidebar-filter-filter-btn:hover :global(a) {
   color: #2a2a2a;
 }
+
 .sidebar-filter-filter-btn:hover .link {
   color: #2a2a2a;
 }
+
 .sidebar-filter-filter-btn-active a {
   color: #fa8e83;
 }

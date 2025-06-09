@@ -121,7 +121,9 @@ function MobileBottomFilter({
               'flex-column'
             )}
           >
-            <div className={clsx(styles['sidebar-filter-order-label'])}>排序</div>
+            <div className={clsx(styles['sidebar-filter-order-label'])}>
+              排序
+            </div>
             <div
               className={clsx(styles['sidebar-filter-order-menu'], 'd-flex')}
             >
