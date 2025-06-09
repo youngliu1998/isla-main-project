@@ -87,7 +87,7 @@ export default function Dashboard() {
       title: '優惠券管理',
       description: '設定促銷活動',
       color: 'bg-pink-500/20 text-pink-600',
-      href: '/coupons',
+      href: '/coupons/products',
     },
   ]
 
