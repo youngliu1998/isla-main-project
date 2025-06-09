@@ -361,6 +361,7 @@
 
 .search-bar-wrapper {
   padding-top: 100px;
+  /* background: var(--bg-gray-article); */
 }
 
 .my-container {

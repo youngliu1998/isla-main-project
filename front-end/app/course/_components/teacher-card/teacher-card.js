@@ -22,7 +22,7 @@ export default function TeacherCard({
           <Image
             src={imagePath}
             className="card-img-teacher"
-            alt={name}
+            alt={name || '課程圖片'}
             width={300}
             height={300}
           />
