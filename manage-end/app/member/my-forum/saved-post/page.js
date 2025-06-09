@@ -1,12 +1,11 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import ComponentsAuthorInfo from '@/app/forum/_components/author-info'
+// import ComponentsAuthorInfo from '@/app/forum/_components/author-info'
 import useSWR from 'swr'
 import { useRouter } from 'next/navigation'
-import '@/app/forum/_components/forum.css'
 import Link from 'next/link'
-import ComponentsPostCard from '../../../forum/_components/post-card'
+// import ComponentsPostCard from '../../../forum/_components/post-card'
 
 export default function MyPostPage(props) {
   const router = useRouter()

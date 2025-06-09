@@ -31,16 +31,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
 
-  span {
-    flex: 0 0 auto; /* 不要縮放、不要換行，維持寬度 */
-    padding: 0.5rem 0;
-    /*background-color: rgba(40, 40, 40, 0.34);*/
-    /*color: white;*/
-    border: none;
-    border-radius: 9999px;
-    white-space: nowrap; /* 按鈕內容不要自動換行 */
-  }
+.sidebar-filter-btn-check-box span {
+  flex: 0 0 auto;
+  padding: 0.5rem 0;
+  border: none;
+  border-radius: 9999px;
+  white-space: nowrap;
 }
 
 .form-check-input {
