@@ -30,6 +30,16 @@ export default function HamMeunNav({
               美妝商城
             </Link>
           </li>
+          <li>
+            <Link
+              href="/course"
+              onClick={() => {
+                setHamMenuOpen(false)
+              }}
+            >
+              美妝教室
+            </Link>
+          </li>
           <li
             className="position-relative"
             onMouseEnter={() => {
@@ -43,16 +53,7 @@ export default function HamMeunNav({
 
             <CouponNav open={openCoupon} />
           </li>
-          <li>
-            <Link
-              href="/course"
-              onClick={() => {
-                setHamMenuOpen(false)
-              }}
-            >
-              美妝教室
-            </Link>
-          </li>
+
           <li>
             <Link
               href="/forum"
