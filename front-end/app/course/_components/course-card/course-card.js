@@ -142,7 +142,7 @@ export default function CourseCard({
           <div className="card-img-container-course position-relative">
             <Image
               src={picture}
-              alt={title}
+              alt={title || '課程圖片'}
               width={800}
               height={450}
               className="card-img-top-course"
