@@ -124,7 +124,7 @@ export default function ExperienceCard({
               height={450}
               width={800}
               className="card-img-top-course"
-              alt={title}
+              alt={title || '課程圖片'}
             />
             <button
               className="heart-icon-course"

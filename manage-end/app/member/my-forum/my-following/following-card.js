@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
-import ComponentsAvatar from '@/app/forum/_components/avatar'
 import useSWR from 'swr'
 
 export default function FollowingCard({

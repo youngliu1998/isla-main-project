@@ -29,7 +29,7 @@ export default function ComponentsSearchButton({
         id="offcanvasWithBothOptions"
         aria-labelledby="offcanvasWithBothOptionsLabel"
       >
-        <div className="search-bar-wrapper overflow-scroll">
+        <div className="search-bar-wrapper overflow-scroll no-scroll-bar">
           <ComponentsSearchBar
             postCateItems={postCateItems}
             productCateItems={productCateItems}

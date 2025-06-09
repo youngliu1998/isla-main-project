@@ -40,7 +40,7 @@ router.post('/get-follow-list', async function (req, res) {
   const { userID, pageName } = req.body
   let limitClause = ''
   if (pageName === 'subNav') {
-    limitClause = 'LIMIT 4'
+    limitClause = 'LIMIT 6'
   }
   // console.log('hi', userID)
 

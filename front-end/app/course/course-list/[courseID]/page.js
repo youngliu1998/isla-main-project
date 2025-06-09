@@ -474,7 +474,7 @@ export default function CourseIDPage() {
                     <div className="d-flex banner-ctabox my-xl-4 my-2 d-lg-flex d-none">
                       <button
                         type="button"
-                        className="btn btn-primary  px-lg-5 px-4 py-2 me-4 "
+                        className="btn btn-primary  px-lg-5 px-4 py-2 me-4 text-nowrap"
                         onClick={handleBuyNow}
                       >
                         立即購買 NT$ {Number(v.discount).toLocaleString()}
@@ -930,7 +930,7 @@ export default function CourseIDPage() {
                       <div className="d-flex justify-content-center align-items-end my-4">
                         <button
                           type="button"
-                          className="btn btn-primary w-100"
+                          className="btn btn-primary w-100 text-nowrap"
                           onClick={handleBuyNow}
                         >
                           {' '}
@@ -1000,7 +1000,7 @@ export default function CourseIDPage() {
                       <p className="mb-1 text-decoration-line-through text-muted text-nowrap scroll-card-text">
                         NT$ {Number(v.price).toLocaleString()}
                       </p>
-                      <p className="scroll-card-discount fs-2 mb-0">
+                      <p className="scroll-card-discount fs-2 mb-0 text-nowrap">
                         NT$ {Number(v.discount).toLocaleString()}
                       </p>
                     </div>
@@ -1012,7 +1012,7 @@ export default function CourseIDPage() {
                     <i className="bi bi-handbag text-center" />
                   </button>
                   <button
-                    className="btn btn-primary flex-grow-1 mx-2"
+                    className="btn btn-primary flex-grow-1 mx-2 text-nowrap"
                     onClick={handleBuyNow}
                   >
                     立即購買

@@ -102,7 +102,7 @@ export default function ForumPage() {
 
   return (
     <>
-      <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center mx-0 px-0 position-relative overflow-hidden no-scroll-bar h-100">
+      <main className="main col col-10 col-xl-8 d-flex flex-column align-items-center mx-0 px-0 position-relative overflow-hidden h-100">
         <div className="tabs d-flex position-absolute w-100 top-0 px-3">
           <Componentstab
             cates={['熱門', '最新']}
@@ -116,7 +116,7 @@ export default function ForumPage() {
             handleAsideSearchChange={handleAsideSearchChange}
           />
         </div>
-        <div className="posts maxWidth800 d-flex flex-column gap-3 pt-5 pb-5 px-3 mt-1 w-100 overflow-auto">
+        <div className="posts maxWidth800 d-flex flex-column gap-3 pt-5 pb-5 px-3 mt-1 w-100 overflow-auto scroll-bar-settings">
           {/* <PostLoader /> */}
           {error ? (
             '連線錯誤'

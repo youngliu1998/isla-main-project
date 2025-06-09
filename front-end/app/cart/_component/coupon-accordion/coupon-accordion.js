@@ -50,7 +50,7 @@ export default function CouponAccordion({ children }) {
             className="accordion-collapse collapse "
             data-bs-parent="#couponPro"
           >
-            <div className="accordion-body">
+            <div className={`${styles.accordionBody} accordion-body`}>
               <div className="d-flex justify-content-between align-items-center">
                 <p className="text-subtext mb-0">可用的優惠券</p>
                 <div className="d-flex gap-2">
