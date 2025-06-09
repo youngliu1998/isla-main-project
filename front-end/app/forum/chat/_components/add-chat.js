@@ -57,29 +57,6 @@ export default function ComponentsAddChat({ listMutate }) {
                   />
                 </div>
                 <div className="modal-body pt-2 d-flex flex-column">
-                  {/* <div className="form-check">
-                    <input
-                      className="form-check-input ms-auto"
-                      type="radio"
-                      id={`user`}
-                      name={`user`}
-                    />
-                    <label className="form-check-label" htmlFor={`user`}>
-                      test1
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      className="form-check-input ms-auto"
-                      type="radio"
-                      id={`user2`}
-                      name={`user2`}
-                    />
-                    <label className="form-check-label" htmlFor={`user2`}>
-                      test2
-                    </label>
-                  </div> */}
-
                   {Array.isArray(follows) &&
                     follows.map((follow, i) => {
                       const isChecked = checkList.includes(follow.follow_id)
@@ -118,7 +95,11 @@ export default function ComponentsAddChat({ listMutate }) {
                       data-bs-dismiss="modal"
                       onClick={async (e) => {
                         e.preventDefault()
-                        const newRoomId = await handleAddChat(checkList, userID)
+                        const newRoomId = await handleAddChat(
+                          checkList,
+                          userID,
+                          listMutate
+                        )
                         mutate()
                         router.push(`/forum/chat/${newRoomId}`)
                       }}

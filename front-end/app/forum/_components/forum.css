@@ -315,6 +315,9 @@
       background-color: var(--main-color);
     }
   }
+  .mtHeader {
+    margin-top: 180px;
+  }
 }
 .bounce {
   transition: 0.1s ease;
@@ -322,27 +325,23 @@
     scale: 0.95;
   }
 }
-.no-scroll-bar {
-  ::-webkit-scrollbar {
-    width: 0; /* 垂直滾動條寬度 */
-    height: 0; /* 水平滾動條高度 */
+.no-scroll-bar::-webkit-scrollbar {
+  /* width: 0; 垂直滾動條寬度 */
+  /* height: 0; 水平滾動條高度 */
+  display: none;
+}
+.scroll-bar-settings {
+  &::-webkit-scrollbar {
+    width: 8px; /* 垂直滾動條寬度 */
+    /* height: 100px; 水平滾動條高度 */
   }
-  .scroll-bar-settings {
-    ::-webkit-scrollbar {
-      width: 12px; /* 垂直滾動條寬度 */
-      height: 12px; /* 水平滾動條高度 */
-    }
-    ::-webkit-scrollbar-track {
-      background: #ffffff; /* 軌道背景 */
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #45454537; /* 滑塊顏色 */
-      border-radius: 6px; /* 圓角 */
-      border: 2px solid #ffffff; /* 留白效果 */
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #ffffff00;
-    }
+  &::-webkit-scrollbar-track {
+    background: #f7f7f77b; /* 軌道背景 */
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #45454537; /* 滑塊顏色 */
+    border-radius: 6px; /* 圓角 */
+    /* border: 2px solid #ffffff; 留白效果 */
   }
 }
 /* 課程 */
@@ -362,6 +361,7 @@
 
 .search-bar-wrapper {
   padding-top: 100px;
+  /* background: var(--bg-gray-article); */
 }
 
 .my-container {
@@ -484,6 +484,10 @@
     height: 130px;
     object-fit: cover;
     background-color: #dad3d3;
+    transition: 0.1s;
+    &:active {
+      scale: 0.95;
+    }
   }
 }
 
@@ -554,7 +558,9 @@
     /* top: 24px; */
   }
 }
-
+.author-card-xl {
+  height: 278px;
+}
 /* pagepost */
 .more-card {
   &:hover {

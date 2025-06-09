@@ -2,7 +2,7 @@
 
 import '../_component/_style.css/form.css'
 import { useEffect } from 'react'
-import OrderList from '../_component/order-list'
+// import OrderList from '../_component/order-list'
 
 export default function OrderPage() {
   useEffect(() => {
@@ -29,7 +29,6 @@ export default function OrderPage() {
     <>
       <div className="user-content">
         <h3>訂單詳細資料</h3>
-        <OrderList />
       </div>
     </>
   )

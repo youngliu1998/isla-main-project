@@ -380,7 +380,7 @@ export default function CoursePage() {
                       <CourseCard
                         key={`course-${v.id}-${v.title}`}
                         id={v.id}
-                        picture={v.picture}
+                        picture={'/images/course/bannerall/'+v.picture}
                         tag={v.tag}
                         title={v.title}
                         teacher_name={v.teacher_name}

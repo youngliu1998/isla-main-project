@@ -74,7 +74,7 @@ export default function MyPostPage(props) {
             回到論壇
           </Link>
         </div>
-        <div className="posts d-flex flex-column gap-3 w-100">
+        <div className="posts d-flex flex-column gap-3 w-100 no-scroll-bar ">
           {posts?.map((post) => {
             return (
               <ComponentsPostCard

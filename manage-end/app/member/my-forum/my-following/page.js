@@ -1,14 +1,11 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import ComponentsAuthorInfo from '@/app/forum/_components/author-info'
+// import ComponentsAuthorInfo from '@/app/forum/_components/author-info'
 import useSWR from 'swr'
 import { useRouter } from 'next/navigation'
-import '@/app/forum/_components/forum.css'
 import Link from 'next/link'
-import ComponentsAvatar from '@/app/forum/_components/avatar'
 import FollowingCard from './following-card'
-import ComponentsButtonFollowingChat from '@/app/forum/_components/btn-following-chat'
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
 

@@ -6,13 +6,13 @@ import { useAuth } from '../../../hook/use-auth'
 
 const fetcher = (url) => fetch(url).then((res) => res.json())
 
-export default function GetPosts(params, page = 1, limit = 6) {
+export default function GetPosts(params) {
   const userID = useAuth().user.id
 
   // 開抓
   const postsAPI = params
-    ? `http://localhost:3005/api/forum/posts/home?${params}&page=${page}&limit=${limit}&userID=${userID}`
-    : `http://localhost:3005/api/forum/posts/home?page=${page}&limit=${limit}&userID=${userID}`
+    ? `http://localhost:3005/api/forum/posts/home?${params}&userID=${userID}`
+    : `http://localhost:3005/api/forum/posts/home?userID=${userID}`
   const { data, isLoading, error, mutate } = useSWR(postsAPI, fetcher)
 
   // 新增 minimum loading 狀態

@@ -73,7 +73,7 @@ export default function CourseCouponListPage() {
             course_categories_id: c.course_categories_id,
             course_category_name: c.course_category_name,
             type_id: c.type_id,
-            type: c.type_name,
+            type: c.type_name || (c.area === 0 ? '滿額券' : ''),
             amount: parseInt(c.amount),
             discount_rate: parseInt(c.discount_rate),
             min_amount: parseInt(c.min_amount),
@@ -94,7 +94,7 @@ export default function CourseCouponListPage() {
       case '免運券':
         return 'bg-blue-100 text-blue-800'
       default:
-        return 'bg-gray-100 text-gray-800'
+        return 'bg-orange-100 text-orange-800'
     }
   }
   // 剩幾天過期
