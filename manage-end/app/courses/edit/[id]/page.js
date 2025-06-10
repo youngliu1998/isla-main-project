@@ -363,7 +363,7 @@ export default function EditCoursePage() {
                 <video
                   className="w-full"
                   controls
-                  src={`http://localhost:3005/images/course/bannerall/${course.banner_video}`}
+                  src={`http://localhost:3005/public/images/course/bannerall/${course.banner_video}`}
                 />
               )
             )}

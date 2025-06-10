@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { MdOutlineCenterFocusStrong } from 'react-icons/md'
 import './course-banner.css'
+import { COURSE_BANNER_URL } from '@/_route/img-url'
 
 export default function CourseBanner() {
   const [imgFirst, setImgFirst] = useState(1)
@@ -61,7 +62,7 @@ export default function CourseBanner() {
           <div className={i === 1 ? 'box1-img1' : 'box1-img'} key={i}>
             <span className="" />
             <Image
-              src={`/images/course/bannerall/banner${img.id}.jpg`}
+              src={COURSE_BANNER_URL + `banner${img.id}.jpg`}
               alt={`Course banner ${img.id}`}
               width={100}
               height={100}
