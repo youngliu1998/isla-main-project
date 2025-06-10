@@ -623,25 +623,9 @@ export default function CourseIDPage() {
                         className="m-4 text-color"
                         dangerouslySetInnerHTML={{
                           __html: DOMPurify.sanitize(v.content, {
-                            ALLOWED_TAGS: [
-                              'p',
-                              'b',
-                              'strong',
-                              'i',
-                              'em',
-                              'ul',
-                              'ol',
-                              'li',
-                              'br',
-                              'img',
-                              'h1',
-                              'h2',
-                              'h3',
-                              'h4',
-                              'a',
-                            ],
-                            ALLOWED_ATTR: ['src', 'href', 'alt', 'title'],
-                          }),
+  ALLOWED_TAGS: ['p', 'b', 'strong', 'i', 'em', 'ul', 'ol', 'li', 'br', 'img', 'h1', 'h2', 'h3', 'h4', 'a', 'span', 'div'],
+  ALLOWED_ATTR: ['src', 'href', 'alt', 'title', 'style', 'class'], // ⭐加入 style 和 class
+}),
                         }}
                       />
                       {/* 遮罩 */}

@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import './teacher-card.css'
+import { TEACHER_URL } from '@/_route/img-url'
 
 export default function TeacherCard({
   id = '',
