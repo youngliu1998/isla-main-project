@@ -182,7 +182,12 @@ export default function EditProductCoupon({
         <Input
           type="number"
           value={coupon.min_amount ?? ''}
-          onChange={(e) => onChange('min_amount', parseInt(e.target.value))}
+          onChange={(e) =>
+            onChange(
+              'min_amount',
+              e.target.value === '' ? '' : parseInt(e.target.value)
+            )
+          }
         />
       </div>
 

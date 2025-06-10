@@ -1,6 +1,6 @@
 'use client'
 
-// import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { useAuth } from '@/hook/use-auth'
@@ -12,6 +12,7 @@ export default function HamMeunNav({
   setHamMenuOpen = () => {},
 }) {
   const { user, isAuth, logout } = useAuth()
+  const [openCoupon, setOpenCoupon] = useState(false)
   const isOpen = hamMenuOpen ? 'active' : ''
   const avaNone = hamMenuOpen ? '' : 'opacity-0'
   return (
@@ -26,14 +27,8 @@ export default function HamMeunNav({
                 setHamMenuOpen(false)
               }}
             >
-              所有產品
+              美妝商城
             </Link>
-          </li>
-          <li>
-            <Link href="/" onMouseEnter={() => {}}>
-              優惠券專區
-            </Link>
-            <CouponNav />
           </li>
           <li>
             <Link
@@ -45,6 +40,20 @@ export default function HamMeunNav({
               美妝教室
             </Link>
           </li>
+          <li
+            className="position-relative"
+            onMouseEnter={() => {
+              setOpenCoupon(true)
+            }}
+            onMouseLeave={() => {
+              setOpenCoupon(false)
+            }}
+          >
+            <Link href="/">優惠券專區</Link>
+
+            <CouponNav open={openCoupon} />
+          </li>
+
           <li>
             <Link
               href="/forum"
