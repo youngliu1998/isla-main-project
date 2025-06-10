@@ -56,7 +56,7 @@ export default function ProductListPage() {
   const [globalFilter, setGlobalFilter] = useState('')
   const [selectedProductForDialog, setSelectedProductForDialog] = useState(null) // For the Eye icon dialog
   const router = useRouter() // Initialize router
-  const { products, loading, productError } = useProductManageList()
+  const { products, loading, refetch, productError } = useProductManageList()
   const [data, setData] = useState([])
   const { mutate: deleteProduct, isPending } = useDeleteProduct()
 
@@ -80,8 +80,15 @@ export default function ProductListPage() {
         `您確定要刪除「${productName}」嗎？此操作無法復原。`
       )
       if (isConfirmed) {
-        console.log('刪除', productId)
-        deleteProduct(productId)
+        deleteProduct(productId, {
+          onSuccess: () => {
+            toast.success('刪除成功')
+            refetch()
+          },
+          onError: () => {
+            toast.error('刪除失敗')
+          },
+        })
       }
     },
     [deleteProduct]
