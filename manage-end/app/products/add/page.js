@@ -356,6 +356,13 @@ export default function ProductCreatePage() {
           <div className="flex items-center justify-between">
             <CardTitle className="text-2xl font-bold">新增商品</CardTitle>
             <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={fillDemoData}
+                className="bg-stone-50 hover:bg-stone-50"
+              ></Button>
               <Button variant="outline" size="sm" onClick={() => router.back()}>
                 <ArrowLeft className="mr-2 h-4 w-4" /> 返回列表
               </Button>
