@@ -30,7 +30,7 @@ export default function Email({
       const data = await response.json()
       setError({ ...defaultEmail })
       if (response.ok) {
-        setStep((prev) => prev + 1)
+        setStep(2)
         toast.success('認證成功，請準備修改密碼', {
           position: 'top-right',
           autoClose: 1000,
