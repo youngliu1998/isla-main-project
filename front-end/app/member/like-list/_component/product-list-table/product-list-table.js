@@ -162,11 +162,6 @@ export default function WishProductListTable() {
     onGlobalFilterChange: setGlobalFilter,
     initialState: { pagination: { pageSize: 10 } },
   })
-  // ==== 當資料庫有刪減，則重新讀取資料 ====
-  // useEffect(() => {
-  //   const { data: newProduct, isLoading, isError } = useWishProduct(token)
-  //   setProducts(newProduct)
-  // }, [])
   return (
     <div className="card w-100">
       <div className="table-responsive">
