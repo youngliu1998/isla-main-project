@@ -14,6 +14,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useClientToken } from '@/hook/use-client-token.js'
 import { useAuth } from '@/hook/use-auth.js'
+import { toast } from 'react-toastify'
 // ==== method ====
 import { formatted } from '@/app/member/_method/method'
 import { deleteWishItem } from '../_method/delete' // delete item

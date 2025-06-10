@@ -164,7 +164,7 @@ export default function WishCourseListTable() {
             onClick={() => {
               const delte = async () => {
                 await deleteWishItem({ courses_id: row.original.id })
-                setReLoad(!reload)
+                setReLoad((prev) => !prev)
               }
               delte()
             }}
