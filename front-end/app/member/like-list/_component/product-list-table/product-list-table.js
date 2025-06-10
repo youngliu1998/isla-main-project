@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { useWishProduct } from '@/hook/use-wish-with-product'
 import {
@@ -14,17 +14,41 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useClientToken } from '@/hook/use-client-token.js'
 import { useAuth } from '@/hook/use-auth.js'
+import { toast } from 'react-toastify'
 // ==== method ====
 import { formatted } from '@/app/member/_method/method'
+import { deleteWishItem } from '../_method/delete' // delete item
 
 export default function WishProductListTable() {
   const { user, isLoading: isAuthLoading } = useAuth()
   const token = useClientToken()
   const [globalFilter, setGlobalFilter] = useState('')
+  const [isDeleting, setIsDeleting] = useState(false)
   const router = useRouter()
 
-  const { data: product, isLoading, isError } = useWishProduct(token)
+  const { data: product, isLoading, isError, refetch } = useWishProduct(token)
+
+  const products = product || []
   console.log(product)
+
+  const handleDelete = useCallback(
+    async (productId) => {
+      if (isDeleting) return
+
+      try {
+        setIsDeleting(true)
+        await deleteWishItem({ product_id: productId })
+        await refetch()
+        toast.success('已從願望清單移除')
+      } catch (error) {
+        console.error('刪除失敗:', error)
+        toast.error('刪除失敗，請稍後再試')
+      } finally {
+        setIsDeleting(false)
+      }
+    },
+    [isDeleting, refetch]
+  )
 
   const columns = useMemo(
     () => [
@@ -114,12 +138,35 @@ export default function WishProductListTable() {
           </span>
         ),
       },
+      {
+        accessorKey: 'delete',
+        header: ({ column }) => (
+          <button className="btn btn-link p-0 text-decoration-none">
+            操作
+          </button>
+        ),
+        cell: ({ row }) => (
+          <button
+            onClick={() => handleDelete(row.original.product_id)}
+            disabled={isDeleting}
+            title="從願望清單移除"
+          >
+            {isDeleting ? (
+              <div className="spinner-border spinner-border-sm" role="status">
+                <span className="visually-hidden">刪除中...</span>
+              </div>
+            ) : (
+              <i className="bi bi-trash-fill"></i>
+            )}
+          </button>
+        ),
+      },
     ],
-    []
+    [isDeleting] // 依賴 isDeleting 狀態
   )
 
   const table = useReactTable({
-    data: product ?? [],
+    data: products,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -131,21 +178,39 @@ export default function WishProductListTable() {
     initialState: { pagination: { pageSize: 10 } },
   })
 
+  // 可選：如果需要在 token 變化時重新抓取資料
+  useEffect(() => {
+    if (token) {
+      refetch()
+    }
+  }, [token])
+
+  if (isLoading) {
+    return (
+      <div className="card w-100">
+        <div className="text-center py-4">
+          <div className="spinner-border" role="status">
+            <span className="visually-hidden">載入中...</span>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (isError) {
+    return (
+      <div className="card w-100">
+        <div className="text-center py-4 text-danger">
+          載入失敗，請重新整理頁面
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="card w-100">
       <div className="table-responsive">
         <table className="table table-hover align-middle mb-0">
-          {/*<thead className="table-light">*/}
-          {/*{table.getHeaderGroups().map((headerGroup) => (*/}
-          {/*  <tr key={headerGroup.id}>*/}
-          {/*    {headerGroup.headers.map((header) => (*/}
-          {/*      <th key={header.id}>*/}
-          {/*        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}*/}
-          {/*      </th>*/}
-          {/*    ))}*/}
-          {/*  </tr>*/}
-          {/*))}*/}
-          {/*</thead>*/}
           <tbody>
             {table.getRowModel().rows.length > 0 ? (
               table.getRowModel().rows.map((row) => (

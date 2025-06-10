@@ -1,9 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
 
-// 讀取收藏列表
 export const useWishProduct = (token) => {
-  return useQuery({
+  const query = useQuery({
     queryKey: ['wishlist-product'],
     queryFn: async () => {
       const res = await axios.get(
@@ -14,6 +13,11 @@ export const useWishProduct = (token) => {
       )
       return res.data.data
     },
-    enabled: !!token, // 有 token 才執行
+    enabled: !!token,
   })
+
+  return {
+    ...query,
+    refetch: query.refetch,
+  }
 }

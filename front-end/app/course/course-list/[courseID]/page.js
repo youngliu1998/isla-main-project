@@ -624,7 +624,7 @@ export default function CourseIDPage() {
                         dangerouslySetInnerHTML={{
                           __html: DOMPurify.sanitize(v.content, {
   ALLOWED_TAGS: ['p', 'b', 'strong', 'i', 'em', 'ul', 'ol', 'li', 'br', 'img', 'h1', 'h2', 'h3', 'h4', 'a', 'span', 'div'],
-  ALLOWED_ATTR: ['src', 'href', 'alt', 'title', 'style', 'class'], // ⭐加入 style 和 class
+  ALLOWED_ATTR: ['src', 'href', 'alt', 'title', 'style'], // ⭐加入 style 和 class
 }),
                         }}
                       />

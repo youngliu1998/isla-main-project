@@ -85,4 +85,61 @@ router.get('/course', verifyToken, async (req, res) => {
   }
 })
 
+// api settings
+
+// get: Send data if Auth is ok
+router.post('/', verifyToken, async (req, res) => {
+  let error = {}
+  // if verifyToken works, it would send user's id to req.user.id
+  const id = req?.user?.id || 0
+  let item = { type: '', id: 0 }
+  const { courses_id, courses_experience_id, product_id } = req.body
+  console.log('product_id', product_id)
+  if (product_id) {
+    item.type = 'product_id'
+    item.id = product_id
+  } else if (courses_id) {
+    item.type = 'courses_id'
+    item.id = courses_id
+  } else if (courses_experience_id) {
+    item.type = 'courses_experience_id'
+    item.id = courses_experience_id
+  }
+  // switch (true) {
+  // case courses_id:
+  //   item.type = 'courses_id'
+  //   item.id = courses_id
+  //   break
+  // case courses_experience_id:
+  //   item.type = 'courses_experience_id'
+  //   item.id = courses_experience_id
+  //   break
+  //   case product_id:
+  //     item.type = 'product_id'
+  //     item.id = product_id
+  //     break
+  // }
+  console.log('like-list-delete item: ', item)
+  // set query here
+  if (item.type === '' || item.id === 0)
+    return res.status(400).json({ status: 'error', message: '輸入item錯誤' })
+  try {
+    const query = `DELETE FROM wishlist WHERE user_id = ? AND ${item.type} = ?;`
+    const response = await db
+      .execute(query, [id, item.id])
+      .then((data) => data[0][0])
+      .catch((err) => {
+        error = err.message
+      })
+    // send user data to client
+    res.json({
+      status: 'success',
+      data: response,
+      message: `刪除${item.type}:${item.id}成功`,
+    })
+  } catch (err) {
+    res.status(400).json({ status: 'error', message: '刪除失敗' + error })
+  }
+})
+
 export default router

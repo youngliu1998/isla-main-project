@@ -76,10 +76,7 @@ export default function ShippingForm({
             宅配到府
           </label>
         </div>
-        <small>
-          <del className="me-2 text-subtext">運費 NT$200</del>
-          <span className="text-secondary">達免運門檻</span>
-        </small>
+        
       </div>
 
       {shippingWay === 'home' && (
@@ -174,10 +171,7 @@ export default function ShippingForm({
             超商取貨
           </label>
         </div>
-        <small>
-          <del className="me-2 text-subtext">運費 NT$200</del>
-          <span className="text-secondary">達免運門檻</span>
-        </small>
+        
       </div>
       {/* 711 選擇門市 */}
       {shippingWay === '711' && (
