@@ -27,6 +27,8 @@ import DOMPurify from 'dompurify'
 import Breadcrumb from '../../_components/breadcrumb/breadcrumb'
 import LoadingLottie from '../../../_components/loading/lottie-loading'
 import LoadingErrorLottie from '../../../_components/loading-error/lottie-error'
+import { COURSE_BANNER_URL } from '@/_route/img-url'
+import { TEACHER_URL } from '@/_route/img-url'
 
 export default function CourseIDPage() {
   // ✅ 取得動態路由的課程 ID
@@ -392,7 +394,7 @@ export default function CourseIDPage() {
             >
               {v.banner_video?.toLowerCase().endsWith('.mp4') ? (
                 <video
-                  src={`/images/course/bannerall/${v.banner_video}`}
+                  src={COURSE_BANNER_URL + `${v.banner_video}`}
                   width={800}
                   height={200}
                   className="card-img-top-course"
@@ -406,7 +408,7 @@ export default function CourseIDPage() {
                 </video>
               ) : (
                 <Image
-                  src={`/images/course/bannerall/${v.banner_video}`}
+                  src={COURSE_BANNER_URL + `${v.banner_video}`}
                   alt={v.title}
                   width={800}
                   height={200}
@@ -457,7 +459,7 @@ export default function CourseIDPage() {
                     <Link href={`/course/teacher/${v.id}`}>
                       <div className="banner-author my-xl-4 my-2 px-4">
                         <Image
-                          src={`/images/course/teacherall/${v.ava_url}`}
+                          src={TEACHER_URL + `${v.ava_url}`}
                           alt="講師圖片"
                           width={50}
                           height={50}
@@ -547,7 +549,11 @@ export default function CourseIDPage() {
                 </div>
                 <div className="col text-center">
                   <div className="text-center box1-h1">學員人數</div>
-                  <div className="box1-p">{v.student}</div>
+                  <div className="box1-p">
+                    {v.student && Number(v.student) > 0
+                      ? `${v.student} 位學員`
+                      : '暫無學員'}
+                  </div>
                 </div>
                 <div className="col text-center">
                   <div className="text-center box1-h1">{total} 則評價</div>
@@ -574,7 +580,7 @@ export default function CourseIDPage() {
                       {data[0].banner_video?.toLowerCase().endsWith('.mp4') ? (
                         <video
                           ref={introRef}
-                          src={`/images/course/bannerall/${data[0].banner_video}`}
+                          src={COURSE_BANNER_URL + `${data[0].banner_video}`}
                           width={800}
                           height={200}
                           className="card-img-top-course pt-2"
@@ -590,7 +596,7 @@ export default function CourseIDPage() {
                       ) : (
                         <Image
                           ref={introRef}
-                          src={`/images/course/bannerall/${data[0].banner_video}`}
+                          src={COURSE_BANNER_URL + `/${data[0].banner_video}`}
                           alt={data[0].title}
                           width={800}
                           height={200}
@@ -695,8 +701,8 @@ export default function CourseIDPage() {
                     <div className="row g-0">
                       <div className="col-md-4">
                         <Image
-                          src={`/images/course/teacherall/${v.ava_url}`}
-                          alt="課程圖片"
+                          src={TEACHER_URL + `${v.ava_url}`}
+                          alt="講師圖片"
                           width={800}
                           height={450}
                           className="card-img-top-course"
@@ -937,7 +943,7 @@ export default function CourseIDPage() {
                           立即購買{' '}
                         </button>
                       </div>
-                      <div className="d-flex justify-content-between align-items-end my-4">
+                      <div className="d-flex justify-content-between align-items-end my-4 ">
                         <button
                           type="button"
                           className="btn scroll-card-btn btn-lg px-xxl-5 px-lg-4 py-2"
@@ -1039,7 +1045,7 @@ export default function CourseIDPage() {
               <CourseCard
                 key={v.id}
                 id={v.id}
-                picture={`/images/course/bannerall/${v.picture}`}
+                picture={COURSE_BANNER_URL + `${v.picture}`}
                 tag={v.tag}
                 title={v.title}
                 teacher={v.teacher}

@@ -15,7 +15,7 @@
   padding: 18px 36px;
   max-width: 400px;
   overflow: hidden;
-  &::after {
+  /* &::after {
     content: '';
     background-image: linear-gradient(to right, #ffffff00 80%, #fff);
     width: 100%;
@@ -23,5 +23,5 @@
     position: absolute;
     top: 0;
     right: 0;
-  }
+  } */
 }

@@ -13,6 +13,9 @@ export default function HeaderNav() {
           <li>
             <Link href="/product">美妝商城</Link>
           </li>
+          <li>
+            <Link href="/course">美妝教室</Link>
+          </li>
           <li
             className="position-relative"
             onMouseEnter={() => {
@@ -24,9 +27,6 @@ export default function HeaderNav() {
           >
             <Link href="/">優惠券專區</Link>
             <CouponNav open={open} />
-          </li>
-          <li>
-            <Link href="/course">美妝教室</Link>
           </li>
           <li>
             <Link href="/forum">美妝論壇</Link>

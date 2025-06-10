@@ -51,17 +51,24 @@ const isNew = body('existUser').custom(async (value, { req }) => {
   return true
 })
 // ==== 確認是否為新會員(Google) ====
-const isNewGoogle = async (req, res, next) => {
-  const { email } = req.body
-  const query = 'SELECT email FROM users WHERE email=?'
-  try {
-    const user = await db.execute(query, [email])
-    if (user) return res.json({ status: 'error', message: '此會員已存在' })
-    next()
-  } catch (err) {
-    console.log(err.message)
-  }
-}
+// const isNewGoogle = async (req, res, next) => {
+//   const { email } = req.body
+//   const query = 'SELECT email FROM users WHERE email=?'
+//   try {
+//     const user = await db
+//       .execute(query, [email])
+//       .then((data) => data[0][0])
+//       .catch((err) => {
+//         throw new Error('資料庫錯誤' + err.message)
+//       })
+//     if (user) {
+//       throw new Error('此會員已存在')
+//     }
+//     next()
+//   } catch (err) {
+//     console.log(err.message)
+//   }
+// }
 
 // get: Send data if Auth is ok
 router.post(
@@ -70,7 +77,6 @@ router.post(
   notEmpty,
   validation,
   validateRequest,
-  isNewGoogle,
   async (req, res) => {
     let error = ''
 

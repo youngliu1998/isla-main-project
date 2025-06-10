@@ -15,6 +15,8 @@ import LoginModal from '../../../course/_components/login-modal'
 import Breadcrumb from '../../_components/breadcrumb/breadcrumb'
 import LoadingLottie from '../../../_components/loading/lottie-loading'
 import LoadingErrorLottie from '../../../_components/loading-error/lottie-error'
+import { COURSE_BANNER_URL } from '@/_route/img-url'
+import { TEACHER_URL } from '@/_route/img-url'
 
 export default function ExperienceIDPage() {
   const params = useParams()
@@ -240,7 +242,7 @@ export default function ExperienceIDPage() {
               key={`box1-${v.id}`}
             >
               <Image
-                src={`/images/course/bannerall/${v.picture}`}
+                src={COURSE_BANNER_URL + `${v.picture}`}
                 alt="課程圖片"
                 width={800}
                 height={450}
@@ -257,7 +259,7 @@ export default function ExperienceIDPage() {
                     <Link href={`/course/teacher/${v.id}`}>
                       <div className="banner-author my-xl-4 my-2 px-4">
                         <Image
-                          src={`/images/course/teacherall/${v.teacher_avatar}`}
+                          src={TEACHER_URL + `${v.teacher_avatar}`}
                           alt="講師圖片"
                           width={50}
                           height={50}
@@ -479,7 +481,7 @@ export default function ExperienceIDPage() {
                     <div className="row g-0">
                       <div className="col-md-4">
                         <Image
-                          src={`/images/course/teacherall/${v.teacher_avatar}`}
+                          src={TEACHER_URL + `${v.teacher_avatar}`}
                           alt="講師圖片"
                           width={800}
                           height={450}
@@ -692,7 +694,7 @@ export default function ExperienceIDPage() {
               <ExperienceCard
                 key={`exp-${v.id}-${v.title}`}
                 id={v.id}
-                picture={'/images/course/bannerall/' + v.picture}
+                picture={COURSE_BANNER_URL + v.picture}
                 tag={v.tag}
                 title={v.title}
                 city={v.city}

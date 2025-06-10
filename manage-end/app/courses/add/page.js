@@ -10,7 +10,6 @@ import dynamic from 'next/dynamic'
 import '@/app/courses/_components/course-prose.scss'
 import { Save, ArrowLeft } from 'lucide-react'
 import { toast } from 'react-toastify'
-import '@/app/courses/_components/course-prose.scss'
 import { ClimbingBoxLoader } from 'react-spinners'
 
 const CourseEditor = dynamic(
@@ -34,6 +33,7 @@ export default function AddCoursePage() {
     banner_video: '',
     course_chapter: '',
     video_length: '',
+    tag: '1',
   })
   const [imageFile, setImageFile] = useState(null)
   const [videoFile, setVideoFile] = useState(null)
@@ -102,6 +102,7 @@ export default function AddCoursePage() {
       'teacher_id',
       'course_chapter',
       'video_length',
+      'tag',
     ]
     const emptyFields = requiredFields.filter(
       (key) => !course[key]?.toString().trim()
@@ -117,7 +118,14 @@ export default function AddCoursePage() {
     }
     setErrorFields([])
     const form = new FormData()
-    Object.entries(course).forEach(([key, value]) => form.append(key, value))
+    Object.entries(course).forEach(([key, value]) => {
+      if (key === 'tag') {
+        form.append('tag', 1) // 強制數字型
+      } else {
+        form.append(key, value)
+      }
+    })
+
     if (imageFile) form.append('pictureFile', imageFile)
     if (videoFile) form.append('videoFile', videoFile)
 
@@ -146,51 +154,52 @@ export default function AddCoursePage() {
   }
 
   //
-  const handleFileChange = async (e) => {
-    console.log('click')
-    const file = e.target.files[0]
-    if (!file || !courseId) return
+  // const handleFileChange = async (e) => {
+  //   console.log('click')
+  //   const file = e.target.files[0]
+  //   const courseId = course.id
+  //   if (!file) return
 
-    const formData = new FormData()
-    formData.append('file', file)
-    formData.append('courseId', courseId)
+  //   const formData = new FormData()
+  //   formData.append('file', file)
+  //   formData.append('courseId', courseId)
 
-    try {
-      const res = await fetch(
-        `http://localhost:3005/api/courses-manage/course-list/upload?courseId=${courseId}`,
-        {
-          method: 'POST',
-          body: formData,
-        }
-      )
+  //   try {
+  //     const res = await fetch(
+  //       `http://localhost:3005/api/courses-manage/course-list/upload?courseId=${courseId}`,
+  //       {
+  //         method: 'POST',
+  //         body: formData,
+  //       }
+  //     )
 
-      const text = await res.text()
-      let data = {}
-      try {
-        data = JSON.parse(text)
-      } catch (err) {
-        console.error('伺服器未回傳 JSON：', text)
-        throw new Error('圖片上傳回傳格式錯誤')
-      }
+  //     const text = await res.text()
+  //     let data = {}
+  //     try {
+  //       data = JSON.parse(text)
+  //     } catch (err) {
+  //       console.error('伺服器未回傳 JSON：', text)
+  //       throw new Error('圖片上傳回傳格式錯誤')
+  //     }
 
-      if (data.url) {
-        editor
-          ?.chain()
-          .focus()
-          .setImage({
-            src: `http://localhost:3005${data.url}`,
-          })
-          .run()
-      } else {
-        alert('圖片上傳失敗')
-      }
-    } catch (err) {
-      console.error('上傳失敗:', err)
-      alert('圖片上傳發生錯誤')
-    } finally {
-      e.target.value = ''
-    }
-  }
+  //     if (data.url) {
+  //       editor
+  //         ?.chain()
+  //         .focus()
+  //         .setImage({
+  //           src: `http://localhost:3005${data.url}`,
+  //         })
+  //         .run()
+  //     } else {
+  //       alert('圖片上傳失敗')
+  //     }
+  //   } catch (err) {
+  //     console.error('上傳失敗:', err)
+  //     alert('圖片上傳發生錯誤')
+  //   } finally {
+  //     e.target.value = ''
+  //   }
+  // }
 
   return (
     <div className="max-w-6xl mx-auto p-6">
@@ -220,7 +229,6 @@ export default function AddCoursePage() {
                 if (file) {
                   setImagePreview(URL.createObjectURL(file))
                 }
-                handleFileChange(e)
                 console.log('change')
               }}
             />
@@ -345,6 +353,15 @@ export default function AddCoursePage() {
               onChange={handleChange}
             />
           </div>
+          <div>
+            <Label className="my-2">標籤：</Label>
+            <Input
+              name="tag"
+              value={course.tag === '1' ? '課程' : ''}
+              readOnly
+              className="bg-gray-100 cursor-not-allowed"
+            />
+          </div>
         </div>
         <div className="md:col-span-2">
           <Label className="my-4">
@@ -366,8 +383,7 @@ export default function AddCoursePage() {
               onChange={(html) =>
                 setCourse((prev) => ({ ...prev, content: html }))
               }
-              // onImageUpload={handleEditorImageUpload}
-              onImageUpload={handleFileChange}
+              onImageUpload={handleEditorImageUpload}
             />
           </div>
         </div>

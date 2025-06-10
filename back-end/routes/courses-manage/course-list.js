@@ -341,6 +341,7 @@ router.post(
         content,
         course_chapter,
         video_length,
+        tag,
       } = req.body
 
       const picture = req.files?.pictureFile?.[0]?.filename || ''
@@ -357,7 +358,8 @@ router.post(
         isEmpty(course_chapter) ||
         isEmpty(video_length) ||
         isEmpty(picture) ||
-        isEmpty(banner_video)
+        isEmpty(banner_video) ||
+        isEmpty(tag)
       ) {
         return res.status(400).json({
           status: 'fail',
@@ -367,8 +369,8 @@ router.post(
 
       const [result] = await db.query(
         `INSERT INTO courses 
-        (title, categories_id, teacher_id, price, discount, detail, content, picture, banner_video, course_chapter, video_length, created, status) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), 1)`,
+        (title, categories_id, teacher_id, price, discount, detail, content, picture, banner_video, course_chapter, video_length, tag, created, status) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), 1)`,
         [
           title,
           categories_id,
@@ -381,6 +383,7 @@ router.post(
           banner_video,
           course_chapter,
           video_length,
+          tag,
         ]
       )
 
@@ -398,7 +401,6 @@ router.post(
 // ✅ 課程內容編輯器專用圖片上傳
 
 const editorUploadDir = path.join('public', 'images', 'course', 'course-list')
-
 
 const editorStorage = multer.diskStorage({
   destination: (req, file, cb) => {
