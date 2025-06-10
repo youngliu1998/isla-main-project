@@ -15,6 +15,9 @@ import PurchasedCourseCard from '../../../course/_components/purchased-course-ca
 import Breadcrumb from '../../_components/breadcrumb/breadcrumb'
 import LoadingLottie from '../../../_components/loading/lottie-loading'
 import LoadingErrorLottie from '../../../_components/loading-error/lottie-error'
+import { COURSE_BANNER_URL } from '@/_route/img-url'
+import { TEACHER_URL } from '@/_route/img-url'
+import { ABOUT_URL } from '@/_route/img-url'
 
 export default function TeacherPage() {
   const [data, setData] = useState(null) // 講師資料
@@ -143,7 +146,7 @@ export default function TeacherPage() {
                 <div className="text-center py-4">
                   <div className="py-2">
                     <Image
-                      src={`/images/course/teacherall/${data.ava_url}`}
+                      src={TEACHER_URL + `${data.ava_url}`}
                       alt="講師圖片"
                       width={800}
                       height={450}
@@ -239,7 +242,7 @@ export default function TeacherPage() {
               >
                 <div className="mb-4 text-color box3-img">
                   <Image
-                    src={`/images/course/aboutall/${data.banner}`}
+                    src={ABOUT_URL + `${data.banner}`}
                     alt="課程圖片"
                     width={800}
                     height={450}
@@ -332,7 +335,7 @@ export default function TeacherPage() {
                 <CourseCard
                   key={v.id}
                   id={v.id}
-                  picture={`/images/course/bannerall/${v.picture}`}
+                  picture={COURSE_BANNER_URL + `${v.picture}`}
                   tag={v.tag}
                   title={v.title}
                   teacher_name={v.teacher_name}

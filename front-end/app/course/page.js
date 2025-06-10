@@ -7,6 +7,8 @@ import TeacherCard from '../course/_components/teacher-card/teacher-card' // 講
 import CourseBanner from '../course/_components/course-banner/course-banner' // 頁面頂部 Banner 區塊
 import MoreCoursesToggle from './_components/more-courses-toggle/more-courses-toggle' // 更多課程展開切換按鈕
 import { courseUrl } from '../../_route/courseUrl' // API 路由常數
+import { COURSE_BANNER_URL } from '@/_route/img-url'
+import { TEACHER_URL } from '@/_route/img-url'
 import '../course/_components/course.css' // 課程區塊樣式
 import { MdSearch } from 'react-icons/md' // 搜尋 icon
 import MobileFilterBar from '../course/_components/mobile-filter-bar/mobile-filter-bar' // 手機版篩選欄元件（目前未使用）
@@ -345,7 +347,7 @@ export default function CoursePage() {
               <section className="d-lg-none my-1">
                 <div className="d-flex overflow-auto gap-2">
                   <button
-                    className={`btn p-1 nav-link search-btn $ㄌ{selectedCategory === null ? 'active' : ''}`}
+                    className={`btn p-1 nav-link search-btn ${selectedCategory === null ? 'active' : ''}`}
                     onClick={() => setSelectedCategory(null)}
                   >
                     所有課程
@@ -380,7 +382,7 @@ export default function CoursePage() {
                       <CourseCard
                         key={`course-${v.id}-${v.title}`}
                         id={v.id}
-                        picture={'/images/course/bannerall/'+v.picture}
+                        picture={COURSE_BANNER_URL + v.picture}
                         tag={v.tag}
                         title={v.title}
                         teacher_name={v.teacher_name}
@@ -395,7 +397,7 @@ export default function CoursePage() {
                       <ExperienceCard
                         key={`exp-${v.id}-${v.title}`}
                         id={v.id}
-                        picture={'/images/course/bannerall/'+v.picture}
+                        picture={COURSE_BANNER_URL + v.picture}
                         tag={v.tag}
                         title={v.title}
                         city={v.city}
@@ -413,7 +415,7 @@ export default function CoursePage() {
                       <TeacherCard
                         id={t.id}
                         name={t.name}
-                        image={t.ava_url}
+                        image={COURSE_BANNER_URL + t.ava_url}
                         about={t.about}
                       />
                     </div>
@@ -425,7 +427,7 @@ export default function CoursePage() {
                     <CourseCard
                       key={`course-${v.id}-${v.title}`}
                       id={v.id}
-                      picture={'/images/course/bannerall/' + v.picture}
+                      picture={COURSE_BANNER_URL + v.picture}
                       tag={v.tag}
                       title={v.title}
                       teacher_name={v.teacher_name}
@@ -440,7 +442,7 @@ export default function CoursePage() {
                     <ExperienceCard
                       key={`exp-${v.id}-${v.title}`}
                       id={v.id}
-                      picture={'/images/course/bannerall/' + v.picture}
+                      picture={COURSE_BANNER_URL + v.picture}
                       tag={v.tag}
                       title={v.title}
                       city={v.city}
@@ -474,7 +476,7 @@ export default function CoursePage() {
                 <TeacherCard
                   id={t.id}
                   name={t.name}
-                  image={t.ava_url}
+                  image={TEACHER_URL + t.ava_url}
                   about={t.about}
                 />
               </div>
