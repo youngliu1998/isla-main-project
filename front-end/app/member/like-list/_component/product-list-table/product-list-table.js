@@ -22,12 +22,29 @@ export default function WishProductListTable() {
   const { user, isLoading: isAuthLoading } = useAuth()
   const token = useClientToken()
   const [globalFilter, setGlobalFilter] = useState('')
-  const [reload, setReLoad] = useState(false) // 重新讀取的狀態(增減願望清單)
+  const [isDeleting, setIsDeleting] = useState(false) // 新增：刪除狀態
   const router = useRouter()
 
-  const { data: product, isLoading, isError } = useWishProduct(token)
-  const [products, setProducts] = useState(product)
+  const { data: product, isLoading, isError, refetch } = useWishProduct(token)
+
+  const products = product || []
   console.log(product)
+
+  const handleDelete = async (productId) => {
+    if (isDeleting) return
+
+    try {
+      setIsDeleting(true)
+      await deleteWishItem({ product_id: productId })
+      await refetch()
+      toast.success('已從願望清單移除')
+    } catch (error) {
+      console.error('刪除失敗:', error)
+      toast.error('刪除失敗，請稍後再試')
+    } finally {
+      setIsDeleting(false)
+    }
+  }
 
   const columns = useMemo(
     () => [
@@ -120,38 +137,32 @@ export default function WishProductListTable() {
       {
         accessorKey: 'delete',
         header: ({ column }) => (
-          <button
-            className="btn btn-link p-0 text-decoration-none"
-            // onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          >
-            價格
-            {column.getIsSorted() === 'asc' ? (
-              <BsArrowUpCircle className="ms-2" />
-            ) : column.getIsSorted() === 'desc' ? (
-              <BsArrowDownCircle className="ms-2" />
-            ) : (
-              <BsArrowDownCircle className="ms-2" />
-            )}
+          <button className="btn btn-link p-0 text-decoration-none">
+            操作
           </button>
         ),
         cell: ({ row }) => (
           <button
-            onClick={() => {
-              deleteWishItem({ product_id: row.original.product_id })
-              alert(`row.original.product_id: ${row.original.product_id}`)
-              setReLoad(!reload)
-            }}
+            onClick={() => handleDelete(row.original.product_id)}
+            disabled={isDeleting}
+            title="從願望清單移除"
           >
-            <i class="bi bi-trash-fill"></i>
+            {isDeleting ? (
+              <div className="spinner-border spinner-border-sm" role="status">
+                <span className="visually-hidden">刪除中...</span>
+              </div>
+            ) : (
+              <i className="bi bi-trash-fill"></i>
+            )}
           </button>
         ),
       },
     ],
-    []
+    [isDeleting] // 依賴 isDeleting 狀態
   )
 
   const table = useReactTable({
-    data: products ?? [],
+    data: products,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -162,21 +173,15 @@ export default function WishProductListTable() {
     onGlobalFilterChange: setGlobalFilter,
     initialState: { pagination: { pageSize: 10 } },
   })
+  // ==== 當資料庫有刪減，則重新讀取資料 ====
+  // useEffect(() => {
+  //   const { data: newProduct, isLoading, isError } = useWishProduct(token)
+  //   setProducts(newProduct)
+  // }, [])
   return (
     <div className="card w-100">
       <div className="table-responsive">
         <table className="table table-hover align-middle mb-0">
-          {/*<thead className="table-light">*/}
-          {/*{table.getHeaderGroups().map((headerGroup) => (*/}
-          {/*  <tr key={headerGroup.id}>*/}
-          {/*    {headerGroup.headers.map((header) => (*/}
-          {/*      <th key={header.id}>*/}
-          {/*        {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}*/}
-          {/*      </th>*/}
-          {/*    ))}*/}
-          {/*  </tr>*/}
-          {/*))}*/}
-          {/*</thead>*/}
           <tbody>
             {table.getRowModel().rows.length > 0 ? (
               table.getRowModel().rows.map((row) => (
