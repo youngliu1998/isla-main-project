@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useWishProduct } from '@/hook/use-wish-with-product'
 import {
@@ -16,14 +16,17 @@ import { useClientToken } from '@/hook/use-client-token.js'
 import { useAuth } from '@/hook/use-auth.js'
 // ==== method ====
 import { formatted } from '@/app/member/_method/method'
+import { deleteWishItem } from '../_method/delete' // delete item
 
 export default function WishProductListTable() {
   const { user, isLoading: isAuthLoading } = useAuth()
   const token = useClientToken()
   const [globalFilter, setGlobalFilter] = useState('')
+  const [reload, setReLoad] = useState(false) // 重新讀取的狀態(增減願望清單)
   const router = useRouter()
 
   const { data: product, isLoading, isError } = useWishProduct(token)
+  const [products, setProducts] = useState(product)
   console.log(product)
 
   const columns = useMemo(
@@ -114,12 +117,41 @@ export default function WishProductListTable() {
           </span>
         ),
       },
+      {
+        accessorKey: 'delete',
+        header: ({ column }) => (
+          <button
+            className="btn btn-link p-0 text-decoration-none"
+            // onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            價格
+            {column.getIsSorted() === 'asc' ? (
+              <BsArrowUpCircle className="ms-2" />
+            ) : column.getIsSorted() === 'desc' ? (
+              <BsArrowDownCircle className="ms-2" />
+            ) : (
+              <BsArrowDownCircle className="ms-2" />
+            )}
+          </button>
+        ),
+        cell: ({ row }) => (
+          <button
+            onClick={() => {
+              deleteWishItem({ product_id: row.original.product_id })
+              alert(`row.original.product_id: ${row.original.product_id}`)
+              setReLoad(!reload)
+            }}
+          >
+            <i class="bi bi-trash-fill"></i>
+          </button>
+        ),
+      },
     ],
     []
   )
 
   const table = useReactTable({
-    data: product ?? [],
+    data: products ?? [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -130,7 +162,11 @@ export default function WishProductListTable() {
     onGlobalFilterChange: setGlobalFilter,
     initialState: { pagination: { pageSize: 10 } },
   })
-
+  // ==== 當資料庫有刪減，則重新讀取資料 ====
+  // useEffect(() => {
+  //   const { data: newProduct, isLoading, isError } = useWishProduct(token)
+  //   setProducts(newProduct)
+  // }, [])
   return (
     <div className="card w-100">
       <div className="table-responsive">
