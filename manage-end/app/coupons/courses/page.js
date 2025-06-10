@@ -36,10 +36,9 @@ import {
 } from '@/components/ui/dropdown-menu'
 import dayjs from 'dayjs'
 import { useEffect, useMemo, useState } from 'react'
-import { Alert } from '@/components/ui/alert'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+import { toast } from 'react-toastify'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import useCouponOption from '@/hook/use-coupon-options'
 import CouponDetailDialog from '../_components/coupon-detail-dialog'
@@ -128,10 +127,10 @@ export default function CourseCouponListPage() {
       setCoupons((prev) =>
         prev.map((c) => (c.id === updatedCoupon.id ? updatedCoupon : c))
       )
-      alert('已更新')
+      toast.success('優惠券已更新')
     } catch (err) {
       console.error('更新優惠券錯誤:', err)
-      alert('更新失敗')
+      toast.error('優惠券更新失敗')
     }
   }
   // 刪除優惠券
@@ -144,14 +143,19 @@ export default function CourseCouponListPage() {
       })
       if (!res.ok) throw new Error('刪除失敗')
       setCoupons((prev) => prev.filter((c) => c.id !== id))
-      // 刪除動畫
       setShowSuccessAlert(true)
-      setTimeout(() => setShowSuccessAlert(false), 3000)
     } catch (err) {
       console.error('刪除失敗', err)
-      alert('刪除失敗')
+      toast.error('優惠券更新失敗')
     }
   }
+  useEffect(() => {
+    if (showSuccessAlert) {
+      toast.success('優惠券已成功刪除')
+      const timer = setTimeout(() => setShowSuccessAlert(false), 3000)
+      return () => clearTimeout(timer)
+    }
+  }, [showSuccessAlert])
 
   const columns = useMemo(
     () => [
@@ -288,16 +292,6 @@ export default function CourseCouponListPage() {
 
   return (
     <div className="container mx-auto py-8 px-4">
-      {/* 顯示刪除成功提示框 */}
-      {showSuccessAlert && (
-        <Alert
-          variant="default"
-          className="mb-4 flex items-center gap-2 border-green-300 bg-green-50 text-green-800"
-        >
-          <CheckCircle className="w-4 h-4 text-green-600" />
-          <span>優惠券已成功刪除</span>
-        </Alert>
-      )}
       <Card>
         <CardHeader className="flex justify-between items-center">
           <CardTitle className="text-2xl">課程優惠券管理</CardTitle>
