@@ -23,8 +23,8 @@ export default function LoginPage() {
     password: '',
   }
   const [memAuth, setMemAuth] = useState({
-    email: 'johnsmith@gmail.com',
-    password: '12345',
+    email: 'youngliu1998@gmail.com',
+    password: '123456',
   })
   const [error, setError] = useState({ ...defaultLogin })
   // ==== 登入後跳轉流程 ====
