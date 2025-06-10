@@ -14,8 +14,13 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useClientToken } from '@/hook/use-client-token.js'
 import { useAuth } from '@/hook/use-auth.js'
+import { toast } from 'react-toastify'
 // ==== route ====
 import { COURSE_BANNER_URL } from '@/_route/img-url'
+// ==== css ====
+import '../_style/like-list.css'
+// ==== method ====
+import { deleteWishItem } from '../_method/delete'
 
 export default function WishCourseListTable() {
   const { user, isLoading: isAuthLoading } = useAuth()
@@ -23,6 +28,8 @@ export default function WishCourseListTable() {
   const router = useRouter()
 
   const [course, setCourse] = useState([])
+  const [reload, setReLoad] = useState(false) // 重新讀取的狀態(增減願望清單)
+
   const getCourse = async () => {
     const token = localStorage.getItem('jwtToken')
     if (!token) return console.log('未提供token')
@@ -135,6 +142,37 @@ export default function WishCourseListTable() {
           </span>
         ),
       },
+      {
+        accessorKey: 'delete',
+        header: ({ column }) => (
+          <button
+            className="btn btn-link p-0 text-decoration-none"
+            // onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          >
+            價格
+            {column.getIsSorted() === 'asc' ? (
+              <BsArrowUpCircle className="ms-2" />
+            ) : column.getIsSorted() === 'desc' ? (
+              <BsArrowDownCircle className="ms-2" />
+            ) : (
+              <BsArrowDownCircle className="ms-2" />
+            )}
+          </button>
+        ),
+        cell: ({ row }) => (
+          <button
+            onClick={() => {
+              const delte = async () => {
+                await deleteWishItem({ courses_id: row.original.id })
+                setReLoad((prev) => !prev)
+              }
+              delte()
+            }}
+          >
+            <i class="bi bi-trash-fill"></i>
+          </button>
+        ),
+      },
     ],
     []
   )
@@ -153,10 +191,17 @@ export default function WishCourseListTable() {
   })
 
   console.log('like-list course: ', course)
+  // ==== 取得商品 ====
   useEffect(() => {
     console.log('==== useEffect ====')
     getCourse()
   }, [])
+
+  // ==== 重新讀取商品(資料庫有增減) ====
+  useEffect(() => {
+    console.log('==== useEffect Reload ====')
+    getCourse()
+  }, [reload])
   return (
     <div className="card w-100">
       <div className="table-responsive">

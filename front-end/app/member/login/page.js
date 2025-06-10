@@ -23,7 +23,7 @@ export default function LoginPage() {
     password: '',
   }
   const [memAuth, setMemAuth] = useState({
-    email: 'johnsmith@gmail.com',
+    email: 'youngliu1998@gmail.com',
     password: '12345',
   })
   const [error, setError] = useState({ ...defaultLogin })

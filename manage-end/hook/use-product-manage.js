@@ -46,9 +46,8 @@ const updateProduct = async (formData) => {
   }
 }
 
-//TODO 加上token驗證
 export const useProductManageList = () => {
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, refetch, error } = useQuery({
     queryKey: ['product-manage-list'],
     queryFn: async () => {
       const res = await axios.get('http://localhost:3005/api/products', {
@@ -83,7 +82,7 @@ export const useProductManageList = () => {
   const updateProduct = async (updatedProduct) => {
     return await updateProductMutation.mutateAsync({
       ...updatedProduct,
-      product_id: product.product_id,
+      product_id: updatedProduct.product_id,
       images: Array.isArray(updatedProduct.images) ? updatedProduct.images : [],
       sale_price: updatedProduct.sale_price ?? null,
       sale_start_date: updatedProduct.sale_start_date ?? null,
@@ -96,7 +95,8 @@ export const useProductManageList = () => {
     products: data || [],
     loading: isLoading,
     productError: error,
-    updateProduct, // 用來觸發更新
+    updateProduct,
+    refetch,
     updateStatus: {
       isPending: updateProductMutation.isPending,
       isSuccess: updateProductMutation.isSuccess,
@@ -172,12 +172,8 @@ export const useDeleteProduct = () => {
     },
 
     onSuccess: (data, productId) => {
-      toast.success(data.message || '商品已成功刪除！')
-
-      // 關鍵步驟：讓商品列表的快取失效，UI 將自動更新
+      // toast.success(data.message || '商品已成功刪除！')
       queryClient.invalidateQueries({ queryKey: ['products'] })
-
-      // 也可以選擇性地直接從快取中移除該商品的詳細資料，因為它已不存在
       queryClient.removeQueries({ queryKey: ['product', productId] })
     },
 

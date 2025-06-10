@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -23,6 +23,7 @@ import {
   UploadCloud,
   XCircle,
   PlusCircle,
+  Zap,
 } from 'lucide-react'
 import Image from 'next/image'
 import { format } from 'date-fns'
@@ -32,6 +33,32 @@ import { toast } from 'react-toastify'
 
 const MAX_IMAGES = 5
 const IMAGE_WORKER_URL = 'https://isla-image.chris142852145.workers.dev/'
+const today = new Date()
+const endDate = new Date()
+endDate.setMonth(endDate.getMonth() + 1)
+
+// DEMO data
+const DEMO_DATA = {
+  name: 'Cosnori 長久活性睫毛精華',
+  price: '507',
+  sale_price: '427',
+  sale_start_date: today.toISOString().slice(0, 10),
+  sale_end_date: endDate.toISOString().slice(0, 10),
+  description:
+    'Cosnori長久活性睫毛精華採用天然成分配方，溫和不刺激，專為睫毛健康設計。它能深層滋養睫毛根部，強化毛囊，促進睫毛自然生長，改善睫毛脆弱斷裂問題。持續使用可讓睫毛變得更加濃密、纖長且有彈性，打造自然迷人的眼妝效果。無論是日常妝容還是重要場合，都能展現明亮有神的雙眸，提升自信。適合各種膚質及敏感眼周，安全可靠，是睫毛護理的理想選擇。',
+  colors: [
+    {
+      color_name: '透藍色',
+      color_code: '#F8F8FF',
+      stock_quantity: 50,
+    },
+    {
+      color_name: '淡粉色',
+      color_code: '#FFB6C1',
+      stock_quantity: 30,
+    },
+  ],
+}
 
 export default function ProductCreatePage() {
   const router = useRouter()
@@ -43,7 +70,7 @@ export default function ProductCreatePage() {
     error: optionError,
   } = useMutipleOptions()
 
-  // 初始化包含所有欄位的表單狀態
+  // 初始化
   const [formData, setFormData] = useState({
     name: '',
     category_id: null,
@@ -73,7 +100,53 @@ export default function ProductCreatePage() {
     { value: 'inactive', label: '下架' },
   ]
 
-  // --- 處理函式 ---
+  // DEMO快捷鍵
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Cmd + Shift + O
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'O') {
+        e.preventDefault()
+        fillDemoData()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [optionData])
+
+  const fillDemoData = () => {
+    if (!optionData) {
+      toast.error('選項資料尚未載入完成')
+      return
+    }
+
+    const { brands, categories, tags } = optionData
+
+    // 隨機分類、品牌
+    const randomCategory =
+      categories[Math.floor(Math.random() * categories.length)]
+    const randomBrand = brands[Math.floor(Math.random() * brands.length)]
+    const randomTags = tags
+      .slice(0, Math.min(3, tags.length))
+      .map((tag) => tag.value)
+    const today = new Date()
+    const endDate = new Date()
+    endDate.setMonth(endDate.getMonth() + 1)
+
+    setFormData((prev) => ({
+      ...prev,
+      name: DEMO_DATA.name,
+      category_id: randomCategory?.value || null,
+      brand_id: randomBrand?.value || null,
+      tag_ids: randomTags,
+      price: DEMO_DATA.price,
+      sale_price: DEMO_DATA.sale_price,
+      description: DEMO_DATA.description,
+      colors: DEMO_DATA.colors,
+      sale_start_date: today.toISOString().slice(0, 10),
+      sale_end_date: endDate.toISOString().slice(0, 10),
+    }))
+  }
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -269,6 +342,11 @@ export default function ProductCreatePage() {
 
   const { brands, categories, tags } = optionData
 
+  // 獲取當前選中的狀態選項
+  const selectedStatusOption = statusOptions.find(
+    (option) => option.value === formData.status
+  )
+
   // --- 渲染元件 ---
 
   return (
@@ -277,9 +355,18 @@ export default function ProductCreatePage() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="text-2xl font-bold">新增商品</CardTitle>
-            <Button variant="outline" size="sm" onClick={() => router.back()}>
-              <ArrowLeft className="mr-2 h-4 w-4" /> 返回列表
-            </Button>
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={fillDemoData}
+                className="bg-stone-50 hover:bg-stone-50"
+              ></Button>
+              <Button variant="outline" size="sm" onClick={() => router.back()}>
+                <ArrowLeft className="mr-2 h-4 w-4" /> 返回列表
+              </Button>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
@@ -362,6 +449,9 @@ export default function ProductCreatePage() {
                     <Select
                       id="category"
                       options={categories}
+                      value={categories.find(
+                        (cat) => cat.value === formData.category_id
+                      )}
                       onChange={handleSelectChange('category_id')}
                       required
                       className="mt-1"
@@ -372,6 +462,9 @@ export default function ProductCreatePage() {
                     <Select
                       id="brand"
                       options={brands}
+                      value={brands.find(
+                        (brand) => brand.value === formData.brand_id
+                      )}
                       onChange={handleSelectChange('brand_id')}
                       required
                       className="mt-1"
@@ -396,7 +489,7 @@ export default function ProductCreatePage() {
                     <Label htmlFor="status">商品狀態</Label>
                     <Select
                       options={statusOptions}
-                      defaultValue={statusOptions[0]}
+                      value={selectedStatusOption} // 修復：使用受控組件
                       onChange={handleStatusChange}
                       required
                       className="mt-1"
@@ -409,6 +502,9 @@ export default function ProductCreatePage() {
                     isMulti
                     id="tags"
                     options={tags}
+                    value={tags.filter((tag) =>
+                      formData.tag_ids.includes(tag.value)
+                    )}
                     onChange={handleSelectChange('tag_ids', true)}
                     className="mt-1"
                   />
@@ -441,7 +537,7 @@ export default function ProductCreatePage() {
                 onChange={handleIngredientsChange}
                 placeholder="輸入關鍵字搜尋並新增成分..."
                 noOptionsMessage={({ inputValue }) =>
-                  inputValue ? '找不到符合的成分' : '請輸入關鍵字開始搜尋'
+                  inputValue ? '找不到符合的成分' : '搜尋並加入成分...'
                 }
                 loadingMessage={() => '搜尋中...'}
                 className="mt-1"
