@@ -24,11 +24,11 @@ export default function Footer() {
     pathname.includes('register') ||
     pathname.includes('forget-password') ||
     pathname.includes('/forum') ||
-    pathname.includes('/cart') ||
+    // pathname.includes('/cart') ||
     pathname.includes('dashboard')
   ) {
     if (pathname.includes('cart')) {
-      return <CartFooter />
+      // return <CartFooter />
     }
     return <></>
   }

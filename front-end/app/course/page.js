@@ -198,7 +198,7 @@ export default function CoursePage() {
           <Breadcrumb current="所有課程" className="mt-5" />
         </div>
 
-        <div className="row mt-3 d-flex justify-content-between d-lg-flex d-none">
+        <div className="row mt-3 d-flex justify-content-between d-lg-flex d-none no-wrap">
           <div className="row col-xxl-6 col-xl-7 col-lg-8 p-0 m-0">
             <ul
               className="nav nav-pills d-flex col-12 p-0 m-0 justify-content-between"

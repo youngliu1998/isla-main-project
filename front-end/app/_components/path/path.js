@@ -97,10 +97,10 @@ export default function Path() {
           return '我的文章'
         case 'saved-post':
           return '收藏文章'
-        case 'cart':
-          return '購物車'
-        case 'payment':
-          return '付款及運送方式'
+        case 'products':
+          return '商品優惠券'
+        case 'courses':
+          return '課程優惠券'
 
         default:
           return thisPath

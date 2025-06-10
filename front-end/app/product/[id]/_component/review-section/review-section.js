@@ -9,13 +9,13 @@ const ReviewsSection = ({ reviews = [] }) => {
   const reviewCommentCardFormater = (review) => ({
     userId: review.is_anonymous ? '匿名用戶' : `用戶 ${review.user_id}`,
     nickname: review.nickname,
-    userAvatar: `http://localhost:3005/images/images/member/${review.ava_url}`,
+    userAvatar: `http://localhost:3005/images/member/${review.ava_url}`,
     rating: review.rating,
     comment_text: review.comment_text,
     created_at: review.created_at,
     images: (review.images || []).map((img) => `${CDN_BASE}${img}`),
     color_name: review.color?.color_name || '未指定',
-    color_code: review.color?.color_code || 'null'
+    color_code: review.color?.color_code || 'null',
   })
 
   const handleShowMore = () => {
@@ -37,10 +37,7 @@ const ReviewsSection = ({ reviews = [] }) => {
 
       {visibleCount < reviews.length && (
         <div className="text-center mt-4">
-          <button
-            className="btn btn-more-cards-show"
-            onClick={handleShowMore}
-          >
+          <button className="btn btn-more-cards-show" onClick={handleShowMore}>
             查看更多評論
           </button>
         </div>

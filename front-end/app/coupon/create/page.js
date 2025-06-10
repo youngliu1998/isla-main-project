@@ -171,9 +171,9 @@ export default function CreatePage() {
               isLogin={() => {}}
             />
             <div className="mt-4 d-flex flex-column gap-3">
-              <Link href="/" className="text-center">
+              <Link href="/member/coupon" className="text-center">
                 <button className="btn btn-primary w-50 text-center">
-                  首頁
+                  會員中心
                 </button>
               </Link>
               <Link
@@ -182,7 +182,7 @@ export default function CreatePage() {
                 className="text-center"
               >
                 <button className="btn btn-primary w-50 text-center">
-                  立即逛逛
+                  立即購買
                 </button>
               </Link>
             </div>

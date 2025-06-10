@@ -20,7 +20,7 @@ const CouponSwiper = ({
           swiperRef.current = swiper
         }}
         modules={[Navigation]}
-        navigation
+        // navigation
         spaceBetween={6}
         breakpoints={{
           0: {
