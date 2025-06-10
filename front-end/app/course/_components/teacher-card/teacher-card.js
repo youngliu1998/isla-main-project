@@ -9,8 +9,8 @@ export default function TeacherCard({
   about = '',
 }) {
   const imagePath = image
-    ? `/images/course/teacherall/${image}` // ✅ 用 backtick 模板字串
-    : '/images/course/teacherall/default-avatar.jpg'
+    ? `${image}` // ✅ 用 backtick 模板字串
+    : 'default-avatar.jpg'
 
   return (
     <Link

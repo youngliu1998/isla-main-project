@@ -7,6 +7,7 @@ import { toast } from 'react-toastify'
 import { useAuth } from '@/hook/use-auth'
 import LoginModal from '../../_components/login-modal'
 import './purchased-course-card.css'
+import { COURSE_BANNER_URL } from '@/_route/img-url'
 
 export default function PurchasedCourseCard({ course }) {
   const { auth, showLoginModal } = useAuth()
@@ -64,7 +65,7 @@ export default function PurchasedCourseCard({ course }) {
         <div className="card h-100 card-hover-course course-card">
           <div className="card-img-container-course">
             <Image
-              src={`/images/course/bannerall/${course.picture}`}
+              src={COURSE_BANNER_URL + `${course.picture}`}
               alt="課程圖片"
               width={800}
               height={450}
