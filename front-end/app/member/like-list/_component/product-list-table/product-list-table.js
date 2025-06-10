@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { useState, useMemo, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { useWishProduct } from '@/hook/use-wish-with-product'
 import {
@@ -22,7 +22,7 @@ export default function WishProductListTable() {
   const { user, isLoading: isAuthLoading } = useAuth()
   const token = useClientToken()
   const [globalFilter, setGlobalFilter] = useState('')
-  const [isDeleting, setIsDeleting] = useState(false) // 新增：刪除狀態
+  const [isDeleting, setIsDeleting] = useState(false)
   const router = useRouter()
 
   const { data: product, isLoading, isError, refetch } = useWishProduct(token)
@@ -30,21 +30,24 @@ export default function WishProductListTable() {
   const products = product || []
   console.log(product)
 
-  const handleDelete = async (productId) => {
-    if (isDeleting) return
+  const handleDelete = useCallback(
+    async (productId) => {
+      if (isDeleting) return
 
-    try {
-      setIsDeleting(true)
-      await deleteWishItem({ product_id: productId })
-      await refetch()
-      toast.success('已從願望清單移除')
-    } catch (error) {
-      console.error('刪除失敗:', error)
-      toast.error('刪除失敗，請稍後再試')
-    } finally {
-      setIsDeleting(false)
-    }
-  }
+      try {
+        setIsDeleting(true)
+        await deleteWishItem({ product_id: productId })
+        await refetch()
+        toast.success('已從願望清單移除')
+      } catch (error) {
+        console.error('刪除失敗:', error)
+        toast.error('刪除失敗，請稍後再試')
+      } finally {
+        setIsDeleting(false)
+      }
+    },
+    [isDeleting, refetch]
+  )
 
   const columns = useMemo(
     () => [
@@ -179,7 +182,7 @@ export default function WishProductListTable() {
     if (token) {
       refetch()
     }
-  }, [token, refetch])
+  }, [token])
 
   if (isLoading) {
     return (
