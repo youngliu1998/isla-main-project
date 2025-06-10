@@ -97,7 +97,6 @@ export default function Path() {
           return '我的文章'
         case 'saved-post':
           return '收藏文章'
-        case 'products':
           return '商品優惠券'
         case 'courses':
           return '課程優惠券'

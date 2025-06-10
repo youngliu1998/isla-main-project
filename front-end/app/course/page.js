@@ -415,7 +415,7 @@ export default function CoursePage() {
                       <TeacherCard
                         id={t.id}
                         name={t.name}
-                        image={COURSE_BANNER_URL + t.ava_url}
+                        image={TEACHER_URL + t.ava_url}
                         about={t.about}
                       />
                     </div>
