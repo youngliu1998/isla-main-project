@@ -535,13 +535,6 @@ export default function ProductCreatePage() {
                 defaultOptions
                 loadOptions={loadIngredientOptions}
                 onChange={handleIngredientsChange}
-                value={
-                  optionData.ingredients
-                    ? optionData.ingredients.filter((i) =>
-                        formData.ingredient_ids.includes(i.value)
-                      )
-                    : []
-                }
                 placeholder="輸入關鍵字搜尋並新增成分..."
                 noOptionsMessage={({ inputValue }) =>
                   inputValue ? '找不到符合的成分' : '搜尋並加入成分...'
