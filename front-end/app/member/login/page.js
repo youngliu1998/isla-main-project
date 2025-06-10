@@ -24,7 +24,7 @@ export default function LoginPage() {
   }
   const [memAuth, setMemAuth] = useState({
     email: 'youngliu1998@gmail.com',
-    password: '123456',
+    password: '12345',
   })
   const [error, setError] = useState({ ...defaultLogin })
   // ==== 登入後跳轉流程 ====
