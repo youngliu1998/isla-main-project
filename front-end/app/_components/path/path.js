@@ -100,6 +100,8 @@ export default function Path() {
           return '商品優惠券'
         case 'courses':
           return '課程優惠券'
+        case 'products':
+          return '商品優惠券'
 
         default:
           return thisPath
