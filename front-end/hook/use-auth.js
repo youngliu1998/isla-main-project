@@ -26,6 +26,8 @@ export function AuthProvider({ children }) {
     token: '',
   }
   const [user, setUser] = useState(defaultUser)
+  const [isUseLogin, setIsUseLogin] = useState(false) // 因為login後會有多個轉跳路徑候選，需區分與非常規進入login頁面的事件(網址轉跳等)
+  const [authLoading, setAuthLoading] = useState(true) // 確認登入資格的驗證是否已完成(useEffect)
   const isAuth = Boolean(user.id)
   // === 用於驗證登入狀態 ====
   // const [isAuth, setIsAuth] = useState(true)
@@ -67,6 +69,7 @@ export function AuthProvider({ children }) {
     if (!token) {
       console.log('not get token')
       cleanStorage()
+      setUser({ ...defaultUser })
       return
     }
     // get user's data from db
@@ -84,10 +87,12 @@ export function AuthProvider({ children }) {
         // setIsAuth(true)
       } else {
         cleanStorage()
+        setUser({ ...defaultUser })
       }
     } catch (err) {
       console.error('驗證錯誤:', err)
       cleanStorage()
+      setUser({ ...defaultUser })
     }
   }
   // login function
@@ -115,6 +120,7 @@ export function AuthProvider({ children }) {
         localStorage.setItem('jwtToken', data['data']['token'])
         console.log('check token: ', data['data']['token'])
         console.log('後端回應成功')
+        setIsUseLogin(true) // 確定透過 login 並取得登入資格
       } else {
         errorComfirm(data, setError)
         // console.error('登入失敗', data.message)
@@ -129,18 +135,33 @@ export function AuthProvider({ children }) {
   // logout function
   const logout = () => {
     setUser(defaultUser)
+    setIsUseLogin(false) // 重洗login標記
     cleanStorage()
     // setIsAuth(false)
     // router.push('/member/login')
   }
   // 初始讀取 jwtToken 並取得使用者資料
   useEffect(() => {
-    // 取得使用者資料
-    initAuth()
+    const checkLogin = async () => {
+      await initAuth()
+      setAuthLoading(false) // 代表讀取結束
+    }
+    console.log('useAuth-authLoading', authLoading)
+    checkLogin()
   }, [])
   return (
     <>
-      <AuthContext.Provider value={{ user, isAuth, login, logout, initAuth }}>
+      <AuthContext.Provider
+        value={{
+          user,
+          isAuth,
+          authLoading,
+          isUseLogin,
+          login,
+          logout,
+          initAuth,
+        }}
+      >
         {children}
       </AuthContext.Provider>
     </>

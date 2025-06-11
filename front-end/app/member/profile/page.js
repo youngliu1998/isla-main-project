@@ -32,7 +32,6 @@ export default function ProfilePage() {
   }
   const [text, setText] = useState({ ...defaultProfile })
   const [error, setError] = useState({ ...defaultProfile })
-  console.log('text', text)
 
   // ==== 處理地址 ====
   const areas = cities.filter((v) => v.CityName == text.CityName)[0]?.AreaList
@@ -84,7 +83,7 @@ export default function ProfilePage() {
         let newError = { ...defaultProfile }
         const serverErrors = data.errors
         if (Array.isArray(serverErrors)) {
-          console.log('Errors: ', serverErrors)
+          // console.log('Errors: ', serverErrors)
           serverErrors.forEach((serverError) => {
             switch (serverError.path) {
               case 'name':
@@ -112,7 +111,11 @@ export default function ProfilePage() {
             hideProgressBar: false,
           })
         } else {
-          console.log('資料庫問題')
+          toast.error('資料庫連線出錯', {
+            position: 'top-right',
+            autoClose: 1000,
+            hideProgressBar: false,
+          })
         }
         // ==== END 404 status: error ====
       }

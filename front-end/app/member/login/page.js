@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react'
 import InputText from '../_component/input-text'
 import InputPass from '../_component/input-pass'
 import { toast } from 'react-toastify'
+import LoadingLottie from '@/app/_components/loading/lottie-loading'
 // ==== css ====
 import '@/app/member/_component/_style.css/form.css'
 import './_style/login.css'
@@ -17,7 +18,7 @@ import './_style/login.css'
 
 export default function LoginPage() {
   const router = useRouter()
-  const { login, initAuth } = useAuth() // Context
+  const { login, logout, isAuth, isUseLogin, authLoading, initAuth } = useAuth() // Context
   const defaultLogin = {
     email: '',
     password: '',
@@ -27,6 +28,7 @@ export default function LoginPage() {
     password: '12345',
   })
   const [error, setError] = useState({ ...defaultLogin })
+
   // ==== 登入後跳轉流程 ====
   const loginPush = (isAuth) => {
     // 登入成功( isAuth != null )
@@ -66,7 +68,6 @@ export default function LoginPage() {
           autoClose: 1000,
           hideProgressBar: false,
         })
-        console.log('flag redirectPath')
         router.push(redirectPath)
         return
       } else {
@@ -90,11 +91,9 @@ export default function LoginPage() {
   // ==== handle login form ====
   // 宣告一個非同步的函式 handleSubmit，參數 e 是事件物件（例如表單提交事件）
   const handleSubmit = async (e) => {
-    console.log('flag submit')
     e.preventDefault() // 阻止表單預設行為（例如頁面重新載入）
 
     await login(memAuth.email, memAuth.password, setError)
-    console.log('flag login')
     // 檢查 localStorage 中的 'isAuth' 是否為 'true'（表示使用者已成功登入）
     const isAuthLocal = localStorage.getItem('jwtToken')
     loginPush(isAuthLocal) // 頁面跳轉
@@ -116,7 +115,7 @@ export default function LoginPage() {
       .then((response) => response.json())
       .catch((error) => console.error('Error:', error))
     if (!data || !data.data || !data.data.token) {
-      console.log('沒有取得token，登入失敗', data)
+      // console.log('沒有取得token，登入失敗', data)
       return
     }
     // set token to localStorage
@@ -126,7 +125,7 @@ export default function LoginPage() {
     console.log('check google: ', data['data']['tokenGoogle'])
     console.log('Google後端回應成功')
     console.log(response)
-    initAuth()
+    await initAuth()
     const isAuthLocal = localStorage.getItem('jwtToken') || null
     loginPush(isAuthLocal)
   }
@@ -134,12 +133,27 @@ export default function LoginPage() {
     console.log(error)
   }
   // ==== END google 認證設定 ====
+  // ==== 確認是進入畫面時是否已登入 ===
   useEffect(() => {
-    const isAuthLocal = localStorage.getItem('jwtToken') || false
-    // if get auth, go to main page
-    if (isAuthLocal) router.push('/')
-  }, [])
+    const checkLogin = async () => {
+      await initAuth()
+      if (isAuth && !isUseLogin) {
+        router.push('/member/profile')
+      }
+    }
+    checkLogin()
+  }, [isAuth])
 
+  // ==== 緩衝時間動畫，等待確認登入狀態 ====
+  if (authLoading || isAuth) {
+    // authLoading負責useAuth的useEffect
+    // isAuth負責login的useEffect
+    return (
+      <div className="d-flex justify-content-center align-items-center v-100 v-100">
+        <LoadingLottie />
+      </div>
+    )
+  }
   return (
     <>
       <div className="d-flex flex-column justify-content-centers gap-5 margin-top-minus">
