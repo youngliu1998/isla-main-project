@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
 
 // 這是一個根據螢幕大小選擇渲染元件的 Hook
-function useMobileDisplay(query) {
+function useMobileDisplay(size) {
   const [matches, setMatches] = useState(false)
 
   useEffect(() => {
-    const media = window.matchMedia(query)
+    const media = window.matchMedia(size)
 
     const updateMatches = () => {
       setMatches(media.matches)
@@ -36,7 +36,7 @@ function useMobileDisplay(query) {
         }
       }
     }
-  }, [query])
+  }, [size])
 
   return matches
 }

@@ -59,6 +59,11 @@ export default function ProductPage() {
 
   const searchParams = useSearchParams()
   const router = useRouter()
+
+  //抓取網址參數並轉換，例：
+  // brandIds: parseArrayParam("1,2,3") ---> [1, 2, 3]
+  // categoryIds: parseArrayParam("5,10") ---> [5, 10]
+  // tagIds: parseArrayParam("A,B,C") ---> ["A", "B", "C"]
   const parseArrayParam = (value) =>
     value ? value.split(',').map((v) => (isNaN(+v) ? v : +v)) : []
 
@@ -113,19 +118,16 @@ export default function ProductPage() {
   const [filters, setFilters] = useState(null)
   // const [filters, setFilters] = useState(getInitialFilters)
   useEffect(() => {
+    document.title = `美妝商城 - ISLA 美妝生活`
     const initialFilters = getInitialFilters()
     setFilters(initialFilters)
-  }, [])
-
-  useEffect(() => {
-    document.title = `美妝商城 - ISLA 美妝生活`
   }, [])
 
   const handleFilterChange = (partialUpdate) => {
     setFilters((prev) => {
       const updated = { ...prev, ...partialUpdate }
 
-      // 檢查是否有變化
+      // 檢查篩選器是否有變化
       let hasChanged = false
       for (const key in partialUpdate) {
         if (Object.prototype.hasOwnProperty.call(partialUpdate, key)) {
@@ -158,7 +160,6 @@ export default function ProductPage() {
   const {
     products,
     productsLoading,
-    productsError,
     brands,
     categories,
     tags,

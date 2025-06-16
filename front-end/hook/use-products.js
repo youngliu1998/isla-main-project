@@ -66,14 +66,14 @@ export const useProducts = (filters, { pageSize = 20 } = {}) => {
       })
 
       if (res.status !== 200 || res.data.status !== 'success') {
-        throw new Error('Failed to fetch products')
+        throw new Error('商品抓取失敗')
       }
 
       return {
         data: res.data.data,
         currentPage: pageParam,
-        hasMore: res.data.data.length === pageSize, // 如果返回的數據等於頁面大小，假設還有更多數據
-        totalCount: res.data.totalCount, // 假設後端返回總數量
+        hasMore: res.data.data.length === pageSize,
+        totalCount: res.data.totalCount,
       }
     },
     getNextPageParam: (lastPage) => {
@@ -88,6 +88,7 @@ export const useProducts = (filters, { pageSize = 20 } = {}) => {
     productsQuery.data?.pages?.flatMap((page) => page.data) || []
 
   return {
+    // 篩選條件
     brands: filtersQuery.data?.brands || [],
     categories: filtersQuery.data?.categories || [],
     tags: filtersQuery.data?.tags || [],
@@ -98,14 +99,16 @@ export const useProducts = (filters, { pageSize = 20 } = {}) => {
     productsLoading: productsQuery.isLoading,
     productsError: productsQuery.error,
 
-    // 無限滾動相關的方法和狀態
+    // for 無限滾動
     fetchNextPage: productsQuery.fetchNextPage,
     hasNextPage: productsQuery.hasNextPage,
     isFetchingNextPage: productsQuery.isFetchingNextPage,
 
-    // 其他有用的狀態
+    // 頁數
     totalProducts: productsQuery.data?.pages?.[0]?.totalCount || 0,
     currentPageCount: productsQuery.data?.pages?.length || 0,
+
+    // 用於重新抓取商品
     refetchProducts: productsQuery.refetch,
   }
 }
@@ -120,11 +123,12 @@ export const UseProductDetail = (id) => {
       }
       return res.data.data
     },
-    enabled: !!id, // 確保 id 存在才執行
-    staleTime: 1000 * 60 * 10, // 10 分鐘快取
+    enabled: !!id,
+    staleTime: 1000 * 60 * 10, // 快取
   })
 }
 
+// 需要productID，抓取該商品評論資料
 export const UseProductReviews = (id) => {
   return useQuery({
     queryKey: ['product-reviews', id],
@@ -133,7 +137,7 @@ export const UseProductReviews = (id) => {
         `http://localhost:3005/api/product-reviews/${id}`
       )
       if (res.status !== 200 || res.data.success !== true) {
-        throw new Error('Failed to fetch product reviews')
+        throw new Error('抓取商品評論失敗')
       }
       return res.data.data
     },
@@ -142,7 +146,7 @@ export const UseProductReviews = (id) => {
   })
 }
 
-//userID
+// 需要userID、productID，抓取該使用者評論資料
 export const UseUserReview = (product_id, user_id) => {
   return useQuery({
     queryKey: ['product-reviews', product_id, user_id],
@@ -152,10 +156,10 @@ export const UseUserReview = (product_id, user_id) => {
           `http://localhost:3005/api/product-reviews/user/check?product_id=${product_id}&user_id=${user_id}`
         )
         if (res.data.success !== true) {
-          console.error('API 錯誤回傳:', res.data)
-          throw new Error('Failed to fetch product reviews')
+          console.error('評論資料抓取錯誤:', res.data)
+          throw new Error('無法取得該顧客的評論資料')
         }
-        console.log('取得村民的評論資料:', res.data)
+        // console.log('取得該顧客的評論資料:', res.data)
         return res.data.data
       } catch (error) {
         console.error(error)
@@ -197,11 +201,11 @@ export const UseProductIngredient = (id) => {
         `http://localhost:3005/api/product-ingredient/${id}`
       )
       if (res.status !== 200 || res.data.success !== true) {
-        throw new Error('Failed to fetch product reviews')
+        throw new Error('抓取成分失敗')
       }
       return res.data.data
     },
-    enabled: !!id, // 確保 id 存在才執行
-    staleTime: 1000 * 60 * 10, // 10 分鐘快取
+    enabled: !!id,
+    staleTime: 1000 * 60 * 10, // 快取
   })
 }
