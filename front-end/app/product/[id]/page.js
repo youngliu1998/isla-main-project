@@ -29,55 +29,57 @@ import ReactViewShare from './_component/recent-view-and-share/recent-view-and-s
 import ProductRelative from './_component/relative-products-products/relative-products-products'
 
 export default function page({ params }) {
-  // i don't know what is this shit, but it's warning
+  //會員資料
   const { user, isLoading: isAuthLoading } = useAuth()
   const token = useClientToken()
   const userId = user?.id
   const correct_nickname = user?.nickname
   const correct_ava_url = user?.ava_url
 
+  // 取得URL參數
   const unwrappedParams = React.use(params)
   const id = unwrappedParams?.id
 
-  // 早期返回檢查
+  // 檢查ID
   if (!id) return null
 
+  // 加入購物車token
   const { mutate: addToCart } = useAddCart(token)
 
-  // Fetch product detail
+  // 詳細資料抓取
   const {
     data: product,
     isLoading: isLoadingProduct,
     error: errorProduct,
   } = UseProductDetail(id)
 
-  // Reviews
+  // 評論抓取
   const {
     data: reviews = [],
     isLoading: isLoadingReviews,
     error: errorReviews,
   } = UseProductReviews(id)
 
-  // Ingredients
+  // 成分抓取
   const {
     data: ingredients,
     isLoading: isLoadingIngredients,
     error: errorIngredients,
   } = UseProductIngredient(id)
 
-  // === State ===
   const [selectedColorId, setSelectedColorId] = useState(null)
   const [quantity, setQuantity] = useState(1)
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [order_price, setOrder_price] = useState(0)
 
-  // 判斷是否為標準色（無色碼）
+  // 判斷是否只有標準色
   const isStandardOnly = useMemo(() => {
     return (
       product?.colors?.length === 1 && product.colors[0].color_code === null
     )
   }, [product])
 
+  // 如果只有標準色，不顯示顏色選擇器
   useEffect(() => {
     if (
       product?.colors?.length > 0 &&
@@ -88,49 +90,41 @@ export default function page({ params }) {
     }
   }, [product, selectedColorId, isStandardOnly])
 
+  // 數量價格連動更新
   useEffect(() => {
     if (product?.final_price) {
       setOrder_price(product.final_price * quantity)
     }
   }, [product?.final_price, quantity])
 
+  // 頁面標題設定
   useEffect(() => {
     if (product?.name) {
       document.title = `${product.name} - ISLA 美妝生活`
     }
   }, [product?.name])
 
-  // useEffect(() => {
-  //   if (
-  //     product?.name &&
-  //     router.asPath !== `/product/${product.product_id}商品詳細`
-  //   ) {
-  //     router.push(`/product/${product.id}商品詳細`, { scroll: false })
-  //   }
-  // }, [product, router])
-
-  // 處理圖片
+  // 處理圖片，useMemo防止多餘渲染
   const filenames = useMemo(() => {
     return product?.images?.map((img) => img.image_url) ?? []
   }, [product])
-
   const productImagesUrls = useChrisR2ImageUrlDuo(filenames)
 
-  // 加入購物車
+  // 加入購物車處理
   const handleAddToCart = useCallback(() => {
-    // 檢查是否有產品數據
+    // 先檢查商品是否載入
     if (!product) {
       toast.warning('產品資料載入中，請稍候')
       return
     }
-
+    // 檢查顏色
     const colorId = selectedColorId ?? product.colors?.[0]?.color_id
-
     if (!colorId && !isStandardOnly) {
       toast.warning('請先選擇顏色')
       return
     }
 
+    // HOOK 加入購物車
     addToCart(
       {
         product_id: product.product_id,
@@ -152,7 +146,7 @@ export default function page({ params }) {
     )
   }, [product, selectedColorId, isStandardOnly, addToCart, quantity])
 
-  // 評分統計
+  // 星星bar統計
   const getRatingCounts = useCallback((reviews) => {
     if (!Array.isArray(reviews)) return { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
 
@@ -168,7 +162,7 @@ export default function page({ params }) {
     )
   }, [])
 
-  // 評論圖片
+  // 評論圖片處理，useMemo防止多餘渲染
   const reviewImages = useMemo(() => {
     if (!Array.isArray(reviews)) return []
 
@@ -184,19 +178,15 @@ export default function page({ params }) {
   if (errorProduct || errorReviews || errorIngredients) {
     return (
       <div className="error-container">
-        {/*<h2>載入失敗</h2>*/}
         <LoadingErrorLottie />
         <h5>載入錯誤，請重新整理頁面或稍後再試 </h5>
-        {/*{errorProduct && <p>找不到產品</p>}*/}
-        {/*{errorReviews && <p>產品資料錯誤</p>}*/}
         {/*{errorReviews.message}*/}
-        {/*{errorIngredients && <p>產品資料錯誤</p>}*/}
         {/*{errorIngredients.message}*/}
       </div>
     )
   }
 
-  // 資料尚未載入完成
+  // 資料載入中動畫
   if (
     isLoadingProduct ||
     isLoadingReviews ||
