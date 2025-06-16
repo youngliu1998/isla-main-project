@@ -5,7 +5,7 @@ import Image from 'next/image'
 
 export default function ComponentsAvatar({
   src = 'http://localhost:3005/images/member/default-avatar.jpg',
-  alt = '',
+  alt = '123',
   classWidth = '',
 }) {
   return (

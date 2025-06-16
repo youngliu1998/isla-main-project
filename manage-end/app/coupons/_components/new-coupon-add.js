@@ -234,8 +234,12 @@ export default function NewCouponAdd({
                   type="number"
                   step="0.01"
                   value={form.discount_rate}
+  
                   onChange={(e) =>
-                    handleChange('discount_rate', parseFloat(e.target.value))
+                    handleChange(
+                      'discount_rate',
+                      e.target.value === '' ? '' : parseFloat(e.target.value)
+                    )
                   }
                 />
               </div>
