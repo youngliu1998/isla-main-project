@@ -23,10 +23,13 @@ function SidebarFilter({ filters, onFilterChange, brands, categories, tags }) {
     sortOrder = 'ASC',
   } = filters
 
+  //
   const parsePriceRanges = (selectedRanges) => {
+    //預設值
     if (!selectedRanges || !selectedRanges.length)
       return { minPrice: 0, maxPrice: 9999 }
 
+    // 價格範圍解構
     const ranges = selectedRanges.map((range) => {
       if (range.includes('以上')) {
         const min = parseInt(range)
@@ -37,6 +40,7 @@ function SidebarFilter({ filters, onFilterChange, brands, categories, tags }) {
       }
     })
 
+    //從範圍中計算最小和最大價格
     const minP = Math.min(...ranges.map((r) => r.min))
     const maxP = Math.max(
       ...ranges.map((r) => (r.max === Infinity ? 999999 : r.max))
@@ -56,6 +60,7 @@ function SidebarFilter({ filters, onFilterChange, brands, categories, tags }) {
     setIsIconFlipping(true)
   }
 
+  //
   const toggleSelection = (item, selectedItems, key) => {
     const newSelection = selectedItems.includes(item)
       ? selectedItems.filter((i) => i !== item)
@@ -73,10 +78,12 @@ function SidebarFilter({ filters, onFilterChange, brands, categories, tags }) {
     }
   }
 
+  // 搜尋處理
   const onKeywordChange = (e) => {
     onFilterChange({ ...filters, keyword: e.target.value })
   }
 
+  // 僅顯示特價商品switch
   const onSaleOnlyToggle = () => {
     onFilterChange({ onSaleOnly: !onSaleOnly })
   }

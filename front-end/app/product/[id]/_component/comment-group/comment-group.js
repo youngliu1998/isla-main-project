@@ -31,6 +31,7 @@ export function CommentGroup({
 
   const USER_AVA_URL = 'http://localhost:3005/images/member/'
 
+  // 評論排序（日期或星等）
   const filteredReviews = reviews
     .filter((review) => {
       if (!fillterRating) return true
@@ -78,6 +79,7 @@ export function CommentGroup({
     },
   })
 
+  // submit
   const handleSubmit = async (formData) => {
     submitService.mutate(formData)
   }
